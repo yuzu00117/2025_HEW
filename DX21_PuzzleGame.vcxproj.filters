@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\ツール系">
+      <UniqueIdentifier>{a2f680d1-5635-466e-a081-4d5e825bc9e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\テクスチャ周り">
+      <UniqueIdentifier>{966dc55b-13ee-4288-b2e5-5e5ebd392088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\入力">
+      <UniqueIdentifier>{9d417d3e-69d0-40c7-ab70-1a80cdfe5126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\音">
+      <UniqueIdentifier>{01fa48c0-6d2f-4390-99df-8921505783b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\音">
+      <UniqueIdentifier>{aa612233-7d27-4020-96c5-3784ee35a431}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\プレイヤー周り">
+      <UniqueIdentifier>{e5c50a5c-9845-4b78-bb55-e520585536f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\入力">
+      <UniqueIdentifier>{e1f7e70d-f420-4c09-8993-f441f6c9960f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ツール系">
+      <UniqueIdentifier>{0e478757-6462-49db-ac17-53738cbf60f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\テクスチャ周り">
+      <UniqueIdentifier>{d746c030-6f0c-483d-8019-109d0ca9d5d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\ダイレクトX系">
+      <UniqueIdentifier>{a9947cbe-f10b-4bb7-954d-12e5068b627f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collider">
+      <UniqueIdentifier>{1d27a336-9386-426c-b0d2-e5dcb71873ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collider\プレイヤー周り">
+      <UniqueIdentifier>{aed0ff7f-76b4-4fce-ae62-709c10f2fe6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collider\field周り">
+      <UniqueIdentifier>{689487d0-b487-4287-b21d-b34100acf3dc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="tool.cpp">
+      <Filter>ソース ファイル\ツール系</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>ソース ファイル\入力</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    </ClCompile>
+    <ClCompile Include="directx_controller.cpp">
+      <Filter>ソース ファイル\入力</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル\音</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\collider\プレイヤー周り</Filter>
+    </ClCompile>
+    <ClCompile Include="feild.cpp">
+      <Filter>ソース ファイル\collider\field周り</Filter>
+    </ClCompile>
+    <ClCompile Include="square_collider.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="box2d_world.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="square_collider.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="collider_type.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="directx_controller.h">
+      <Filter>ヘッダー ファイル\入力</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>ヘッダー ファイル\入力</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXTex.h">
+      <Filter>ヘッダー ファイル\ダイレクトX系</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル\音</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    </ClInclude>
+    <ClInclude Include="tool.h">
+      <Filter>ヘッダー ファイル\ツール系</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\プレイヤー周り</Filter>
+    </ClInclude>
+    <ClInclude Include="feild.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
