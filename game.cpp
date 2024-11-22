@@ -17,6 +17,7 @@
 #include"include/box2d/box2d.h"
 #include"directx_controller.h"
 #include"game.h"
+#include"contactlist.h"
 
 
 
@@ -34,6 +35,13 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	//コントローラーの初期化
 	controller.Initialize(hInstance,hWnd);
+
+
+	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+
+	// 衝突リスナーをワールドに登録
+	MyContactListener& contactListener = MyContactListener::GetInstance();
+	world->SetContactListener(&contactListener);
 
 	//プレイヤーの初期化
 	player.Initialize();

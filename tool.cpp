@@ -84,7 +84,7 @@ float ReturnAbsoluteValue(float value)
     {
         return value;
     }
-    else 
+    else
     {
         return -value;
     }

@@ -18,13 +18,13 @@ class Player
 public:
 	Player() {};
 
-	Player(b2Vec2 position, b2Vec2 size,b2Vec2 sensor_size);
+	Player(b2Vec2 position, b2Vec2 size, b2Vec2 sensor_size);
 	~Player();
 
 
 	// シングルトンのインスタンス取得 　このクラスでは一つのインスタンスしか認めない
-	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 1),b2Vec2 sensor_size=b2Vec2(30,20)) {
-		static Player instance(position, size,sensor_size); // Initialized only once
+	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 1), b2Vec2 sensor_size = b2Vec2(30, 20)) {
+		static Player instance(position, size, sensor_size); // Initialized only once
 		return instance;
 	}
 	
@@ -35,21 +35,16 @@ public:
 	void Finalize();
 
 	//描画用にサイズを持たせておく
-	b2Vec2 GetSize() const 
-	{
-		return m_p_size;
-	}
-	void SetSize(b2Vec2 size)
-	{
+	b2Vec2 GetSize() const { return m_p_size; }
+	void SetSize(b2Vec2 size) {
 		m_p_size = size;
 	}
 
-	//描画用にサイズを持たせておく
-	b2Vec2 GetSensorSize() const {return m_sensor_size;}
+	//描画用にサイズを持たせておく　センサー
+	b2Vec2 GetSensorSize() const { return m_sensor_size; }
 	void SetSensorSize(b2Vec2 sensor_size) {
 		m_sensor_size = sensor_size;
 	}
-
 
 
 	//今ジャンプ可能かをコントロールする関数
@@ -64,7 +59,7 @@ public:
 	}
 
 
-	 b2Body*GetPlayerBody(void)
+	b2Body*GetPlayerBody(void)
 	{
 		return m_body;
 	}
@@ -73,9 +68,6 @@ public:
 	{
 		m_body = player_body;
 	}
-
-
-
 private:
 
 	//プレイヤーのBodyをもつ
@@ -88,7 +80,6 @@ private:
 
 	//センサー用のサイズ
 	b2Vec2 m_sensor_size;
-
 
 	//今ジャンプ可能なのか（contactlist.hの方でコントロールしてる）
 	bool    m_can_jump = true;

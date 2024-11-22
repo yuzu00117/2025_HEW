@@ -43,6 +43,12 @@
     <Filter Include="ソース ファイル\collider">
       <UniqueIdentifier>{1d27a336-9386-426c-b0d2-e5dcb71873ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\エネミー">
+      <UniqueIdentifier>{7ad11356-2c19-4d73-95e0-9937206c0870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\エネミー">
+      <UniqueIdentifier>{9fb23f40-990c-4d35-8985-7751518b4c14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -83,6 +89,21 @@
     </ClCompile>
     <ClCompile Include="field.cpp">
       <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_dynamic.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_static.cpp">
+      <Filter>ソース ファイル\エネミー</Filter>
+    </ClCompile>
+    <ClCompile Include="anchor_point.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ground.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +153,27 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="field.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_dynamic.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_static.h">
+      <Filter>ヘッダー ファイル\エネミー</Filter>
+    </ClInclude>
+    <ClInclude Include="anchor_point.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="contactlist.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="collider_type.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

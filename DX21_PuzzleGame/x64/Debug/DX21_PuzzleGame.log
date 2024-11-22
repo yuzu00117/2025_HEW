@@ -1,47 +1,43 @@
-﻿  LINK : 前回のインクリメンタル リンクで C:\Users\yuzu0\Desktop\HAL\HEW_2025\2025_HEW_main\x64\Debug\DX21_PuzzleGame.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
-box2d.lib(b2_polygon_shape.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_polygon_shape.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_body.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_body.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_world.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_world.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_collision.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_collision.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_block_allocator.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_block_allocator.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_settings.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_settings.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_fixture.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_fixture.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_broad_phase.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_broad_phase.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_contact_manager.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_contact_manager.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_math.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_math.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_island.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_island.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_dynamic_tree.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_dynamic_tree.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_draw.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_draw.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_distance.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_distance.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_time_of_impact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_time_of_impact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_timer.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_timer.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_stack_allocator.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_stack_allocator.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_world_callbacks.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_world_callbacks.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_contact_solver.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_contact_solver.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_chain_circle_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_chain_circle_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_chain_polygon_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_chain_polygon_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_circle_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_circle_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_edge_circle_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_edge_circle_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_edge_polygon_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_edge_polygon_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_polygon_circle_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_polygon_circle_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_polygon_contact.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_polygon_contact.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_distance_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_distance_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_friction_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_friction_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_gear_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_gear_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_motor_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_motor_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_mouse_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_mouse_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_prismatic_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_prismatic_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_pulley_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_pulley_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_revolute_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_revolute_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_weld_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_weld_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_wheel_joint.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_wheel_joint.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_collide_edge.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_collide_edge.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_chain_shape.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_chain_shape.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_edge_shape.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_edge_shape.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_collide_circle.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_collide_circle.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-box2d.lib(b2_collide_polygon.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_collide_polygon.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
+﻿  anchor_point.cpp
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.h(88,37): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+  (ソース ファイル 'anchor_point.cpp' をコンパイルしています)
+  
+C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor_point.cpp(234,28): warning C4244: '初期化中': 'double' から 'float' への変換です。データが失われる可能性があります。
+  directx_controller.cpp
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  enemy.cpp
+C:\Users\ths30805\Documents\GitHub\2025_HEW\enemy.cpp(49,27): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+  enemy_dynamic.cpp
+  enemy_static.cpp
+  field.cpp
+  game.cpp
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.h(88,37): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+  (ソース ファイル 'game.cpp' をコンパイルしています)
+  
+  ground.cpp
+  keyboard.cpp
+  main.cpp
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.h(88,37): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+  (ソース ファイル 'main.cpp' をコンパイルしています)
+  
+  player.cpp
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.h(88,37): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+  (ソース ファイル 'player.cpp' をコンパイルしています)
+  
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.cpp(81,27): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.cpp(109,62): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.cpp(109,41): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.cpp(161,43): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.cpp(167,43): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+C:\Users\ths30805\Documents\GitHub\2025_HEW\player.cpp(172,56): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+  player_position.cpp
+  renderer.cpp
+  sound.cpp
+  sprite.cpp
+  texture.cpp
+  tool.cpp
+  Xinput_controller.cpp
+  コードを生成中...
 DirectXTex_Debug.lib(DirectXTexImage.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(DirectXTexImage.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 DirectXTex_Debug.lib(DirectXTexWIC.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(DirectXTexWIC.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 DirectXTex_Debug.lib(DirectXTexD3D11.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(DirectXTexD3D11.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
@@ -52,4 +48,4 @@ DirectXTex_Debug.lib(DirectXTexMipMaps.obj) : warning LNK4099: PDB '' が 'Direc
 DirectXTex_Debug.lib(BC.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(BC.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 DirectXTex_Debug.lib(BC4BC5.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(BC4BC5.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 DirectXTex_Debug.lib(BC6HBC7.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(BC6HBC7.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-  DX21_PuzzleGame.vcxproj -> C:\Users\yuzu0\Desktop\HAL\HEW_2025\2025_HEW_main\x64\Debug\DX21_PuzzleGame.exe
+  DX21_PuzzleGame.vcxproj -> C:\Users\ths30805\Documents\GitHub\2025_HEW\x64\Debug\DX21_PuzzleGame.exe
