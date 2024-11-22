@@ -25,6 +25,14 @@ XMFLOAT4 toFloat4(const XMFLOAT3& f);
 XMFLOAT4 toFloat4(const XMINT2& f);
 XMFLOAT4 toFloat4(const b2Vec2& f);
 
+
+
+/**
+ * @brief â‘Î’l‚ğ•Ô‚·ŠÖ”
+ * @param value “ü‚ê‚½‚¢’l
+ * @return â‘Î’l
+ */
+float ReturnAbsoluteValue(float value);
 #define ZERO2f   XMFLOAT2(0.0f,0.0f)
 
 #endif // TOOL_H
