@@ -169,8 +169,8 @@ void AnchorPoint::Draw()
 
 			// プレイヤー位置を考慮してスクロール補正を加える
 			//取得したbodyのポジションに対してBox2dスケールの補正を加える
-			float draw_x = ((position.x - PlayerPostion::GetPlayerPostion().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-			float draw_y = ((position.y - PlayerPostion::GetPlayerPostion().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
@@ -191,8 +191,8 @@ void AnchorPoint::Draw()
 
 	// プレイヤー位置を考慮してスクロール補正を加える
 	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((position.x - PlayerPostion::GetPlayerPostion().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((position.y - PlayerPostion::GetPlayerPostion().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
