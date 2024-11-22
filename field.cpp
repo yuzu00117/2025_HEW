@@ -15,64 +15,35 @@
 #include"world_box2d.h"
 #include"sprite.h"
 #include"texture.h"
+#include"collider_type.h"
+#include"ground.h"
+#include"anchor_point.h"
 
 
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
+
+
+
+
+
 int Field::m_field_height = 0;
 int Field::m_field_width = 0;
 
 //グローバル変数　テクスチャの入れ物
-static ID3D11ShaderResourceView* g_Ground_Texture = NULL;
+
+
+static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
+
+static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//アンカーポイントのテクスチャ
 
 
 
-/**
- * @brief  フィールドのコンストラクタ
- * @param position  登録する座標 
- * @param body_size ボディの大きさ、関数中で大きさの調整をする
- * @param angle     角度を設定
- * @param bFixed    
- * @param is_sensor 
- * @param texture 
- */
-Field::Field(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor,FieldTexture texture)
+
+
+
+Field::Field()
 {
-	b2BodyDef body;
-	body.type = bFixed?b2_staticBody:b2_dynamicBody;	//静的なオブジェクトにするならture
-	body.position.Set(position.x,position.y);			//ポジションをセット
-	body.angle = angle;									//角度の定義
-	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
-	body.fixedRotation = true;							//回転を固定する、　これをオンにすると回転しない
-
-
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
-	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
-
-	m_body = world->CreateBody(&body);//Bodyをワールドに固定
-
-
-	SetSize(body_size);//表示用にサイズをセットしとく、表示のときにGetSizeを呼び出す
-
-	
-
-	b2Vec2 size;
-	size.x = body_size.x/BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
-	size.y = body_size.y/BOX2D_SCALE_MANAGEMENT;
-
-	
-
-	b2PolygonShape shape;                         //shapeには色々な型がある　サークルとかもあるよ
-	shape.SetAsBox(size.x * 0.5f, size.y * 0.5f );//あたり判定を登録する4点　*0.5するのは
-	
-	b2FixtureDef fixture;
-	fixture.shape = &shape;    //シャープをフィクスチャに登録する
-	fixture.density = 1.0f;    //密度
-	fixture.friction = 0.05f;  //摩擦
-	fixture.restitution = 0.0f;//反発係数
-	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
-
-	m_body->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
 }
 
@@ -83,11 +54,15 @@ Field::~Field()
 void Field::Initialize(int field_width, int field_height)
 {
 	//テクスチャの初期化
-	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グランドのテクスチャ
+	g_AnchorPoint_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
+
+	//APのイニシャライズ
+	AnchorPoint::Initialize();
 
 	//Drawの方で使うためメンバ変数内に代入しとく
 	m_field_height = field_height;
-	m_field_width  = field_width;
+	m_field_width = field_width;
 
 	//2次元配列のメモリ確保
 	m_p_field_array = new Field * *[field_height]; // 縦方向の配列を確保
@@ -101,19 +76,20 @@ void Field::Initialize(int field_width, int field_height)
 	}
 
 
+
 	//マップを登録する二次元配列
 	int field_map[20][90] =
 	{
+	{0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
 	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
@@ -130,16 +106,19 @@ void Field::Initialize(int field_width, int field_height)
 		for (int x = 0; x < field_width; ++x) {
 			if (field_map[y][x] == 1) {
 				//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-				m_p_field_array[y][x] = new Field(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
+				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
 			if (field_map[y][x] == 2) {
-				m_p_field_array[y][x] = new Field(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
+				m_p_field_array[y][x] = new AnchorPoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, anchor_point_texture);
 			}
 			if (field_map[y][x] == 3) {
-				m_p_field_array[y][x] = new Field(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, false, true, ground_texture);
+				m_p_field_array[y][x] = new AnchorPoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, false, true, anchor_point_texture);
 			}
 			if (field_map[y][x] == 4) {
-				m_p_field_array[y][x] = new Field(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
+				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
+			}
+			if (field_map[y][x] == 4) {
+				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
 		}
 	}
@@ -149,7 +128,7 @@ void Field::Initialize(int field_width, int field_height)
 
 void Field::Update()
 {
-
+	AnchorPoint::Update();
 }
 
 void Field::Draw()
@@ -169,20 +148,33 @@ void Field::Draw()
 		for (int x = 0; x < m_field_width; ++x) {
 			if (m_p_field_array[y][x] != nullptr) {
 				b2Vec2 position;
-				position.x = m_p_field_array[y][x]->GetFieldBody()->GetPosition().x ;
-				position.y = m_p_field_array[y][x]->GetFieldBody()->GetPosition().y ;
+				position.x = m_p_field_array[y][x]->GetFieldBody()->GetPosition().x;
+				position.y = m_p_field_array[y][x]->GetFieldBody()->GetPosition().y;
 
 				// プレイヤー位置を考慮してスクロール補正を加える
 				//取得したbodyのポジションに対してBox2dスケールの補正を加える
-				float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-				float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+				float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+				float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-		
+
 				//貼るテクスチャを指定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
-				
-			
+				switch (m_p_field_array[y][x]->GetFieldTexture())
+				{
+				case anchor_point_texture:
+
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_AnchorPoint_Texture);
+					break;
+				case ground_texture:
+
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
+					break;
+				default:
+					break;
+				}
+
+
+
 				//draw
 				DrawSprite(
 					{ draw_x,
@@ -193,6 +185,8 @@ void Field::Draw()
 			}
 		}
 	}
+
+	AnchorPoint::Draw();
 }
 
 void Field::Finalize()

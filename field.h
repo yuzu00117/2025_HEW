@@ -14,20 +14,22 @@
 
 #include"include/box2d/box2d.h"
 #include"texture.h"
+#include<vector>
 
 
-//フィールドのテクスチャを管理するためのenum型
+
+//フィールドのテクスチャを管理するためのenum型　
+//テクスチャの型自体は別にfield.cppのグローバル変数になってて　これ自体は識別用
 enum FieldTexture
 {
 	ground_texture,
-	wall,texture,
-
+	anchor_point_texture,
 };
 
-class Field 
+class Field
 {
 public:
-	Field(b2Vec2 position, b2Vec2 size, float angle, bool bFixed, bool is_sensor, FieldTexture texture);
+	Field();
 	~Field();
 
 
@@ -44,7 +46,7 @@ public:
 	}
 
 	//bodyの取得
-	b2Body* GetFieldBody(void){return m_body;}
+	b2Body* GetFieldBody(void) { return m_body; }
 	void SetFieldBody(b2Body* field_body)
 	{
 		m_body = field_body;
@@ -52,18 +54,16 @@ public:
 
 
 	//フィールドのテクスチャのゲッター　セッター
-	FieldTexture  GetFieldTexture(void){return texture;}
+	FieldTexture  GetFieldTexture(void) { return texture; }
 	void SetFieldTexture(FieldTexture field_texture)
 	{
 		texture = field_texture;
 	}
 
-
-
 private:
 
 	//Body
-	b2Body *m_body;
+	b2Body* m_body;
 
 	//表示に使用するサイズ
 	b2Vec2 m_size;
@@ -76,6 +76,9 @@ private:
 	static Field*** m_p_field_array; // 2次元配列へのポインタ
 	static int m_field_width;
 	static int m_field_height;
+
+
+
 };
 
 

@@ -129,12 +129,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="ground.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
@@ -147,7 +149,10 @@
     <ClCompile Include="Xinput_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="anchor_point.h" />
     <ClInclude Include="angle.h" />
+    <ClInclude Include="collider_type.h" />
+    <ClInclude Include="contactlist.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
     <ClInclude Include="enemy.h" />
@@ -155,6 +160,7 @@
     <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="ground.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="player.h" />
