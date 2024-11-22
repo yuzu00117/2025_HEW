@@ -1,4 +1,8 @@
-﻿  LINK : 前回のインクリメンタル リンクで C:\Users\yuzu0\Desktop\HAL\HEW_2025\2025_HEW_main\x64\Debug\DX21_PuzzleGame.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
+﻿  enemy.cpp
+C:\Users\yuzu0\Desktop\HAL\2025_HEW\enemy.cpp(49,27): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+  enemy_dynamic.cpp
+  enemy_static.cpp
+  コードを生成中...
 box2d.lib(b2_polygon_shape.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_polygon_shape.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 box2d.lib(b2_body.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_body.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 box2d.lib(b2_world.obj) : warning LNK4099: PDB '' が 'box2d.lib(b2_world.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
@@ -52,4 +56,4 @@ DirectXTex_Debug.lib(DirectXTexMipMaps.obj) : warning LNK4099: PDB '' が 'Direc
 DirectXTex_Debug.lib(BC.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(BC.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 DirectXTex_Debug.lib(BC4BC5.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(BC4BC5.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
 DirectXTex_Debug.lib(BC6HBC7.obj) : warning LNK4099: PDB '' が 'DirectXTex_Debug.lib(BC6HBC7.obj)' で、または '' に見つかりません。デバッグ情報がないものとして、オブジェクトにリンクします。
-  DX21_PuzzleGame.vcxproj -> C:\Users\yuzu0\Desktop\HAL\HEW_2025\2025_HEW_main\x64\Debug\DX21_PuzzleGame.exe
+  DX21_PuzzleGame.vcxproj -> C:\Users\yuzu0\Desktop\HAL\2025_HEW\x64\Debug\DX21_PuzzleGame.exe

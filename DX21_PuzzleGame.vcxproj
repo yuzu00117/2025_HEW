@@ -130,6 +130,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="directx_controller.cpp" />
+    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_dynamic.cpp" />
+    <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -147,6 +150,9 @@
     <ClInclude Include="angle.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_dynamic.h" />
+    <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="keyboard.h" />
