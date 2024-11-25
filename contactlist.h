@@ -4,14 +4,17 @@
 #include"include/box2d/box2d.h"
 #include"collider_type.h"
 #include"anchor_point.h"
+#include"anchor.h"
 
 
 
 
 class MyContactListener : public b2ContactListener {
-public:
-   
+private:
 
+public:
+    b2Vec2 contactPoint;
+   
 
     // シングルトンのインスタンスを取得する
     static MyContactListener& GetInstance() {
@@ -19,8 +22,10 @@ public:
         return instance;
     }
 
+  
 
-
+  
+ 
 
     // 衝突した瞬間
     void BeginContact(b2Contact* contact) override {
@@ -78,7 +83,20 @@ public:
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
-        
+        //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
+        if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
+        {
+
+
+            Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
+
+            // 接触位置を取得
+            b2WorldManifold worldManifold;
+            contact->GetWorldManifold(&worldManifold);
+            contactPoint = worldManifold.points[0];
+        }
+
      
     }
 
