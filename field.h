@@ -26,7 +26,7 @@ enum FieldTexture
 	anchor_point_texture,
 };
 
-class Field
+class Field 
 {
 public:
 	Field();
@@ -46,7 +46,7 @@ public:
 	}
 
 	//bodyの取得
-	b2Body* GetFieldBody(void) { return m_body; }
+	b2Body* GetFieldBody(void){return m_body;}
 	void SetFieldBody(b2Body* field_body)
 	{
 		m_body = field_body;
@@ -54,7 +54,7 @@ public:
 
 
 	//フィールドのテクスチャのゲッター　セッター
-	FieldTexture  GetFieldTexture(void) { return texture; }
+	FieldTexture  GetFieldTexture(void){return texture;}
 	void SetFieldTexture(FieldTexture field_texture)
 	{
 		texture = field_texture;
@@ -63,7 +63,7 @@ public:
 private:
 
 	//Body
-	b2Body* m_body;
+	b2Body *m_body;
 
 	//表示に使用するサイズ
 	b2Vec2 m_size;
@@ -78,7 +78,7 @@ private:
 	static int m_field_height;
 
 
-
+	
 };
 
 

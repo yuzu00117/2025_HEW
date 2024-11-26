@@ -10,6 +10,7 @@ enum ColliderTypeList
     collider_player_sensor,
 
     collider_anchor,
+    collider_anchor_chain,
 
     collider_ground,
     collider_wall,

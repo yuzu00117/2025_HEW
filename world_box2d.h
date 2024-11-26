@@ -18,7 +18,7 @@
 #define SCREEN_CENTER_Y (350.0f)
 
 
-#define BOX2D_SCALE_MANAGEMENT (10.f)
+#define BOX2D_SCALE_MANAGEMENT (5.f)
 
 #include"include/box2d/box2d.h"
 

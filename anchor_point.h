@@ -1,6 +1,5 @@
 #ifndef ANCHOR_POINT
 #define ANCHOR_POINT
-
 #include"field.h"
 #include<vector>
 
@@ -39,8 +38,14 @@ public:
 	static void Update();
 	static void Draw();
 
+	/**
+ * @brief 　ターゲットとしたアンカーポイントのボディを取得する関数
+ * @return  ターゲットとしたアンカーポイントのボディ
+ */
+	static b2Body* GetTargetAnchorPointBody();
+
 private:
-	std::vector<b2Body*>InSensorAP;
+	
 };
 
 

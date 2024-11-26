@@ -21,7 +21,7 @@
 
 b2Body* g_anchor_point_body[10];//アンカーポイントのボディを設定　グローバル変数
 
-b2Body* g_select_anchor_point_body;
+b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 
 
 
@@ -48,7 +48,7 @@ AnchorPoint::AnchorPoint(b2Vec2 position, b2Vec2 body_size, float angle, bool bF
 	body.position.Set(position.x, position.y);			//ポジションをセット
 	body.angle = angle;									//角度の定義
 	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
-	body.fixedRotation = true;							//回転を固定する、　これをオンにすると回転しない
+	body.fixedRotation = false;							//回転を固定する、　これをオンにすると回転しない
 
 
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
@@ -119,7 +119,13 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 			//選択していたアンカーポイントがセンサー外にでた
 			if (delete_anchor_point_body == g_select_anchor_point_body)
 			{
-				g_select_anchor_point_body = nullptr;
+				//アンカーが当たったアンカーポイントがぶつかって、センサー外にでると、
+				//座標更新でアンカーとアンカーポイントとプレイヤーが一体化したバグが発生　おい笑える
+				//応急処置として、アンカーポイントがジョイントしてないときに発動するようにした
+				if (Anchor::GetAnchorCreateJointFlag() != true)
+				{
+					g_select_anchor_point_body = nullptr;
+				}
 			}
 			return;
 		}
@@ -137,8 +143,14 @@ void AnchorPoint::Update()
 	//選択しているアンカーポイントがなかったら、playerのBodyを基準点にする
 	if (g_select_anchor_point_body == nullptr)
 	{
-		Player& player = Player::GetInstance();//ゲットインスタンス
-		g_select_anchor_point_body = player.GetPlayerBody();
+		//アンカーが当たったアンカーポイントがぶつかって、センサー外にでると、
+		//座標更新でアンカーとアンカーポイントとプレイヤーが一体化したバグが発生　おい笑える
+		//応急処置として、アンカーポイントがジョイントしてないときに発動するようにした
+		if (Anchor::GetAnchorCreateJointFlag() != true)
+		{
+			Player& player = Player::GetInstance();//ゲットインスタンス
+			g_select_anchor_point_body = player.GetPlayerBody();
+		}
 	}
 
 	
@@ -264,3 +276,10 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 	}
 }
 
+
+
+
+b2Body* AnchorPoint::GetTargetAnchorPointBody()
+{
+	return g_select_anchor_point_body;
+}

@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="enemy.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="Xinput_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="angle.h" />
     <ClInclude Include="collider_type.h" />
