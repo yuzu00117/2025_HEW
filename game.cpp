@@ -17,6 +17,8 @@
 #include"include/box2d/box2d.h"
 #include"directx_controller.h"
 #include"game.h"
+#include"contactlist.h"
+#include"anchor.h"
 
 
 
@@ -38,8 +40,16 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//プレイヤーの初期化
 	player.Initialize();
 
+	//アンカーの初期化
+	Anchor::Initialize();
+
 	//フィールドの初期化
 	Field::Initialize(90, 20);
+
+	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+	// 衝突リスナーをワールドに登録
+	MyContactListener& contactListener = MyContactListener::GetInstance();
+	world->SetContactListener(&contactListener);
 
 	return S_OK;
 }
@@ -59,9 +69,13 @@ void Game::Finalize(void)
 	//プレイヤーの終了処理
 	player.Finalize();
 
+	//アンカー終了処理
+	Anchor::Finalize();
+
 	//フィールドの終了処理
 	Field::Finalize();
 
+	
 	//レンダリングの終了処理
 	UninitRenderer();
 }
@@ -77,6 +91,9 @@ void Game::Update(void)
 
 	//プレイヤーの更新処理
 	player.Update();
+
+	//アンカーの更新処理
+	Anchor::Update();
 
 	//フィールドの更新処理
 	Field::Update();
@@ -95,6 +112,9 @@ void Game::Draw(void)
 
 	//プレイヤーの描画処理
 	player.Draw();
+
+	//アンカーの描画処理
+	Anchor::Draw();
 
 	//フィールドの描画処理
 	Field::Draw();

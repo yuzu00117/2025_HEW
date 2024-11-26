@@ -1,17 +1,36 @@
+//-----------------------------------------------------------------------------------------------------
+// #name contactlist.h
+// #description 衝突時の処理を管理する
+// #make 2024/11/22　永野義也
+// #update 2024/11/22
+// #comment 追加・修正予定
+//          ・衝突時や衝突終了じなどの処理を書き込む
+// 
+// 
+// 　　　＊注意　！
+// 　　　　ここで、物体を直接けしたりジョイントしたりしないで！
+//         理由としてはBox2dないのStepでここが呼ばれる部分で、物理演算中に物体が消えたり出現したりしたら正確な処理ができないから　エラーはく
+// 
+// 
+//----------------------------------------------------------------------------------------------------
+
 #ifndef CONTACTLIST_H
 #define CONTACTLIST_H
 
 #include"include/box2d/box2d.h"
 #include"collider_type.h"
 #include"anchor_point.h"
+#include"anchor.h"
 
 
 
 
 class MyContactListener : public b2ContactListener {
-public:
-   
+private:
 
+public:
+    b2Vec2 contactPoint;//衝突した地点
+   
 
     // シングルトンのインスタンスを取得する
     static MyContactListener& GetInstance() {
@@ -19,8 +38,12 @@ public:
         return instance;
     }
 
+  
 
-
+  
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
+//               衝突開始時
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
     // 衝突した瞬間
     void BeginContact(b2Contact* contact) override {
@@ -78,11 +101,25 @@ public:
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
-        
+        //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
+        if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
+        {
+
+
+            Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
+
+            // 接触位置を取得
+            b2WorldManifold worldManifold;
+            contact->GetWorldManifold(&worldManifold);
+            contactPoint = worldManifold.points[0];
+        }
+
      
     }
-
-    // 衝突終了時
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
+//               衝突終了時
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     void EndContact(b2Contact* contact) override {
         // 衝突したフィクスチャを取得
         // 衝突したフィクスチャを取得

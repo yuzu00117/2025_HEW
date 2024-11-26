@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.h
 // #description field.h
-// #make 2024/11/04
-// #update 2024/11/03
+// #make 2024/11/04　永野義也
+// #update 2024/11/18
 // #comment 追加・修正予定
 //          ・Gameないの管理している　基本的にすべての関数がここにたどり着くことに
 //           
@@ -26,7 +26,7 @@ enum FieldTexture
 	anchor_point_texture,
 };
 
-class Field
+class Field 
 {
 public:
 	Field();
@@ -46,7 +46,7 @@ public:
 	}
 
 	//bodyの取得
-	b2Body* GetFieldBody(void) { return m_body; }
+	b2Body* GetFieldBody(void){return m_body;}
 	void SetFieldBody(b2Body* field_body)
 	{
 		m_body = field_body;
@@ -54,7 +54,7 @@ public:
 
 
 	//フィールドのテクスチャのゲッター　セッター
-	FieldTexture  GetFieldTexture(void) { return texture; }
+	FieldTexture  GetFieldTexture(void){return texture;}
 	void SetFieldTexture(FieldTexture field_texture)
 	{
 		texture = field_texture;
@@ -63,7 +63,7 @@ public:
 private:
 
 	//Body
-	b2Body* m_body;
+	b2Body *m_body;
 
 	//表示に使用するサイズ
 	b2Vec2 m_size;
@@ -74,11 +74,12 @@ private:
 
 
 	static Field*** m_p_field_array; // 2次元配列へのポインタ
+
 	static int m_field_width;
 	static int m_field_height;
 
 
-
+	
 };
 
 

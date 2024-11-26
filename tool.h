@@ -1,4 +1,11 @@
-
+//-----------------------------------------------------------------------------------------------------
+// #name tools.h
+// #description ツール
+// #make 2024/11/22　永野義也
+// #update 2024/11/22
+// #comment 追加・修正予定
+//          ・必要なツールができたら追加する感じ
+//----------------------------------------------------------------------------------------------------
 #ifndef TOOL_H
 #define TOOL_H
 
@@ -25,6 +32,14 @@ XMFLOAT4 toFloat4(const XMFLOAT3& f);
 XMFLOAT4 toFloat4(const XMINT2& f);
 XMFLOAT4 toFloat4(const b2Vec2& f);
 
+
+
+/**
+ * @brief 絶対値を返す関数
+ * @param value 入れたい値
+ * @return 絶対値
+ */
+float ReturnAbsoluteValue(float value);
 #define ZERO2f   XMFLOAT2(0.0f,0.0f)
 
 #endif // TOOL_H

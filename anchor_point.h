@@ -1,6 +1,15 @@
-#ifndef ANCHOR_POINT
-#define ANCHOR_POINT
+//-----------------------------------------------------------------------------------------------------
+// #name anchor_point.h
+// #description アンカーポイントの処理
+// #make 2024/11/22　永野義也
+// #update 2024/11/22
+// #comment 追加・修正予定
+//          ・アンカーポイントを他のオブジェクトとジョイントする処理がいるわ
+//----------------------------------------------------------------------------------------------------
 
+
+#ifndef ANCHOR_POINT_H
+#define ANCHOR_POINT_H
 #include"field.h"
 #include<vector>
 
@@ -39,11 +48,17 @@ public:
 	static void Update();
 	static void Draw();
 
+	/**
+ * @brief 　ターゲットとしたアンカーポイントのボディを取得する関数
+ * @return  ターゲットとしたアンカーポイントのボディ
+ */
+	static b2Body* GetTargetAnchorPointBody();
+
 private:
-	std::vector<b2Body*>InSensorAP;
+	
 };
 
 
 
-#endif // !ANCHOR_POINT
+#endif // !ANCHOR_POINT_H
 
