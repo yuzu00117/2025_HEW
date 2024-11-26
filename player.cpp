@@ -229,7 +229,7 @@ void Player::Update()
         }
         g_anchor_pulling_number++;
 
-        if ((state.buttonY))
+        if ((state.buttonY)||(Keyboard_IsKeyDown(KK_G)))
         {
             g_anchor_pulling_number = 0;//値をリセット
             Anchor::SetAnchorState(Deleting_state);//状態をアンカーを削除する状態に移行
@@ -254,6 +254,28 @@ void Player::Update()
     //スティックの値を受け取って正規化する
     float stick_x= state.rightStickX / 32768.0f;
     float stick_y= state.rightStickY / 32768.0f;
+
+    //keybordでのアンカーポイントの設定 X軸
+    if (Keyboard_IsKeyDown(KK_A))
+    {
+        stick_x = -1.0f;
+    }
+    if (Keyboard_IsKeyDown(KK_D))
+    {
+        stick_x = 1.0f;
+    }
+
+    //keybordでのアンカーポイントの設定　Ｙ軸
+    if (Keyboard_IsKeyDown(KK_W))
+    {
+        stick_y = -1.0f;
+    }
+    if (Keyboard_IsKeyDown(KK_S))
+    {
+        stick_y = 1.0f;
+    }
+   
+
 
     //絶対値に変更する デットゾーンの審査に使うため　tool.cppに作った
     //デットゾーンをつくる x,yの値を足して一定以上経ったら　呼び出し
