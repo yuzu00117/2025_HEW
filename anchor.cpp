@@ -1,3 +1,15 @@
+//-----------------------------------------------------------------------------------------------------
+// #name anchor.cpp
+// #description アンカー
+// #make 2024/11/19　　永野義也
+// #update 2024/11/24
+// #comment 追加・修正予定
+//          ・アンカー部分については大丈夫だと思う　横投げがいるなら追加
+//			・Chainについては描画の面で変更が必要 具体的には
+//			  いまアンカーがアンカーポイントに接触してから一括でチェーンが生成と削除されている関係で描画面がおかしいのでそこの変更
+// 
+//----------------------------------------------------------------------------------------------------
+
 #include"include/box2d/box2d.h"
 #include"anchor.h"
 #include"sprite.h"
@@ -20,8 +32,9 @@ b2Body* Player_body;
 b2Body* Target_anchor_point_body;
 
 
-#define MAX_CHAIN_NUM (40)
+
 //アンカーの鎖の部分のボディの入れ物
+#define MAX_CHAIN_NUM (40)//チェーンの最大個数
 b2Body* anchor_chain[MAX_CHAIN_NUM];
 
 
@@ -381,7 +394,7 @@ void Anchor::CreateChain(b2Vec2 chain_size, int max_chain_number) {
 	// プレイヤーとアンカーの距離を計算
 	float distance = (playerPosition - anchorPosition).Length();//原点からの距離を求める計算式　ここではプレイヤーのとアンカーの距離を求めている
 
-	// セグメント数を距離に基づいて計算
+	// chain数を距離に基づいて計算
 	int numSegments = static_cast<int>(distance / chain_size.y);//求めた距離をアンカー当たりの一つ分のサイズで割っている
 	if (numSegments > max_chain_number) numSegments = max_chain_number; // 最大Chain数に制限
 	if (numSegments < 1) numSegments = 1; // 最小Chain数は1
@@ -395,19 +408,19 @@ void Anchor::CreateChain(b2Vec2 chain_size, int max_chain_number) {
 	b2Body* previousBody = g_anchor_instance->GetAnchorBody();//アンカーのボディの取得
 
 	for (int i = 0; i < numSegments; ++i) {
-		// セグメントのボディ定義
+		// chainのボディ定義
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;//動的ですよと
 
-		// 各セグメントの位置を計算
+		// 各chainの位置を計算
 		b2Vec2 segmentPosition = startPosition + b2Vec2(direction.x * (chain_size.y * i), direction.y * (chain_size.y * i));//さっきの開始地点の距離の算出を繰り返しているイメージだよ
 		bodyDef.position = segmentPosition;
 		bodyDef.fixedRotation = false;//回転軸は固定にすると大変なことなる　具体的にはアンカーを起点にしてプレイヤーが上昇していく
 
-		// セグメントのボディを作成
+		// chainのボディを作成
 		b2Body* chainBody = world->CreateBody(&bodyDef);//ワールドにボディを登録していく
 
-		// セグメントの形状とフィクスチャを設定
+		// chainの形状とフィクスチャを設定
 		b2PolygonShape shape;
 		shape.SetAsBox(chain_size.x * 0.5f, chain_size.y * 0.5f);//サイズのセット
 
@@ -441,7 +454,7 @@ void Anchor::CreateChain(b2Vec2 chain_size, int max_chain_number) {
 		previousBody = chainBody;
 	}
 
-	// 最後のセグメントとプレイヤーを接続
+	// 最後のchainとプレイヤーを接続
 	b2RevoluteJointDef jointDef;
 	jointDef.bodyA = previousBody;//チェーンの最後尾のBody
 	jointDef.bodyB = Player::GetOutSidePlayerBody();
@@ -487,7 +500,7 @@ void Anchor::DeleteChain() {
 }
 
 void Anchor::DrawChain() {
-	//まあわかるでしょ　ほかと一緒
+
 	float scale = SCREEN_SCALE;
 
 	for (int i = 0; i < MAX_CHAIN_NUM; ++i) {

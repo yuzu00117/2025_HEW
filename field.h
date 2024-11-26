@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.h
 // #description field.h
-// #make 2024/11/04
-// #update 2024/11/03
+// #make 2024/11/04　永野義也
+// #update 2024/11/18
 // #comment 追加・修正予定
 //          ・Gameないの管理している　基本的にすべての関数がここにたどり着くことに
 //           
@@ -74,6 +74,7 @@ private:
 
 
 	static Field*** m_p_field_array; // 2次元配列へのポインタ
+
 	static int m_field_width;
 	static int m_field_height;
 

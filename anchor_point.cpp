@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
-// #name ground.cpp
-// #description field.h
-// #make 2024/11/04
+// #name anchor_point.cpp
+// #description アンカーポイントを管理している
+// #make 2024/11/04　　永野義也
 // #update 2024/11/03
 // #comment 追加・修正予定
-//          ・Gameないの管理している　基本的にすべての関数がここにたどり着くことに
+//          ・アンカーポイントを他のオブジェクトとジョイントしたい
 //           
 //----------------------------------------------------------------------------------------------------
 #include"anchor_point.h"
@@ -16,7 +16,7 @@
 #include"player.h"
 #include"player_position.h"
 
-#define MAX_ANCHOR_POINT_IN_SENSOR 10
+#define MAX_ANCHOR_POINT_IN_SENSOR (10)//センサー内に存在できる最大のアンカーポイントの数
 
 
 b2Body* g_anchor_point_body[10];//アンカーポイントのボディを設定　グローバル変数

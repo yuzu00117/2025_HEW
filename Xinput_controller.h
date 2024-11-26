@@ -1,10 +1,17 @@
-
+//-----------------------------------------------------------------------------------------------------
+// #name Xinput_controller.h
+// #description Xboxのコントローラーの入力
+// #make 2024/11/22　永野義也
+// #update 2024/11/22
+// #comment 追加・修正予定
+//          ・特になしと思う　ジャイロしたいならここかな？
+//----------------------------------------------------------------------------------------------------
 #ifndef XINPUT_H
 #define XINPUT_H
 
 #include <Windows.h>
 
-struct ControllerState {
+struct ControllerState {//受けとる入力の種類
     bool isConnected;
     int leftStickX;
     int leftStickY;

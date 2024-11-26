@@ -49,6 +49,9 @@
     <Filter Include="ヘッダー ファイル\エネミー">
       <UniqueIdentifier>{9fb23f40-990c-4d35-8985-7751518b4c14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\collider">
+      <UniqueIdentifier>{f8627e09-385d-4bac-8c71-bde70e08ed15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -99,13 +102,13 @@
     <ClCompile Include="enemy_static.cpp">
       <Filter>ソース ファイル\エネミー</Filter>
     </ClCompile>
+    <ClCompile Include="anchor.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
     <ClCompile Include="anchor_point.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\collider</Filter>
     </ClCompile>
     <ClCompile Include="ground.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="anchor.cpp">
       <Filter>ソース ファイル\collider</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,19 +146,10 @@
     <ClInclude Include="Xinput_controller.h">
       <Filter>ヘッダー ファイル\入力</Filter>
     </ClInclude>
-    <ClInclude Include="angle.h">
-      <Filter>ヘッダー ファイル\ツール系</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="world_box2d.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="player_position.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="field.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="enemy.h">
@@ -167,20 +161,26 @@
     <ClInclude Include="enemy_static.h">
       <Filter>ヘッダー ファイル\エネミー</Filter>
     </ClInclude>
-    <ClInclude Include="anchor_point.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="contactlist.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="collider_type.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\collider</Filter>
     </ClInclude>
-    <ClInclude Include="ground.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="field.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="anchor_point.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
     </ClInclude>
     <ClInclude Include="anchor.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

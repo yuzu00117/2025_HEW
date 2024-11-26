@@ -152,7 +152,6 @@
   <ItemGroup>
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
-    <ClInclude Include="angle.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="DirectXTex.h" />
