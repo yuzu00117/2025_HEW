@@ -1,13 +1,6 @@
-﻿  anchor.cpp
+﻿  anchor_point.cpp
 C:\Users\ths30805\Documents\GitHub\2025_HEW\player.h(99,37): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-  (ソース ファイル 'anchor.cpp' をコンパイルしています)
+  (ソース ファイル 'anchor_point.cpp' をコンパイルしています)
   
-C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor.cpp(110,85): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor.cpp(110,49): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor.cpp(119,21): warning C4244: '初期化中': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor.cpp(122,39): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor.cpp(134,35): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor.cpp(167,24): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-  ground.cpp
-  コードを生成中...
+C:\Users\ths30805\Documents\GitHub\2025_HEW\anchor_point.cpp(249,28): warning C4244: '初期化中': 'double' から 'float' への変換です。データが失われる可能性があります。
   DX21_PuzzleGame.vcxproj -> C:\Users\ths30805\Documents\GitHub\2025_HEW\x64\Debug\DX21_PuzzleGame.exe

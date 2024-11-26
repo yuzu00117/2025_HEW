@@ -124,7 +124,10 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 				//応急処置として、アンカーポイントがジョイントしてないときに発動するようにした
 				if (Anchor::GetAnchorCreateJointFlag() != true)
 				{
-					g_select_anchor_point_body = nullptr;
+					if (Anchor::GetAnchorState() == Nonexistent_state)//アンカーを打ちながら移動してる時にセンサー外にでてる時にNULLがでたから
+					{
+						g_select_anchor_point_body = nullptr;
+					}
 				}
 			}
 			return;
