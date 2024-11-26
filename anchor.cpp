@@ -134,7 +134,7 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	body.angle = anchor_angle * M_PI / 180.0f;
 
 
-	body.fixedRotation = false;//回転を固定にする
+	body.fixedRotation = true;//回転を固定にする
 	body.userData.pointer = (uintptr_t)this;
 
 
@@ -417,7 +417,7 @@ void Anchor::CreateChain(b2Vec2 chain_size, int max_chain_number) {
 		// 各chainの位置を計算
 		b2Vec2 segmentPosition = startPosition + b2Vec2(direction.x * (chain_size.y * i), direction.y * (chain_size.y * i));//さっきの開始地点の距離の算出を繰り返しているイメージだよ
 		bodyDef.position = segmentPosition;
-		bodyDef.fixedRotation = true;//回転軸は固定にすると大変なことなる　具体的にはアンカーを起点にしてプレイヤーが上昇していく
+		bodyDef.fixedRotation = false;//回転軸は固定にすると大変なことなる　具体的にはアンカーを起点にしてプレイヤーが上昇していく
 
 		// chainのボディを作成
 		b2Body* chainBody = world->CreateBody(&bodyDef);//ワールドにボディを登録していく
