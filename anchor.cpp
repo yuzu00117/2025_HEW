@@ -134,7 +134,7 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	body.angle = anchor_angle * M_PI / 180.0f;
 
 
-	body.fixedRotation = true;//‰ñ“]‚ðŒÅ’è‚É‚·‚é
+	body.fixedRotation = false;//‰ñ“]‚ðŒÅ’è‚É‚·‚é
 	body.userData.pointer = (uintptr_t)this;
 
 
