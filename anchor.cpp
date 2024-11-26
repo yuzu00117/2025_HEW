@@ -149,6 +149,8 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 
 	player_body = m_body;//プレイヤーのボディをセット
 
+	
+
 
 	SetSize(anchor_size);//プレイヤー表示をするためにセットする
 

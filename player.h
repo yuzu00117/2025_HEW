@@ -2,7 +2,7 @@
 // #name player.h
 // #description プレイヤー
 // #make 2024/11/19
-// #update 2024/11/03
+// #update 2024/11/20
 // #comment 追加・修正予定
 //          ・コンストラクタでbodyとfixture作ってGetInstanceでつくる
 //           
