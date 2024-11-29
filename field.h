@@ -2,7 +2,7 @@
 // #name field.h
 // #description field.h
 // #make 2024/11/04
-// #update 2024/11/03
+// #update 2024/11/29
 // #comment 追加・修正予定
 //          ・Gameないの管理している　基本的にすべての関数がここにたどり着くことに
 //           
@@ -24,13 +24,16 @@ enum FieldTexture
 {
 	ground_texture,
 	anchor_point_texture,
+
+	enemy_dynamic_texture,
+	enemy_static_texture,
 };
 
 class Field
 {
 public:
 	Field();
-	~Field();
+	virtual ~Field();
 
 
 	static void Initialize(int field_width, int field_height);

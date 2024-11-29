@@ -16,6 +16,8 @@ enum ColliderTypeList
 
     collider_anchor_point,
 
+    collider_enemy_dynamic,
+    collider_enemy_static,
 };
 
 

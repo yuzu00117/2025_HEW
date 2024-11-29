@@ -12,45 +12,59 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+//==========マクロ定義==========//
+#define ENEMY_MAX (10)
+
 #include"world_box2d.h"
 
 class Enemy
 {
 private:
-	//エネミーのBodyをもつ
-	b2Body* m_body;
-
-	//描画用のBodyのサイズもっておく　
-	b2Vec2 m_size;
+	//エネミーの体力
+	int m_life;
+	//エネミーが与えるダメージ
+	int m_damage;
+	//エネミーを倒した際に獲るソウルゲージ
+	int m_soulgage;
 public:
 	Enemy() = default;
-	Enemy(b2Vec2 body_size, b2Vec2 position, bool dynamic);
+	Enemy(int life, int damage, int soulgage)
+		:m_life(life), m_damage(damage), m_soulgage(soulgage) {}
 	virtual ~Enemy() = default;
 
-	virtual void Initialize() = 0;
-	virtual void Update() = 0;
-	virtual void Draw() = 0;
-	virtual void Finalize();
+	static void SetEnemy(Enemy* enemy);
 
-	b2Body* GetEnemyBody()
+	int GetLife()
 	{
-		return m_body;
+		return m_life;
 	}
-	void SetEnemyBody(b2Body* body)
+	void SetLife(int life)
 	{
-		m_body = body;
+		m_life = life;
 	}
 
-	b2Vec2 GetEnemySize()
+	int GetDamage()
 	{
-		return m_size;
+		return m_damage;
 	}
-	void SetEnemySize(b2Vec2 size)
+	void SetDamage(int damage)
 	{
-		m_size = size;
+		m_life = damage;
 	}
-	
-	//ここでやられ判定付ける
+
+	int GetSoulgage()
+	{
+		return m_soulgage;
+	}
+	void SetSoulgage(int soulgage)
+	{
+		m_life = soulgage;
+	}
+
+	static void Update();
+	virtual void UpdateEnemy() = 0;
+	bool CheckEnemy();
+	static void Finalize();
 };
 
 #endif	//ENEMY_H
