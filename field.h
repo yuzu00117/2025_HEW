@@ -7,14 +7,20 @@
 //          ・Gameないの管理している　基本的にすべての関数がここにたどり着くことに
 //           
 //----------------------------------------------------------------------------------------------------
-#ifndef FEILD_H
-#define FEILD_H
+#ifndef FIELD_H
+#define FIELD_H
 
 
 
 #include"include/box2d/box2d.h"
 #include"texture.h"
 #include<vector>
+
+// csvでマップを読み込むのに必要
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 
 
@@ -32,16 +38,18 @@ public:
 	Field();
 	~Field();
 
-
 	static void Initialize(int field_width, int field_height);
 	static void Update();
 	static void Draw();
 	static void Finalize();
 
+	// cavファイルを読み込む
+	static bool LoadCSV(const std::string& filename);
 
 	// サイズの取得と設定
 	b2Vec2 GetSize() const { return m_size; }
-	void SetSize(b2Vec2 size) {
+	void SetSize(const b2Vec2 size) 
+	{
 		m_size = size;
 	}
 
@@ -55,7 +63,7 @@ public:
 
 	//フィールドのテクスチャのゲッター　セッター
 	FieldTexture  GetFieldTexture(void){return texture;}
-	void SetFieldTexture(FieldTexture field_texture)
+	void SetFieldTexture(const FieldTexture field_texture)
 	{
 		texture = field_texture;
 	}
@@ -72,6 +80,9 @@ private:
 	//フィールドのテクスチャを管理する関数
 	FieldTexture texture;
 
+	// 2次元マップデータを保持する変数
+    static std::vector<std::vector<int>> m_field_data;  // CSV読み込み後のマップデータ
+
 
 	static Field*** m_p_field_array; // 2次元配列へのポインタ
 
@@ -84,5 +95,5 @@ private:
 
 
 
-#endif // !FEILD_H
+#endif // !FIELD_H
 
