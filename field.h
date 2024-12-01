@@ -38,7 +38,7 @@ public:
 	Field();
 	~Field();
 
-	static void Initialize(int field_width, int field_height);
+	static void Initialize();
 	static void Update();
 	static void Draw();
 	static void Finalize();

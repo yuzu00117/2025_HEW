@@ -52,7 +52,7 @@ Field::~Field()
 
 
 //初期化
-void Field::Initialize(int field_width, int field_height)
+void Field::Initialize()
 {
 	
 	//テクスチャの初期化
@@ -68,19 +68,19 @@ void Field::Initialize(int field_width, int field_height)
 	std::vector<std::vector<int>> field_map = m_field_data;
 
 	//マップに基づいて2次元配列のメモリ確保
-	m_p_field_array = new Field * *[field_height]; // 縦方向の配列を確保
+	m_p_field_array = new Field * *[m_field_height]; // 縦方向の配列を確保
 
-	for (int y = 0; y < field_height; ++y) {
-		m_p_field_array[y] = new Field * [field_width]; // 横方向の配列を各行ごとに確保
+	for (int y = 0; y < m_field_height; ++y) {
+		m_p_field_array[y] = new Field * [m_field_width]; // 横方向の配列を各行ごとに確保
 
-		for (int x = 0; x < field_width; ++x) {
+		for (int x = 0; x < m_field_width; ++x) {
 			m_p_field_array[y][x] = nullptr; // 各要素を nullptr で初期化
 		}
 	}
 
 	// マップの数値に応じたオブジェクトを描画するため、対応したオブジェクトのインスタンスを生成
-	for (int y = 0; y < field_height; ++y) {
-		for (int x = 0; x < field_width; ++x) {
+	for (int y = 0; y < m_field_height; ++y) {
+		for (int x = 0; x < m_field_width; ++x) {
 			if (field_map[y][x] == 1) {
 				//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
