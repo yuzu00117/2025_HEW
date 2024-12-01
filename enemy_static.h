@@ -2,7 +2,7 @@
 // #name enemy.h
 // #description 静的エネミーのヘッダーファイル
 // #make 2024/11/19
-// #update 2024/11/22
+// #update 2024/11/29
 // #comment 追加・修正予定
 //          ・
 //           
@@ -11,22 +11,24 @@
 #ifndef ENEMY_STATIC_H
 #define ENEMY_STATIC_H
 
-#include "enemy.h"
+//==========マクロ定義==========//
+#define ENEMY_STATIC_LIFE (100)
+#define ENEMY_STATIC_DAMAGE (1)
+#define ENEMY_STATIC_SOULGAGE (10)
 
-class EnemyStatic :public Enemy
+#include "enemy.h"
+#include "field.h"
+
+class EnemyStatic :public Enemy, public Field
 {
 private:
 
 public:
 	EnemyStatic() = default;
-	EnemyStatic(b2Vec2 size, b2Vec2 position, bool dynamic)
-		:Enemy(size, position, dynamic) {}
-	~EnemyStatic() = default;
+	EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture);
+	~EnemyStatic() {  };
 
-	void Initialize() override;
-	void Update() override;
-	void Draw() override;
-	void Finalize() override;
+	virtual void UpdateEnemy();
 };
 
 #endif	//ENEMY_STATIC_H

@@ -1,13 +1,13 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.cpp
-// #description csv‚ğ—p‚¢‚Äƒ}ƒbƒvƒ`ƒbƒv‚ğì¬‚µA•`‰æ‚·‚éƒtƒ@ƒCƒ‹
-// #make 2024/11/04@‰i–ì‹`–ç
+// #description csvã‚’ç”¨ã„ã¦ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’ä½œæˆã—ã€æç”»ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
+// #make 2024/11/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/01
-// #comment ’Ç‰ÁEC³—\’è
-//          EField‚Ìİ’è‚ğ‚µ‚Ä‚é  ŒÄ‚Ño‚µ‚Ìd•û‚Æ‚µ‚Ä‚ˆƒXƒR[ƒv‰ğŒˆ‰‰Zqg‚Á‚Ä‚â‚Á‚Ä iField::Draw)
-//			Eƒ}ƒbƒv‚ğŠÇ—‚·‚éŠî’êƒNƒ‰ƒX‚ÅƒOƒ‰ƒ“ƒh‚È‚Ç‚ªŒp³‚µ‚Ä‚¢‚é
-//			E12/01 ƒtƒB[ƒ‹ƒh‚Ìƒ}ƒbƒvƒ`ƒbƒv‚ğcsv‚ğ—p‚¢‚½•`‰æ‚É•ÏX
-//				Eƒ}ƒbƒv‚Ì•ÏX‚Ícsvƒtƒ@ƒCƒ‹‚ğ•ÒW‚µ‚Ä‚­‚¾‚³‚¢
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»Fieldã®è¨­å®šã‚’ã—ã¦ã‚‹  å‘¼ã³å‡ºã—ã®ä»•æ–¹ã¨ã—ã¦ï½ˆã‚¹ã‚³ãƒ¼ãƒ—è§£æ±ºæ¼”ç®—å­ä½¿ã£ã¦ã‚„ã£ã¦ ï¼ˆField::Draw)
+//			ãƒ»ãƒãƒƒãƒ—ã‚’ç®¡ç†ã™ã‚‹åŸºåº•ã‚¯ãƒ©ã‚¹ã§ã‚°ãƒ©ãƒ³ãƒ‰ãªã©ãŒç¶™æ‰¿ã—ã¦ã„ã‚‹
+//			ãƒ»12/01 ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’csvã‚’ç”¨ã„ãŸæç”»ã«å¤‰æ›´
+//				ãƒ»ãƒãƒƒãƒ—ã®å¤‰æ›´ã¯csvãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç·¨é›†ã—ã¦ãã ã•ã„
 //----------------------------------------------------------------------------------------------------
 #include"tool.h"
 #include"include/box2d/box2d.h"
@@ -19,25 +19,28 @@
 #include"collider_type.h"
 #include"ground.h"
 #include"anchor_point.h"
+#include"enemy_dynamic.h"
+#include"enemy_static.h"
 
 
 
-// 2ŸŒ³”z—ñ‚ÌÃ“Iƒƒ“ƒo‚Ì‰Šú‰»
+// 2æ¬¡å…ƒé…åˆ—ã®é™çš„ãƒ¡ãƒ³ãƒã®åˆæœŸåŒ–
 Field*** Field::m_p_field_array = nullptr;
 
-// csvƒtƒ@ƒCƒ‹‚©‚ç“Ç‚İ‚ñ‚¾ƒ}ƒbƒvƒf[ƒ^‚ÌˆêŠi”[—p
+// csvãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚“ã ãƒãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿ã®ä¸€æ™‚æ ¼ç´ç”¨
 std::vector<std::vector<int>> Field::m_field_data;
 
-// ƒtƒB[ƒ‹ƒh‚Ì•‚Æ‚‚³‚ğ•Û‚·‚éÃ“Iƒƒ“ƒo•Ï”‚ğ‰Šú‰»
-// ƒNƒ‰ƒX‘S‘Ì‚Å‹¤—L‚³‚ê‚é•Ï”‚Æ‚µ‚Äg—p‚·‚é‚½‚ßA‚±‚±‚Å‰Šú‰»
+// ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®å¹…ã¨é«˜ã•ã‚’ä¿æŒã™ã‚‹é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’åˆæœŸåŒ–
+// ã‚¯ãƒ©ã‚¹å…¨ä½“ã§å…±æœ‰ã•ã‚Œã‚‹å¤‰æ•°ã¨ã—ã¦ä½¿ç”¨ã™ã‚‹ãŸã‚ã€ã“ã“ã§åˆæœŸåŒ–
 int Field::m_field_width = 0;
 int Field::m_field_height = 0;
 
-// g—p‚·‚éƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹‚ğŠi”[
-static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//’n–Ê‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÌƒeƒNƒXƒ`ƒƒ
 
-
+// ä½¿ç”¨ã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ ¼ç´
+static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//åœ°é¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_EnemyDynamic_Texture = NULL;	//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_EnemyStatic_Texture = NULL;	//é™çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 Field::Field()
 {
@@ -51,38 +54,48 @@ Field::~Field()
 
 
 
-//‰Šú‰»
+//åˆæœŸåŒ–
 void Field::Initialize()
 {
 	
-	//ƒeƒNƒXƒ`ƒƒ‚Ì‰Šú‰»
-	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//ƒOƒ‰ƒEƒ“ƒh‚ÌƒeƒNƒXƒ`ƒƒ
-	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÌƒeƒNƒXƒ`ƒƒ
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆæœŸåŒ–
+	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	g_EnemyStatic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");//é™çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
-	//AP‚ÌƒCƒjƒVƒƒƒ‰ƒCƒY
+	//APã®ã‚¤ãƒ‹ã‚·ãƒ£ãƒ©ã‚¤ã‚º
 	AnchorPoint::Initialize();
 
-	// csv‚©‚çƒ}ƒbƒvƒ`ƒbƒv‚ğ“Ç‚İ‚Ş
+  //csvã‹ã‚‰ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’èª­ã¿è¾¼ã‚€
 	Field::LoadCSV("asset/mapchip.csv");
-	//“Ç‚İ‚ñ‚¾ƒf[ƒ^‚ğfield_map‚ÉŠi”[
+	//èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿ã‚’field_mapã«æ ¼ç´
 	std::vector<std::vector<int>> field_map = m_field_data;
 
-	//ƒ}ƒbƒv‚ÉŠî‚Ã‚¢‚Ä2ŸŒ³”z—ñ‚Ìƒƒ‚ƒŠŠm•Û
-	m_p_field_array = new Field * *[m_field_height]; // c•ûŒü‚Ì”z—ñ‚ğŠm•Û
+
+	// csvã‹ã‚‰ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’èª­ã¿è¾¼ã‚€
+	Field::LoadCSV("asset/mapchip.csv");
+	//èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿ã‚’field_mapã«æ ¼ç´
+	std::vector<std::vector<int>> field_map = m_field_data;
+
+	//ãƒãƒƒãƒ—ã«åŸºã¥ã„ã¦2æ¬¡å…ƒé…åˆ—ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿
+	m_p_field_array = new Field * *[m_field_height]; //ç¸¦æ–¹å‘ã®é…åˆ—ã‚’ç¢ºä¿
 
 	for (int y = 0; y < m_field_height; ++y) {
-		m_p_field_array[y] = new Field * [m_field_width]; // ‰¡•ûŒü‚Ì”z—ñ‚ğŠes‚²‚Æ‚ÉŠm•Û
+		m_p_field_array[y] = new Field * [m_field_width]; //æ¨ªæ–¹å‘ã®é…åˆ—ã‚’å„è¡Œã”ã¨ã«ç¢ºä¿
 
 		for (int x = 0; x < m_field_width; ++x) {
-			m_p_field_array[y][x] = nullptr; // Še—v‘f‚ğ nullptr ‚Å‰Šú‰»
+			m_p_field_array[y][x] = nullptr; //å„è¦ç´ ã‚’ nullptr ã§åˆæœŸåŒ–
 		}
 	}
 
-	// ƒ}ƒbƒv‚Ì”’l‚É‰‚¶‚½ƒIƒuƒWƒFƒNƒg‚ğ•`‰æ‚·‚é‚½‚ßA‘Î‰‚µ‚½ƒIƒuƒWƒFƒNƒg‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
-	for (int y = 0; y < m_field_height; ++y) {
-		for (int x = 0; x < m_field_width; ++x) {
+	//ãƒãƒƒãƒ—ã®æ•°å€¤ã«å¿œã˜ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»ã™ã‚‹ãŸã‚ã€å¯¾å¿œã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
+	for (int y = 0; y < m_field_height; ++y)
+  {
+		for (int x = 0; x < m_field_width; ++x)
+    {
 			if (field_map[y][x] == 1) {
-				//Size‚ğ BOX2D_SCALE_MANAGEMENT‚ÅŠ„‚Á‚Ä‚é‰e‹¿‚Å@À•W‚Ì“o˜^ˆÊ’u‚àŠ„‚é
+				//Sizeã‚’ BOX2D_SCALE_MANAGEMENTã§å‰²ã£ã¦ã‚‹å½±éŸ¿ã§ã€€åº§æ¨™ã®ç™»éŒ²ä½ç½®ã‚‚å‰²ã‚‹
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
 			if (field_map[y][x] == 2) {
@@ -94,6 +107,12 @@ void Field::Initialize()
 			if (field_map[y][x] == 4) {
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
+			if (field_map[y][x] == 5) {
+				m_p_field_array[y][x] = new EnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, false, true, enemy_static_texture);
+			}
+			if (field_map[y][x] == 6) {
+				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
+			}
 		}
 	}
 }
@@ -102,23 +121,24 @@ void Field::Initialize()
 
 void Field::Update()
 {
-	//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÌXV
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®æ›´æ–°
 	AnchorPoint::Update();
+	Enemy::Update();
 }
 
 
 
 void Field::Draw()
 {
-	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+	// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
-	//m_p_field_array ‚ÌŠeˆÊ’u‚É‘Î‰‚·‚éƒtƒB[ƒ‹ƒhƒIƒuƒWƒFƒNƒg‚ğ•`‰æ‚µ‚Ü‚·B
+	//m_p_field_array ã®å„ä½ç½®ã«å¯¾å¿œã™ã‚‹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
 	for (int y = 0; y < m_field_height; ++y) {
 		for (int x = 0; x < m_field_width; ++x) {
 			if (m_p_field_array[y][x] != nullptr) {
@@ -126,12 +146,12 @@ void Field::Draw()
 				position.x = m_p_field_array[y][x]->GetFieldBody()->GetPosition().x ;
 				position.y = m_p_field_array[y][x]->GetFieldBody()->GetPosition().y ;
 
-				// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-				//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+				//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 				float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-				//“\‚éƒeƒNƒXƒ`ƒƒ‚ğw’è
+	
+				//è²¼ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æŒ‡å®š
 				switch (m_p_field_array[y][x]->GetFieldTexture())
 				{
 				case anchor_point_texture:
@@ -139,6 +159,12 @@ void Field::Draw()
 					break;
 				case ground_texture:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
+					break;
+				case enemy_dynamic_texture:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
+					break;
+				case enemy_static_texture:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyStatic_Texture);
 					break;
 				default:
 					break;
@@ -154,7 +180,7 @@ void Field::Draw()
 			}
 		}
 	}
-	// ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ•`‰æ
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’æç”»
 	AnchorPoint::Draw();
 }
 
@@ -162,7 +188,7 @@ void Field::Draw()
 
 void Field::Finalize()
 {
-	// 2ŸŒ³”z—ñ‚Ìƒƒ‚ƒŠ‰ğ•ú
+	// 2æ¬¡å…ƒé…åˆ—ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
 	for (int y = 0; y < m_field_height; ++y) {
 
 		for (int x = 0; x < m_field_width; ++x) {
@@ -177,12 +203,14 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
+  
+  Enemy::Finalize();
 }
 
 
 
-//csvƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚ğs‚¤ŠÖ”
-//csvƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚ñ‚ÅA‚»‚Ì“à—e‚ğ m_field_data ‚ÉŠi”[‚µ‚Ü‚·B
+//csvãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã‚’è¡Œã†é–¢æ•°
+//csvãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚“ã§ã€ãã®å†…å®¹ã‚’ m_field_data ã«æ ¼ç´ã—ã¾ã™ã€‚
 bool Field::LoadCSV(const std::string &filename)
 {
 	std::ifstream file(filename);
@@ -193,21 +221,21 @@ bool Field::LoadCSV(const std::string &filename)
 	}
 
 	std::string line;
-	m_field_data.clear(); //ˆÈ‘O‚Ìƒf[ƒ^‚ğƒNƒŠƒA
+	m_field_data.clear(); //ä»¥å‰ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¯ãƒªã‚¢
 
-	//ƒtƒ@ƒCƒ‹‚ÌŠes‚ğ“Ç‚İ‚Ş`
+	//ãƒ•ã‚¡ã‚¤ãƒ«ã®å„è¡Œã‚’èª­ã¿è¾¼ã‚€`
 	while (std::getline(file, line))
 	{
 		std::vector<int> row;
 		std::stringstream ss(line);
 		std::string cell;
 
-		//ŠeƒZƒ‹‚ğ“Ç‚İ‚İAƒJƒ“ƒ}‚Å‹æØ‚ç‚ê‚½”’l‚ğæ“¾
+		//å„ã‚»ãƒ«ã‚’èª­ã¿è¾¼ã¿ã€ã‚«ãƒ³ãƒã§åŒºåˆ‡ã‚‰ã‚ŒãŸæ•°å€¤ã‚’å–å¾—
 		while (std::getline(ss, cell, ','))
 		{
 			try
 			{
-				row.push_back(std::stoi(cell)); // ”’l‚É•ÏŠ·‚µ‚Ä’Ç‰Á
+				row.push_back(std::stoi(cell)); // æ•°å€¤ã«å¤‰æ›ã—ã¦è¿½åŠ 
 			}
 			catch(const std::invalid_argument& e)
 			{
@@ -220,8 +248,8 @@ bool Field::LoadCSV(const std::string &filename)
 	}
 	file.close();
 
-	// ‚‚³‚Æ•‚ğCSV‚Ìƒf[ƒ^‚©‚çæ“¾
-    m_field_height = m_field_data.size();  // s”‚ªƒtƒB[ƒ‹ƒh‚Ì‚‚³
-    m_field_width = (m_field_data.empty() ? 0 : m_field_data[0].size());  // Å‰‚Ìs‚Ì—ñ”‚ªƒtƒB[ƒ‹ƒh‚Ì•
+	// é«˜ã•ã¨å¹…ã‚’CSVã®ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰å–å¾—
+    m_field_height = m_field_data.size();  // è¡Œæ•°ãŒãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•
+    m_field_width = (m_field_data.empty() ? 0 : m_field_data[0].size());  // æœ€åˆã®è¡Œã®åˆ—æ•°ãŒãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®å¹…
 	return true;
 }
