@@ -67,12 +67,6 @@ void Field::Initialize()
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
-  //csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip.csv");
-	//読み込んだデータをfield_mapに格納
-	std::vector<std::vector<int>> field_map = m_field_data;
-
-
 	// csvからマップチップを読み込む
 	Field::LoadCSV("asset/mapchip.csv");
 	//読み込んだデータをfield_mapに格納
