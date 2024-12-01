@@ -54,6 +54,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	Game& game = Game::GetInstance();
 
+	
+
 	//ウィンドウクラスの登録
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = WndProc;

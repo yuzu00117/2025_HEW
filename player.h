@@ -2,9 +2,9 @@
 // #name player.h
 // #description プレイヤー
 // #make 2024/11/19
-// #update 2024/11/03
+// #update 2024/11/20
 // #comment 追加・修正予定
-//          ・コンストラクタでbodyとfixture作ってInitializeでつくる
+//          ・コンストラクタでbodyとfixture作ってGetInstanceでつくる
 //           
 //----------------------------------------------------------------------------------------------------
 
@@ -18,13 +18,13 @@ class Player
 public:
 	Player() {};
 
-	Player(b2Vec2 position, b2Vec2 size);
+	Player(b2Vec2 position, b2Vec2 size,b2Vec2 sensor_size);
 	~Player();
 
 
 	// シングルトンのインスタンス取得 　このクラスでは一つのインスタンスしか認めない
-	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 1)) {
-		static Player instance(position, size); // Initialized only once
+	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 1),b2Vec2 sensor_size=b2Vec2(30,20)) {
+		static Player instance(position, size,sensor_size); // Initialized only once
 		return instance;
 	}
 	
@@ -34,11 +34,24 @@ public:
 	void Draw();
 	void Finalize();
 
+	static b2Body* GetOutSidePlayerBody();
+
 	//描画用にサイズを持たせておく
-	b2Vec2 GetSize() const { return m_p_size; }
-	void SetSize(b2Vec2 size) {
+	b2Vec2 GetSize() const 
+	{
+		return m_p_size;
+	}
+	void SetSize(b2Vec2 size)
+	{
 		m_p_size = size;
 	}
+
+	//描画用にサイズを持たせておく
+	b2Vec2 GetSensorSize() const {return m_sensor_size;}
+	void SetSensorSize(b2Vec2 sensor_size) {
+		m_sensor_size = sensor_size;
+	}
+
 
 
 	//今ジャンプ可能かをコントロールする関数
@@ -53,7 +66,7 @@ public:
 	}
 
 
-	b2Body*GetPlayerBody(void)
+	 b2Body*GetPlayerBody(void)
 	{
 		return m_body;
 	}
@@ -62,6 +75,9 @@ public:
 	{
 		m_body = player_body;
 	}
+
+
+
 private:
 
 	//プレイヤーのBodyをもつ
@@ -71,6 +87,9 @@ private:
 	// 理由としてはこいつのサイズをbox2dないで管理するのはだるいから
 	//Bodyからfixtureとってきてサイズ確認してー　その時は四角だからー　だるい　してもいいかも
 	b2Vec2 m_p_size;
+
+	//センサー用のサイズ
+	b2Vec2 m_sensor_size;
 
 
 	//今ジャンプ可能なのか（contactlist.hの方でコントロールしてる）
