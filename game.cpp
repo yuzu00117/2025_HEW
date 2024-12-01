@@ -44,7 +44,7 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	Anchor::Initialize();
 
 	//フィールドの初期化
-	Field::Initialize(90, 20);
+	Field::Initialize();
 
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	// 衝突リスナーをワールドに登録

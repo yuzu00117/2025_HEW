@@ -1,16 +1,14 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.cpp
-// #description フィールド
-
+// #description csvを用いてマップチップを作成し、描画するファイル
 // #make 2024/11/04　永野義也
-// #update 2024/11/29
-
+// #update 2024/12/01
 // #comment 追加・修正予定
 //          ・Fieldの設定をしてる  呼び出しの仕方としてｈスコープ解決演算子使ってやって （Field::Draw)
 //			・マップを管理する基底クラスでグランドなどが継承している
-//           
+//			・12/01 フィールドのマップチップをcsvを用いた描画に変更
+//				・マップの変更はcsvファイルを編集してください
 //----------------------------------------------------------------------------------------------------
-
 #include"tool.h"
 #include"include/box2d/box2d.h"
 #include"field.h"
@@ -25,94 +23,77 @@
 #include"enemy_static.h"
 
 
+
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
 
+// csvファイルから読み込んだマップデータの一時格納用
+std::vector<std::vector<int>> Field::m_field_data;
 
-
-
-
-int Field::m_field_height = 0;
+// フィールドの幅と高さを保持する静的メンバ変数を初期化
+// クラス全体で共有される変数として使用するため、ここで初期化
 int Field::m_field_width = 0;
+int Field::m_field_height = 0;
 
-//グローバル変数　テクスチャの入れ物
 
-
+// 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
-
 static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//アンカーポイントのテクスチャ
-
 static ID3D11ShaderResourceView* g_EnemyDynamic_Texture = NULL;	//動的エネミーのテクスチャ
 static ID3D11ShaderResourceView* g_EnemyStatic_Texture = NULL;	//静的エネミーのテクスチャ
-
-
-
 
 Field::Field()
 {
 }
 
+
+
 Field::~Field()
 {
 }
 
-void Field::Initialize(int field_width, int field_height)
-{
-	//テクスチャの初期化
-	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グランドのテクスチャ
 
-	g_AnchorPoint_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
+
+//初期化
+void Field::Initialize()
+{
+	
+	//テクスチャの初期化
+	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
+	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
 	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
 	g_EnemyStatic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");//静的エネミーのテクスチャ
-
 
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
-	//Drawの方で使うためメンバ変数内に代入しとく
-	m_field_height = field_height;
-	m_field_width  = field_width;
+  //csvからマップチップを読み込む
+	Field::LoadCSV("asset/mapchip.csv");
+	//読み込んだデータをfield_mapに格納
+	std::vector<std::vector<int>> field_map = m_field_data;
 
-	//2次元配列のメモリ確保
-	m_p_field_array = new Field * *[field_height]; // 縦方向の配列を確保
 
-	for (int y = 0; y < field_height; ++y) {
-		m_p_field_array[y] = new Field * [field_width]; // 横方向の配列を各行ごとに確保
+	// csvからマップチップを読み込む
+	Field::LoadCSV("asset/mapchip.csv");
+	//読み込んだデータをfield_mapに格納
+	std::vector<std::vector<int>> field_map = m_field_data;
 
-		for (int x = 0; x < field_width; ++x) {
-			m_p_field_array[y][x] = nullptr; // 各要素を nullptr で初期化
+	//マップに基づいて2次元配列のメモリ確保
+	m_p_field_array = new Field * *[m_field_height]; //縦方向の配列を確保
+
+	for (int y = 0; y < m_field_height; ++y) {
+		m_p_field_array[y] = new Field * [m_field_width]; //横方向の配列を各行ごとに確保
+
+		for (int x = 0; x < m_field_width; ++x) {
+			m_p_field_array[y][x] = nullptr; //各要素を nullptr で初期化
 		}
 	}
 
-
-
-	//マップを登録する二次元配列
-	int field_map[20][90] =
-	{
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
-	};
-
-	for (int y = 0; y < field_height; ++y) {
-		for (int x = 0; x < field_width; ++x) {
+	//マップの数値に応じたオブジェクトを描画するため、対応したオブジェクトのインスタンスを生成
+	for (int y = 0; y < m_field_height; ++y)
+  {
+		for (int x = 0; x < m_field_width; ++x)
+    {
 			if (field_map[y][x] == 1) {
 				//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
@@ -122,9 +103,6 @@ void Field::Initialize(int field_width, int field_height)
 			}
 			if (field_map[y][x] == 3) {
 				m_p_field_array[y][x] = new AnchorPoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f), 0.0f, false, true, anchor_point_texture);
-			}
-			if (field_map[y][x] == 4) {
-				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
 			if (field_map[y][x] == 4) {
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
@@ -143,13 +121,15 @@ void Field::Initialize(int field_width, int field_height)
 
 void Field::Update()
 {
+	//アンカーポイントの更新
 	AnchorPoint::Update();
 	Enemy::Update();
 }
 
+
+
 void Field::Draw()
 {
-
 	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
 	float scale = SCREEN_SCALE;
 
@@ -158,8 +138,7 @@ void Field::Draw()
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
-
-
+	//m_p_field_array の各位置に対応するフィールドオブジェクトを描画
 	for (int y = 0; y < m_field_height; ++y) {
 		for (int x = 0; x < m_field_width; ++x) {
 			if (m_p_field_array[y][x] != nullptr) {
@@ -171,34 +150,26 @@ void Field::Draw()
 				//取得したbodyのポジションに対してBox2dスケールの補正を加える
 				float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-
-		
+	
 				//貼るテクスチャを指定
 				switch (m_p_field_array[y][x]->GetFieldTexture())
 				{
 				case anchor_point_texture:
-
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_AnchorPoint_Texture);
 					break;
 				case ground_texture:
-
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
 					break;
 				case enemy_dynamic_texture:
-
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
 					break;
 				case enemy_static_texture:
-
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyStatic_Texture);
 					break;
 				default:
 					break;
 				}
 				
-				
-			
 				//draw
 				DrawSprite(
 					{ draw_x,
@@ -209,9 +180,11 @@ void Field::Draw()
 			}
 		}
 	}
-
+	//アンカーポイントを描画
 	AnchorPoint::Draw();
 }
+
+
 
 void Field::Finalize()
 {
@@ -230,6 +203,53 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
+  
+  Enemy::Finalize();
+}
 
-	Enemy::Finalize();
+
+
+//csvファイルの読み込みを行う関数
+//csvファイルを読み込んで、その内容を m_field_data に格納します。
+bool Field::LoadCSV(const std::string &filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		std::cerr << "Failed to open CSV file" << filename << std::endl;
+		return false;
+	}
+
+	std::string line;
+	m_field_data.clear(); //以前のデータをクリア
+
+	//ファイルの各行を読み込む`
+	while (std::getline(file, line))
+	{
+		std::vector<int> row;
+		std::stringstream ss(line);
+		std::string cell;
+
+		//各セルを読み込み、カンマで区切られた数値を取得
+		while (std::getline(ss, cell, ','))
+		{
+			try
+			{
+				row.push_back(std::stoi(cell)); // 数値に変換して追加
+			}
+			catch(const std::invalid_argument& e)
+			{
+				std::cerr << "Invalid data in CSV" << cell << std::endl;
+				file.close();
+				return false;
+			}
+		}
+		m_field_data.push_back(row);
+	}
+	file.close();
+
+	// 高さと幅をCSVのデータから取得
+    m_field_height = m_field_data.size();  // 行数がフィールドの高さ
+    m_field_width = (m_field_data.empty() ? 0 : m_field_data[0].size());  // 最初の行の列数がフィールドの幅
+	return true;
 }
