@@ -1,10 +1,12 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.h
 // #description field.h
-// #make 2024/11/04@‰i–ì‹`–ç
-// #update 2024/11/18
-// #comment ’Ç‰ÁEC³—\’è
-//          EGame‚È‚¢‚ÌŠÇ—‚µ‚Ä‚¢‚é@Šî–{“I‚É‚·‚×‚Ä‚ÌŠÖ”‚ª‚±‚±‚É‚½‚Ç‚è’…‚­‚±‚Æ‚É
+
+// #make 2024/11/04ã€€æ°¸é‡ç¾©ä¹Ÿ
+// #update 2024/11/29
+
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»Gameãªã„ã®ç®¡ç†ã—ã¦ã„ã‚‹ã€€åŸºæœ¬çš„ã«ã™ã¹ã¦ã®é–¢æ•°ãŒã“ã“ã«ãŸã©ã‚Šç€ãã“ã¨ã«
 //           
 //----------------------------------------------------------------------------------------------------
 #ifndef FEILD_H
@@ -18,19 +20,22 @@
 
 
 
-//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ğŠÇ—‚·‚é‚½‚ß‚ÌenumŒ^@
-//ƒeƒNƒXƒ`ƒƒ‚ÌŒ^©‘Ì‚Í•Ê‚Éfield.cpp‚ÌƒOƒ[ƒoƒ‹•Ï”‚É‚È‚Á‚Ä‚Ä@‚±‚ê©‘Ì‚Í¯•Ê—p
+//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç®¡ç†ã™ã‚‹ãŸã‚ã®enumå‹ã€€
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å‹è‡ªä½“ã¯åˆ¥ã«field.cppã®ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã«ãªã£ã¦ã¦ã€€ã“ã‚Œè‡ªä½“ã¯è­˜åˆ¥ç”¨
 enum FieldTexture
 {
 	ground_texture,
 	anchor_point_texture,
+
+	enemy_dynamic_texture,
+	enemy_static_texture,
 };
 
 class Field 
 {
 public:
 	Field();
-	~Field();
+	virtual ~Field();
 
 
 	static void Initialize(int field_width, int field_height);
@@ -39,13 +44,13 @@ public:
 	static void Finalize();
 
 
-	// ƒTƒCƒY‚Ìæ“¾‚Æİ’è
+	// ã‚µã‚¤ã‚ºã®å–å¾—ã¨è¨­å®š
 	b2Vec2 GetSize() const { return m_size; }
 	void SetSize(b2Vec2 size) {
 		m_size = size;
 	}
 
-	//body‚Ìæ“¾
+	//bodyã®å–å¾—
 	b2Body* GetFieldBody(void){return m_body;}
 	void SetFieldBody(b2Body* field_body)
 	{
@@ -53,7 +58,7 @@ public:
 	}
 
 
-	//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ÌƒQƒbƒ^[@ƒZƒbƒ^[
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚²ãƒƒã‚¿ãƒ¼ã€€ã‚»ãƒƒã‚¿ãƒ¼
 	FieldTexture  GetFieldTexture(void){return texture;}
 	void SetFieldTexture(FieldTexture field_texture)
 	{
@@ -65,15 +70,15 @@ private:
 	//Body
 	b2Body *m_body;
 
-	//•\¦‚Ég—p‚·‚éƒTƒCƒY
+	//è¡¨ç¤ºã«ä½¿ç”¨ã™ã‚‹ã‚µã‚¤ã‚º
 	b2Vec2 m_size;
 
 
-	//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ğŠÇ—‚·‚éŠÖ”
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç®¡ç†ã™ã‚‹é–¢æ•°
 	FieldTexture texture;
 
 
-	static Field*** m_p_field_array; // 2ŸŒ³”z—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	static Field*** m_p_field_array; // 2æ¬¡å…ƒé…åˆ—ã¸ã®ãƒã‚¤ãƒ³ã‚¿
 
 	static int m_field_width;
 	static int m_field_height;
