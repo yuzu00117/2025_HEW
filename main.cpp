@@ -14,6 +14,7 @@
 #include "keyboard.h"
 #include "sound.h"
 #include"game.h"
+#include"scene.h"
 
 
 
@@ -92,7 +93,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 
 	//DirectXの初期化（ウィンドウを作成した後に行う）
-	if (FAILED(game.Initialize(hInstance, hWnd, true)))
+	if (FAILED(game.AllGameInitialize(hInstance, hWnd, true)))
 	{
 		return -1;
 	}
@@ -115,8 +116,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//メッセージループ
 	MSG    msg;
 
+	
+	InitScene();//シーンの初期化を呼ぶ
+
 	while (1)
 	{
+		
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -154,8 +160,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			{
 				dwExecLastTime = dwCurrentTime;
 
-				game.Update();
-				game.Draw();
+				UpdateScene();
+				DrawScene();
 
 				dwFrameCount++;
 			}

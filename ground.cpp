@@ -59,10 +59,12 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	b2FixtureDef fixture;
 	fixture.shape = &shape;    //シャープをフィクスチャに登録する
 	fixture.density = 1.0f;    //密度
-	fixture.friction = 0.05f;  //摩擦
+	fixture.friction = 0.01f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
 
+
+	
 	b2Fixture* ground_fixture =GetFieldBody()-> CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
 	// カスタムデータを作成して設定

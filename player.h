@@ -55,12 +55,12 @@ public:
 
 
 	//今ジャンプ可能かをコントロールする関数
-	void SetJumpFlag(bool flag)
+	static void SetJumpFlag(bool flag)
 	{
 		m_can_jump = flag;
 	}
 
-	bool GetCanJump(void)
+	bool GetJumpFlag(void)
 	{
 		return m_can_jump;
 	}
@@ -91,15 +91,14 @@ private:
 	//センサー用のサイズ
 	b2Vec2 m_sensor_size;
 
+	float	m_speed = 20000;
 
 	//今ジャンプ可能なのか（contactlist.hの方でコントロールしてる）
-	bool    m_can_jump = true;
+	static bool    m_can_jump;
 
 	//ジャンプする時の力（ジャンプできる高さに影響）
-	b2Vec2  m_jump_force = b2Vec2(0.0, -0.02);
+	b2Vec2  m_jump_force = b2Vec2(0.0, -0.08);
 
-	//横移動スピード
-	float   m_speed = 10.0f;
 
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;

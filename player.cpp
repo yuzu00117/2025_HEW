@@ -31,9 +31,7 @@ ID3D11ShaderResourceView* g_player_Texture=NULL;
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 
 
-
-//プレーヤーのポインターをNULLに
-Player *player=nullptr;
+bool    Player::m_can_jump = false;
 
 b2Body* player_body;
 
@@ -93,7 +91,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
   
-
+    
    
     b2Fixture* player_fixture =m_body->CreateFixture(&fixture);
 
@@ -103,7 +101,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     ObjectData* playerdata = new ObjectData{collider_player};
     player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
 
-  
+    
     //--------------------------------------------------------------------------------------------------
     
     //プレイヤーのセンサーを新しくつくる
@@ -174,11 +172,11 @@ void Player::Update()
 
 
     //コントローラーでの受け取り 横移動
-    m_body ->ApplyForceToCenter(b2Vec2(state.leftStickX / 20000, 0.0), true);
+    m_body ->ApplyForceToCenter(b2Vec2(state.leftStickX / m_speed, 0.0), true);
 
 
     //ジャンプチェック
-    if (m_can_jump && (Keyboard_IsKeyDown(KK_UP) || (state.buttonA)))
+    if (m_can_jump &&( (Keyboard_IsKeyDown(KK_UP) || (state.buttonA))))
     {
 
         m_body->ApplyLinearImpulseToCenter(m_jump_force, true);

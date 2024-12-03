@@ -1,14 +1,14 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.cpp
-// #description csvã‚’ç”¨ã„ã¦ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’ä½œæˆã—ã€æç”»ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«
-// #make 2024/11/04ã€€æ°¸é‡ç¾©ä¹Ÿ
-// #update 2024/12/01
-// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
-//          ãƒ»Fieldã®è¨­å®šã‚’ã—ã¦ã‚‹  å‘¼ã³å‡ºã—ã®ä»•æ–¹ã¨ã—ã¦ï½ˆã‚¹ã‚³ãƒ¼ãƒ—è§£æ±ºæ¼”ç®—å­ä½¿ã£ã¦ã‚„ã£ã¦ ï¼ˆField::Draw)
-//			ãƒ»ãƒãƒƒãƒ—ã‚’ç®¡ç†ã™ã‚‹åŸºåº•ã‚¯ãƒ©ã‚¹ã§ã‚°ãƒ©ãƒ³ãƒ‰ãªã©ãŒç¶™æ‰¿ã—ã¦ã„ã‚‹
-//			ãƒ»12/01 ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’csvã‚’ç”¨ã„ãŸæç”»ã«å¤‰æ›´
-//				ãƒ»ãƒãƒƒãƒ—ã®å¤‰æ›´ã¯csvãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç·¨é›†ã—ã¦ãã ã•ã„
+// #description ƒtƒB[ƒ‹ƒh
+// #make 2024/11/04@‰i–ì‹`–ç
+// #update 2024/11/17
+// #comment ’Ç‰ÁEC³—\’è
+//          EField‚Ìİ’è‚ğ‚µ‚Ä‚é  ŒÄ‚Ño‚µ‚Ìd•û‚Æ‚µ‚Ä‚ˆƒXƒR[ƒv‰ğŒˆ‰‰Zqg‚Á‚Ä‚â‚Á‚Ä iField::Draw)
+//			Eƒ}ƒbƒv‚ğŠÇ—‚·‚éŠî’êƒNƒ‰ƒX‚ÅƒOƒ‰ƒ“ƒh‚È‚Ç‚ªŒp³‚µ‚Ä‚¢‚é
+//           
 //----------------------------------------------------------------------------------------------------
+
 #include"tool.h"
 #include"include/box2d/box2d.h"
 #include"field.h"
@@ -19,77 +19,97 @@
 #include"collider_type.h"
 #include"ground.h"
 #include"anchor_point.h"
-#include"enemy_dynamic.h"
-#include"enemy_static.h"
+#include"object.h"
 
 
-
-// 2æ¬¡å…ƒé…åˆ—ã®é™çš„ãƒ¡ãƒ³ãƒã®åˆæœŸåŒ–
+// 2ŸŒ³”z—ñ‚ÌÃ“Iƒƒ“ƒo‚Ì‰Šú‰»
 Field*** Field::m_p_field_array = nullptr;
 
-// csvãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã¿è¾¼ã‚“ã ãƒãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿ã®ä¸€æ™‚æ ¼ç´ç”¨
-std::vector<std::vector<int>> Field::m_field_data;
 
-// ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®å¹…ã¨é«˜ã•ã‚’ä¿æŒã™ã‚‹é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã‚’åˆæœŸåŒ–
-// ã‚¯ãƒ©ã‚¹å…¨ä½“ã§å…±æœ‰ã•ã‚Œã‚‹å¤‰æ•°ã¨ã—ã¦ä½¿ç”¨ã™ã‚‹ãŸã‚ã€ã“ã“ã§åˆæœŸåŒ–
-int Field::m_field_width = 0;
+
+
+
 int Field::m_field_height = 0;
+int Field::m_field_width = 0;
+
+//ƒOƒ[ƒoƒ‹•Ï”@ƒeƒNƒXƒ`ƒƒ‚Ì“ü‚ê•¨
 
 
-// ä½¿ç”¨ã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ ¼ç´
-static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//åœ°é¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-static ID3D11ShaderResourceView* g_EnemyDynamic_Texture = NULL;	//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-static ID3D11ShaderResourceView* g_EnemyStatic_Texture = NULL;	//é™çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//’n–Ê‚ÌƒeƒNƒXƒ`ƒƒ
+
+static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÌƒeƒNƒXƒ`ƒƒ
+
+
+
+
+
 
 Field::Field()
 {
 }
 
-
-
 Field::~Field()
 {
 }
 
-
-
-//åˆæœŸåŒ–
-void Field::Initialize()
+void Field::Initialize(int field_width, int field_height)
 {
-	
-	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆæœŸåŒ–
-	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
-	g_EnemyStatic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");//é™çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	//ƒeƒNƒXƒ`ƒƒ‚Ì‰Šú‰»
+	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//ƒOƒ‰ƒ“ƒh‚ÌƒeƒNƒXƒ`ƒƒ
+	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÌƒeƒNƒXƒ`ƒƒ
 
-	//APã®ã‚¤ãƒ‹ã‚·ãƒ£ãƒ©ã‚¤ã‚º
+	//AP‚ÌƒCƒjƒVƒƒƒ‰ƒCƒY
 	AnchorPoint::Initialize();
 
-	// csvã‹ã‚‰ãƒãƒƒãƒ—ãƒãƒƒãƒ—ã‚’èª­ã¿è¾¼ã‚€
-	Field::LoadCSV("asset/mapchip.csv");
-	//èª­ã¿è¾¼ã‚“ã ãƒ‡ãƒ¼ã‚¿ã‚’field_mapã«æ ¼ç´
-	std::vector<std::vector<int>> field_map = m_field_data;
+	//Object‚ÌƒCƒjƒVƒƒƒ‰ƒCƒY
+	Object::Initialize();
 
-	//ãƒãƒƒãƒ—ã«åŸºã¥ã„ã¦2æ¬¡å…ƒé…åˆ—ã®ãƒ¡ãƒ¢ãƒªç¢ºä¿
-	m_p_field_array = new Field * *[m_field_height]; //ç¸¦æ–¹å‘ã®é…åˆ—ã‚’ç¢ºä¿
+	//Draw‚Ì•û‚Åg‚¤‚½‚ßƒƒ“ƒo•Ï”“à‚É‘ã“ü‚µ‚Æ‚­
+	m_field_height = field_height;
+	m_field_width  = field_width;
 
-	for (int y = 0; y < m_field_height; ++y) {
-		m_p_field_array[y] = new Field * [m_field_width]; //æ¨ªæ–¹å‘ã®é…åˆ—ã‚’å„è¡Œã”ã¨ã«ç¢ºä¿
+	//2ŸŒ³”z—ñ‚Ìƒƒ‚ƒŠŠm•Û
+	m_p_field_array = new Field * *[field_height]; // c•ûŒü‚Ì”z—ñ‚ğŠm•Û
 
-		for (int x = 0; x < m_field_width; ++x) {
-			m_p_field_array[y][x] = nullptr; //å„è¦ç´ ã‚’ nullptr ã§åˆæœŸåŒ–
+	for (int y = 0; y < field_height; ++y) {
+		m_p_field_array[y] = new Field * [field_width]; // ‰¡•ûŒü‚Ì”z—ñ‚ğŠes‚²‚Æ‚ÉŠm•Û
+
+		for (int x = 0; x < field_width; ++x) {
+			m_p_field_array[y][x] = nullptr; // Še—v‘f‚ğ nullptr ‚Å‰Šú‰»
 		}
 	}
 
-	//ãƒãƒƒãƒ—ã®æ•°å€¤ã«å¿œã˜ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»ã™ã‚‹ãŸã‚ã€å¯¾å¿œã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
-	for (int y = 0; y < m_field_height; ++y)
-  {
-		for (int x = 0; x < m_field_width; ++x)
-    {
+
+
+	//ƒ}ƒbƒv‚ğ“o˜^‚·‚é“ñŸŒ³”z—ñ
+	int field_map[20][90] =
+	{
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,},
+	};
+
+	for (int y = 0; y < field_height; ++y) {
+		for (int x = 0; x < field_width; ++x) {
 			if (field_map[y][x] == 1) {
-				//Sizeã‚’ BOX2D_SCALE_MANAGEMENTã§å‰²ã£ã¦ã‚‹å½±éŸ¿ã§ã€€åº§æ¨™ã®ç™»éŒ²ä½ç½®ã‚‚å‰²ã‚‹
+				//Size‚ğ BOX2D_SCALE_MANAGEMENT‚ÅŠ„‚Á‚Ä‚é‰e‹¿‚Å@À•W‚Ì“o˜^ˆÊ’u‚àŠ„‚é
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
 			if (field_map[y][x] == 2) {
@@ -99,14 +119,14 @@ void Field::Initialize()
 				m_p_field_array[y][x] = new AnchorPoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f), 0.0f, false, true, anchor_point_texture);
 			}
 			if (field_map[y][x] == 4) {
-				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
+				//b2Vec2 position, b2Vec2 body_size, bool is_sensor, object_type type);
+				Object::SetObject(x, y, b2Vec2(1.0f, 1.0f), false, type_Rock);
 			}
 			if (field_map[y][x] == 5) {
-				m_p_field_array[y][x] = new EnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, false, true, enemy_static_texture);
+				//b2Vec2 position, b2Vec2 body_size, bool is_sensor, object_type type);
+				Object::SetObject(x, y, b2Vec2(1.0f, 1.0f), false, type_wood);
 			}
-			if (field_map[y][x] == 6) {
-				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
-			}
+			
 		}
 	}
 }
@@ -115,24 +135,22 @@ void Field::Initialize()
 
 void Field::Update()
 {
-	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®æ›´æ–°
 	AnchorPoint::Update();
-	Enemy::Update();
 }
-
-
 
 void Field::Draw()
 {
-	// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
+
+	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
 	float scale = SCREEN_SCALE;
 
-	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
+	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
-	//m_p_field_array ã®å„ä½ç½®ã«å¯¾å¿œã™ã‚‹ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
+
+
 	for (int y = 0; y < m_field_height; ++y) {
 		for (int x = 0; x < m_field_width; ++x) {
 			if (m_p_field_array[y][x] != nullptr) {
@@ -140,30 +158,30 @@ void Field::Draw()
 				position.x = m_p_field_array[y][x]->GetFieldBody()->GetPosition().x ;
 				position.y = m_p_field_array[y][x]->GetFieldBody()->GetPosition().y ;
 
-				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
-				//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
+				// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
+				//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
 				float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y)*BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-	
-				//è²¼ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æŒ‡å®š
+
+
+		
+				//“\‚éƒeƒNƒXƒ`ƒƒ‚ğw’è
 				switch (m_p_field_array[y][x]->GetFieldTexture())
 				{
 				case anchor_point_texture:
+
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_AnchorPoint_Texture);
 					break;
 				case ground_texture:
+
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
-					break;
-				case enemy_dynamic_texture:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
-					break;
-				case enemy_static_texture:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyStatic_Texture);
 					break;
 				default:
 					break;
 				}
 				
+				
+			
 				//draw
 				DrawSprite(
 					{ draw_x,
@@ -174,15 +192,16 @@ void Field::Draw()
 			}
 		}
 	}
-	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’æç”»
+
+
+	Object::Draw();
 	AnchorPoint::Draw();
+
 }
-
-
 
 void Field::Finalize()
 {
-	// 2æ¬¡å…ƒé…åˆ—ã®ãƒ¡ãƒ¢ãƒªè§£æ”¾
+	// 2ŸŒ³”z—ñ‚Ìƒƒ‚ƒŠ‰ğ•ú
 	for (int y = 0; y < m_field_height; ++y) {
 
 		for (int x = 0; x < m_field_width; ++x) {
@@ -197,53 +216,4 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
-  
-  Enemy::Finalize();
-}
-
-
-
-//csvãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã‚’è¡Œã†é–¢æ•°
-//csvãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚“ã§ã€ãã®å†…å®¹ã‚’ m_field_data ã«æ ¼ç´ã—ã¾ã™ã€‚
-bool Field::LoadCSV(const std::string &filename)
-{
-	std::ifstream file(filename);
-	if (!file.is_open())
-	{
-		std::cerr << "Failed to open CSV file" << filename << std::endl;
-		return false;
-	}
-
-	std::string line;
-	m_field_data.clear(); //ä»¥å‰ã®ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¯ãƒªã‚¢
-
-	//ãƒ•ã‚¡ã‚¤ãƒ«ã®å„è¡Œã‚’èª­ã¿è¾¼ã‚€`
-	while (std::getline(file, line))
-	{
-		std::vector<int> row;
-		std::stringstream ss(line);
-		std::string cell;
-
-		//å„ã‚»ãƒ«ã‚’èª­ã¿è¾¼ã¿ã€ã‚«ãƒ³ãƒã§åŒºåˆ‡ã‚‰ã‚ŒãŸæ•°å€¤ã‚’å–å¾—
-		while (std::getline(ss, cell, ','))
-		{
-			try
-			{
-				row.push_back(std::stoi(cell)); // æ•°å€¤ã«å¤‰æ›ã—ã¦è¿½åŠ 
-			}
-			catch(const std::invalid_argument& e)
-			{
-				std::cerr << "Invalid data in CSV" << cell << std::endl;
-				file.close();
-				return false;
-			}
-		}
-		m_field_data.push_back(row);
-	}
-	file.close();
-
-	// é«˜ã•ã¨å¹…ã‚’CSVã®ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰å–å¾—
-    m_field_height = m_field_data.size();  // è¡Œæ•°ãŒãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•
-    m_field_width = (m_field_data.empty() ? 0 : m_field_data[0].size());  // æœ€åˆã®è¡Œã®åˆ—æ•°ãŒãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®å¹…
-	return true;
 }

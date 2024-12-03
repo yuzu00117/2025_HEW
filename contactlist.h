@@ -21,6 +21,8 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
+#include"player.h"
+#include"debug.h"
 
 
 
@@ -63,16 +65,20 @@ public:
         auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
         if (!objectA || !objectB)return;//NULLチェック
 
-    
+#ifdef _DEBUG
+        // 関数呼ばれているか表示（debug.cpp）
+        SetBeginContact(true);
+        SetEndContact(false);
+#endif // _DEBUG
 
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
             // 衝突処理（プレーヤーと地面が接触した時）
-            
-            int i = 0;
             // 必要な処理をここに記述
-
+            Player player = Player::GetInstance();
+            player.SetJumpFlag(true);   //Begin
+           
 
         }
 
@@ -121,6 +127,7 @@ public:
 //               衝突終了時
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     void EndContact(b2Contact* contact) override {
+
         // 衝突したフィクスチャを取得
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -134,13 +141,20 @@ public:
         auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
         if (!objectA || !objectB)return;//NULLチェック
 
+#ifdef _DEBUG
+        // 関数呼ばれているか表示（debug.cpp）
+        SetEndContact(true);
+        SetBeginContact(false);
+#endif // _DEBUG
+
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
             // 衝突処理（プレーヤーと地面が接触した時）
-
-
             // 必要な処理をここに記述
+            Player player = Player::GetInstance();
+            player.SetJumpFlag(false);  //End
+          
         }
 
 

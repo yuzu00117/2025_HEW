@@ -1,14 +1,14 @@
 //-----------------------------------------------------------------------------------------------------
 // #name field.h
 // #description field.h
-// #make 2024/11/04ã€€æ°¸é‡ç¾©ä¹Ÿ
-// #update 2024/12/01
-// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
-//          ãƒ»Gameãªã„ã®ç®¡ç†ã—ã¦ã„ã‚‹ã€€åŸºæœ¬çš„ã«ã™ã¹ã¦ã®é–¢æ•°ãŒã“ã“ã«ãŸã©ã‚Šç€ãã“ã¨ã«
+// #make 2024/11/04@‰i–ì‹`–ç
+// #update 2024/11/18
+// #comment ’Ç‰ÁEC³—\’è
+//          EGame‚È‚¢‚ÌŠÇ—‚µ‚Ä‚¢‚é@Šî–{“I‚É‚·‚×‚Ä‚ÌŠÖ”‚ª‚±‚±‚É‚½‚Ç‚è’…‚­‚±‚Æ‚É
 //           
 //----------------------------------------------------------------------------------------------------
-#ifndef FIELD_H
-#define FIELD_H
+#ifndef FEILD_H
+#define FEILD_H
 
 
 
@@ -16,76 +16,75 @@
 #include"texture.h"
 #include<vector>
 
-//csvã§ãƒãƒƒãƒ—ã‚’èª­ã¿è¾¼ã‚€ã®ã«å¿…è¦
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
 
-
-//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç®¡ç†ã™ã‚‹ãŸã‚ã®enumå‹ã€€
-//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å‹è‡ªä½“ã¯åˆ¥ã«field.cppã®ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã«ãªã£ã¦ã¦ã€€ã“ã‚Œè‡ªä½“ã¯è­˜åˆ¥ç”¨
+//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ğŠÇ—‚·‚é‚½‚ß‚ÌenumŒ^@
+//ƒeƒNƒXƒ`ƒƒ‚ÌŒ^©‘Ì‚Í•Ê‚Éfield.cpp‚ÌƒOƒ[ƒoƒ‹•Ï”‚É‚È‚Á‚Ä‚Ä@‚±‚ê©‘Ì‚Í¯•Ê—p
 enum FieldTexture
 {
 	ground_texture,
 	anchor_point_texture,
-
-	enemy_dynamic_texture,
-	enemy_static_texture,
 };
 
 class Field 
 {
 public:
 	Field();
-	virtual ~Field();
+	~Field();
 
-	static void Initialize();
+
+	static void Initialize(int field_width, int field_height);
 	static void Update();
 	static void Draw();
 	static void Finalize();
 
-	//csvãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ã€äºŒæ¬¡å…ƒé…åˆ—ã¨ã—ã¦æ ¼ç´
-	static bool LoadCSV(const std::string& filename);
 
-	// ã‚µã‚¤ã‚ºã®å–å¾—ã¨è¨­å®š
+	// ƒTƒCƒY‚Ìæ“¾‚Æİ’è
 	b2Vec2 GetSize() const { return m_size; }
-	void SetSize(const b2Vec2 size) { m_size = size; }
+	void SetSize(b2Vec2 size) {
+		m_size = size;
+	}
 
-  //bodyã®å–å¾—ã¨è¨­å®š
+	//body‚Ìæ“¾
 	b2Body* GetFieldBody(void){return m_body;}
-	void SetFieldBody(b2Body* field_body) { m_body = field_body; }
+	void SetFieldBody(b2Body* field_body)
+	{
+		m_body = field_body;
+	}
 
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ã‚²ãƒƒã‚¿ãƒ¼ã€€ã‚»ãƒƒã‚¿ãƒ¼
+
+	//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ÌƒQƒbƒ^[@ƒZƒbƒ^[
 	FieldTexture  GetFieldTexture(void){return texture;}
-	void SetFieldTexture(const FieldTexture field_texture) { texture = field_texture; }
+	void SetFieldTexture(FieldTexture field_texture)
+	{
+		texture = field_texture;
+	}
+protected:
+	//Body
+	b2Body* m_body;
 
-  
-  
 private:
 
-	//Body
-	b2Body *m_body;
+	
 
-	//è¡¨ç¤ºã«ä½¿ç”¨ã™ã‚‹ã‚µã‚¤ã‚º
+	//•\¦‚Ég—p‚·‚éƒTƒCƒY
 	b2Vec2 m_size;
 
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç®¡ç†ã™ã‚‹é–¢æ•°
+
+	//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ‚ğŠÇ—‚·‚éŠÖ”
 	FieldTexture texture;
 
-  //2æ¬¡å…ƒãƒãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿ã‚’ä¿æŒã™ã‚‹å¤‰æ•°
-  static std::vector<std::vector<int>> m_field_data;  // CSVèª­ã¿è¾¼ã¿å¾Œã®ãƒãƒƒãƒ—ãƒ‡ãƒ¼ã‚¿
 
-	// 2æ¬¡å…ƒé…åˆ—ã¸ã®ãƒã‚¤ãƒ³ã‚¿
-	static Field*** m_p_field_array;
-	
-	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®å¹…ã¨é«˜ã•
+	static Field*** m_p_field_array; // 2ŸŒ³”z—ñ‚Ö‚Ìƒ|ƒCƒ“ƒ^
+
 	static int m_field_width;
 	static int m_field_height;
+
+
+	
 };
 
 
 
-#endif // !FIELD_H
+#endif // !FEILD_H
 

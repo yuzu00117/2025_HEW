@@ -52,6 +52,18 @@
     <Filter Include="ヘッダー ファイル\collider">
       <UniqueIdentifier>{f8627e09-385d-4bac-8c71-bde70e08ed15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{54a1c367-8019-4580-b582-3e1c2930ea52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\UI">
+      <UniqueIdentifier>{a66bbdd2-1d5f-428d-bdcf-3480462df701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\画面遷移">
+      <UniqueIdentifier>{66e8e7be-2b5a-41ab-a166-1047bf813ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\画面遷移">
+      <UniqueIdentifier>{7f53472a-34ea-46a8-99b1-321bff49430a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -110,6 +122,42 @@
     </ClCompile>
     <ClCompile Include="ground.cpp">
       <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="word.cpp">
+      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_StaminaSpirit_Gauge.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="anchor_spirit.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="player_stamina.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="test_object_wood.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="gameover.cpp">
+      <Filter>ソース ファイル\画面遷移</Filter>
+    </ClCompile>
+    <ClCompile Include="gameselect.cpp">
+      <Filter>ソース ファイル\画面遷移</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソース ファイル\画面遷移</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース ファイル\画面遷移</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース ファイル\画面遷移</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +229,45 @@
     </ClInclude>
     <ClInclude Include="ground.h">
       <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="word.h">
+      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_StaminaSpirit_Gauge.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="anchor_spirit.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="player_stamina.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="object_map_type.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="test_object_wood.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ヘッダー ファイル\画面遷移</Filter>
+    </ClInclude>
+    <ClInclude Include="result.h">
+      <Filter>ヘッダー ファイル\画面遷移</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\画面遷移</Filter>
+    </ClInclude>
+    <ClInclude Include="gameover.h">
+      <Filter>ヘッダー ファイル\画面遷移</Filter>
+    </ClInclude>
+    <ClInclude Include="gameselect.h">
+      <Filter>ヘッダー ファイル\画面遷移</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
