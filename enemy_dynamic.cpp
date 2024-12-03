@@ -18,12 +18,14 @@
 #include"keyboard.h"
 #include<Windows.h>
 #include"player_position.h"
+#include"player_stamina.h"
 #include"contactlist.h"
+#include"anchor_spirit.h"
 
-
+EnemyDynamic* g_p_enemies_dynamic[ENEMY_MAX] = { nullptr };
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE)
+	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -71,7 +73,25 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool 
 	ObjectData* data = new ObjectData{ collider_enemy_dynamic };
 	enemy_dynamic_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
-	SetEnemy(this);
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (!g_p_enemies_dynamic[i])
+		{
+			g_p_enemies_dynamic[i] = this;
+			return;
+		}
+	}
+}
+
+void EnemyDynamic::Update()
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			g_p_enemies_dynamic[i]->UpdateEnemy();
+		}
+	}
 }
 
 void EnemyDynamic::UpdateEnemy()
@@ -93,4 +113,40 @@ void EnemyDynamic::UpdateEnemy()
 	enemy_move.y = (enemy_vector.y * m_speed);
 
 	GetFieldBody()->ApplyForceToCenter(b2Vec2(enemy_move.x, enemy_move.y), true);
+}
+
+void EnemyDynamic::CollisionPlayer(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
+			{
+				PlayerStamina::EditPlayerStaminaValue(-g_p_enemies_dynamic[i]->GetDamage());
+				
+				Field::DeleteFieldObject(collision_enemy);
+				g_p_enemies_dynamic[i] = nullptr;
+				return;
+			}
+		}
+	}
+}
+
+void EnemyDynamic::CollisionAnchorPoint(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
+			{
+				AnchorSpirit::EditAnchorSpiritValue(-g_p_enemies_dynamic[i]->GetSoulgage());
+
+				Field::DeleteFieldObject(collision_enemy);
+				g_p_enemies_dynamic[i] = nullptr;
+				return;
+			}
+		}
+	}
 }

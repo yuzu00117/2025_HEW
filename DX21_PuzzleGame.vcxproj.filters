@@ -111,6 +111,12 @@
     <ClCompile Include="ground.cpp">
       <Filter>ソース ファイル\collider</Filter>
     </ClCompile>
+    <ClCompile Include="player_stamina.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="anchor_spirit.cpp">
+      <Filter>ソース ファイル\collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -180,6 +186,12 @@
       <Filter>ヘッダー ファイル\collider</Filter>
     </ClInclude>
     <ClInclude Include="ground.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="anchor_spirit.h">
+      <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="player_stamina.h">
       <Filter>ヘッダー ファイル\collider</Filter>
     </ClInclude>
   </ItemGroup>

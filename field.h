@@ -65,6 +65,8 @@ public:
 		texture = field_texture;
 	}
 
+	static void DeleteFieldObject(b2Body* delete_object);
+
 private:
 
 	//Body

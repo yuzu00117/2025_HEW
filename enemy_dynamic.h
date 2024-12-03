@@ -11,13 +11,14 @@
 #ifndef ENEMY_DYNAMIC_H
 #define ENEMY_DYNAMIC_H
 
-//==========マクロ定義==========//
-#define ENEMY_DYNAMIC_LIFE (100)
-#define ENEMY_DYNAMIC_DAMAGE (1)
-#define ENEMY_DYNAMIC_SOULGAGE (10)
-
 #include "enemy.h"
 #include "field.h"
+
+//==========マクロ定義==========//
+#define ENEMY_DYNAMIC_LIFE (100)
+#define ENEMY_DYNAMIC_DAMAGE (MAX_STAMINA/2)
+#define ENEMY_DYNAMIC_SOULGAGE (10)
+#define ENEMY_DYNAMIC_SCORE (200)
 
 class EnemyDynamic :public Enemy, public Field
 {
@@ -28,7 +29,10 @@ public:
 	EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture);
 	~EnemyDynamic() = default;
 
+	static void Update();
 	virtual void UpdateEnemy();
+	static void CollisionPlayer(b2Body* collision_enemy);
+	static void CollisionAnchorPoint(b2Body* collision_enemy);
 };
 
 #endif	//ENEMY_DYNAMIC_H
