@@ -105,9 +105,26 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();//ターゲットとしたアンカーポイントのボディ情報を取得
 
 
+	// プレイヤーとターゲットアンカーポイントの現在の位置を取得
+	b2Vec2 player_position = player_body->GetPosition(); // プレイヤーの位置
+	b2Vec2 target_position = target_AP_body->GetPosition(); // ターゲットアンカーポイントの位置
+
+	// プレイヤーからターゲットアンカーポイントへの方向ベクトルを計算
+	b2Vec2 direction = target_position - player_position;
+
+	// ベクトルの正規化（方向のみを保持）
+	float length = direction.Length();
+	if (length > 0.0f) {
+		direction *= (1.0f / length); // 正規化
+	}
+
+	// 飛んでいく方向にオフセットを適用
+	float offset_distance = 0.5f; // 錨を生成する距離（プレイヤーからの距離）
+	b2Vec2 anchor_position = player_position + b2Vec2(direction.x * offset_distance, direction.y * offset_distance);
+
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
-	body.position.Set(player_body->GetPosition().x + 0.5, player_body->GetPosition().y - 0.5);
+	body.position=anchor_position;
 
 	//投げられた角度にあわせてアンカーの角度の設定の必要があるっぴよ
 
@@ -372,155 +389,14 @@ AnchorState Anchor::GetAnchorState()
 
 
 
-/**
- * @brief 
- * @param chain_size 
- * @param max_chain_number 
- */
-void Anchor::CreateChain(b2Vec2 chain_size, int max_chain_number) {
-	if (max_chain_number > MAX_CHAIN_NUM) max_chain_number = MAX_CHAIN_NUM; // 鎖のセグメント数の最大値を設定
-
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
-
-	g_anchor_instance->SetChainSize(chain_size);//chianのサイズをセットしておく
-
-	// スケールの調整
-	chain_size.x = chain_size.x / BOX2D_SCALE_MANAGEMENT;
-	chain_size.y = chain_size.y / BOX2D_SCALE_MANAGEMENT;
-
-	// プレイヤーとアンカーの位置を取得
-	b2Vec2 playerPosition = Player::GetOutSidePlayerBody()->GetPosition();//プレイヤーの座標の取得
-	b2Vec2 anchorPosition = g_anchor_instance->GetAnchorBody()->GetPosition();//アンカーの座標の取得
-
-	// プレイヤーとアンカーの距離を計算
-	float distance = (playerPosition - anchorPosition).Length();//原点からの距離を求める計算式　ここではプレイヤーのとアンカーの距離を求めている
-
-	// chain数を距離に基づいて計算
-	int numSegments = static_cast<int>(distance / chain_size.y);//求めた距離をアンカー当たりの一つ分のサイズで割っている
-	if (numSegments > max_chain_number) numSegments = max_chain_number; // 最大Chain数に制限
-	if (numSegments < 1) numSegments = 1; // 最小Chain数は1
-
-	// chainの開始位置を計算
-	b2Vec2 direction = (playerPosition - anchorPosition);//2点間の距離の算出
-	direction.Normalize();//距離のの正規化
-	b2Vec2 startPosition = anchorPosition + b2Vec2(direction.x * (chain_size.y * 0.5f), direction.y * (chain_size.y * 0.5f));//初期位置の出力　アンカー側だね
-
-	// 初期ボディをアンカーに設定
-	b2Body* previousBody = g_anchor_instance->GetAnchorBody();//アンカーのボディの取得
-
-	for (int i = 0; i < numSegments; ++i) {
-		// chainのボディ定義
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;//動的ですよと
-
-		// 各chainの位置を計算
-		b2Vec2 segmentPosition = startPosition + b2Vec2(direction.x * (chain_size.y * i), direction.y * (chain_size.y * i));//さっきの開始地点の距離の算出を繰り返しているイメージだよ
-		bodyDef.position = segmentPosition;
-		bodyDef.fixedRotation = false;//回転軸は固定にすると大変なことなる　具体的にはアンカーを起点にしてプレイヤーが上昇していく
-
-		// chainのボディを作成
-		b2Body* chainBody = world->CreateBody(&bodyDef);//ワールドにボディを登録していく
-
-		// chainの形状とフィクスチャを設定
-		b2PolygonShape shape;
-		shape.SetAsBox(chain_size.x * 0.5f, chain_size.y * 0.5f);//サイズのセット
-
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &shape;
-		fixtureDef.density = 2.0f;//ここの密度を上げるとバグりずらいけどチェーン　重くなっちゃうから要相談
-		fixtureDef.friction = 0.1f;//反発係数　ここは低い方がいいかもねー
-		fixtureDef.isSensor = false;//センサーオンにすると地面に埋まりだして草だぜ
-
-		
-
-		b2Fixture* anchor_chain_fixture =chainBody->CreateFixture(&fixtureDef);//あたり判定
-
-		ObjectData* anchor_chain_data = new ObjectData{ collider_anchor_chain };
-		anchor_chain_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchor_chain_data);
-
-		// 鎖の配列に格納
-		if (i < MAX_CHAIN_NUM) anchor_chain[i] = chainBody;//配列にボディ入れておくよ
-
-		// 前のセグメントと現在のセグメントをジョイントで接続
-		b2RevoluteJointDef jointDef;
-		jointDef.bodyA = previousBody;//一個前のチェーンのボディ
-		jointDef.bodyB = chainBody;	  //今のチェーンのボディ
-		jointDef.localAnchorA.Set(0.0f, -chain_size.y * 0.5f);//前のチェーンの軸
-		jointDef.localAnchorB.Set(0.0f, chain_size.y * 0.5f); //後のチェーンの軸
-		jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
-
-		world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加
-
-		// 次のセグメントを準備
-		previousBody = chainBody;
-	}
-
-	// 最後のchainとプレイヤーを接続
-	b2RevoluteJointDef jointDef;
-	jointDef.bodyA = previousBody;//チェーンの最後尾のBody
-	jointDef.bodyB = Player::GetOutSidePlayerBody();
-	jointDef.localAnchorA.Set(0.0f, -chain_size.y * 0.5f);//チェーン側のジョイントの軸
-	jointDef.localAnchorB.Set(0.0f, 0.0f);				  //プレイヤーの中心の回転ジョイントの中心に設定
-	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
-
-	world->CreateJoint(&jointDef);                        //ワールドにジョイントを追加
-}
-
-
-void Anchor::DeleteChain() {
-	// Box2Dワールドの取得
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
-
-	// 作成された鎖の（ボディ）を削除
-	for (int i = 0; i < MAX_CHAIN_NUM; ++i) { // 最大40chain
-		if (anchor_chain[i]) { // 有効なポインタか確認
-			// ボディに関連付けられたすべてのジョイントを削除
-			b2JointEdge* jointEdge = anchor_chain[i]->GetJointList();
-			while (jointEdge) {
-				b2Joint* joint = jointEdge->joint;
-				jointEdge = jointEdge->next; // 次のジョイントを保持
-				world->DestroyJoint(joint); // ジョイント削除
-			}
-			// ボディを削除
-			world->DestroyBody(anchor_chain[i]);
-			anchor_chain[i] = nullptr; // ポインタを無効化
-		}
-	}
-
-	// 最後にプレイヤーとの接続ジョイントを削除
-	b2Body* playerBody = Player::GetOutSidePlayerBody();
-	if (playerBody) {
-		b2JointEdge* jointEdge = playerBody->GetJointList();
-		while (jointEdge) {
-			b2Joint* joint = jointEdge->joint;
-			jointEdge = jointEdge->next; // 次のジョイントを保持
-			world->DestroyJoint(joint); // ジョイント削除
-		}
-	}
-}
-
 void Anchor::DrawChain() {
 
 	float scale = SCREEN_SCALE;
 
-	for (int i = 0; i < MAX_CHAIN_NUM; ++i) {
-		b2Body* chainBody = anchor_chain[i];
-		if (chainBody == nullptr) continue;
 
-		b2Vec2 position = chainBody->GetPosition();
 
-		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + SCREEN_CENTER_X;
-		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + SCREEN_CENTER_Y;
-
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
-
-		// 描画
-		DrawSprite(
-			{ draw_x, draw_y },
-			chainBody->GetAngle(),
-			{ g_anchor_instance->GetChainSize().x * scale ,  g_anchor_instance->GetChainSize().y * scale }
-		);
-	}
 }
+
+
+
+
