@@ -21,12 +21,13 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
-
+#include"player.h"
 
 
 
 class MyContactListener : public b2ContactListener {
 private:
+    Player player = Player::GetInstance();
 
 public:
     b2Vec2 contactPoint;//衝突した地点
@@ -70,8 +71,7 @@ public:
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
             // 衝突処理（プレーヤーと地面が接触した時）
             
-            int i = 0;
-            // 必要な処理をここに記述
+            player.SetIsJumping(false);
 
 
         }
