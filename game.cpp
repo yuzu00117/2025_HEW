@@ -51,6 +51,9 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//フィールドの初期化
 	Field::Initialize();
 
+	//体力ソウルゲージUIの初期化
+	stamina_spirit_gauge.Initialize();
+
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	// 衝突リスナーをワールドに登録
 	MyContactListener& contactListener = MyContactListener::GetInstance();
@@ -89,6 +92,9 @@ void Game::Finalize(void)
 
 	//文字（絵）
 	FinalizeWord();
+
+	//体力ソウルゲージUIの終了処理
+	stamina_spirit_gauge.Finalize();
 	
 	//レンダリングの終了処理
 	UninitRenderer();
@@ -147,6 +153,8 @@ void Game::Draw(void)
 	//フィールドの描画処理
 	Field::Draw();
 
+	//体力ソウルゲージUIの描画処理
+	stamina_spirit_gauge.Draw();
 
 
 
