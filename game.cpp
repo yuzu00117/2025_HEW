@@ -19,6 +19,8 @@
 #include"game.h"
 #include"contactlist.h"
 #include"anchor.h"
+#include"word.h"
+#include"debug.h"
 
 
 
@@ -33,6 +35,9 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	//ポリゴン
 	InitSprite();
+
+	//文字（絵）
+	InitializeWord();
 
 	//コントローラーの初期化
 	controller.Initialize(hInstance,hWnd);
@@ -50,6 +55,13 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 衝突リスナーをワールドに登録
 	MyContactListener& contactListener = MyContactListener::GetInstance();
 	world->SetContactListener(&contactListener);
+
+
+
+#ifndef _DEBUG
+	//デバッグ文字
+	InitializeDebug();
+#endif // !_DEBUG
 
 	return S_OK;
 }
@@ -75,9 +87,18 @@ void Game::Finalize(void)
 	//フィールドの終了処理
 	Field::Finalize();
 
+	//文字（絵）
+	FinalizeWord();
 	
 	//レンダリングの終了処理
 	UninitRenderer();
+
+
+#ifdef _DEBUG
+	//デバッグ文字
+	FinalizeDebug();
+#endif // _DEBUG
+
 }
 
 
@@ -99,6 +120,13 @@ void Game::Update(void)
 	Field::Update();
 
 	controller.CheckInput();
+
+
+#ifdef _DEBUG
+	//デバッグ文字
+	UpdateDebug();
+#endif // _DEBUG
+
 }
 
 
@@ -120,6 +148,12 @@ void Game::Draw(void)
 	Field::Draw();
 
 
+
+
+#ifdef _DEBUG
+	//デバッグ文字
+	DrawDebug();
+#endif // _DEBUG
 
 	//バックバッファ、フロントバッファ入れ替え
 	Present();
