@@ -29,7 +29,7 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitRenderer(hInstance, hWnd, bWindow);
 
 	//サウンドの初期化
-	InitSound(hWnd);
+	CRIInitialize();
 
 	//ポリゴン
 	InitSprite();
@@ -63,7 +63,7 @@ void Game::Finalize(void)
 	controller.Release();
 
 	//サウンドの終了処理
-	UninitSound();
+	CRIFinalize();
 
 
 	//プレイヤーの終了処理
@@ -89,6 +89,8 @@ void Game::Update(void)
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	world->Step(1.0f / 60.0f, 6, 2);
 
+	CRIUpdate();
+
 	//プレイヤーの更新処理
 	player.Update();
 
@@ -99,6 +101,8 @@ void Game::Update(void)
 	Field::Update();
 
 	controller.CheckInput();
+
+
 }
 
 
