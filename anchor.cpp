@@ -87,15 +87,7 @@ void Anchor::DeleteAnchor()
 	}
 	
 }
-void Anchor::ToggleAnchor()
-{
-	if (g_anchor_instance != nullptr && g_anchor_instance->GetAnchorBody() != nullptr) {
-		DeleteAnchor();
-	}
-	else {
-		CreateAnchor(b2Vec2(2.0f,2.0f));
-	}
-}
+
 
 
 void Anchor::CreateAnchorBody(b2Vec2 anchor_size)

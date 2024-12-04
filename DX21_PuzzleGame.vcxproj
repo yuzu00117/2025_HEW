@@ -147,6 +147,7 @@
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="wood.cpp" />
     <ClCompile Include="Xinput_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="object_manager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_position.h" />
     <ClInclude Include="renderer.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="wood.h" />
     <ClInclude Include="world_box2d.h" />
     <ClInclude Include="Xinput_controller.h" />
   </ItemGroup>
