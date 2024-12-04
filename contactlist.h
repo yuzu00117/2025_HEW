@@ -21,6 +21,7 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
+#include"object_manager.h"
 
 
 
@@ -48,6 +49,7 @@ public:
     // 衝突した瞬間
     void BeginContact(b2Contact* contact) override {
 
+        ObjectManager& object_manager = ObjectManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -113,6 +115,23 @@ public:
             b2WorldManifold worldManifold;
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
+
+            //木のオブジェクトの引っ張る処理
+            if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
+            {
+                //どちらが木のオブジェクトか特定
+                if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
+                {
+                    wood*wood_instance=object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
+                }
+                else
+                {
+                    wood* wood_instance = object_manager.FindWoodByID(objectB->id);
+                    wood_instance->Pulling_wood(objectB->add_force);
+                }
+
+            }
         }
 
      

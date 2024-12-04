@@ -307,6 +307,7 @@ void Anchor::ThrowAnchorToAP()
 	
 void Anchor::CreateRotateJoint()
 {
+	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(b2Vec2_zero);//とんできたアンカーのベロシティをゼロにする
 	MyContactListener& contact_listener = MyContactListener::GetInstance();
 
 	if (g_anchor_instance == nullptr || g_anchor_instance->GetAnchorBody() == nullptr) {

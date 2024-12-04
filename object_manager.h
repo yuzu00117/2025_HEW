@@ -1,54 +1,59 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager
 // #description オブジェクトを管理するためのファクトリーのイメージに近い
-// #make 2024/11/22　永野義也
-// #update 2024/12/03
+// #make 2024/12/04　永野義也
+// #update 2024/12/04
 // #comment 追加・修正予定
 //          ・オブジェクトを作るごとに生成する感じ
 //----------------------------------------------------------------------------------------------------
 
 
-#ifndef OBJECT_MANAGER
-#define OBJECT_MANAGER
+#ifndef OBJECT_MANAGER_H
+#define OBJECT_MANAGER_H
 
+#include <vector>
+#include <memory>
+#include "wood.h"
 
-#include"vector"
-#include"wood.h"
-#include <iostream>
+// オブジェクトの種類を定義
+enum ObjectType {
+    Object_Wood, // 木
+    Object_Rock, // 岩
+};
 
+// オブジェクトを管理するクラス
 class ObjectManager {
 public:
-    void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize) {//木を追加するオブジェクト
-        woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize));
-    }
+    // シングルトンのインスタンス取得
+    static ObjectManager& GetInstance();
 
-    void InitializeAll() {
-        for (auto& w : woodList) {
-            w->Initialize();
-        }
-    }
+    // 木を追加
+    void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool&right);
 
-    void UpdateAll() {
-        for (auto& w : woodList) {
-            w->Update();
-        }
-    }
+    // ID を使って木を検索
+    wood* FindWoodByID(int id);
 
-    void DrawAll() {
-        for (auto& w : woodList) {
-            w->Draw();
-        }
-    }
+    // 全てのオブジェクトを初期化
+    void InitializeAll();
 
-    void FinalizeAll() {
-        for (auto& w : woodList) {
-            w->Finalize();
-        }
-        woodList.clear(); // 動的配列をクリアしてメモリ解放
-    }
+    // 全てのオブジェクトを更新
+    void UpdateAll();
+
+    // 全てのオブジェクトを描画
+    void DrawAll();
+
+    // 全てのオブジェクトを破棄
+    void FinalizeAll();
 
 private:
     std::vector<std::unique_ptr<wood>> woodList; // 木のリスト
+
+    //ここにオブジェクトごとにリストを追加していく感じだねぇー
+
+
+    ObjectManager() = default;
+    ObjectManager(const ObjectManager&) = delete;
+    ObjectManager& operator=(const ObjectManager&) = delete;
 };
 
-#endif // !OBJECT_MANAGER
+#endif // OBJECT_MANAGER_H

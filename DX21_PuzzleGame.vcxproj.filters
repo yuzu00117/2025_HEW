@@ -120,6 +120,9 @@
     <ClCompile Include="wood.cpp">
       <Filter>ソース ファイル\collider\object</Filter>
     </ClCompile>
+    <ClCompile Include="object_manager.cpp">
+      <Filter>ソース ファイル\collider\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">

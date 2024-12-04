@@ -209,7 +209,7 @@ void Player::Update()
         //ここはコンタクトリストないの接触判定から接触状態へと移行
         break;
     case Connected_state://物体がくっついた状態　ジョイントの作成
-
+       
    
 
         Anchor::CreateRotateJoint();//回転ジョイントを作成

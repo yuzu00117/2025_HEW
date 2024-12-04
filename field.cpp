@@ -36,9 +36,8 @@ std::vector<std::vector<int>> Field::m_field_data;
 int Field::m_field_width = 0;
 int Field::m_field_height = 0;
 
-//objectクラスのインスタンス
-ObjectManager objectManager;
 
+ObjectManager& objectManager = ObjectManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
@@ -118,7 +117,10 @@ void Field::Initialize()
 				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
 			}
 			if (field_map[y][x] == 7) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f),b2Vec2(1.0f,1.0f));
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f),b2Vec2(1.0f,1.0f),true);
+			}
+			if (field_map[y][x] == 8) {
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
 			}
 		}
 	}

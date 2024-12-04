@@ -1,9 +1,21 @@
+//-----------------------------------------------------------------------------------------------------
+// #name wood.cpp
+// #description 木のオブジェクトのCPP
+// #make 2024/12/04　永野義也
+// #update 2024/12/04
+// #comment 追加・修正予定
+//          ・ないとおもうー
+//			・あるなら右だけに倒れたいとかあったらやるかもねー
+//----------------------------------------------------------------------------------------------------
+
 #include"wood.h"
 #include"include/box2d/box2d.h"
 #include"world_box2d.h"
 #include"collider_type.h"
 #include"sprite.h"
 #include"texture.h"
+#include"player_position.h"
+#include"collider_type.h"
 #include"player_position.h"
 
 
@@ -14,7 +26,9 @@ static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//アンカーのテクスチャ
 
 
-wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size)
+int ObjectData::current_id = 0;
+
+wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,bool left)
 {
 
 	SetWoodSize(Wood_size);
@@ -53,8 +67,8 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size)
 	b2FixtureDef wood_fixture;
 
 	wood_fixture.shape = &Wood_shape;
-	wood_fixture.density = 1.0f;
-	wood_fixture.friction = 0.05f;//摩擦
+	wood_fixture.density = 3.0f;
+	wood_fixture.friction = 0.5f;//摩擦
 	wood_fixture.restitution = 0.0f;//反発係数
 	wood_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
@@ -104,8 +118,21 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size)
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
+	object_anchorpoint_data->object_name = Object_Wood;
 
 
+	int ID=object_anchorpoint_data->GenerateID();
+	object_anchorpoint_data->id = ID;
+	SetID(ID);
+
+	//木を倒しす時に必要になるForce とりあえずサイズに依存でつくる
+	b2Vec2 need_power;
+
+	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//１は必要に応じて変更して
+	need_power.y = 10.0f;//縦に必要な力はない
+	
+
+	object_anchorpoint_data->add_force = need_power;
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 	//ジョイントする
 
@@ -119,10 +146,7 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size)
 	world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加
 
 	//-------------------------------------------------------------------------------------------
-
 	//木を倒す為に必要な挙動
-
-
 
 };
 
@@ -134,7 +158,7 @@ wood::~wood()
 void wood::Initialize()
 {
 	//アンカーの錨の部分（日本語）
-	g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
+	g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
 	g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 	g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
 
@@ -143,6 +167,19 @@ void wood::Initialize()
 void wood::Update()
 {
 
+
+}
+
+void wood::Pulling_wood(b2Vec2 pulling_power)
+{
+	b2Body*body=GetObjectAnchorPointBody();
+	//プレイヤー側に倒す
+	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	{
+		pulling_power.x = pulling_power.x * -1;
+	}
+
+	body->SetLinearVelocity(pulling_power);
 }
 
 void wood::Draw()

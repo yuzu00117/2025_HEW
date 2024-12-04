@@ -140,6 +140,7 @@
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="renderer.cpp" />
