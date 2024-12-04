@@ -111,6 +111,12 @@
     <ClCompile Include="ground.cpp">
       <Filter>ソース ファイル\collider</Filter>
     </ClCompile>
+    <ClCompile Include="word.cpp">
+      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -181,6 +187,12 @@
     </ClInclude>
     <ClInclude Include="ground.h">
       <Filter>ヘッダー ファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="word.h">
+      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

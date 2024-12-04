@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
+    <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="word.cpp" />
     <ClCompile Include="Xinput_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,6 +156,7 @@
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
+    <ClInclude Include="debug.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
     <ClInclude Include="enemy.h" />
@@ -171,6 +174,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="word.h" />
     <ClInclude Include="world_box2d.h" />
     <ClInclude Include="Xinput_controller.h" />
   </ItemGroup>
