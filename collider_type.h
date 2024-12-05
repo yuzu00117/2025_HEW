@@ -29,6 +29,8 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
 
     collider_enemy_dynamic,
     collider_enemy_static,
+
+    collider_item,
 };
 
 
