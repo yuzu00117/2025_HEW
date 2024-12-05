@@ -62,7 +62,7 @@ void Anchor::Initialize()
 	g_Anchor_Texture=InitTexture(L"asset\\texture\\sample_texture\\img_anchor.png");
 
 	//アンカーの鎖
-	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
+	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
 }
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
@@ -338,6 +338,36 @@ void Anchor::CreateRotateJoint()
 	world->CreateJoint(&jointDef);
 }
 
+/**
+ * @brief ジョイントを削除する
+ * @param 
+ */
+void Anchor::DeleteRotateJoint(void)
+{
+	if (g_anchor_instance == nullptr || g_anchor_instance->GetAnchorBody() == nullptr) {
+		return; // アンカーが存在しない場合は何もしない
+	}
+
+	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
+
+	// すべてのジョイントを調べる
+	for (b2JointEdge* jointEdge = anchorBody->GetJointList(); jointEdge != nullptr; jointEdge = jointEdge->next) {
+		b2Joint* joint = jointEdge->joint;
+
+		// ジョイントが回転ジョイントか確認
+		if (joint->GetType() == e_revoluteJoint) {
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+			// ジョイントを削除
+			world->DestroyJoint(joint);
+			break; // 1つ削除したらループ終了
+		}
+	}
+}
+
+
+
 void Anchor::PullingAnchor(void)
 {
 	//プレイヤーとアンカーの座標を取得する
@@ -347,7 +377,7 @@ void Anchor::PullingAnchor(void)
 
 	b2Vec2 velocity = player_postion - anchor_postion;
 	velocity.Normalize(); // 単位ベクトル化して方向を決定
-	velocity *= 3; // 投擲速度を設定	
+	velocity *= 6; // 投擲速度を設定	
 
 	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);
 
@@ -384,7 +414,50 @@ AnchorState Anchor::GetAnchorState()
 
 void Anchor::DrawChain() {
 
+
+	// スケール設定
 	float scale = SCREEN_SCALE;
+
+	// スクリーン中央位置
+	b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+
+	// プレイヤーとアンカーの位置を取得
+	b2Body* anchor = g_anchor_instance->GetAnchorBody();
+	b2Vec2 anchor_position = anchor->GetPosition();
+	b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
+
+	// 距離を計算
+	float distance = b2Distance(anchor_position, player_position);
+
+	// チェーンの描画間隔とチェーン数
+	const float chain_interval = 0.2f; // チェーン間隔（Box2Dスケールで）
+	int chain_count = static_cast<int>(distance / chain_interval);
+
+	// チェーンの角度を計算（プレイヤーからアンカーへの角度）
+	float angle = atan2(anchor_position.y - player_position.y, anchor_position.x - player_position.x);
+
+	// チェーンサイズ設定 (X方向が長い)
+	b2Vec2 chain_size(0.2f, 0.05); // Xが長いチェーン
+
+	// チェーン描画
+	for (int i = 0; i <= chain_count; ++i)
+	{
+		// 線形補間で位置を計算
+		float t = static_cast<float>(i) / chain_count; // 0.0～1.0の範囲
+		b2Vec2 interpolated_position = player_position + t * (anchor_position - player_position);
+
+		// スクリーン座標に変換
+		float draw_x = ((interpolated_position.x - player_position.x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((interpolated_position.y - player_position.y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		// チェーン描画
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture); // チェーン用テクスチャ
+		DrawSprite(
+			{ draw_x, draw_y },
+			angle, // プレイヤーとアンカーの角度
+			{ chain_size.x * BOX2D_SCALE_MANAGEMENT * scale, chain_size.y * BOX2D_SCALE_MANAGEMENT * scale }
+		);
+	}
 
 
 

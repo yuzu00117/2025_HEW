@@ -61,6 +61,7 @@ public:
 	 */
 	void CreateAnchorBody(b2Vec2 anchor_size);
 
+
 	/**
 	 * @brief アンカーのボディを削除する
 	 */
@@ -84,6 +85,8 @@ public:
 	 * @brief  ぶつかったら回転ジョイントを付ける
 	 */
 	static void CreateRotateJoint();
+
+	static void DeleteRotateJoint();
 
 
 
