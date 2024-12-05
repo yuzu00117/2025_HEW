@@ -2,10 +2,9 @@
 // #name enemy.h
 // #description 動的、静的エネミーの継承元、エネミークラスのヘッダーファイル
 // #make 2024/11/19
-// #update 2024/11/22
+// #update 2024/12/04
 // #comment 追加・修正予定
-//          ・プレイヤーと衝突で体力を削る関数ノ追加
-//			・倒れたオブジェクトに巻き込まれて消える処理ノ追加
+//          
 //           
 //----------------------------------------------------------------------------------------------------
 
@@ -26,13 +25,13 @@ private:
 	int m_damage;
 	//エネミーを倒した際に獲るソウルゲージ
 	int m_soulgage;
+	//エネミーを倒した際に獲るスコア
+	int m_score;
 public:
 	Enemy() = default;
-	Enemy(int life, int damage, int soulgage)
-		:m_life(life), m_damage(damage), m_soulgage(soulgage) {}
+	Enemy(int life, int damage, int soulgage, int score)
+		:m_life(life), m_damage(damage), m_soulgage(soulgage), m_score(score){}
 	virtual ~Enemy() = default;
-
-	static void SetEnemy(Enemy* enemy);
 
 	int GetLife()
 	{
@@ -61,10 +60,7 @@ public:
 		m_life = soulgage;
 	}
 
-	static void Update();
 	virtual void UpdateEnemy() = 0;
-	bool CheckEnemy();
-	static void Finalize();
 };
 
 #endif	//ENEMY_H

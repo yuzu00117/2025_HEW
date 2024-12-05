@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
+    <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
@@ -142,6 +143,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_position.cpp" />
+    <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
@@ -152,6 +154,7 @@
   <ItemGroup>
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
+    <ClInclude Include="anchor_spirit.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="DirectXTex.h" />
@@ -166,6 +169,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_position.h" />
+    <ClInclude Include="player_stamina.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />

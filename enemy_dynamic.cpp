@@ -2,7 +2,7 @@
 // #name enemyDynamic.h
 // #description 動的エネミー(プレイヤー追従)のcppファイル
 // #make 2024/11/20
-// #update 2024/11/29
+// #update 2024/12/04
 // #comment 追加・修正予定
 //          ・ステータス調整
 //			・必要に応じた移動方法ノ変更(地走バージョンノ作成など)
@@ -18,12 +18,13 @@
 #include"keyboard.h"
 #include<Windows.h>
 #include"player_position.h"
+#include"player_stamina.h"
 #include"contactlist.h"
 
-
+EnemyDynamic* g_p_enemies_dynamic[ENEMY_MAX] = { nullptr };
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE)
+	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -39,8 +40,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool 
 
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
 	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
-
-	SetFieldBody(world->CreateBody(&body));//Bodyをワールドに固定
+	SetFieldBody(world->CreateBody(&body));				//Bodyをワールドに固定
 
 
 	SetSize(body_size);//表示用にサイズをセットしとく、表示のときにGetSizeを呼び出す
@@ -63,7 +63,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool 
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
 
-	b2Fixture* enemy_dynamic_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
+	b2Fixture* enemy_dynamic_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyにフィクスチャを登録する
 
 	// カスタムデータを作成して設定
 	// 動的エネミーに値を登録
@@ -71,7 +71,25 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool 
 	ObjectData* data = new ObjectData{ collider_enemy_dynamic };
 	enemy_dynamic_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
-	SetEnemy(this);
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (!g_p_enemies_dynamic[i])
+		{
+			g_p_enemies_dynamic[i] = this;
+			return;
+		}
+	}
+}
+
+void EnemyDynamic::Update()
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			g_p_enemies_dynamic[i]->UpdateEnemy();
+		}
+	}
 }
 
 void EnemyDynamic::UpdateEnemy()
@@ -93,4 +111,41 @@ void EnemyDynamic::UpdateEnemy()
 	enemy_move.y = (enemy_vector.y * m_speed);
 
 	GetFieldBody()->ApplyForceToCenter(b2Vec2(enemy_move.x, enemy_move.y), true);
+}
+
+void EnemyDynamic::CollisionPlayer(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
+			{
+				PlayerStamina::EditPlayerStaminaValue(-g_p_enemies_dynamic[i]->GetDamage());
+				
+				//ワールドに登録したbodyの削除(追加予定)
+				/*if(g_p_enemies_dynamic[i]->GetFieldBody())
+				{
+					Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+					b2World* world = box2d_world.GetBox2dWorldPointer();
+					world->DestroyBody(g_p_enemiey_collision);
+				}*/
+
+				Field::DeleteFieldObject(collision_enemy);
+				g_p_enemies_dynamic[i] = nullptr;
+				return;
+			}
+		}
+	}
+}
+
+void EnemyDynamic::Finalize()
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			g_p_enemies_dynamic[i] = nullptr;
+		}
+	}
 }

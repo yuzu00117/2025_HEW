@@ -2,7 +2,7 @@
 // #name enemy.h
 // #description 静的エネミーのcppファイル
 // #make 2024/11/19
-// #update 2024/11/29
+// #update 2024/12/04
 // #comment 追加・修正予定
 //          ・
 //           
@@ -19,8 +19,10 @@
 #include"player_position.h"
 #include"contactlist.h"
 
+EnemyStatic* g_p_enemies_static[ENEMY_MAX] = { nullptr };
+
 EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE)
+	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -67,9 +69,58 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bF
 	// 動的エネミーにユーザーデータを登録
 	ObjectData* data = new ObjectData{ collider_enemy_static };
 	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (!g_p_enemies_static[i])
+		{
+			g_p_enemies_static[i] = this;
+			return;
+		}
+	}
+}
+
+void EnemyStatic::Update()
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_static[i])
+		{
+			g_p_enemies_static[i]->UpdateEnemy();
+		}
+	}
 }
 
 void EnemyStatic::UpdateEnemy()
 {
 
+}
+
+void EnemyStatic::CollisionPlayer(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_static[i])
+		{
+			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
+			{
+				PlayerStamina::EditPlayerStaminaValue(-g_p_enemies_static[i]->GetDamage());
+
+				Field::DeleteFieldObject(collision_enemy);
+				g_p_enemies_static[i] = nullptr;
+				return;
+			}
+		}
+	}
+}
+
+void EnemyStatic::Finalize()
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_static[i])
+		{
+			g_p_enemies_static[i] = nullptr;
+		}
+	}
 }

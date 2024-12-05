@@ -61,12 +61,12 @@ public:
 	FieldTexture  GetFieldTexture(void){return texture;}
 	void SetFieldTexture(const FieldTexture field_texture) { texture = field_texture; }
 
-  
+	static void DeleteFieldObject(b2Body* delete_object);
   
 private:
 
 	//Body
-	b2Body *m_body;
+	b2Body* m_body;
 
 	//表示に使用するサイズ
 	b2Vec2 m_size;

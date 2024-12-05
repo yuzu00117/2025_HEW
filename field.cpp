@@ -47,7 +47,6 @@ Field::Field()
 }
 
 
-
 Field::~Field()
 {
 }
@@ -117,7 +116,8 @@ void Field::Update()
 {
 	//アンカーポイントの更新
 	AnchorPoint::Update();
-	Enemy::Update();
+	EnemyDynamic::Update();
+	EnemyStatic::Update();
 }
 
 
@@ -197,8 +197,9 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
-  
-  Enemy::Finalize();
+
+	EnemyDynamic::Finalize();
+	EnemyStatic::Finalize();
 }
 
 
@@ -246,4 +247,24 @@ bool Field::LoadCSV(const std::string &filename)
     m_field_height = m_field_data.size();  // 行数がフィールドの高さ
     m_field_width = (m_field_data.empty() ? 0 : m_field_data[0].size());  // 最初の行の列数がフィールドの幅
 	return true;
+}
+
+//フィールドのオブジェクトを消す処理(消すオブジェクトのボディを取得)
+void Field::DeleteFieldObject(b2Body* delete_object)
+{
+	for (int y = 0; y < m_field_height; ++y)
+	{
+		for (int x = 0; x < m_field_width; ++x)
+		{
+			if (m_p_field_array[y][x])
+			{
+				if (m_p_field_array[y][x]->GetFieldBody() == delete_object)
+				{
+					delete m_p_field_array[y][x];
+					m_p_field_array[y][x] = nullptr;
+					return;
+				}
+			}
+		}
+	}
 }

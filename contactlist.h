@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2024/11/22
+// #update 2024/12/04
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -21,7 +21,8 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
-
+#include"enemy_static.h"
+#include"enemy_dynamic.h"
 
 
 
@@ -115,7 +116,63 @@ public:
             contactPoint = worldManifold.points[0];
         }
 
+        //プレイヤーと静的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player) ||
+            (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_static))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPlayer(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPlayer(fixtureB->GetBody());
+            }
+        }
+
+        //プレイヤーと動的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player) ||
+            (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_dynamic))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::CollisionPlayer(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::CollisionPlayer(fixtureB->GetBody());
+            }
+        }
      
+        //アンカーポイントと静的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static) &&
+            (Anchor::GetAnchorState() == Pulling_state))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPlayer(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPlayer(fixtureB->GetBody());
+            }
+        }
+
+        //アンカーポイントと動的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic) &&
+            (Anchor::GetAnchorState() == Pulling_state))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            {
+                EnemyDynamic::CollisionPlayer(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            {
+                EnemyDynamic::CollisionPlayer(fixtureB->GetBody());
+            }
+        }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突終了時
