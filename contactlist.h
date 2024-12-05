@@ -78,6 +78,17 @@ public:
 
         }
 
+        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_anchor) ||
+            (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player))
+        {
+            if (Anchor::GetAnchorState() == Pulling_state)
+            {
+                Anchor::SetAnchorState(Deleting_state);
+            }
+
+
+        }
+
 
         //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_anchor_point) ||
