@@ -11,7 +11,9 @@
 #ifndef COLLIDER_TYPE_H
 #define COLLIDER_TYPE_H
 
-
+#include <string>
+#include"include/box2d/box2d.h"
+#include"object_manager.h"
 
 enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあたり判定の種類を追加したい場合ここに足して　下でセットしてね
 {
@@ -41,6 +43,24 @@ public:
     // Constructor
     ObjectData(const ColliderTypeList type)
         : collider_type(type), extra(nullptr) {}
+
+
+    b2Vec2 add_force = { 0.0f,0.0f };// 追加のb2vecデータ
+    ObjectType object_name;  // 追加の文字列データ
+    int id;//オブジェクトを管理するためのID
+
+    // ID を生成する関数
+    static int GenerateID() {
+        return current_id++;//全てのIDを管理
+    }
+
+private:
+    // 静的カウンタ ID
+    static int current_id;
+
+  
+
+
 };
 
 

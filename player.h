@@ -23,7 +23,7 @@ public:
 
 
 	// シングルトンのインスタンス取得 　このクラスでは一つのインスタンスしか認めない
-	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 1),b2Vec2 sensor_size=b2Vec2(30,20)) {
+	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(30,20)) {
 		static Player instance(position, size,sensor_size); // Initialized only once
 		return instance;
 	}
@@ -53,18 +53,29 @@ public:
 	}
 
 
-
-	//今ジャンプ可能かをコントロールする関数
-	void SetJumpFlag(bool flag)
+	//今ジャンプ中かどうかをセット
+	void SetIsJumping(bool flag)
 	{
-		m_can_jump = flag;
+		m_is_jumping = flag;
+	}
+	//今ジャンプ中かどうかを取得
+	bool GetIsJumping(void)
+	{
+		return m_is_jumping;
 	}
 
-	bool GetCanJump(void)
+
+	//今の速度を取得
+	float	GetSpeed()
 	{
-		return m_can_jump;
+		return m_speed;
 	}
 
+	//今のプレイヤーの向きを取得
+	// 右向き：1    左向き：-1
+	int		GetDirection() {
+		return m_direction;
+	}
 
 	 b2Body*GetPlayerBody(void)
 	{
@@ -92,14 +103,19 @@ private:
 	b2Vec2 m_sensor_size;
 
 
-	//今ジャンプ可能なのか（contactlist.hの方でコントロールしてる）
-	bool    m_can_jump = true;
-
+	//ジャンプボタン押されたかどうか（トリガー制御）
+	static bool m_jump_pressed;
+	//ジャンプ中かどうか
+	static bool    m_is_jumping;
 	//ジャンプする時の力（ジャンプできる高さに影響）
-	b2Vec2  m_jump_force = b2Vec2(0.0, -0.02);
+	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.25f);
 
 	//横移動スピード
-	float   m_speed = 10.0f;
+	float   m_speed = 0.04f;
+
+	//プレイヤーの向き
+	// 右向き：1    左向き：-1
+	static int		m_direction;
 
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;

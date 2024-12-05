@@ -30,10 +30,12 @@ ID3D11ShaderResourceView* g_player_Texture=NULL;
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 
+//staticメンバー変数の初期化
+bool    Player::m_is_jumping = false;
+bool    Player::m_jump_pressed = false;
+int     Player::m_direction = 1;
 
 
-//プレーヤーのポインターをNULLに
-Player *player=nullptr;
 
 b2Body* player_body;
 
@@ -80,28 +82,45 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     size_sensor.y=sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-    b2PolygonShape shape;
-    shape.SetAsBox(size.x * 0.5 , size.y * 0.5f );
+    //プレイヤーの上の円のコライダー
+//-------------------------------------------
+    b2CircleShape circle_upper;
+    circle_upper.m_p.Set(position.x, position.y);//上の方の円
+    circle_upper.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
-    
+    b2FixtureDef fixture_circle_upper;
+    fixture_circle_upper.shape = &circle_upper;
+    fixture_circle_upper.density = 1.3f;
+    fixture_circle_upper.friction = 3.0f;//摩擦
+    fixture_circle_upper.restitution = 0.0f;//反発係数
+    fixture_circle_upper.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
-    b2FixtureDef fixture;
-    fixture.shape = &shape;
-    fixture.density = 1.0f;//密度
-    fixture.friction = 0.05f;//摩擦
-    fixture.restitution = 0.1f;//反発係数
-    fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
-  
+    //プレイヤーの下の円のコライダー
+    //-------------------------------------------
+    b2CircleShape circle_bottom;
+    circle_bottom.m_p.Set(position.x, position.y + 0.1f);//下の方の円
+    circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
-   
-    b2Fixture* player_fixture =m_body->CreateFixture(&fixture);
+    b2FixtureDef fixture_circle_bottom;
+    fixture_circle_bottom.shape = &circle_bottom;
+    fixture_circle_bottom.density = 1.3f;
+    fixture_circle_bottom.friction = 3.0f;//摩擦
+    fixture_circle_bottom.restitution = 0.0f;//反発係数
+    fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+    //----------------------------------------------------
+
+    //fixtureをbodyに登録
+    b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
+    b2Fixture* bottom_circle_fixture = m_body->CreateFixture(&fixture_circle_bottom);
 
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
     // プレーヤーにユーザーデータを登録
-    ObjectData* playerdata = new ObjectData{collider_player};
-    player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
+    ObjectData* playerdata = new ObjectData{ collider_player };
+    //player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
+    upper_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
+    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
 
   
     //--------------------------------------------------------------------------------------------------
@@ -160,35 +179,79 @@ void Player::Update()
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
 
-    //右移動
-    if (Keyboard_IsKeyDown(KK_RIGHT))
+    //横移動
+   //----------------------------------------------------------------------------------------------------------------------------------------------------
+
+       //スティックの値を受け取って正規化する
+    float left_stick_x = state.leftStickX / 40000.0f;
+    float left_stick_y = state.leftStickY / 40000.0f;
+    b2Vec2 vel = m_body->GetLinearVelocity();
+    b2Vec2 max_velocity = { 1.8f , 1.2f };
+    b2Vec2 player_position = { PlayerPosition::GetPlayerPosition().x,PlayerPosition::GetPlayerPosition().y };
+    b2Vec2 player_point = m_body->GetWorldPoint(player_position);
+
+    //絶対値に変更する デットゾーンの審査に使うため　tool.cppに作った
+    //デットゾーンをつくる x,yの値を足して一定以上経ったら　呼び出し
+    if (0.5f < ReturnAbsoluteValue(left_stick_x) || Keyboard_IsKeyDown(KK_RIGHT) || Keyboard_IsKeyDown(KK_LEFT))
     {
-        m_body->ApplyForceToCenter(b2Vec2(0.1, 0.0), true);
+        // 今のスティック値を、正規化して単位ベクトルにする
+        b2Vec2 stick = { left_stick_x,  left_stick_y };
+        stick.Normalize();
+
+        //状態によってスピードが調整される
+       //----------------------------------------------------------
+        float adjust_speed = 0.0f;
+        //ジャンプしている時はスピードは半分下がる
+        if (GetIsJumping())
+        {
+            adjust_speed = -(GetSpeed() / 2);
+        }
+        //----------------------------------------------------------
+        //右移動
+        if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
+        {
+            m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
+            m_direction = 1;
+        }
+        //左移動
+        if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
+        {
+            m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
+            m_direction = -1;
+        }
+
     }
 
-    //左移動
-    if (Keyboard_IsKeyDown(KK_LEFT))
-    {
-        m_body->ApplyForceToCenter(b2Vec2(-0.1, 0.0), true);
-    }
 
-
-    //コントローラーでの受け取り 横移動
-    m_body ->ApplyForceToCenter(b2Vec2(state.leftStickX / 20000, 0.0), true);
-
+    //ジャンプ処理
+//----------------------------------------------------------------------------------------------------------------------------------------------------
 
     //ジャンプチェック
-    if (m_can_jump && (Keyboard_IsKeyDown(KK_UP) || (state.buttonA)))
+    if (!m_is_jumping && !m_jump_pressed && ((Keyboard_IsKeyDown(KK_UP) || (state.buttonA))))
     {
-
-        m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
-
+        if (vel.y < max_velocity.y)
+        {
+            m_body->ApplyLinearImpulse(m_jump_force, { 0.0f,1.0f }, true);
+        }
+        // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
+        m_is_jumping = true;
     }
+    m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
+
+
+
+
+    //----------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //プレイヤーポジションCPPの関数にデータをセット
+    PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
 
  //アンカーの処理
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    if ((Keyboard_IsKeyDown(KK_T) || (state.buttonB))&&Anchor::GetAnchorState()==Nonexistent_state)//何も存在しない状態でボタン入力で移行する
+
+    if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         Anchor::SetAnchorState(Create_state);//作成状態に移行
     }
@@ -205,42 +268,38 @@ void Player::Update()
     case Throwing_state://錨が飛んでいる状態
         Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
 
-        
+
         //ここはコンタクトリストないの接触判定から接触状態へと移行
         break;
     case Connected_state://物体がくっついた状態　ジョイントの作成
-
-        Anchor::CreateChain(b2Vec2(0.3f, 1.0f),40);
 
         Anchor::CreateRotateJoint();//回転ジョイントを作成
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
         break;
 
     case Pulling_state://引っ張っている状態
-        //Anchor::PullingAnchor();//ぶつかったアンカーを引っ張る
-        //ここの判定の仕方どうしようかな？？
+
         //呼ばれた回数でするかね　とりあえず2秒で
-
-        if (g_anchor_pulling_number > 1200)
+        if (g_anchor_pulling_number > 100)
         {
-            Anchor::SetAnchorState(Deleting_state);//状態をアンカーを削除する状態に移行
-
-            g_anchor_pulling_number = 0;//値をリセット
+            Anchor::DeleteRotateJoint();
+            Anchor::PullingAnchor();
         }
-        g_anchor_pulling_number++;
 
-        if ((state.buttonY)||(Keyboard_IsKeyDown(KK_G)))
+
+        if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_T)))
         {
-            g_anchor_pulling_number = 0;//値をリセット
-            Anchor::SetAnchorState(Deleting_state);//状態をアンカーを削除する状態に移行
+            g_anchor_pulling_number = 200;
         }
-        
+
+        g_anchor_pulling_number++;//アンカーが引っ張る
 
         break;
 
     case Deleting_state://削除している状態
+        g_anchor_pulling_number = 0;
         Anchor::DeleteAnchor();//アンカーを削除
-        Anchor::DeleteChain();
+
         Anchor::SetAnchorState(Nonexistent_state);
 
         break;
@@ -268,11 +327,11 @@ void Player::Update()
     //keybordでのアンカーポイントの設定　Ｙ軸
     if (Keyboard_IsKeyDown(KK_W))
     {
-        stick_y = -1.0f;
+        stick_y = +1.0f;
     }
     if (Keyboard_IsKeyDown(KK_S))
     {
-        stick_y = 1.0f;
+        stick_y = -1.0f;
     }
    
 
