@@ -23,7 +23,7 @@ public:
 
 
 	// シングルトンのインスタンス取得 　このクラスでは一つのインスタンスしか認めない
-	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 1),b2Vec2 sensor_size=b2Vec2(30,20)) {
+	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(30,20)) {
 		static Player instance(position, size,sensor_size); // Initialized only once
 		return instance;
 	}
@@ -53,7 +53,6 @@ public:
 	}
 
 
-
 	//今ジャンプ中かどうかをセット
 	void SetIsJumping(bool flag)
 	{
@@ -72,7 +71,11 @@ public:
 		return m_speed;
 	}
 
-
+	//今のプレイヤーの向きを取得
+	// 右向き：1    左向き：-1
+	int		GetDirection() {
+		return m_direction;
+	}
 
 	 b2Body*GetPlayerBody(void)
 	{
@@ -109,6 +112,10 @@ private:
 
 	//横移動スピード
 	float   m_speed = 0.04f;
+
+	//プレイヤーの向き
+	// 右向き：1    左向き：-1
+	static int		m_direction;
 
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;
