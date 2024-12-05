@@ -53,12 +53,7 @@ public:
 	 */
 	static void CreateAnchor(b2Vec2 size);
 
-	/**
-	 * @brief 錨部分に追従する鎖部分を作成する関数
-	 * @param chain_size 　鎖のサイズ
-	 * @param numSegments  鎖の最大数
-	 */
-	static void CreateChain(b2Vec2 chain_size, int numSegments);
+
 
 	/**
 	 * @brief アンカーのボディを生成する
@@ -77,10 +72,7 @@ public:
 	static void DeleteAnchor();
 
 
-	/**
-	 * @brief チェーンを削除する
-	 */
-	static void DeleteChain();
+
 
 	/**
 	 * @brief アンカーの生成と削除を管理する関数

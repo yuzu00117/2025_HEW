@@ -209,8 +209,8 @@ void Player::Update()
         //ここはコンタクトリストないの接触判定から接触状態へと移行
         break;
     case Connected_state://物体がくっついた状態　ジョイントの作成
-
-        Anchor::CreateChain(b2Vec2(0.3f, 1.0f),40);
+       
+   
 
         Anchor::CreateRotateJoint();//回転ジョイントを作成
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
@@ -240,7 +240,7 @@ void Player::Update()
 
     case Deleting_state://削除している状態
         Anchor::DeleteAnchor();//アンカーを削除
-        Anchor::DeleteChain();
+    
         Anchor::SetAnchorState(Nonexistent_state);
 
         break;
@@ -268,11 +268,11 @@ void Player::Update()
     //keybordでのアンカーポイントの設定　Ｙ軸
     if (Keyboard_IsKeyDown(KK_W))
     {
-        stick_y = -1.0f;
+        stick_y = +1.0f;
     }
     if (Keyboard_IsKeyDown(KK_S))
     {
-        stick_y = 1.0f;
+        stick_y = -1.0f;
     }
    
 

@@ -142,6 +142,7 @@
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
     <ClCompile Include="word.cpp" />
     <ClCompile Include="Xinput_controller.cpp" />
@@ -171,6 +173,7 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="object_manager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_position.h" />
     <ClInclude Include="player_stamina.h" />
@@ -179,6 +182,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="wood.h" />
     <ClInclude Include="UI_StaminaSpirit_Gauge.h" />
     <ClInclude Include="word.h" />
     <ClInclude Include="world_box2d.h" />
