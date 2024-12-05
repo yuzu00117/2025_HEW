@@ -52,6 +52,12 @@
     <Filter Include="ヘッダー ファイル\collider">
       <UniqueIdentifier>{f8627e09-385d-4bac-8c71-bde70e08ed15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\collider\object">
+      <UniqueIdentifier>{35b3ea50-41f0-42f6-86f1-f0ace70144ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\collider\object">
+      <UniqueIdentifier>{0178d2bc-3747-4131-984d-8d33e71756aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -111,6 +117,11 @@
     <ClCompile Include="ground.cpp">
       <Filter>ソース ファイル\collider</Filter>
     </ClCompile>
+    <ClCompile Include="wood.cpp">
+      <Filter>ソース ファイル\collider\object</Filter>
+    </ClCompile>
+    <ClCompile Include="object_manager.cpp">
+      <Filter>ソース ファイル\collider\object</Filter>
     <ClCompile Include="word.cpp">
       <Filter>ソース ファイル\テクスチャ周り</Filter>
     </ClCompile>
@@ -188,6 +199,11 @@
     <ClInclude Include="ground.h">
       <Filter>ヘッダー ファイル\collider</Filter>
     </ClInclude>
+    <ClInclude Include="wood.h">
+      <Filter>ヘッダー ファイル\collider\object</Filter>
+    </ClInclude>
+    <ClInclude Include="object_manager.h">
+      <Filter>ヘッダー ファイル\collider\object</Filter>
     <ClInclude Include="word.h">
       <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
     </ClInclude>

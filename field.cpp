@@ -21,6 +21,7 @@
 #include"anchor_point.h"
 #include"enemy_dynamic.h"
 #include"enemy_static.h"
+#include"object_manager.h"
 
 
 
@@ -35,6 +36,8 @@ std::vector<std::vector<int>> Field::m_field_data;
 int Field::m_field_width = 0;
 int Field::m_field_height = 0;
 
+
+ObjectManager& objectManager = ObjectManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
@@ -67,6 +70,8 @@ void Field::Initialize()
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
+
+
 	// csvからマップチップを読み込む
 	Field::LoadCSV("asset/mapchip.csv");
 	//読み込んだデータをfield_mapに格納
@@ -74,6 +79,10 @@ void Field::Initialize()
 
 	//マップに基づいて2次元配列のメモリ確保
 	m_p_field_array = new Field * *[m_field_height]; //縦方向の配列を確保
+
+
+
+
 
 	for (int y = 0; y < m_field_height; ++y) {
 		m_p_field_array[y] = new Field * [m_field_width]; //横方向の配列を各行ごとに確保
@@ -107,8 +116,16 @@ void Field::Initialize()
 			if (field_map[y][x] == 6) {
 				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
 			}
+			if (field_map[y][x] == 7) {
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f),b2Vec2(1.0f,1.0f),true);
+			}
+			if (field_map[y][x] == 8) {
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
+			}
 		}
 	}
+
+	objectManager.InitializeAll();
 }
 
 
@@ -176,6 +193,8 @@ void Field::Draw()
 	}
 	//アンカーポイントを描画
 	AnchorPoint::Draw();
+
+	objectManager.DrawAll();
 }
 
 
