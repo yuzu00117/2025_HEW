@@ -33,6 +33,7 @@ ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 //staticメンバー変数の初期化
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
+int     Player::m_direction = 1;
 
 
 
@@ -89,7 +90,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
 
     b2FixtureDef fixture_circle_upper;
     fixture_circle_upper.shape = &circle_upper;
-    fixture_circle_upper.density = 1.0f;
+    fixture_circle_upper.density = 1.3f;
     fixture_circle_upper.friction = 3.0f;//摩擦
     fixture_circle_upper.restitution = 0.0f;//反発係数
     fixture_circle_upper.isSensor = false;//センサーかどうか、trueならあたり判定は消える
@@ -98,12 +99,12 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     //プレイヤーの下の円のコライダー
     //-------------------------------------------
     b2CircleShape circle_bottom;
-    circle_bottom.m_p.Set(position.x, position.y + 0.02f);//下の方の円
+    circle_bottom.m_p.Set(position.x, position.y + 0.1f);//下の方の円
     circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
     b2FixtureDef fixture_circle_bottom;
     fixture_circle_bottom.shape = &circle_bottom;
-    fixture_circle_bottom.density = 1.0f;
+    fixture_circle_bottom.density = 1.3f;
     fixture_circle_bottom.friction = 3.0f;//摩擦
     fixture_circle_bottom.restitution = 0.0f;//反発係数
     fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
@@ -200,21 +201,23 @@ void Player::Update()
         //状態によってスピードが調整される
        //----------------------------------------------------------
         float adjust_speed = 0.0f;
-        //空中にいる時はスピードは半分下がる
+        //ジャンプしている時はスピードは半分下がる
         if (GetIsJumping())
         {
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-        //移動
+        //右移動
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
             m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
+            m_direction = 1;
         }
+        //左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
             m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
-
+            m_direction = -1;
         }
 
     }
