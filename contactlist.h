@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------------------------------
 // #name contactlist.h
-// #description Õ“Ë‚Ìˆ—‚ğŠÇ—‚·‚é
-// #make 2024/11/22@‰i–ì‹`–ç
+// #description è¡çªæ™‚ã®å‡¦ç†ã‚’ç®¡ç†ã™ã‚‹
+// #make 2024/11/22ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/22
-// #comment ’Ç‰ÁEC³—\’è
-//          EÕ“Ë‚âÕ“ËI—¹‚¶‚È‚Ç‚Ìˆ—‚ğ‘‚«‚Ş
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»è¡çªæ™‚ã‚„è¡çªçµ‚äº†ã˜ãªã©ã®å‡¦ç†ã‚’æ›¸ãè¾¼ã‚€
 // 
 // 
-// @@@–’ˆÓ@I
-// @@@@‚±‚±‚ÅA•¨‘Ì‚ğ’¼Ú‚¯‚µ‚½‚èƒWƒ‡ƒCƒ“ƒg‚µ‚½‚è‚µ‚È‚¢‚ÅI
-//         ——R‚Æ‚µ‚Ä‚ÍBox2d‚È‚¢‚ÌStep‚Å‚±‚±‚ªŒÄ‚Î‚ê‚é•”•ª‚ÅA•¨—‰‰Z’†‚É•¨‘Ì‚ªÁ‚¦‚½‚èoŒ»‚µ‚½‚è‚µ‚½‚ç³Šm‚Èˆ—‚ª‚Å‚«‚È‚¢‚©‚ç@ƒGƒ‰[‚Í‚­
+// ã€€ã€€ã€€ï¼Šæ³¨æ„ã€€ï¼
+// ã€€ã€€ã€€ã€€ã“ã“ã§ã€ç‰©ä½“ã‚’ç›´æ¥ã‘ã—ãŸã‚Šã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸã‚Šã—ãªã„ã§ï¼
+//         ç†ç”±ã¨ã—ã¦ã¯Box2dãªã„ã®Stepã§ã“ã“ãŒå‘¼ã°ã‚Œã‚‹éƒ¨åˆ†ã§ã€ç‰©ç†æ¼”ç®—ä¸­ã«ç‰©ä½“ãŒæ¶ˆãˆãŸã‚Šå‡ºç¾ã—ãŸã‚Šã—ãŸã‚‰æ­£ç¢ºãªå‡¦ç†ãŒã§ããªã„ã‹ã‚‰ã€€ã‚¨ãƒ©ãƒ¼ã¯ã
 // 
 // 
 //----------------------------------------------------------------------------------------------------
@@ -21,19 +21,20 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
+#include"player.h"
 #include"object_manager.h"
-
 
 
 
 class MyContactListener : public b2ContactListener {
 private:
+    Player player = Player::GetInstance();
 
 public:
-    b2Vec2 contactPoint;//Õ“Ë‚µ‚½’n“_
+    b2Vec2 contactPoint;//è¡çªã—ãŸåœ°ç‚¹
    
 
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚·‚é
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
     static MyContactListener& GetInstance() {
         static MyContactListener instance;
         return instance;
@@ -43,87 +44,86 @@ public:
 
   
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
-//               Õ“ËŠJn
+//               è¡çªé–‹å§‹æ™‚
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-    // Õ“Ë‚µ‚½uŠÔ
+    // è¡çªã—ãŸç¬é–“
     void BeginContact(b2Contact* contact) override {
 
         ObjectManager& object_manager = ObjectManager::GetInstance();
 
-        // Õ“Ë‚µ‚½ƒtƒBƒNƒXƒ`ƒƒ‚ğæ“¾
+        // è¡çªã—ãŸãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’å–å¾—
         b2Fixture* fixtureA = contact->GetFixtureA();
         b2Fixture* fixtureB = contact->GetFixtureB();
-        if (!fixtureA || !fixtureB) return; // NULLƒ`ƒFƒbƒN
+        if (!fixtureA || !fixtureB) return; // NULLãƒã‚§ãƒƒã‚¯
        
 
 
        
-        // ‚»‚ê‚¼‚ê‚Ìƒ{ƒfƒB‚©‚çƒ†[ƒU[ƒf[ƒ^‚ğæ“¾
-          // ƒ{ƒfƒB‚Ìƒ†[ƒU[ƒf[ƒ^‚ğæ“¾
+        // ãã‚Œãã‚Œã®ãƒœãƒ‡ã‚£ã‹ã‚‰ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+          // ãƒœãƒ‡ã‚£ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
         auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
         auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
-        if (!objectA || !objectB)return;//NULLƒ`ƒFƒbƒN
+        if (!objectA || !objectB)return;//NULLãƒã‚§ãƒƒã‚¯
 
     
 
-        // ƒvƒŒ[ƒ„[‚Æ’n–Ê‚ªÕ“Ë‚µ‚½‚©‚ğ”»’è
+        // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã¨åœ°é¢ãŒè¡çªã—ãŸã‹ã‚’åˆ¤å®š
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
-            // Õ“Ëˆ—iƒvƒŒ[ƒ„[‚Æ’n–Ê‚ªÚG‚µ‚½j
+            // è¡çªå‡¦ç†ï¼ˆãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã¨åœ°é¢ãŒæ¥è§¦ã—ãŸæ™‚ï¼‰
             
-            int i = 0;
-            // •K—v‚Èˆ—‚ğ‚±‚±‚É‹Lq
+            player.SetIsJumping(false);
 
 
         }
 
 
-        //ƒvƒŒƒCƒ„[‚É•t‘®‚µ‚Ä‚¢‚éƒZƒ“ƒT[‚ÆƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ªG‚ê‚½ê‡
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ä»˜å±ã—ã¦ã„ã‚‹ã‚»ãƒ³ã‚µãƒ¼ã¨ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãŒè§¦ã‚ŒãŸå ´åˆ
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_player_sensor))
         {
-            //‚Ô‚Â‚©‚Á‚½ƒIƒuƒWƒFƒNƒg‚ª‚Ç‚Á‚¿‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚©‚í‚©‚ç‚È‚¢‚Ì‚Å”äŠr‚·‚é
+            //ã¶ã¤ã‹ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã©ã£ã¡ãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‹ã‚ã‹ã‚‰ãªã„ã®ã§æ¯”è¼ƒã™ã‚‹
 
-            b2Body* anchor_point_body;//ˆê“I‚È“ü‚ê•¨ ‚±‚Ì’†‚ÉƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğ‚¢‚ê‚é
+            b2Body* anchor_point_body;//ä¸€æ™‚çš„ãªå…¥ã‚Œç‰© ã“ã®ä¸­ã«ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’ã„ã‚Œã‚‹
 
             if (objectA->collider_type == collider_anchor_point)
             {
-                //objectA‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚¾‚Á‚½
-                //‚Ì‚ÅfixtureA‚ªƒtƒBƒNƒXƒ`ƒƒ‚¾‚æ‚Ë
+                //objectAãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã ã£ãŸ
+                //ã®ã§fixtureAãŒãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã ã‚ˆã­
                 anchor_point_body=fixtureA->GetBody();
             }
             else
             {
-                //objectB‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚¾‚Á‚½
-                //‚Ì‚ÅfixtureB‚ªƒtƒBƒNƒXƒ`ƒƒ‚¾‚æ‚Ë
+                //objectBãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã ã£ãŸ
+                //ã®ã§fixtureBãŒãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã ã‚ˆã­
                 anchor_point_body = fixtureB->GetBody();
             }
-            //‚Ç‚¿‚ç‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚©•ª‚©‚Á‚½‚Ì‚ÅƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ•Û‚µ‚Ä‚¨‚­”z—ñ‚É‚¢‚ê‚é
+            //ã©ã¡ã‚‰ãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‹åˆ†ã‹ã£ãŸã®ã§ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ä¿æŒã—ã¦ãŠãé…åˆ—ã«ã„ã‚Œã‚‹
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
-        //ƒvƒŒƒCƒ„[‚É•t‘®‚µ‚Ä‚¢‚éƒZƒ“ƒT[‚ÆƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ªG‚ê‚½ê‡
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ä»˜å±ã—ã¦ã„ã‚‹ã‚»ãƒ³ã‚µãƒ¼ã¨ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãŒè§¦ã‚ŒãŸå ´åˆ
         if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
         {
 
 
-            Anchor::SetAnchorState(Connected_state);//ƒvƒŒƒCƒ„[ƒAƒbƒvƒf[ƒg‚Ì’†‚ÌƒXƒCƒbƒ`•¶‚ÌˆÚs‚æ‚¤ Ú‘±ó‘Ô‚ÉˆÚs
+            Anchor::SetAnchorState(Connected_state);//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã®ä¸­ã®ã‚¹ã‚¤ãƒƒãƒæ–‡ã®ç§»è¡Œã‚ˆã† æ¥ç¶šçŠ¶æ…‹ã«ç§»è¡Œ
 
-            // ÚGˆÊ’u‚ğæ“¾
+            // æ¥è§¦ä½ç½®ã‚’å–å¾—
             b2WorldManifold worldManifold;
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
 
-            //–Ø‚ÌƒIƒuƒWƒFƒNƒg‚Ìˆø‚Á’£‚éˆ—
+            //æœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¼•ã£å¼µã‚‹å‡¦ç†
             if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
             {
-                //‚Ç‚¿‚ç‚ª–Ø‚ÌƒIƒuƒWƒFƒNƒg‚©“Á’è
-                if (objectA->object_name == Object_Wood)//A‚ª–Ø‚ÌƒIƒuƒWƒFƒNƒg
+                //ã©ã¡ã‚‰ãŒæœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‹ç‰¹å®š
+                if (objectA->object_name == Object_Wood)//AãŒæœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
                 {
-                    wood*wood_instance=object_manager.FindWoodByID(objectA->id);//wood‚Å“¯‚¶ID‚Ì‚ğ’T‚µ‚ÄƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚à‚ç‚¤
-                    wood_instance->Pulling_wood(objectA->add_force);//–Ø‚ğˆø‚Á’£‚éˆ—‚ğŒÄ‚Ño‚·
+                    wood*wood_instance=object_manager.FindWoodByID(objectA->id);//woodã§åŒã˜IDã®ã‚’æ¢ã—ã¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ã‚‚ã‚‰ã†
+                    wood_instance->Pulling_wood(objectA->add_force);//æœ¨ã‚’å¼•ã£å¼µã‚‹å‡¦ç†ã‚’å‘¼ã³å‡ºã™
                 }
                 else
                 {
@@ -137,54 +137,54 @@ public:
      
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
-//               Õ“ËI—¹
+//               è¡çªçµ‚äº†æ™‚
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     void EndContact(b2Contact* contact) override {
-        // Õ“Ë‚µ‚½ƒtƒBƒNƒXƒ`ƒƒ‚ğæ“¾
-        // Õ“Ë‚µ‚½ƒtƒBƒNƒXƒ`ƒƒ‚ğæ“¾
+        // è¡çªã—ãŸãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’å–å¾—
+        // è¡çªã—ãŸãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’å–å¾—
         b2Fixture* fixtureA = contact->GetFixtureA();
         b2Fixture* fixtureB = contact->GetFixtureB();
-        if (!fixtureA || !fixtureB) return; // NULLƒ`ƒFƒbƒN
+        if (!fixtureA || !fixtureB) return; // NULLãƒã‚§ãƒƒã‚¯
 
 
-        // ‚»‚ê‚¼‚ê‚Ìƒ{ƒfƒB‚©‚çƒ†[ƒU[ƒf[ƒ^‚ğæ“¾
-          // ƒ{ƒfƒB‚Ìƒ†[ƒU[ƒf[ƒ^‚ğæ“¾
+        // ãã‚Œãã‚Œã®ãƒœãƒ‡ã‚£ã‹ã‚‰ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
+          // ãƒœãƒ‡ã‚£ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’å–å¾—
         auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
         auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
-        if (!objectA || !objectB)return;//NULLƒ`ƒFƒbƒN
+        if (!objectA || !objectB)return;//NULLãƒã‚§ãƒƒã‚¯
 
-        // ƒvƒŒ[ƒ„[‚Æ’n–Ê‚ªÕ“Ë‚µ‚½‚©‚ğ”»’è
+        // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã¨åœ°é¢ãŒè¡çªã—ãŸã‹ã‚’åˆ¤å®š
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
-            // Õ“Ëˆ—iƒvƒŒ[ƒ„[‚Æ’n–Ê‚ªÚG‚µ‚½j
+            // è¡çªå‡¦ç†ï¼ˆãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã¨åœ°é¢ãŒæ¥è§¦ã—ãŸæ™‚ï¼‰
 
 
-            // •K—v‚Èˆ—‚ğ‚±‚±‚É‹Lq
+            // å¿…è¦ãªå‡¦ç†ã‚’ã“ã“ã«è¨˜è¿°
         }
 
 
 
-        //ƒvƒŒƒCƒ„[‚É•t‘®‚µ‚Ä‚¢‚éƒZƒ“ƒT[‚ÆƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ªG‚êI‚í‚Á‚½@iƒZƒ“ƒT[‚Ì”ÍˆÍŠO‚É‚Å‚½j
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ä»˜å±ã—ã¦ã„ã‚‹ã‚»ãƒ³ã‚µãƒ¼ã¨ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãŒè§¦ã‚Œçµ‚ã‚ã£ãŸã€€ï¼ˆã‚»ãƒ³ã‚µãƒ¼ã®ç¯„å›²å¤–ã«ã§ãŸï¼‰
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_player_sensor))
         {
-            //‚Ô‚Â‚©‚Á‚½ƒIƒuƒWƒFƒNƒg‚ª‚Ç‚Á‚¿‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚©‚í‚©‚ç‚È‚¢‚Ì‚Å”äŠr‚·‚é
+            //ã¶ã¤ã‹ã£ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒã©ã£ã¡ãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‹ã‚ã‹ã‚‰ãªã„ã®ã§æ¯”è¼ƒã™ã‚‹
 
-            b2Body* anchor_point_body;//ˆê“I‚È“ü‚ê•¨ ‚±‚Ì’†‚ÉƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğ‚¢‚ê‚é
+            b2Body* anchor_point_body;//ä¸€æ™‚çš„ãªå…¥ã‚Œç‰© ã“ã®ä¸­ã«ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’ã„ã‚Œã‚‹
 
             if (objectA->collider_type == collider_anchor_point)
             {
-                //objectA‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚¾‚Á‚½
-                //‚Ì‚ÅfixtureA‚ªƒtƒBƒNƒXƒ`ƒƒ‚¾‚æ‚Ë
+                //objectAãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã ã£ãŸ
+                //ã®ã§fixtureAãŒãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã ã‚ˆã­
                 anchor_point_body = fixtureA->GetBody();
             }
             else
             {
-                //objectB‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚¾‚Á‚½
-                //‚Ì‚ÅfixtureB‚ªƒtƒBƒNƒXƒ`ƒƒ‚¾‚æ‚Ë
+                //objectBãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã ã£ãŸ
+                //ã®ã§fixtureBãŒãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã ã‚ˆã­
                 anchor_point_body = fixtureB->GetBody();
             }
-            //‚Ç‚¿‚ç‚ªƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚©•ª‚©‚Á‚½‚Ì‚ÅƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ•Û‚µ‚Ä‚¨‚­”z—ñ‚É‚¢‚ê‚é
+            //ã©ã¡ã‚‰ãŒã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‹åˆ†ã‹ã£ãŸã®ã§ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ä¿æŒã—ã¦ãŠãé…åˆ—ã«ã„ã‚Œã‚‹
             AnchorPoint::OutsideSensor(anchor_point_body);
 
         }
