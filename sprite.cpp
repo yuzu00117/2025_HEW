@@ -84,7 +84,7 @@ void UninitSprite(void)
 }
 
 //描画処理
-void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale)
+void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha)
 {
 	//頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -115,7 +115,7 @@ void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale)
 	//マテリアル設定（半年後に現れる）
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
 	SetMaterial(material);
 
 	g_Vertex[0].texcoord = XMFLOAT2(0.f, 0.f);
@@ -129,7 +129,7 @@ void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale)
 	GetDeviceContext()->Draw(NUM_VERTEX, 0);
 }
 
-void DrawSpriteAnim(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int AnimCols, int AnimRows, int AnimPattern)
+void DrawDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha)
 {
 	//頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -160,24 +160,92 @@ void DrawSpriteAnim(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int AnimC
 	//マテリアル設定（半年後に現れる）
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
 	SetMaterial(material);
 
-	//アニメーション
+	//分割
 	int x, y;
-	x = AnimPattern % AnimCols;
-	y = AnimPattern / AnimCols;
+	x = Pattern_ID % TotalCols;
+	y = Pattern_ID / TotalCols;
 
-	g_Vertex[0].texcoord = XMFLOAT2(1.f / AnimCols * x, 1.f / AnimRows * y);
-	g_Vertex[1].texcoord = XMFLOAT2(1.f / AnimCols * (x + 1), 1.f / AnimRows * y);
-	g_Vertex[2].texcoord = XMFLOAT2(1.f / AnimCols * x, 1.f / AnimRows * (y + 1));
-	g_Vertex[3].texcoord = XMFLOAT2(1.f / AnimCols * (x + 1), 1.f / AnimRows * (y + 1));
+	g_Vertex[0].texcoord = XMFLOAT2(1.f / TotalCols * x, 1.f / TotalRows * y);
+	g_Vertex[1].texcoord = XMFLOAT2(1.f / TotalCols * (x + 1), 1.f / TotalRows * y);
+	g_Vertex[2].texcoord = XMFLOAT2(1.f / TotalCols * x, 1.f / TotalRows * (y + 1));
+	g_Vertex[3].texcoord = XMFLOAT2(1.f / TotalCols * (x + 1), 1.f / TotalRows * (y + 1));
 
 	SetVertexSprite();
 
 	//ポリゴン描画
 	GetDeviceContext()->Draw(NUM_VERTEX, 0);
 }
+
+
+
+
+
+void DrawSerialDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int StartPattern_ID, int EndPattern_ID, float Alpha)
+{
+	//EndPatter_IDがMAX、つまりTotalColsと同じ場合、下のend_xが0になっちゃうから、それを防ぐためのインクリメント処理
+	TotalCols++;
+
+	//分割
+	int start_x, start_y;
+	start_x = StartPattern_ID % TotalCols;
+	start_y = StartPattern_ID / TotalCols;
+	int end_x, end_y;
+	end_x = EndPattern_ID % TotalCols;
+	end_y = EndPattern_ID / TotalCols;
+
+	if (end_y > start_y)
+	{
+		return;
+	}
+
+	//頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+	//プロジェクションマトリクス設定
+	XMMATRIX projection;
+	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	SetProjectionMatrix(projection);
+
+	//ビューマトリクス設定
+	XMMATRIX view;
+	view = XMMatrixIdentity();
+	SetViewMatrix(view);
+
+	//移動・回転マトリクス設定
+	XMMATRIX world, rot, trans, scale;
+	scale = XMMatrixScaling(Scale.x, Scale.y, 0.0f);
+	rot = XMMatrixRotationZ(Rotation);
+	trans = XMMatrixTranslation(Position.x, Position.y, 0.0f);
+	world = scale * rot * trans;
+	SetWorldMatrix(world);
+
+	//プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//マテリアル設定（半年後に現れる）
+	MATERIAL material;
+	ZeroMemory(&material, sizeof(material));
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
+	SetMaterial(material);
+
+
+	g_Vertex[0].texcoord = XMFLOAT2(1.f / TotalCols * start_x, 1.f / TotalRows * end_y);
+	g_Vertex[1].texcoord = XMFLOAT2(1.f / TotalCols * (end_x + 1), 1.f / TotalRows * end_y);
+	g_Vertex[2].texcoord = XMFLOAT2(1.f / TotalCols * start_x, 1.f / TotalRows * (end_y + 1));
+	g_Vertex[3].texcoord = XMFLOAT2(1.f / TotalCols * (end_x + 1), 1.f / TotalRows * (end_y + 1));
+
+	SetVertexSprite();
+
+	//ポリゴン描画
+	GetDeviceContext()->Draw(NUM_VERTEX, 0);
+}
+
+
 
 
 

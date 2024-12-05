@@ -122,6 +122,11 @@
     </ClCompile>
     <ClCompile Include="object_manager.cpp">
       <Filter>ソース ファイル\collider\object</Filter>
+    <ClCompile Include="word.cpp">
+      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +204,11 @@
     </ClInclude>
     <ClInclude Include="object_manager.h">
       <Filter>ヘッダー ファイル\collider\object</Filter>
+    <ClInclude Include="word.h">
+      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
