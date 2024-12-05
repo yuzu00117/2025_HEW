@@ -16,6 +16,8 @@ enum ITEM
 class ItemFactory
 {
 public:
+	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
+	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
 	 ItemFactory(b2Vec2 position, b2Vec2 scale, float rotate, ITEM type, wchar_t* texture_name, bool shape_polygon = true, float Alpha = 1.0f);
 	 ~ItemFactory();
 	
