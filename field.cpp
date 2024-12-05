@@ -122,6 +122,9 @@ void Field::Initialize()
 			if (field_map[y][x] == 8) {
 				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
 			}
+			if(field_map[y][x] == 9) {
+				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3.0f, 2);
+			}
 		}
 	}
 
@@ -191,10 +194,12 @@ void Field::Draw()
 			}
 		}
 	}
-	//アンカーポイントを描画
-	AnchorPoint::Draw();
+	
 
 	objectManager.DrawAll();
+
+	//アンカーポイントを描画
+	AnchorPoint::Draw();
 }
 
 

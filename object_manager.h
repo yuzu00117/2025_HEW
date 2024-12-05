@@ -14,9 +14,12 @@
 #include <vector>
 #include <memory>
 #include "wood.h"
+#include"rock.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
+    NULL_object,
+
     Object_Wood, // 木
     Object_Rock, // 岩
 };
@@ -30,8 +33,15 @@ public:
     // 木を追加
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool&right);
 
+    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
+      
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
+
+    rock* FindRockByID(int id);
+
+    
 
     // 全てのオブジェクトを初期化
     void InitializeAll();
@@ -47,6 +57,8 @@ public:
 
 private:
     std::vector<std::unique_ptr<wood>> woodList; // 木のリスト
+
+    std::vector < std::unique_ptr<rock>>rockList;
 
     //ここにオブジェクトごとにリストを追加していく感じだねぇー
 

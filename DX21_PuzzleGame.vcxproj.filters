@@ -79,6 +79,12 @@
     <ClCompile Include="word.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="rock.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="rock.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">

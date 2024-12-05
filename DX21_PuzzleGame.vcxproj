@@ -147,6 +147,8 @@
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="rock.cpp" />
+    <ClCompile Include="rock.h" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />

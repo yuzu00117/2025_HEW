@@ -132,6 +132,27 @@ public:
                 }
 
             }
+
+
+            //岩のオブジェクトの引っ張る処理
+            if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
+            {
+                //どちらが岩のオブジェクトか特定
+                if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
+                {
+                    rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    rock_instance->Pulling_rock(objectA->add_force);//木を引っ張る処理を呼び出す
+                }
+                else
+                {
+                    rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    rock_instance->Pulling_rock(objectB->add_force);//木を引っ張る処理を呼び出す
+                }
+
+            }
+
+
+
         }
 
      
