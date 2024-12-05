@@ -1,214 +1,237 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="ソース ファイル\ツール系">
-      <UniqueIdentifier>{a2f680d1-5635-466e-a081-4d5e825bc9e2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\テクスチャ周り">
-      <UniqueIdentifier>{966dc55b-13ee-4288-b2e5-5e5ebd392088}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\入力">
-      <UniqueIdentifier>{9d417d3e-69d0-40c7-ab70-1a80cdfe5126}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\音">
-      <UniqueIdentifier>{01fa48c0-6d2f-4390-99df-8921505783b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\音">
-      <UniqueIdentifier>{aa612233-7d27-4020-96c5-3784ee35a431}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\入力">
-      <UniqueIdentifier>{e1f7e70d-f420-4c09-8993-f441f6c9960f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\ツール系">
-      <UniqueIdentifier>{0e478757-6462-49db-ac17-53738cbf60f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\テクスチャ周り">
-      <UniqueIdentifier>{d746c030-6f0c-483d-8019-109d0ca9d5d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\ダイレクトX系">
-      <UniqueIdentifier>{a9947cbe-f10b-4bb7-954d-12e5068b627f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\collider">
-      <UniqueIdentifier>{1d27a336-9386-426c-b0d2-e5dcb71873ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\エネミー">
-      <UniqueIdentifier>{7ad11356-2c19-4d73-95e0-9937206c0870}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\エネミー">
-      <UniqueIdentifier>{9fb23f40-990c-4d35-8985-7751518b4c14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\collider">
-      <UniqueIdentifier>{f8627e09-385d-4bac-8c71-bde70e08ed15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\collider\object">
-      <UniqueIdentifier>{35b3ea50-41f0-42f6-86f1-f0ace70144ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\collider\object">
-      <UniqueIdentifier>{0178d2bc-3747-4131-984d-8d33e71756aa}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="tool.cpp">
-      <Filter>ソース ファイル\ツール系</Filter>
-    </ClCompile>
-    <ClCompile Include="sprite.cpp">
-      <Filter>ソース ファイル\テクスチャ周り</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>ソース ファイル\テクスチャ周り</Filter>
-    </ClCompile>
-    <ClCompile Include="keyboard.cpp">
-      <Filter>ソース ファイル\入力</Filter>
-    </ClCompile>
-    <ClCompile Include="renderer.cpp">
-      <Filter>ソース ファイル\テクスチャ周り</Filter>
-    </ClCompile>
-    <ClCompile Include="directx_controller.cpp">
-      <Filter>ソース ファイル\入力</Filter>
-    </ClCompile>
-    <ClCompile Include="sound.cpp">
-      <Filter>ソース ファイル\音</Filter>
-    </ClCompile>
-    <ClCompile Include="Xinput_controller.cpp">
-      <Filter>ソース ファイル\入力</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース ファイル\collider</Filter>
-    </ClCompile>
-    <ClCompile Include="player_position.cpp">
-      <Filter>ソース ファイル\collider</Filter>
-    </ClCompile>
-    <ClCompile Include="field.cpp">
-      <Filter>ソース ファイル\collider</Filter>
-    </ClCompile>
     <ClCompile Include="enemy.cpp">
-      <Filter>ソース ファイル\エネミー</Filter>
+      <Filter>ソースファイル\enemy</Filter>
     </ClCompile>
     <ClCompile Include="enemy_dynamic.cpp">
-      <Filter>ソース ファイル\エネミー</Filter>
+      <Filter>ソースファイル\enemy</Filter>
     </ClCompile>
     <ClCompile Include="enemy_static.cpp">
-      <Filter>ソース ファイル\エネミー</Filter>
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="tool.cpp">
+      <Filter>ソースファイル\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソースファイル\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>ソースファイル\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>ソースファイル\texture</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソースファイル\sound</Filter>
+    </ClCompile>
+    <ClCompile Include="directx_controller.cpp">
+      <Filter>ソースファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>ソースファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="Xinput_controller.cpp">
+      <Filter>ソースファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソースファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="player_position.cpp">
+      <Filter>ソースファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="player_stamina.cpp">
+      <Filter>ソースファイル\player</Filter>
     </ClCompile>
     <ClCompile Include="anchor.cpp">
-      <Filter>ソース ファイル\collider</Filter>
+      <Filter>ソースファイル\anchor</Filter>
+    </ClCompile>
+    <ClCompile Include="anchor_spirit.cpp">
+      <Filter>ソースファイル\anchor</Filter>
     </ClCompile>
     <ClCompile Include="anchor_point.cpp">
-      <Filter>ソース ファイル\collider</Filter>
+      <Filter>ソースファイル\anchor</Filter>
     </ClCompile>
-    <ClCompile Include="ground.cpp">
-      <Filter>ソース ファイル\collider</Filter>
-    </ClCompile>
-    <ClCompile Include="wood.cpp">
-      <Filter>ソース ファイル\collider\object</Filter>
-    </ClCompile>
-    <ClCompile Include="object_manager.cpp">
-      <Filter>ソース ファイル\collider\object</Filter>
-    <ClCompile Include="word.cpp">
-      <Filter>ソース ファイル\テクスチャ周り</Filter>
+    <ClCompile Include="field.cpp">
+      <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="debug.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ground.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="object_manager.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_StaminaSpirit_Gauge.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="wood.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="word.cpp">
+      <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="directx_controller.h">
-      <Filter>ヘッダー ファイル\入力</Filter>
-    </ClInclude>
-    <ClInclude Include="keyboard.h">
-      <Filter>ヘッダー ファイル\入力</Filter>
-    </ClInclude>
-    <ClInclude Include="DirectXTex.h">
-      <Filter>ヘッダー ファイル\ダイレクトX系</Filter>
-    </ClInclude>
-    <ClInclude Include="sprite.h">
-      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer.h">
-      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
-    </ClInclude>
-    <ClInclude Include="sound.h">
-      <Filter>ヘッダー ファイル\音</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
-    </ClInclude>
-    <ClInclude Include="tool.h">
-      <Filter>ヘッダー ファイル\ツール系</Filter>
-    </ClInclude>
-    <ClInclude Include="Xinput_controller.h">
-      <Filter>ヘッダー ファイル\入力</Filter>
-    </ClInclude>
-    <ClInclude Include="world_box2d.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="player_position.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="enemy.h">
-      <Filter>ヘッダー ファイル\エネミー</Filter>
+      <Filter>ヘッダーファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemy_dynamic.h">
-      <Filter>ヘッダー ファイル\エネミー</Filter>
+      <Filter>ヘッダーファイル\enemy</Filter>
     </ClInclude>
     <ClInclude Include="enemy_static.h">
-      <Filter>ヘッダー ファイル\エネミー</Filter>
+      <Filter>ヘッダーファイル\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="contactlist.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="directx_controller.h">
+      <Filter>ヘッダーファイル\input</Filter>
     </ClInclude>
-    <ClInclude Include="collider_type.h">
-      <Filter>ヘッダー ファイル\collider</Filter>
+    <ClInclude Include="keyboard.h">
+      <Filter>ヘッダーファイル\input</Filter>
     </ClInclude>
-    <ClInclude Include="field.h">
-      <Filter>ヘッダー ファイル\collider</Filter>
+    <ClInclude Include="Xinput_controller.h">
+      <Filter>ヘッダーファイル\input</Filter>
     </ClInclude>
-    <ClInclude Include="anchor_point.h">
-      <Filter>ヘッダー ファイル\collider</Filter>
-    </ClInclude>
-    <ClInclude Include="anchor.h">
-      <Filter>ヘッダー ファイル\collider</Filter>
+    <ClInclude Include="player_position.h">
+      <Filter>ヘッダーファイル\player</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル\collider</Filter>
+      <Filter>ヘッダーファイル\player</Filter>
     </ClInclude>
-    <ClInclude Include="ground.h">
-      <Filter>ヘッダー ファイル\collider</Filter>
+    <ClInclude Include="player_stamina.h">
+      <Filter>ヘッダーファイル\player</Filter>
     </ClInclude>
-    <ClInclude Include="wood.h">
-      <Filter>ヘッダー ファイル\collider\object</Filter>
+    <ClInclude Include="anchor.h">
+      <Filter>ヘッダーファイル\anchor</Filter>
     </ClInclude>
-    <ClInclude Include="object_manager.h">
-      <Filter>ヘッダー ファイル\collider\object</Filter>
-    <ClInclude Include="word.h">
-      <Filter>ヘッダー ファイル\テクスチャ周り</Filter>
+    <ClInclude Include="anchor_point.h">
+      <Filter>ヘッダーファイル\anchor</Filter>
+    </ClInclude>
+    <ClInclude Include="anchor_spirit.h">
+      <Filter>ヘッダーファイル\anchor</Filter>
+    </ClInclude>
+    <ClInclude Include="contactlist.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="collider_type.h">
+      <Filter>ヘッダーファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="DirectXTex.h">
+      <Filter>ヘッダーファイル\directX</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="object_manager.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダーファイル\sound</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダーファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>ヘッダーファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>ヘッダーファイル\texture</Filter>
+    </ClInclude>
+    <ClInclude Include="tool.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_StaminaSpirit_Gauge.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="wood.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="word.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="world_box2d.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ソースファイル">
+      <UniqueIdentifier>{e552e09c-1492-4a05-8046-68869754d300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\collider">
+      <UniqueIdentifier>{3fd77280-333d-4ad3-8279-d99e54183f14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\enemy">
+      <UniqueIdentifier>{449c4611-f9f5-4873-98c3-ea9134f470a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\tool">
+      <UniqueIdentifier>{fea3fbc9-4aaa-4920-8abd-a2bbf52054b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\texture">
+      <UniqueIdentifier>{cade76b6-a94f-4c02-b6e1-c20ba9f5af59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\input">
+      <UniqueIdentifier>{ce16dc1e-df1d-461c-a9fa-82deb5fe9856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\player">
+      <UniqueIdentifier>{55b42d94-28d7-4858-adda-74a9bd76bf77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル">
+      <UniqueIdentifier>{47f9f94f-22fa-4d75-84c2-d4b2c468ae52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\collider">
+      <UniqueIdentifier>{26182050-162e-460c-8754-971b73e66f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\enemy">
+      <UniqueIdentifier>{dfac5af1-c450-454c-bd96-709851f6eddd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\input">
+      <UniqueIdentifier>{61256607-612a-4bb8-a453-e0716607cf2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\player">
+      <UniqueIdentifier>{fd76f8cb-0699-4ba1-955b-8e260134a8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\anchor">
+      <UniqueIdentifier>{8bbf0fad-991b-4142-815e-e775d90763be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\anchor">
+      <UniqueIdentifier>{df9b1047-923e-4421-9024-62aaff9a486f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\directX">
+      <UniqueIdentifier>{dc0ede73-ff59-48e1-9368-a3838ee53ee8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\sound">
+      <UniqueIdentifier>{5a60f97b-bc8b-48e6-bea5-59ddb212d651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\sound">
+      <UniqueIdentifier>{6d557dc9-0f69-405a-9136-aa94ed2e1f11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\texture">
+      <UniqueIdentifier>{63aa5bbf-d76f-4b36-bc53-6c8eeb7cc6a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\tool">
+      <UniqueIdentifier>{5fdfbd81-8314-4e2f-ab6c-1474b0c022e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソースファイル">
+      <UniqueIdentifier>{0e2c73d9-6e34-4b29-9fe5-5c0987204aa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
