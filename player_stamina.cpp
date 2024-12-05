@@ -11,8 +11,7 @@
 
 
 #include	"player_stamina.h"
-//#include	"anchor_spirit.h"
-//#include	"UI_StaminaSpirit_gauge.h"
+#include	"anchor_spirit.h"
 
 
 // 静的メンバ変数の定義（1回だけ行う）
@@ -35,12 +34,12 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	}
 
 	//体力が最大体力を超えた時の処理
-	//if (m_stamina > MAX_STAMINA)
-	//{
-	//	//余った分はソウルゲージをプラス
-	//	AnchorSpirit::EditAnchorSpiritValue(m_stamina - MAX_STAMINA);
-	//	m_stamina = MAX_STAMINA;
-	//}
+	if (m_stamina > MAX_STAMINA)
+	{
+		//余った分はソウルゲージをプラス
+		AnchorSpirit::EditAnchorSpiritValue(m_stamina - MAX_STAMINA);
+		m_stamina = MAX_STAMINA;
+	}
 }
 
 
