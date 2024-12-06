@@ -84,6 +84,9 @@
     </ClCompile>
     <ClCompile Include="player_stamina.cpp">
       <Filter>ソース ファイル\collider</Filter>
+    <ClCompile Include="one-way_platform.cpp" />
+    <ClCompile Include="sloping_block.cpp">
+      <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="player_stamina.h">
       <Filter>ヘッダー ファイル\collider</Filter>
+    <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="sloping_block.h">
+      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
