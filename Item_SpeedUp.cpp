@@ -76,7 +76,7 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
-
+ 
     data->Item_name = ITEM_SPEED_UP;
     int ID = data->GenerateID();
     data->id = ID;
@@ -93,7 +93,7 @@ bool	ItemSpeedUp::Update()
 void    ItemSpeedUp::Function()
 {
     Player player = Player::GetInstance();
-    player.SetSpeed(0.01f);
+    player.SetSpeed(0.04f);
 }
 
 

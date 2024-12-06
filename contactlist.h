@@ -90,7 +90,7 @@ public:
             if (objectA->Item_name == ITEM_SPEED_UP)//Aが木のオブジェクト
             {
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectA->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                item_instance->Function();
+                item_instance->Function(); 
                 item_instance->SetDestory(true);//削除を呼び出す
             }
             else

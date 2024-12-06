@@ -30,8 +30,9 @@ public:
 	//描画サイズセット
 	void SetSize(b2Vec2 size) { m_size = size; }
 
-
+	//これから消えるかどうかをセット
 	void	SetDestory(bool flag) { m_destory = flag; }
+	//アイテムがゲットされた時の処理
 	void	Function();
 
 

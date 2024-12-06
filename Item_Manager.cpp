@@ -42,8 +42,10 @@ void ItemManager::UpdateAll() {
         bool destory = w->Update();
         if (destory)
         {
+            //ボディの情報を消す
             b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
             world->DestroyBody(w->GetBody());
+            //リストの中の情報を消す
             m_SpeedUp_List.erase(m_SpeedUp_List.begin() + ID_SpeedUp_List);
         }
     }

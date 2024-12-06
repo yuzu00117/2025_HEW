@@ -15,7 +15,6 @@
 #include"field.h"
 #include"directx_controller.h"
 #include"UI_StaminaSpirit_Gauge.h"
-#include"Item_Manager.h"
 
 
 class Game
@@ -44,7 +43,6 @@ private:
 	DirectInputController controller;
 	Player player;
 	StaminaSpiritGauge stamina_spirit_gauge;
-	//ItemManager	item_manager;
 	
 };
 

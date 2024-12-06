@@ -51,9 +51,6 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//フィールドの初期化
 	Field::Initialize();
 	
-	//アイテムの初期化
-	//item_manager.InitializeAll();
-
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
 
@@ -93,9 +90,6 @@ void Game::Finalize(void)
 	//フィールドの終了処理
 	Field::Finalize();
 
-	//アイテムの終了処理
-	//item_manager.FinalizeAll();
-
 	//文字（絵）
 	FinalizeWord();
 
@@ -131,9 +125,6 @@ void Game::Update(void)
 	//フィールドの更新処理
 	Field::Update();
 
-	//アイテムの更新処理
-	//item_manager.UpdateAll();
-
 	controller.CheckInput();
 
 
@@ -162,9 +153,6 @@ void Game::Draw(void)
 	//フィールドの描画処理
 	Field::Draw();
 
-	//アイテムの描画処理
-	//item_manager.DrawAll();
-
 	//体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
 
@@ -189,7 +177,6 @@ Game::Game()
 {
 	//プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
 	player = Player::GetInstance();//シングルトン
-	/*item_manager = ItemManager::GetInstance();*/
 	
 }
 
