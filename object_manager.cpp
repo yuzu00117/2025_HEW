@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager.cpp
-// #description ƒIƒuƒWƒFƒNƒg‚ÌŠÇ—‚ğ‚·‚éCPP@
-// #make 2024/12/04@‰i–ì‹`–ç
+// #description ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç®¡ç†ã‚’ã™ã‚‹CPPã€€
+// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/04
-// #comment ’Ç‰ÁEC³—\’è
-//          E‰\‚Ìƒtƒ@ƒNƒgƒŠ[‚Á‚Ä‚â‚Â‚©‚à‚Ë[
-//          E‚±‚ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŠÇ—‚¢‚¢‚È[@‚ª‚¿ãY—í
-//          Eˆê‚©Œ‘O‚Éƒtƒ@ƒNƒgƒŠ[’m‚è‚½‚©‚Á‚½‚ß‚¤
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»å™‚ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã£ã¦ã‚„ã¤ã‹ã‚‚ã­ãƒ¼
+//          ãƒ»ã“ã‚Œã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç®¡ç†ã„ã„ãªãƒ¼ã€€ãŒã¡ç¶ºéº—
+//          ãƒ»ä¸€ã‹æœˆå‰ã«ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼çŸ¥ã‚ŠãŸã‹ã£ãŸã‚ã†
 //----------------------------------------------------------------------------------------------------
 
 
@@ -14,15 +14,15 @@
 
 
 
-// ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 ObjectManager& ObjectManager::GetInstance() {
     static ObjectManager instance;
     return instance;
 }
 
-// –Ø‚ğ’Ç‰Á
+// æœ¨ã‚’è¿½åŠ 
 void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool& right) {
-    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,right));
 }
 
@@ -30,61 +30,109 @@ void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const i
 {
     rockList.emplace_back(std::make_unique<rock>(position, radius, need_anchor_level));
 }
+// è¶³å ´ã‚’è¿½åŠ 
+void ObjectManager::AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position,const b2Vec2 &size) {
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
+    one_way_platformList.emplace_back(std::make_unique<one_way_platform>(position, local_position, size));
+}
+// å‚¾æ–œã‚’è¿½åŠ 
+void ObjectManager::AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect) {
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
+    sloping_blockList.emplace_back(std::make_unique<sloping_block>(position, size, aspect));
+}
 
 
-// ID ‚ğg‚Á‚Ä–Ø‚ğŒŸõ
+// ID ã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-
-// ID ‚ğg‚Á‚ÄŠâ‚ğŒŸõ
+// ID ã‚’ä½¿ã£ã¦å²©ã‚’æ¤œç´¢
 rock* ObjectManager::FindRockByID(int id) {
     for (const auto& w : rockList) {
+
+//IDã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
+one_way_platform* ObjectManager::Findone_way_platformByID(int id) {
+    for (const auto& w : one_way_platformList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-// ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ‰Šú‰»
+// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–
+
+sloping_block* ObjectManager::FindSloping_BlockByID(int id) {
+    for (const auto& w : sloping_blockList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
+}
+      
+// å…¨ã¦ã®æœ¨ã‚’åˆæœŸåŒ–
 void ObjectManager::InitializeAll() {
     for (auto& w : woodList) {
         w->Initialize();
     }
+
     for (auto& w : rockList) {
         w->Initialize();
     }
-    
+  
+    for (auto& w : one_way_platformList) {
+        w->Initialize();
+    }
+
+    for (auto& w : sloping_blockList) {
+        w->Initialize();
+    }
 }
 
-// ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğXV
+// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°
 void ObjectManager::UpdateAll() {
     for (auto& w : woodList) {
         w->Update();
     }
+
     for (auto& w : rockList) {
+
+    for (auto& w : one_way_platformList) {
+        w->Update();
+    }
+
+    for (auto& w : sloping_blockList) {
         w->Update();
     }
 }
 
-// ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ•`‰æ
+// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
 void ObjectManager::DrawAll() {
     for (auto& w : woodList) {
         w->Draw();
     }
+
     for (auto& w : rockList) {
+        w->Draw();
+    }
+
+    for (auto& w : one_way_platformList) {
+        w->Draw();
+    }
+
+    for (auto& w : sloping_blockList) {
         w->Draw();
     }
 }
 
-// ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ”jŠü
+// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
         w->Finalize();
@@ -93,8 +141,21 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : rockList) {
         w->Finalize();
     }
-    woodList.clear(); // “®“I”z—ñ‚ğƒNƒŠƒA‚µ‚Äƒƒ‚ƒŠ‰ğ•ú
+    woodList.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
     rockList.clear();
+
+    for (auto& w : one_way_platformList) {
+        w->Finalize();
+    }
+
+    for (auto& w : sloping_blockList) {
+        w->Finalize();
+    }
+
+
+    woodList.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
+    one_way_platformList.clear();
+    sloping_blockList.clear();
 }
 
 

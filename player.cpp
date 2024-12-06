@@ -250,7 +250,8 @@ void Player::Update()
  //アンカーの処理
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    if ((Keyboard_IsKeyDown(KK_T) || (state.buttonB))&&Anchor::GetAnchorState()==Nonexistent_state)//何も存在しない状態でボタン入力で移行する
+
+    if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         Anchor::SetAnchorState(Create_state);//作成状態に移行
     }
@@ -267,42 +268,38 @@ void Player::Update()
     case Throwing_state://錨が飛んでいる状態
         Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
 
-        
+
         //ここはコンタクトリストないの接触判定から接触状態へと移行
         break;
     case Connected_state://物体がくっついた状態　ジョイントの作成
-       
-   
 
         Anchor::CreateRotateJoint();//回転ジョイントを作成
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
         break;
 
     case Pulling_state://引っ張っている状態
-        //Anchor::PullingAnchor();//ぶつかったアンカーを引っ張る
-        //ここの判定の仕方どうしようかな？？
+
         //呼ばれた回数でするかね　とりあえず2秒で
-
-        if (g_anchor_pulling_number > 1200)
+        if (g_anchor_pulling_number > 100)
         {
-            Anchor::SetAnchorState(Deleting_state);//状態をアンカーを削除する状態に移行
-
-            g_anchor_pulling_number = 0;//値をリセット
+            Anchor::DeleteRotateJoint();
+            Anchor::PullingAnchor();
         }
-        g_anchor_pulling_number++;
 
-        if ((state.buttonY)||(Keyboard_IsKeyDown(KK_G)))
+
+        if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_T)))
         {
-            g_anchor_pulling_number = 0;//値をリセット
-            Anchor::SetAnchorState(Deleting_state);//状態をアンカーを削除する状態に移行
+            g_anchor_pulling_number = 200;
         }
-        
+
+        g_anchor_pulling_number++;//アンカーが引っ張る
 
         break;
 
     case Deleting_state://削除している状態
+        g_anchor_pulling_number = 0;
         Anchor::DeleteAnchor();//アンカーを削除
-    
+
         Anchor::SetAnchorState(Nonexistent_state);
 
         break;

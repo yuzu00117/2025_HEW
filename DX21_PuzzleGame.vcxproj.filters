@@ -85,6 +85,10 @@
     <ClCompile Include="rock.h">
       <Filter>ヘッダーファイル</Filter>
     </ClCompile>
+    <ClCompile Include="one-way_platform.cpp" />
+    <ClCompile Include="sloping_block.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -175,6 +179,10 @@
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="world_box2d.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="sloping_block.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -125,6 +125,21 @@ void Field::Initialize()
 			if(field_map[y][x] == 9) {
 				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3.0f, 2);
 			}
+			if (field_map[y][x] == 10) {//足場ブロック
+				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.0f), b2Vec2(2.0f, 0.2f));
+			}
+			if (field_map[y][x] == 11) {//右上　傾斜
+				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), right_upper);
+			}
+			if (field_map[y][x] == 12) {//右下　傾斜
+				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 5.0f), right_down);
+			}
+			if (field_map[y][x] == 13) {//左上　傾斜
+				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), left_upper);
+			}
+			if (field_map[y][x] == 14) {//左下　傾斜
+				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), left_down);
+			}
 		}
 	}
 
@@ -138,6 +153,8 @@ void Field::Update()
 	//アンカーポイントの更新
 	AnchorPoint::Update();
 	Enemy::Update();
+
+	objectManager.UpdateAll();
 }
 
 
