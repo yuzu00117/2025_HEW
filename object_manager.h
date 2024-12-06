@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager
-// #description ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚é‚½‚ß‚Ìƒtƒ@ƒNƒgƒŠ[‚ÌƒCƒ[ƒW‚É‹ß‚¢
-// #make 2024/12/04@‰i–ì‹`–ç
+// #description ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ãŸã‚ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ã‚¤ãƒ¡ãƒ¼ã‚¸ã«è¿‘ã„
+// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/04
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒIƒuƒWƒFƒNƒg‚ğì‚é‚²‚Æ‚É¶¬‚·‚éŠ´‚¶
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œã‚‹ã”ã¨ã«ç”Ÿæˆã™ã‚‹æ„Ÿã˜
 //----------------------------------------------------------------------------------------------------
 
 
@@ -14,58 +14,69 @@
 #include <vector>
 #include <memory>
 #include "wood.h"
+#include"rock.h"
 #include"one-way_platform.h"
 #include"sloping_block.h"
 
-// ƒIƒuƒWƒFƒNƒg‚Ìí—Ş‚ğ’è‹`
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç¨®é¡ã‚’å®šç¾©
 enum ObjectType {
     NULL_object,
-    Object_Wood, // –Ø
-    Object_Rock, // Šâ
-    Object_one_way_platform//‘«ê@‚µ‚½‚©‚ç‚µ‚©æ‚ê‚È‚¢
+    Object_Wood, // æœ¨
+    Object_Rock, // å²©
+    Object_one_way_platform//è¶³å ´ã€€ã—ãŸã‹ã‚‰ã—ã‹ä¹—ã‚Œãªã„
     
 };
 
 
-// ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚éƒNƒ‰ƒX
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹
 class ObjectManager {
 public:
-    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
     static ObjectManager& GetInstance();
 
-    // –Ø‚ğ’Ç‰Á
+    // æœ¨ã‚’è¿½åŠ 
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool&right);
 
+    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
+      
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
 
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
 
-    // ID ‚ğg‚Á‚Ä–Ø‚ğŒŸõ
+
+    // ID ã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
     wood* FindWoodByID(int id);
 
+
+    rock* FindRockByID(int id);
+
+    
     one_way_platform* Findone_way_platformByID(int id);
 
     sloping_block* FindSloping_BlockByID(int id);
 
-    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ‰Šú‰»
+
+    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–
     void InitializeAll();
 
-    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğXV
+    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°
     void UpdateAll();
 
-    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ•`‰æ
+    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
     void DrawAll();
 
-    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ”jŠü
+    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„
     void FinalizeAll();
 
 private:
     std::vector<std::unique_ptr<wood>> woodList;
-    std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// ‘«ê‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// è¶³å ´ã®ãƒªã‚¹ãƒˆ
     std::vector<std::unique_ptr<sloping_block>> sloping_blockList;
     
 
-    //‚±‚±‚ÉƒIƒuƒWƒFƒNƒg‚²‚Æ‚ÉƒŠƒXƒg‚ğ’Ç‰Á‚µ‚Ä‚¢‚­Š´‚¶‚¾‚Ë‚¥[
+    std::vector < std::unique_ptr<rock>>rockList;
+
+    //ã“ã“ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã”ã¨ã«ãƒªã‚¹ãƒˆã‚’è¿½åŠ ã—ã¦ã„ãæ„Ÿã˜ã ã­ã‡ãƒ¼
 
 
     ObjectManager() = default;
