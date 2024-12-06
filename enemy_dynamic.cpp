@@ -20,11 +20,12 @@
 #include"player_position.h"
 #include"player_stamina.h"
 #include"contactlist.h"
+#include"anchor_spirit.h"
 
 EnemyDynamic* g_p_enemies_dynamic[ENEMY_MAX] = { nullptr };
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE)
+	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true)
 {
 	//ƒeƒNƒXƒ`ƒƒ‚ðƒZƒbƒg
 	SetFieldTexture(texture);
@@ -87,7 +88,20 @@ void EnemyDynamic::Update()
 	{
 		if (g_p_enemies_dynamic[i])
 		{
-			g_p_enemies_dynamic[i]->UpdateEnemy();
+			if(g_p_enemies_dynamic[i]->GetUse())
+			{
+				g_p_enemies_dynamic[i]->UpdateEnemy();
+			}
+			else
+			{
+				//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ(’Ç‰Á—\’è)
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+				world->DestroyBody(g_p_enemies_dynamic[i]->GetFieldBody());
+
+				Field::DeleteFieldObject(g_p_enemies_dynamic[i]->GetFieldBody());
+				g_p_enemies_dynamic[i] = nullptr;
+			}
 		}
 	}
 }
@@ -122,17 +136,23 @@ void EnemyDynamic::CollisionPlayer(b2Body* collision_enemy)
 			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
 			{
 				PlayerStamina::EditPlayerStaminaValue(-g_p_enemies_dynamic[i]->GetDamage());
-				
-				//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ(’Ç‰Á—\’è)
-				/*if(g_p_enemies_dynamic[i]->GetFieldBody())
-				{
-					Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-					b2World* world = box2d_world.GetBox2dWorldPointer();
-					world->DestroyBody(g_p_enemiey_collision);
-				}*/
+				g_p_enemies_dynamic[i]->SetUse(false);
+				return;
+			}
+		}
+	}
+}
 
-				Field::DeleteFieldObject(collision_enemy);
-				g_p_enemies_dynamic[i] = nullptr;
+void EnemyDynamic::CollisionPulledObject(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
+			{
+				AnchorSpirit::EditAnchorSpiritValue(-g_p_enemies_dynamic[i]->GetDamage());
+				g_p_enemies_dynamic[i]->SetUse(false);
 				return;
 			}
 		}

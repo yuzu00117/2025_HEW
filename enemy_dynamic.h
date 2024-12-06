@@ -33,6 +33,7 @@ public:
 	static void Update();
 	virtual void UpdateEnemy();
 	static void CollisionPlayer(b2Body* collision_enemy);
+	static void CollisionPulledObject(b2Body* collision_enemy);
 	static void Finalize();
 };
 

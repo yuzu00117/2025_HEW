@@ -1,8 +1,5 @@
 //-----------------------------------------------------------------------------------------------------
 // #name contactlist.h
-
-
-=======
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
 // #update 2024/1204
@@ -151,7 +148,7 @@ public:
             }
         }
 
-        //�v���C���[�ƐÓI�G�l�~�[�̏Փ�
+        //静的プレイヤーとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player) ||
             (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_static))
         {
@@ -165,7 +162,7 @@ public:
             }
         }
 
-        //�v���C���[�Ɠ��I�G�l�~�[�̏Փ�
+        //動的プレイヤーとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player) ||
             (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_dynamic))
         {
@@ -179,9 +176,9 @@ public:
             }
         }
      
-        //�A���J�[�|�C���g�ƐÓI�G�l�~�[�̏Փ�
-        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point) ||
-            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static) &&
+        //引っ張られている状態のオブジェクトとエネミーの衝突
+        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_wall) ||
+            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_static)) &&
             (Anchor::GetAnchorState() == Pulling_state))
         {
             if (objectA->collider_type == collider_enemy_static)
@@ -194,9 +191,9 @@ public:
             }
         }
 
-        //�A���J�[�|�C���g�Ɠ��I�G�l�~�[�̏Փ�
-        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
-            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic) &&
+        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_wall) ||
+            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_dynamic)) &&
             (Anchor::GetAnchorState() == Pulling_state))
         {
             if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)

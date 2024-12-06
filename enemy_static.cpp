@@ -18,11 +18,12 @@
 #include<Windows.h>
 #include"player_position.h"
 #include"contactlist.h"
+#include"anchor_spirit.h"
 
 EnemyStatic* g_p_enemies_static[ENEMY_MAX] = { nullptr };
 
 EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE)
+	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE, true)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -86,7 +87,20 @@ void EnemyStatic::Update()
 	{
 		if (g_p_enemies_static[i])
 		{
-			g_p_enemies_static[i]->UpdateEnemy();
+			if (g_p_enemies_static[i]->GetUse())
+			{
+				g_p_enemies_static[i]->UpdateEnemy();
+			}
+			else
+			{
+				//ワールドに登録したbodyの削除(追加予定)
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+				world->DestroyBody(g_p_enemies_static[i]->GetFieldBody());
+
+				Field::DeleteFieldObject(g_p_enemies_static[i]->GetFieldBody());
+				g_p_enemies_static[i] = nullptr;
+			}
 		}
 	}
 }
@@ -105,9 +119,23 @@ void EnemyStatic::CollisionPlayer(b2Body* collision_enemy)
 			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
 			{
 				PlayerStamina::EditPlayerStaminaValue(-g_p_enemies_static[i]->GetDamage());
+				g_p_enemies_static[i]->SetUse(false);
+				return;
+			}
+		}
+	}
+}
 
-				Field::DeleteFieldObject(collision_enemy);
-				g_p_enemies_static[i] = nullptr;
+void EnemyStatic::CollisionPulledObject(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_static[i])
+		{
+			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
+			{
+				AnchorSpirit::EditAnchorSpiritValue(-g_p_enemies_static[i]->GetDamage());
+				g_p_enemies_static[i]->SetUse(false);
 				return;
 			}
 		}

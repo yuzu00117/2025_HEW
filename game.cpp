@@ -63,7 +63,7 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 #ifndef _DEBUG
 	//デバッグ文字
-	InitializeDebug();
+	//InitializeDebug();
 #endif // !_DEBUG
 
 	return S_OK;
@@ -102,7 +102,7 @@ void Game::Finalize(void)
 
 #ifdef _DEBUG
 	//デバッグ文字
-	FinalizeDebug();
+	//FinalizeDebug();
 #endif // _DEBUG
 
 }
@@ -130,7 +130,7 @@ void Game::Update(void)
 
 #ifdef _DEBUG
 	//デバッグ文字
-	UpdateDebug();
+	//UpdateDebug();
 #endif // _DEBUG
 
 }
@@ -160,7 +160,7 @@ void Game::Draw(void)
 
 #ifdef _DEBUG
 	//デバッグ文字
-	DrawDebug();
+	//DrawDebug();
 #endif // _DEBUG
 
 	//バックバッファ、フロントバッファ入れ替え

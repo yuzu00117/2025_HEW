@@ -27,10 +27,12 @@ private:
 	int m_soulgage;
 	//エネミーを倒した際に獲るスコア
 	int m_score;
+	//使用中判定
+	bool m_use;
 public:
 	Enemy() = default;
-	Enemy(int life, int damage, int soulgage, int score)
-		:m_life(life), m_damage(damage), m_soulgage(soulgage), m_score(score){}
+	Enemy(int life, int damage, int soulgage, int score, bool use)
+		:m_life(life), m_damage(damage), m_soulgage(soulgage), m_score(score), m_use(use){}
 	virtual ~Enemy() = default;
 
 	int GetLife()
@@ -58,6 +60,15 @@ public:
 	void SetSoulgage(int soulgage)
 	{
 		m_life = soulgage;
+	}
+
+	bool GetUse()
+	{
+		return m_use;
+	}
+	void SetUse(bool use)
+	{
+		m_use = use;
 	}
 
 	virtual void UpdateEnemy() = 0;
