@@ -79,6 +79,15 @@
     <ClCompile Include="word.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Item_Manager.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_SpeedUp.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemInterface.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -171,6 +180,15 @@
     <ClInclude Include="world_box2d.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Item_Manager.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_SpeedUp.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemInterface.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">
@@ -232,6 +250,12 @@
     </Filter>
     <Filter Include="リソースファイル">
       <UniqueIdentifier>{0e2c73d9-6e34-4b29-9fe5-5c0987204aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\item">
+      <UniqueIdentifier>{e5e6889a-8680-4e3a-a9ae-9c8405c6a93b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\item">
+      <UniqueIdentifier>{c5b86562-ed04-4dd2-8a1a-9a85511e0276}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

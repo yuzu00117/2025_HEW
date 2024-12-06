@@ -70,6 +70,16 @@ public:
 	{
 		return m_speed;
 	}
+	//今の速度を掛ける倍数でセット（減速の場合は0.xxxx）
+	void	SetSpeed(float multipy)
+	{
+		m_speed *= multipy;
+		if (m_speed < 0)
+		{
+			m_speed = 0;
+		}
+	}
+
 
 	//今のプレイヤーの向きを取得
 	// 右向き：1    左向き：-1

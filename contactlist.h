@@ -23,12 +23,14 @@
 #include"anchor.h"
 #include"player.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
 
 
 class MyContactListener : public b2ContactListener {
 private:
     Player player = Player::GetInstance();
+    ItemManager Item = ItemManager::GetInstance();
 
 public:
     b2Vec2 contactPoint;//衝突した地点
