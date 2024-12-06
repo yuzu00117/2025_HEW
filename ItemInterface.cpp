@@ -2,6 +2,9 @@
 #include"texture.h"
 #include"sprite.h"
 #include"collider_type.h"
+#include"player_position.h"
+
+int Item::m_ID = -1;
 
 
 Item::Item(b2Vec2 position, b2Vec2 body_size, float angle, ItemType type, ID3D11ShaderResourceView* Texture, bool shape_polygon, float Alpha)
@@ -30,6 +33,7 @@ Item::Item(b2Vec2 position, b2Vec2 body_size, float angle, ItemType type, ID3D11
 
     b2FixtureDef fixture;
 
+    b2Fixture* p_fixture;
 
     //四角形の場合
    //-----------------------------------------------------------------------------
@@ -43,12 +47,16 @@ Item::Item(b2Vec2 position, b2Vec2 body_size, float angle, ItemType type, ID3D11
         fixture.friction = 0.3f;//摩擦
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+
+        p_fixture = m_body->CreateFixture(&fixture);
+
     }
     //円の場合
 //-----------------------------------------------------------------------------
     else
     {
         b2CircleShape shape;
+        shape.m_p.Set(position.x, position.y);
         shape.m_radius = size.x * 0.5f;
 
         fixture.shape = &shape;
@@ -56,11 +64,9 @@ Item::Item(b2Vec2 position, b2Vec2 body_size, float angle, ItemType type, ID3D11
         fixture.friction = 0.3f;//摩擦
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        p_fixture = m_body->CreateFixture(&fixture);
     }
 
-
-
-    b2Fixture* p_fixture = m_body->CreateFixture(&fixture);
 
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
@@ -69,7 +75,8 @@ Item::Item(b2Vec2 position, b2Vec2 body_size, float angle, ItemType type, ID3D11
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
 
-    data->item_name = type;
+
+    data->item_name = ITEM_SPEED_UP;
     int ID = data->GenerateID();
     data->id = ID;
     SetID(ID);
@@ -88,22 +95,32 @@ Item::~Item()
 
 void    Item::Draw()
 {
+    // シェーダリソースを設定
+    GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
+
     // コライダーと位置情報の補正をするため
     float scale = SCREEN_SCALE;
 
+    b2Vec2 screen_center;
+    screen_center.x = SCREEN_CENTER_X;
+    screen_center.y = SCREEN_CENTER_Y;
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &m_Texture);
 
     // コライダーの位置の取得（アイテムーの位置）
     b2Vec2 position;
     position.x = m_body->GetPosition().x;
     position.y = m_body->GetPosition().y;
 
+    // プレイヤー位置を考慮してスクロール補正を加える
+    //取得したbodyのポジションに対してBox2dスケールの補正を加える
+    float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+    float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
     //描画
     DrawSprite(
-        { position.x,
-          position.y },
+        { draw_x,
+          draw_y },
         m_body->GetAngle(),
         { GetSize().x * scale,GetSize().y * scale },
         m_Alpha

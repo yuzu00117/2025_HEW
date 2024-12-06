@@ -27,11 +27,16 @@ public:
 	 //ボディーをセット
 	 void SetBody(b2Body* body){ m_body = body; }
 
-
 	 // ID を取得する
-	 int GetID() const {return m_ID; }
-	 // ID をセット
-	 void SetID(int ID) { m_ID = ID; }
+	 int GetID() const {
+		 return m_ID;
+	 }
+	 // IDをセット
+	 void SetID(int ID)
+	 {
+		 m_ID = ID;
+	 }
+
 
 
 	 //消える予定なのかを取得
@@ -64,9 +69,6 @@ protected:
 	//アイテムのボディー
 	b2Body*	m_body;
 
-	// 各インスタンス固有の ID
-	int m_ID; 
-
 	//アイテムのサイズ（描画用）
 	b2Vec2 m_size;
 	//アイテムの種類
@@ -76,6 +78,9 @@ protected:
 
 	//消す予定なのかどうか
 	bool	m_destory = false;
+
+	// 各インスタンス固有の ID
+	static int	m_ID;
 
 	//テクスチャ
 	ID3D11ShaderResourceView* m_Texture = NULL;

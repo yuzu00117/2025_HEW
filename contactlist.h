@@ -30,7 +30,7 @@
 class MyContactListener : public b2ContactListener {
 private:
     Player player = Player::GetInstance();
-    ItemManager Item = ItemManager::GetInstance();
+    ItemManager item_manager = ItemManager::GetInstance();
 
 public:
     b2Vec2 contactPoint;//衝突した地点
@@ -79,6 +79,30 @@ public:
 
 
         }
+
+        //　プレイヤーとアイテムが衝突したかを判定
+        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_item) ||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player)) {
+
+            int ID;
+
+            if (objectA->collider_type == collider_item)
+            {
+                //objectAがアンカーポイントだった
+                //のでfixtureAがフィクスチャだよね
+                ID = objectA->id;
+            }
+            else
+            {
+                //objectBがアンカーポイントだった
+                //のでfixtureBがフィクスチャだよね
+                ID = objectB->id;
+            }
+
+            item_manager.Update(ID);
+        }
+
+
 
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_anchor) ||
             (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player))

@@ -51,6 +51,8 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//フィールドの初期化
 	Field::Initialize();
 
+	item_manager.Create({ 5.0f,0.0f }, { 1.0f,1.0f }, 0.0f, ITEM_SPEED_UP);
+
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
 
@@ -156,7 +158,7 @@ void Game::Draw(void)
 	//体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
 
-
+	item_manager.Draw();
 
 #ifdef _DEBUG
 	//デバッグ文字

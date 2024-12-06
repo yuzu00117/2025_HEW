@@ -15,7 +15,6 @@ public:
 	ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f)
 		:Item(position, body_size, angle, ITEM_SPEED_UP, InitTexture(L"asset\\texture\\sample_texture\\speed_up.png"), shape_polygon, Alpha) {}
 	
-
 	void	Update()override;
 
 
