@@ -26,6 +26,11 @@ void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, cons
     woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,right));
 }
 
+void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level)
+{
+    rockList.emplace_back(std::make_unique<rock>(position, radius, need_anchor_level));
+}
+
 // 足場を追加
 void ObjectManager::AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position,const b2Vec2 &size) {
     // 既存の 3 引数コンストラクタを利用して生成
@@ -43,6 +48,16 @@ void ObjectManager::AddSloping_block(const b2Vec2& position, const b2Vec2& size,
 // ID を使って木を検索
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+// ID を使って岩を検索
+rock* ObjectManager::FindRockByID(int id) {
+    for (const auto& w : rockList) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -75,6 +90,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : rockList) {
+        w->Initialize();
+    }
+
+
     for (auto& w : one_way_platformList) {
         w->Initialize();
     }
@@ -87,6 +107,11 @@ void ObjectManager::InitializeAll() {
 // 全ての木を更新
 void ObjectManager::UpdateAll() {
     for (auto& w : woodList) {
+        w->Update();
+    }
+
+
+    for (auto& w : rockList) {
         w->Update();
     }
 
@@ -105,6 +130,10 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : rockList) {
+        w->Draw();
+    }
+
     for (auto& w : one_way_platformList) {
         w->Draw();
     }
@@ -120,7 +149,9 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
         w->Finalize();
     }
-
+    for (auto& w : rockList) {
+        w->Finalize();
+    }
     for (auto& w : one_way_platformList) {
         w->Finalize();
     }
@@ -131,6 +162,7 @@ void ObjectManager::FinalizeAll() {
 
 
     woodList.clear(); // 動的配列をクリアしてメモリ解放
+    rockList.clear();
     one_way_platformList.clear();
     sloping_blockList.clear();
 }

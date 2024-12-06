@@ -16,6 +16,7 @@
 #include "wood.h"
 #include"one-way_platform.h"
 #include"sloping_block.h"
+#include"rock.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -36,12 +37,16 @@ public:
     // 木を追加
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool&right);
 
+    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
+
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
 
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
+
+    rock* FindRockByID(int id);
 
     one_way_platform* Findone_way_platformByID(int id);
 
@@ -61,6 +66,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<wood>> woodList;
+    std::vector<std::unique_ptr<rock>>rockList;
     std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// 足場のリスト
     std::vector<std::unique_ptr<sloping_block>> sloping_blockList;
     

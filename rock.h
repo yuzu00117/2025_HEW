@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------------------------------
-// #name wood.h
-// #description 木のオブジェクトのヘッダー
+// #name rock.h
+// #description 岩のオブジェクトのヘッダー
 // #make 2024/12/04　永野義也
 // #update 2024/12/04
 // #comment 追加・修正予定
@@ -9,19 +9,20 @@
 //----------------------------------------------------------------------------------------------------
 
 
-#ifndef WOOD_H
-#define WOOD_H
+#ifndef ROCK_H
+#define ROCK_H
 
 #include"include/box2d/box2d.h"
 
 
 
 
-class wood
+class rock
 {
 public:
-	wood(b2Vec2 position,b2Vec2 Woodsize,b2Vec2 AnchorPoint_size,bool right);
-	~wood();
+
+	rock(b2Vec2 Position, float radius, int need_anchor_level);
+	~rock();
 
 
 
@@ -30,39 +31,39 @@ public:
 	void Draw();
 	void Finalize();
 
-	void Pulling_wood(b2Vec2 pullingpower);
+	void Pulling_rock(b2Vec2 pullingpower);
 
 
 	// ID を取得する
 	int GetID() const {
 		return id;
 	}
-	
+
 	void SetID(int ID)
 	{
 		id = ID;
 	}
 
 	//描画用にサイズを持たせておく
-	b2Vec2 GetWoodSize() const
+	b2Vec2 GetRockSize() const
 	{
-		return m_Wood_size;
+		return m_Rock_size;
 	}
 
-	void SetWoodSize(b2Vec2 size) {
-		m_Wood_size = size;
+	void SetRockSize(b2Vec2 size) {
+		m_Rock_size = size;
 	}
 
 
 	//bodyの習得
-	b2Body* GetObjectWoodBody()
+	b2Body* GetObjectRockBody()
 	{
-		return Wood_body;
+		return Rock_body;
 	}
 
-	void SetObjectWoodBody(b2Body* body)
+	void SetObjectRockBody(b2Body* body)
 	{
-		Wood_body = body;
+		Rock_body = body;
 	}
 
 
@@ -96,9 +97,9 @@ public:
 private:
 	int id; // 各インスタンス固有の ID
 
-	b2Body* Wood_body;
+	b2Body* Rock_body;
 
-	b2Vec2 m_Wood_size;
+	b2Vec2 m_Rock_size;
 
 
 	b2Body* AnchorPoint_body;

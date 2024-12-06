@@ -122,6 +122,11 @@ void Field::Initialize()
 				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
 			}
 
+			if (field_map[y][x] == 9) {
+				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 2.0f,1);
+			}
+
+
 			
 			if (field_map[y][x] == 10) {//足場ブロック
 				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.0f), b2Vec2(2.0f, 0.2f));
@@ -218,10 +223,12 @@ void Field::Draw()
 			}
 		}
 	}
-	//アンカーポイントを描画
-	AnchorPoint::Draw();
+
 
 	objectManager.DrawAll();
+
+	//アンカーポイントを描画
+	AnchorPoint::Draw();
 }
 
 
