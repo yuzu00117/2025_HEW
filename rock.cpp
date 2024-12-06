@@ -34,7 +34,7 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 
 
 
-	SetRockSize(b2Vec2(radius*2,radius*2));
+	SetRockSize(b2Vec2(radius * 2, radius * 2));
 	//SetAnchorPointSize(AnchorPoint_size);
 
 
@@ -52,8 +52,8 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 
 	//ÉTÉCÉYÇê›íËÇ∑ÇÈ
 	b2Vec2 rock_size;
-	rock_size.x = radius*2/ BOX2D_SCALE_MANAGEMENT;
-	rock_size.y = radius*2 / BOX2D_SCALE_MANAGEMENT;
+	rock_size.x = radius * 2 / BOX2D_SCALE_MANAGEMENT;
+	rock_size.y = radius * 2 / BOX2D_SCALE_MANAGEMENT;
 
 
 	b2BodyDef Rock_body;//ñÿÇÃä≤ÇÃïîï™
