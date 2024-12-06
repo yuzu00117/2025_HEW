@@ -41,5 +41,3 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 		m_stamina = MAX_STAMINA;
 	}
 }
-
-

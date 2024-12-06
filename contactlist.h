@@ -147,7 +147,6 @@ public:
 
             }
 
-
             //岩のオブジェクトの引っ張る処理
             if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
             {
@@ -164,9 +163,6 @@ public:
                 }
 
             }
-
-
-
         }
 
         //静的プレイヤーとエネミーの衝突

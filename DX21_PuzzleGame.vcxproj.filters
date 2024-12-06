@@ -94,6 +94,9 @@
     <ClCompile Include="sloping_block.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="rock.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -193,6 +196,9 @@
       <Filter>ヘッダー ファイル\collider</Filter>
     <ClInclude Include="one-way_platform.h" />
     <ClInclude Include="sloping_block.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="rock.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

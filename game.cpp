@@ -119,13 +119,11 @@ void Game::Update(void)
 	//プレイヤーの更新処理
 	player.Update();
 
-	
+	//アンカーの更新処理
+	Anchor::Update();
 
 	//フィールドの更新処理
 	Field::Update();
-
-	//アンカーの更新処理
-	Anchor::Update();
 
 	controller.CheckInput();
 
@@ -148,8 +146,6 @@ void Game::Draw(void)
 
 	//プレイヤーの描画処理
 	player.Draw();
-
-	
 
 	//フィールドの描画処理
 	Field::Draw();
