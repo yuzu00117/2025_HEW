@@ -84,6 +84,12 @@
     </ClCompile>
     <ClCompile Include="player_stamina.cpp">
       <Filter>ソース ファイル\collider</Filter>
+    <ClCompile Include="rock.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="rock.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClCompile>
     <ClCompile Include="one-way_platform.cpp" />
     <ClCompile Include="sloping_block.cpp">
       <Filter>ソースファイル</Filter>
