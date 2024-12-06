@@ -14,7 +14,8 @@
 #include"player.h"
 #include"field.h"
 #include"directx_controller.h"
-#include"UI_StaminaSpirit_Gauge.h"
+#include"UI_StaminaSpirit_gauge.h"
+
 
 
 class Game
@@ -34,12 +35,14 @@ public:
 
 
 
-	HRESULT Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
+
+	void Initialize();
 	void Update();
 	void Draw();
 	void Finalize();
 
 private:
+
 	DirectInputController controller;
 	Player player;
 	StaminaSpiritGauge stamina_spirit_gauge;
