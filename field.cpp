@@ -124,7 +124,7 @@ void Field::Initialize()
 			if (field_map[y][x] == 8) {
 				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
 			}
-			if (field_map[y][x] == 9) {
+			if (field_map[y][x] == 15) {
 				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
 		}
