@@ -50,7 +50,7 @@ public:
 
     b2Vec2 add_force = { 0.0f,0.0f };// 追加のb2vecデータ
     ObjectType object_name;  // （オブジェクト）追加の文字列データ
-    ItemType item_name; // （アイテム）追加の文字列データ
+    ItemType Item_name; // （アイテム）追加の文字列データ
 
     int id;//オブジェクトを管理するためのID
 

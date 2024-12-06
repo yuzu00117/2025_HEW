@@ -30,7 +30,7 @@
 class MyContactListener : public b2ContactListener {
 private:
     Player player = Player::GetInstance();
-    ItemManager Item = ItemManager::GetInstance();
+   
 
 public:
     b2Vec2 contactPoint;//衝突した地点
@@ -53,6 +53,7 @@ public:
     void BeginContact(b2Contact* contact) override {
 
         ObjectManager& object_manager = ObjectManager::GetInstance();
+        ItemManager &item_manager = ItemManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -79,6 +80,29 @@ public:
 
 
         }
+
+        // プレーヤーとアイテムが衝突したかを判定
+        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_item) ||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player)) {
+            // 衝突処理（プレーヤーと地面が接触した時）
+
+            //どちらが木のオブジェクトか特定
+            if (objectA->Item_name == ITEM_SPEED_UP)//Aが木のオブジェクト
+            {
+                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectA->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                item_instance->Function();
+                item_instance->SetDestory(true);//削除を呼び出す
+            }
+            else
+            {
+                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectB->id);
+                item_instance->Function();
+                item_instance->SetDestory(true);//削除を呼び出す
+            }
+
+
+        }
+
 
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_anchor) ||
             (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player))

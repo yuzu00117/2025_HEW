@@ -5,8 +5,15 @@
 
 #include <vector>
 #include <memory>
-#include"ItemInterface.h"
 #include"Item_SpeedUp.h"
+
+//アイテムの種類
+enum ItemType
+{
+	ITEM_NONE,		//何もない
+	ITEM_SPEED_UP,	//スピードアップ
+};
+
 
 
 class ItemManager
@@ -25,7 +32,7 @@ public:
 
 
 	// ID を使ってアイテムを検索
-	Item* FindItem_SpeedUp_ByID(int ID);
+	ItemSpeedUp* FindItem_SpeedUp_ByID(int ID);
 	
 	// 全てのアイテムを初期化
 	void InitializeAll();
@@ -39,18 +46,7 @@ public:
 	// 全てのアイテムを破棄
 	void FinalizeAll();
 
-	
-	
-	
-	////bodyのアドレスしか知らない場合
-	//void	Destory(b2Body* body);
-	////アイテムの配列番号を知っている場合
-	//void	Destory(int item_ID);
-	
 
-
-	//void	Update(b2Body* body);
-	//void	Draw();
 
 private:
 
@@ -58,9 +54,11 @@ private:
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;
-	//~ItemManager(){}
-	//ItemManager(const ItemManager&) = delete;
-	//ItemManager& operator=(const ItemManager&) = delete;
+	ItemManager(const ItemManager&) = delete;
+	ItemManager& operator=(const ItemManager&) = delete;
+
+	//アイテムがリストの中で何番目か
+	int ID_SpeedUp_List = -1;
 
 };
 

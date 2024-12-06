@@ -33,6 +33,7 @@ ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 //staticƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
+float    Player::m_speed = 0.04f;
 int     Player::m_direction = 1;
 
 

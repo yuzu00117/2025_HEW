@@ -22,6 +22,7 @@
 #include"enemy_dynamic.h"
 #include"enemy_static.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
 
 
@@ -38,6 +39,7 @@ int Field::m_field_height = 0;
 
 
 ObjectManager& objectManager = ObjectManager::GetInstance();
+ItemManager& itemManager = ItemManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
@@ -122,10 +124,14 @@ void Field::Initialize()
 			if (field_map[y][x] == 8) {
 				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
 			}
+			if (field_map[y][x] == 9) {
+				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
 		}
 	}
 
 	objectManager.InitializeAll();
+	itemManager.InitializeAll();
 }
 
 
@@ -135,6 +141,7 @@ void Field::Update()
 	//アンカーポイントの更新
 	AnchorPoint::Update();
 	Enemy::Update();
+	itemManager.UpdateAll();
 }
 
 
@@ -195,6 +202,7 @@ void Field::Draw()
 	AnchorPoint::Draw();
 
 	objectManager.DrawAll();
+	itemManager.DrawAll();
 }
 
 

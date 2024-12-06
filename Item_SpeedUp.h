@@ -12,12 +12,39 @@ public:
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
 	ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
+	~ItemSpeedUp();
 	
+	//ボディーを取得
+	b2Body* GetBody() { return m_body; }
+	//ボディーをセット
+	void SetBody(b2Body* body) { m_body = body; }
 
 
+	// ID を取得する
+	int GetID() const { return m_ID; }
+	// ID をセット
+	void SetID(int ID) { m_ID = ID; }
+
+	//描画用にサイズを持たせておく
+	b2Vec2 GetSize() const { return m_size; }
+	//描画サイズセット
+	void SetSize(b2Vec2 size) { m_size = size; }
+
+
+	void	SetDestory(bool flag) { m_destory = flag; }
+	void	Function();
+
+
+	void Initialize();
+	bool Update();
+	void Draw();
+	void Finalize();
 
 
 private:
+	// 各インスタンス固有の ID
+	int m_ID; 
+
 	//アイテムのボディー
 	b2Body* m_body;
 

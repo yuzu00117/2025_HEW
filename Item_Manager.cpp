@@ -1,5 +1,6 @@
 #include "Item_Manager.h"
 #include "Item_SpeedUp.h"
+#include "world_box2d.h"
 
 
 // シングルトンのインスタンス取得
@@ -13,10 +14,11 @@ void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, boo
 {
 	// 既存の引数コンストラクタを利用して生成
 	m_SpeedUp_List.emplace_back(std::make_unique<ItemSpeedUp>(position, body_size, angle, shape_polygon, Alpha));
+    ID_SpeedUp_List++;
 }
 
 
-Item* ItemManager::FindItem_SpeedUp_ByID(int ID)
+ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
 {
 	for (const auto& w : m_SpeedUp_List) {
 		if (w->GetID() == ID) {
@@ -27,53 +29,40 @@ Item* ItemManager::FindItem_SpeedUp_ByID(int ID)
 }
 
 
-//void	ItemManager::Update(b2Body* body)
-//{
-//	for (int i = 0; i < ITEM_MAX; i++)
-//	{
-//		if (m_p_item[i]->GetBody() == body)
-//		{
-//			m_p_item[i]->Update();
-//			Destory(i);
-//		}
-//	}
-//}
+// 全てのアイテムを初期化
+void ItemManager::InitializeAll() {
+    for (auto& w : m_SpeedUp_List) {
+        w->Initialize();
+    }
+}
 
-//void	ItemManager::Destory(int item_ID)
-//{
-//	delete m_p_item[item_ID];
-//	m_p_item[item_ID] = nullptr;
-//	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
-//	world->DestroyBody(m_p_item[item_ID]->GetBody());
-//}
+// 全てのアイテムを更新
+void ItemManager::UpdateAll() {
+    for (auto& w : m_SpeedUp_List) {
+        bool destory = w->Update();
+        if (destory)
+        {
+            b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+            world->DestroyBody(w->GetBody());
+            m_SpeedUp_List.erase(m_SpeedUp_List.begin() + ID_SpeedUp_List);
+        }
+    }
+}
 
+// 全てのアイテムを描画
+void ItemManager::DrawAll() {
+    for (auto& w : m_SpeedUp_List) {
+        w->Draw();
+    }
+}
 
-
-//void	ItemManager::Destory(b2Body* body)
-//{
-//	for (int i = 0; i < ITEM_MAX; i++)
-//	{
-//		if (m_p_item[i]->GetBody() == body)
-//		{
-//			//m_p_item[i]->SetDestory(true);
-//			delete m_p_item[i];
-//			m_p_item[i] = nullptr;
-//			b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
-//			world->DestroyBody(body);
-//		}
-//	}
-//
-//}
+// 全てのアイテムを破棄
+void ItemManager::FinalizeAll() {
+    for (auto& w : m_SpeedUp_List) {
+        w->Finalize();
+    }
+    m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
+}
 
 
 
-//void	ItemManager::Draw()
-//{
-//	for (int i = 0; i < ITEM_MAX; i++)
-//	{
-//		if (m_p_item != nullptr)
-//		{
-//			m_p_item[i]->Draw();
-//		}
-//	}
-//}

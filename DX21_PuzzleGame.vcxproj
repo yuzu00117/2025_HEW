@@ -140,7 +140,6 @@
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ground.cpp" />
-    <ClCompile Include="ItemInterface.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -174,7 +173,6 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
-    <ClInclude Include="ItemInterface.h" />
     <ClInclude Include="Item_Manager.h" />
     <ClInclude Include="Item_SpeedUp.h" />
     <ClInclude Include="keyboard.h" />

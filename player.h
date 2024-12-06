@@ -70,13 +70,13 @@ public:
 	{
 		return m_speed;
 	}
-	//今の速度を掛ける倍数でセット（減速の場合は0.xxxx）
-	void	SetSpeed(float multipy)
+	//今の速度をプラス
+	void	SetSpeed(float value)
 	{
-		m_speed *= multipy;
+		m_speed += value;
 		if (m_speed < 0)
 		{
-			m_speed = 0;
+			m_speed = 0.001;
 		}
 	}
 
@@ -121,7 +121,7 @@ private:
 	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.25f);
 
 	//横移動スピード
-	float   m_speed = 0.04f;
+	static float   m_speed;
 
 	//プレイヤーの向き
 	// 右向き：1    左向き：-1
