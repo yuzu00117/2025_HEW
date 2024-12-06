@@ -73,7 +73,7 @@ void Field::Initialize()
 
 
 	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip.csv");
+	Field::LoadCSV("asset/mapchip_enemy.csv");
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 
@@ -117,14 +117,14 @@ void Field::Initialize()
 				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
 			}
 			if (field_map[y][x] == 7) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f),b2Vec2(1.0f,1.0f),true);
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f),b2Vec2(1.0f,1.0f),1);
 			}
 			if (field_map[y][x] == 8) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), true);
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), 3);
 			}
 
 			if (field_map[y][x] == 9) {
-				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 2.0f,1);
+				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 2.0f,2);
 			}
 
 
@@ -165,7 +165,8 @@ void Field::Update()
 {
 	//アンカーポイントの更新
 	AnchorPoint::Update();
-	Enemy::Update();
+	EnemyDynamic::Update();
+	EnemyStatic::Update();
 
 	objectManager.UpdateAll();
 }
@@ -252,7 +253,8 @@ void Field::Finalize()
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
   
-  Enemy::Finalize();
+	EnemyDynamic::Finalize();
+	EnemyStatic::Finalize();
 }
 
 
@@ -300,4 +302,24 @@ bool Field::LoadCSV(const std::string &filename)
     m_field_height = m_field_data.size();  // 行数がフィールドの高さ
     m_field_width = (m_field_data.empty() ? 0 : m_field_data[0].size());  // 最初の行の列数がフィールドの幅
 	return true;
+}
+
+//フィールドのオブジェクトを消す処理(消すオブジェクトのボディを取得)
+void Field::DeleteFieldObject(b2Body* delete_object)
+{
+	for (int y = 0; y < m_field_height; ++y)
+	{
+		for (int x = 0; x < m_field_width; ++x)
+		{
+			if (m_p_field_array[y][x])
+			{
+				if (m_p_field_array[y][x]->GetFieldBody() == delete_object)
+				{
+					delete m_p_field_array[y][x];
+					m_p_field_array[y][x] = nullptr;
+					return;
+				}
+			}
+		}
+	}
 }

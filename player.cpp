@@ -22,6 +22,7 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
+#include"anchor_spirit.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
@@ -240,6 +241,18 @@ void Player::Update()
 
 
 
+    //アンカーのレベルを手動で変えられるしょり　完成版ではけす
+    if (Keyboard_IsKeyDown(KK_O) || (state.dpadUp))
+    {
+        AnchorSpirit::EditAnchorSpiritValue(50); //加算
+    }
+
+    if (Keyboard_IsKeyDown(KK_P) || (state.dpadDown))
+    {
+        AnchorSpirit::EditAnchorSpiritValue(-50); //加算
+    }
+
+
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -274,6 +287,7 @@ void Player::Update()
     case Connected_state://物体がくっついた状態　ジョイントの作成
 
         Anchor::CreateRotateJoint();//回転ジョイントを作成
+        AnchorSpirit::EditAnchorSpiritValue(-25);//アンカーを使ったらゲージを払う
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
         break;
 

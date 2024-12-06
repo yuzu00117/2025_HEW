@@ -28,7 +28,7 @@ static ID3D11ShaderResourceView* g_Rock_Texture2 = NULL;//アンカーのテクスチャ
 
 
 
-rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
+rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 {
 	//ボディは一つで　フィクスチャを二つ付ける構造にする
 
@@ -111,6 +111,8 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 	int ID = object_rock_anchorpoint_data->GenerateID();
 	object_rock_anchorpoint_data->id = ID;
 	SetID(ID);
+	object_rock_anchorpoint_data->need_anchor_level = set_need_anchor_level;
+	
 
 
 	//岩を倒しす時に必要になるForce とりあえずサイズに依存でつくる

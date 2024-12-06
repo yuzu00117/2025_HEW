@@ -49,6 +49,8 @@ public:
     ObjectType object_name;  // 追加の文字列データ
     int id;//オブジェクトを管理するためのID
 
+    int need_anchor_level;
+
     // ID を生成する関数
     static int GenerateID() {
         return current_id++;//全てのIDを管理

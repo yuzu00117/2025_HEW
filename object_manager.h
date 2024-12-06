@@ -35,7 +35,7 @@ public:
     static ObjectManager& GetInstance();
 
     // ñÿÇí«â¡
-    void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool&right);
+    void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
     void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
 
@@ -66,7 +66,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<wood>> woodList;
-    std::vector<std::unique_ptr<rock>>rockList;
+    std::vector < std::unique_ptr<rock>>rockList;
     std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// ë´èÍÇÃÉäÉXÉg
     std::vector<std::unique_ptr<sloping_block>> sloping_blockList;
     

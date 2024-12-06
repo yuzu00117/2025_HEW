@@ -20,7 +20,7 @@
 class wood
 {
 public:
-	wood(b2Vec2 position,b2Vec2 Woodsize,b2Vec2 AnchorPoint_size,bool right);
+	wood(b2Vec2 position,b2Vec2 Woodsize,b2Vec2 AnchorPoint_size,int need_level);
 	~wood();
 
 

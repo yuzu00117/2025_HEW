@@ -21,9 +21,9 @@ ObjectManager& ObjectManager::GetInstance() {
 }
 
 // 木を追加
-void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool& right) {
+void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int& need_level) {
     // 既存の 3 引数コンストラクタを利用して生成
-    woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,right));
+    woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,need_level));
 }
 
 void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level)
