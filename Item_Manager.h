@@ -3,37 +3,67 @@
 #ifndef ITEM_MANAGER_H
 #define ITEM_MANAGER_H
 
+#include <vector>
+#include <memory>
 #include"ItemInterface.h"
+#include"Item_SpeedUp.h"
 
-#define	ITEM_MAX (10)
 
 class ItemManager
 {
+
 public:
-	ItemManager() {}
-	~ItemManager() {}
-
-	static ItemManager& GetInstance() {
-		static ItemManager instance;
-		return instance;
-	}
+	static ItemManager& GetInstance();
 
 
-	//最低必要な引数：position（位置情報）、body_size（サイズ）、angle（回転角度のラジアン）、type（アイテムの種類）
+	//最低必要な引数：position（位置情報）、body_size（サイズ）、angle（回転角度のラジアン）
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
-	void	Create(b2Vec2 position, b2Vec2 body_size, float angle, ItemType type, bool shape_polygon = true, float Alpha = 1.0f);
-	//bodyのアドレスしか知らない場合
-	void	Destory(b2Body* body);
-	//アイテムの配列番号を知っている場合
-	void	Destory(int item_ID);
+	void	AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 	
-	void	Update(int ID);
-	void	Draw();
+
+
+
+	// ID を使ってアイテムを検索
+	Item* FindItem_SpeedUp_ByID(int ID);
+	
+	// 全てのアイテムを初期化
+	void InitializeAll();
+
+	// 全てのアイテムを更新
+	void UpdateAll();
+
+	// 全てのアイテムを描画
+	void DrawAll();
+
+	// 全てのアイテムを破棄
+	void FinalizeAll();
+
+	
+	
+	
+	////bodyのアドレスしか知らない場合
+	//void	Destory(b2Body* body);
+	////アイテムの配列番号を知っている場合
+	//void	Destory(int item_ID);
+	
+
+
+	//void	Update(b2Body* body);
+	//void	Draw();
 
 private:
-	Item* m_p_item[ITEM_MAX];
+
+	std::vector<std::unique_ptr<ItemSpeedUp>> m_SpeedUp_List; // のリスト
+	//ここにアイテムごとにリストを追加していく感じだねぇー
+
+	ItemManager() = default;
+	//~ItemManager(){}
+	//ItemManager(const ItemManager&) = delete;
+	//ItemManager& operator=(const ItemManager&) = delete;
+
 };
+
 #endif // !ITEM_MANAGER_H
 
 
