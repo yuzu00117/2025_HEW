@@ -160,8 +160,8 @@ void Field::Initialize()
 	}
 
 
-		}
-	}
+		
+
 
 	objectManager.InitializeAll();
 	itemManager.InitializeAll();
