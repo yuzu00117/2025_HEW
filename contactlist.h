@@ -88,8 +88,8 @@ public:
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player)) {
             // 衝突処理（プレーヤーと地面が接触した時）
 
-            //どちらが木のオブジェクトか特定
-            if (objectA->Item_name == ITEM_SPEED_UP)//Aが木のオブジェクト
+            //どちらがアイテムか特定
+            if (objectA->Item_name == ITEM_SPEED_UP)//Aがアイテム
             {
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectA->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 item_instance->Function(); 

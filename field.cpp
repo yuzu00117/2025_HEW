@@ -153,7 +153,7 @@ void Field::Initialize()
 			if (field_map[y][x] == 14) {//左下　傾斜
 				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), left_down);
 			}
-			if (field_map[y][x] == 15) {
+			if (field_map[y][x] == 15) {//アイテム
 				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
 		}
