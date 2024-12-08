@@ -29,6 +29,25 @@ public:
 	//今のソウルゲージの値をマイナス、もしくはプラス（マイナスしたい場合は負数を渡してね！）
 	static void	EditAnchorSpiritValue(float value);
 
+	static int GetAnchorLevel()
+	{
+		int anchor_level;//アンカーのレベル
+		int spirit = GetAnchorSpiritValue();
+
+		if (spirit < 100) {
+			anchor_level = 1;
+		}
+		else if (100 <= spirit && spirit < 200)
+		{
+			anchor_level = 2;
+		}
+		else if (200 <= spirit)
+		{
+			anchor_level = 3;
+		}
+
+		return anchor_level;
+	}
 
 private:
 	AnchorSpirit(){}

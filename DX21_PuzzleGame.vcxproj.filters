@@ -79,13 +79,17 @@
     <ClCompile Include="word.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="one-way_platform.cpp" />
+    <ClCompile Include="sloping_block.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="rock.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Item_Manager.cpp">
       <Filter>ソースファイル\item</Filter>
     </ClCompile>
     <ClCompile Include="Item_SpeedUp.cpp">
-      <Filter>ソースファイル\item</Filter>
-    </ClCompile>
-    <ClCompile Include="ItemInterface.cpp">
       <Filter>ソースファイル\item</Filter>
     </ClCompile>
   </ItemGroup>
@@ -180,13 +184,17 @@
     <ClInclude Include="world_box2d.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="sloping_block.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="rock.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
     <ClInclude Include="Item_Manager.h">
       <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="Item_SpeedUp.h">
-      <Filter>ヘッダーファイル\item</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemInterface.h">
       <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
   </ItemGroup>

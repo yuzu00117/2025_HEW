@@ -61,7 +61,7 @@ public:
 	FieldTexture  GetFieldTexture(void){return texture;}
 	void SetFieldTexture(const FieldTexture field_texture) { texture = field_texture; }
 
-  
+	static void DeleteFieldObject(b2Body* delete_object);
   
 private:
 

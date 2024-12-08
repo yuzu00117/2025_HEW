@@ -145,10 +145,13 @@
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object_manager.cpp" />
+    <ClCompile Include="one-way_platform.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="rock.cpp" />
+    <ClCompile Include="sloping_block.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -178,10 +181,13 @@
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="object_manager.h" />
+    <ClInclude Include="one-way_platform.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_position.h" />
     <ClInclude Include="player_stamina.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="rock.h" />
+    <ClInclude Include="sloping_block.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />

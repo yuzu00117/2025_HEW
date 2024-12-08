@@ -28,7 +28,7 @@ static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//アンカーのテクスチャ
 
 int ObjectData::current_id = 0;
 
-wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,bool left)
+wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
 
 	SetWoodSize(Wood_size);
@@ -133,6 +133,12 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,bool left)
 	
 
 	object_anchorpoint_data->add_force = need_power;
+
+
+	//アンカーレベルの設定
+	object_anchorpoint_data->need_anchor_level = need_level;
+
+
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 	//ジョイントする
 

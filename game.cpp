@@ -147,11 +147,11 @@ void Game::Draw(void)
 	//プレイヤーの描画処理
 	player.Draw();
 
-	//アンカーの描画処理
-	Anchor::Draw();
-
 	//フィールドの描画処理
 	Field::Draw();
+
+	//アンカーの描画処理
+	Anchor::Draw();
 
 	//体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
