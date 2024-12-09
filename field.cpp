@@ -22,6 +22,7 @@
 #include"enemy_dynamic.h"
 #include"enemy_static.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
 
 
@@ -38,6 +39,7 @@ int Field::m_field_height = 0;
 
 
 ObjectManager& objectManager = ObjectManager::GetInstance();
+ItemManager& itemManager = ItemManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
@@ -151,12 +153,18 @@ void Field::Initialize()
 			if (field_map[y][x] == 14) {//左下　傾斜
 				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), left_down);
 			}
-
-
+			if (field_map[y][x] == 15) {//アイテム
+				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
 		}
 	}
 
+
+		
+
+
 	objectManager.InitializeAll();
+	itemManager.InitializeAll();
 }
 
 
@@ -169,6 +177,7 @@ void Field::Update()
 	EnemyStatic::Update();
 
 	objectManager.UpdateAll();
+	itemManager.UpdateAll();
 }
 
 
@@ -228,6 +237,7 @@ void Field::Draw()
 
 
 	objectManager.DrawAll();
+	itemManager.DrawAll();
 
 	//アンカーポイントを描画
 	AnchorPoint::Draw();
