@@ -216,66 +216,65 @@ public:
             }
         }
 
-        //引っ張られている状態のオブジェクトとエネミーの衝突
+        //引っ張られている状態のアンカーポイントとエネミーの衝突
         if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_wall) ||
-            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_static)) &&
-            (Anchor::GetAnchorState() == Pulling_state))
+            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_static)))
         {
-            if (objectA->collider_type == collider_enemy_static)
+            if ((objectA->collider_type == collider_enemy_static) &&
+                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
                 EnemyStatic::CollisionPulledObject(fixtureA->GetBody());
             }
-            else if (objectB->collider_type == collider_enemy_static)
+            else if ((objectB->collider_type == collider_enemy_static) &&
+                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
                 EnemyStatic::CollisionPulledObject(fixtureB->GetBody());
             }
         }
 
-        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        //引っ張られている状態のアンカーポイントと動的エネミーの衝突
         if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_wall) ||
-            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_dynamic)) &&
-            (Anchor::GetAnchorState() == Pulling_state))
+            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_dynamic)))
         {
-            if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            if ((objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState) &&
+                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
                 EnemyDynamic::CollisionPulledObject(fixtureA->GetBody());
             }
-            else if (objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
-            {
-                EnemyDynamic::CollisionPulledObject(fixtureB->GetBody());
-            }
-        }
-
-        //引っ張られている状態のオブジェクトとエネミーの衝突
-        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point) ||
-            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static)) &&
-            (Anchor::GetAnchorState() == Pulling_state))
-        {
-            if (objectA->collider_type == collider_enemy_static)
-            {
-                EnemyStatic::CollisionPulledObject(fixtureA->GetBody());
-            }
-            else if (objectB->collider_type == collider_enemy_static)
-            {
-                EnemyStatic::CollisionPulledObject(fixtureB->GetBody());
-            }
-        }
-
-        //引っ張られている状態のオブジェクトと動的エネミーの衝突
-        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
-            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic)) &&
-            (Anchor::GetAnchorState() == Pulling_state))
-        {
-            if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
-            {
-                EnemyDynamic::CollisionPulledObject(fixtureA->GetBody());
-            }
-            else if (objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            else if ((objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState) &&
+                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
                 EnemyDynamic::CollisionPulledObject(fixtureB->GetBody());
             }
         }
      
+        //プレイヤーに付属しているセンサーと静的エネミーが触れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_static) ||
+            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::InPlayerSensor(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::InPlayerSensor(fixtureB->GetBody());
+            }
+        }
+
+        //プレイヤーに付属しているセンサーと動的エネミーが触れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_dynamic) ||
+            (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::InPlayerSensor(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::InPlayerSensor(fixtureB->GetBody());
+            }
+        }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突終了時
@@ -328,6 +327,34 @@ public:
             //どちらがアンカーポイントか分かったのでアンカーポイントを保持しておく配列にいれる
             AnchorPoint::OutsideSensor(anchor_point_body);
 
+        }
+
+        //プレイヤーに付属しているセンサーと静的エネミーが離れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_static) ||
+            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::OutPlayerSensor(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::OutPlayerSensor(fixtureB->GetBody());
+            }
+        }
+
+        //プレイヤーに付属しているセンサーと動的エネミーが離れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_dynamic) ||
+            (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::OutPlayerSensor(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::OutPlayerSensor(fixtureB->GetBody());
+            }
         }
     }
 
