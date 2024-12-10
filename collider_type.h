@@ -17,7 +17,8 @@
 
 enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあたり判定の種類を追加したい場合ここに足して　下でセットしてね
 {
-    collider_player,
+    collider_player_body,
+    collider_player_leg,
 
     collider_player_sensor,
 

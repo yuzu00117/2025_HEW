@@ -23,7 +23,7 @@ public:
 
 
 	// シングルトンのインスタンス取得 　このクラスでは一つのインスタンスしか認めない
-	static Player& GetInstance(b2Vec2 position = b2Vec2(0, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(40,30)) {
+	static Player& GetInstance(b2Vec2 position = b2Vec2(1, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(40,30)) {
 		static Player instance(position, size,sensor_size); // Initialized only once
 		return instance;
 	}
@@ -43,6 +43,8 @@ public:
 	}
 	void SetSize(b2Vec2 size)
 	{
+		//この処理は絵が上がったらプレイヤーと床の間の隙間を調整する処理
+		//size.y = size.y + 1;
 		m_p_size = size;
 	}
 

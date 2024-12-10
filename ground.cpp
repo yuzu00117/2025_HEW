@@ -61,7 +61,7 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	b2FixtureDef fixture_upper;
 	fixture_upper.shape = &shape_upper;    //シャープをフィクスチャに登録する
 	fixture_upper.density = 1.0f;    //密度
-	fixture_upper.friction = 0.3f;  //摩擦
+	fixture_upper.friction = 0.5f;  //摩擦
 	fixture_upper.restitution = 0.0f;//反発係数
 	fixture_upper.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
 
