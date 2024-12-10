@@ -23,7 +23,7 @@
 EnemyStatic* g_p_enemies_static[ENEMY_MAX] = { nullptr };
 
 EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE, true)
+	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE, true, false)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -87,11 +87,11 @@ void EnemyStatic::Update()
 	{
 		if (g_p_enemies_static[i])
 		{
-			if (g_p_enemies_static[i]->GetUse())
+			if (g_p_enemies_static[i]->GetUse() && g_p_enemies_static[i]->GetInScreen())
 			{
 				g_p_enemies_static[i]->UpdateEnemy();
 			}
-			else
+			else if(!g_p_enemies_static[i]->GetUse())
 			{
 				//ワールドに登録したbodyの削除(追加予定)
 				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -136,6 +136,35 @@ void EnemyStatic::CollisionPulledObject(b2Body* collision_enemy)
 			{
 				AnchorSpirit::EditAnchorSpiritValue(g_p_enemies_static[i]->GetSoulgage());
 				g_p_enemies_static[i]->SetUse(false);
+				return;
+			}
+		}
+	}
+}
+
+void EnemyStatic::InPlayerSensor(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_static[i])
+		{
+			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
+			{
+				g_p_enemies_static[i]->SetInScreen(true);
+				return;
+			}
+		}
+	}
+}
+void EnemyStatic::OutPlayerSensor(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_static[i])
+		{
+			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
+			{
+				g_p_enemies_static[i]->SetInScreen(false);
 				return;
 			}
 		}

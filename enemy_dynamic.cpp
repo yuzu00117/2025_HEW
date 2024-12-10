@@ -25,7 +25,7 @@
 EnemyDynamic* g_p_enemies_dynamic[ENEMY_MAX] = { nullptr };
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
-	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true)
+	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true, false)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -88,11 +88,11 @@ void EnemyDynamic::Update()
 	{
 		if (g_p_enemies_dynamic[i])
 		{
-			if (g_p_enemies_dynamic[i]->GetUse())
+			if (g_p_enemies_dynamic[i]->GetUse() && g_p_enemies_dynamic[i]->GetInScreen())
 			{
 				g_p_enemies_dynamic[i]->UpdateEnemy();
 			}
-			else
+			else if(!g_p_enemies_dynamic[i]->GetUse())
 			{
 				//ワールドに登録したbodyの削除(追加予定)
 				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -124,11 +124,13 @@ void EnemyDynamic::UpdateEnemy()
 	enemy_move.x = (enemy_vector.x * m_speed) / 5;
 	enemy_move.y = (enemy_vector.y * m_speed) / 5;
 
-	GetFieldBody()->ApplyLinearImpulseToCenter(enemy_move, true);
-
-	if (GetFieldBody()->GetLinearVelocity() == b2Vec2(0,0))
+	if (GetFieldBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
 	{
-		GetFieldBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, enemy_move.y), true);
+		GetFieldBody()->ApplyLinearImpulseToCenter(b2Vec2(enemy_move.x, 0.0), true);
+	}
+	else
+	{
+		GetFieldBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, 2.0), true);
 	}
 }
 
@@ -158,6 +160,35 @@ void EnemyDynamic::CollisionPulledObject(b2Body* collision_enemy)
 			{
 				AnchorSpirit::EditAnchorSpiritValue(g_p_enemies_dynamic[i]->GetSoulgage());
 				g_p_enemies_dynamic[i]->SetUse(false);
+				return;
+			}
+		}
+	}
+}
+
+void EnemyDynamic::InPlayerSensor(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
+			{
+				g_p_enemies_dynamic[i]->SetInScreen(true);
+				return;
+			}
+		}
+	}
+}
+void EnemyDynamic::OutPlayerSensor(b2Body* collision_enemy)
+{
+	for (int i = 0; i < ENEMY_MAX; i++)
+	{
+		if (g_p_enemies_dynamic[i])
+		{
+			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
+			{
+				g_p_enemies_dynamic[i]->SetInScreen(false);
 				return;
 			}
 		}
