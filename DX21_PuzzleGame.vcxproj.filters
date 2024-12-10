@@ -73,24 +73,26 @@
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="wood.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="word.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="one-way_platform.cpp" />
-    <ClCompile Include="sloping_block.cpp">
-      <Filter>ソースファイル</Filter>
+    <ClCompile Include="one-way_platform.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="static_to_dynamic_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="wood.cpp">
+      <Filter>ソースファイル\object</Filter>
     </ClCompile>
     <ClCompile Include="rock.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="sloping_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="create_filter.cpp">
       <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Item_Manager.cpp">
-      <Filter>ソースファイル\item</Filter>
-    </ClCompile>
-    <ClCompile Include="Item_SpeedUp.cpp">
-      <Filter>ソースファイル\item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -175,27 +177,29 @@
     <ClInclude Include="UI_StaminaSpirit_Gauge.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="wood.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="word.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="world_box2d.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="one-way_platform.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="static_to_dynamic_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
     <ClInclude Include="sloping_block.h">
-      <Filter>ヘッダーファイル</Filter>
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="wood.h">
+      <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="rock.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="create_filter.h">
       <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Item_Manager.h">
-      <Filter>ヘッダーファイル\item</Filter>
-    </ClInclude>
-    <ClInclude Include="Item_SpeedUp.h">
-      <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -259,11 +263,11 @@
     <Filter Include="リソースファイル">
       <UniqueIdentifier>{0e2c73d9-6e34-4b29-9fe5-5c0987204aa3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソースファイル\item">
-      <UniqueIdentifier>{e5e6889a-8680-4e3a-a9ae-9c8405c6a93b}</UniqueIdentifier>
+    <Filter Include="ソースファイル\object">
+      <UniqueIdentifier>{584bb0d9-b9ec-4b93-b982-9b951f8a29b9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダーファイル\item">
-      <UniqueIdentifier>{c5b86562-ed04-4dd2-8a1a-9a85511e0276}</UniqueIdentifier>
+    <Filter Include="ヘッダーファイル\object">
+      <UniqueIdentifier>{375416ea-b702-4b0c-a96d-b3b0598669b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
