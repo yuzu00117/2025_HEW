@@ -84,7 +84,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 	b2Fixture* object_rock_fixture = m_Rock_body->CreateFixture(&rock_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_rock_data = new ObjectData{ collider_wall };//一旦壁判定
+	ObjectData* object_rock_data = new ObjectData{ collider_object };//一旦壁判定
 	object_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_rock_data);
 
 

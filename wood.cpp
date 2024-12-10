@@ -78,7 +78,7 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_le
 	b2Fixture* object_wood_fixture = m_Wood_body->CreateFixture(&wood_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_wood_data = new ObjectData{ collider_wall };//一旦壁判定
+	ObjectData* object_wood_data = new ObjectData{ collider_object };//一旦壁判定
 	object_wood_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_wood_data);
 
 	//---------------------------------------------------------------------------//

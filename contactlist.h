@@ -217,8 +217,8 @@ public:
         }
 
         //引っ張られている状態のアンカーポイントとエネミーの衝突
-        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_wall) ||
-            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_static)))
+        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static)))
         {
             if ((objectA->collider_type == collider_enemy_static) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
