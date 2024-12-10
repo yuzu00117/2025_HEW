@@ -14,7 +14,6 @@
 #include <string>
 #include"include/box2d/box2d.h"
 #include"object_manager.h"
-#include"Item_Manager.h"
 
 enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰Á‚µ‚½‚¢ê‡‚±‚±‚É‘«‚µ‚Ä@‰º‚ÅƒZƒbƒg‚µ‚Ä‚Ë
 {
@@ -28,12 +27,12 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
     collider_ground,
     collider_wall,
 
+    collider_object,
+
     collider_anchor_point,
 
     collider_enemy_dynamic,
     collider_enemy_static,
-
-    collider_item,
 };
 
 
@@ -49,9 +48,7 @@ public:
 
 
     b2Vec2 add_force = { 0.0f,0.0f };// ’Ç‰Á‚Ìb2vecƒf[ƒ^
-    ObjectType object_name;  // iƒIƒuƒWƒFƒNƒgj’Ç‰Á‚Ì•¶š—ñƒf[ƒ^
-    ItemType Item_name; // iƒAƒCƒeƒ€j’Ç‰Á‚Ì•¶š—ñƒf[ƒ^
-
+    ObjectType object_name;  // ’Ç‰Á‚Ì•¶š—ñƒf[ƒ^
     int id;//ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚é‚½‚ß‚ÌID
 
     int need_anchor_level;

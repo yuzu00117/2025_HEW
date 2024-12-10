@@ -17,13 +17,16 @@
 #include"one-way_platform.h"
 #include"sloping_block.h"
 #include"rock.h"
+#include"static_to_dynamic_block.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
     NULL_object,
     Object_Wood, // 木
     Object_Rock, // 岩
-    Object_one_way_platform//足場　したからしか乗れない
+    Object_one_way_platform,//足場　したからしか乗れない
+
+    Object_Static_to_Dynamic//静的から動的に変更するオブジェクト
     
 };
 
@@ -37,20 +40,26 @@ public:
     // 木を追加
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
+    //岩を追加
     void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
-
+    //足場を追加
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
-
+    //傾斜ブロックの追加
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
+    //静的→動的のブロックの追加
+    void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
-
+    //IDを使って　岩を検索
     rock* FindRockByID(int id);
-
+    //IDを使って足場ブロックを検索
     one_way_platform* Findone_way_platformByID(int id);
-
+    //IDを使って斜面ブロックを検索
     sloping_block* FindSloping_BlockByID(int id);
+    //IDを使って静的→動的ブロックを追加
+    static_to_dynamic_block* FindStatic_to_Dynamic_BlcokID(int id);
+
 
     // 全てのオブジェクトを初期化
     void InitializeAll();
@@ -65,10 +74,11 @@ public:
     void FinalizeAll();
 
 private:
-    std::vector<std::unique_ptr<wood>> woodList;
-    std::vector < std::unique_ptr<rock>>rockList;
+    std::vector<std::unique_ptr<wood>> woodList;//木のリスト
+    std::vector < std::unique_ptr<rock>>rockList;//岩のリスト
     std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// 足場のリスト
-    std::vector<std::unique_ptr<sloping_block>> sloping_blockList;
+    std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//斜面のリスト
+    std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//静的→動的ブロック挙動
     
 
     //ここにオブジェクトごとにリストを追加していく感じだねぇー

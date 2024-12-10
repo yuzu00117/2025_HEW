@@ -158,7 +158,7 @@ void EnemyDynamic::CollisionPulledObject(b2Body* collision_enemy)
 		{
 			if (g_p_enemies_dynamic[i]->GetFieldBody() == collision_enemy)
 			{
-				AnchorSpirit::EditAnchorSpiritValue(g_p_enemies_dynamic[i]->GetSoulgage());
+				AnchorSpirit::EditAnchorSpiritValue(50);
 				g_p_enemies_dynamic[i]->SetUse(false);
 				return;
 			}

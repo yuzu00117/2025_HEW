@@ -17,6 +17,7 @@
 #include"player_position.h"
 #include"collider_type.h"
 #include"player_position.h"
+#include"create_filter.h"
 
 
 //テクスチャの入れ物
@@ -78,6 +79,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 	rock_fixture.friction = 0.5f;//摩擦
 	rock_fixture.restitution = 0.0f;//反発係数
 	rock_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	rock_fixture.filter=createFilterExclude("object_filter", {});
 
 	b2Fixture* object_rock_fixture = m_Rock_body->CreateFixture(&rock_fixture);
 
@@ -97,6 +99,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 	rock_anchorpoint_fixture.friction = 0.5f;//摩擦
 	rock_anchorpoint_fixture.restitution = 0.0f;//反発係数
 	rock_anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	rock_anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
 
 	b2Fixture* object_rock_anchorpoint_fixture = m_Rock_body->CreateFixture(&rock_anchorpoint_fixture);

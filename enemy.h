@@ -12,7 +12,7 @@
 #define ENEMY_H
 
 //==========É}ÉNÉçíËã`==========//
-#define ENEMY_MAX (50)
+#define ENEMY_MAX (100)
 
 #include"world_box2d.h"
 

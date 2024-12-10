@@ -50,7 +50,7 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	//フィールドの初期化
 	Field::Initialize();
-	
+
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
 
@@ -177,6 +177,7 @@ Game::Game()
 {
 	//プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
 	player = Player::GetInstance();//シングルトン
+
 	
 }
 

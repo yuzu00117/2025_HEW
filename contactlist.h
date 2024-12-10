@@ -23,7 +23,6 @@
 #include"anchor.h"
 #include"player.h"
 #include"object_manager.h"
-#include"Item_Manager.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 
@@ -32,7 +31,6 @@
 class MyContactListener : public b2ContactListener {
 private:
     Player player = Player::GetInstance();
-   
 
 public:
     b2Vec2 contactPoint;//衝突した地点
@@ -55,7 +53,6 @@ public:
     void BeginContact(b2Contact* contact) override {
 
         ObjectManager& object_manager = ObjectManager::GetInstance();
-        ItemManager &item_manager = ItemManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -83,29 +80,8 @@ public:
 
         }
 
-        // プレーヤーとアイテムが衝突したかを判定
-        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_item) ||
-            (objectA->collider_type == collider_item && objectB->collider_type == collider_player)) {
-            // 衝突処理（プレーヤーと地面が接触した時）
 
-            //どちらがアイテムか特定
-            if (objectA->Item_name == ITEM_SPEED_UP)//Aがアイテム
-            {
-                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectA->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                item_instance->Function(); 
-                item_instance->SetDestory(true);//削除を呼び出す
-            }
-            else
-            {
-                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectB->id);
-                item_instance->Function();
-                item_instance->SetDestory(true);//削除を呼び出す
-            }
-
-
-        }
-
-
+        //プレイヤーとアンカーが触れた
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_anchor) ||
             (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player))
         {
@@ -147,13 +123,16 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
         {
 
-
-            Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
-
+            //状態が投げてる時にのみ以降する
+            if (Anchor::GetAnchorState() == Throwing_state)
+            {
+                Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
+            }
             // 接触位置を取得
             b2WorldManifold worldManifold;
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
+
 
             //木のオブジェクトの引っ張る処理
             if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
@@ -161,7 +140,7 @@ public:
                 //どちらが木のオブジェクトか特定
                 if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
                 {
-                    wood*wood_instance=object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
                 }
                 else
@@ -188,6 +167,25 @@ public:
                 }
 
             }
+
+
+            //静的動的のオブジェクトの
+            if (objectA->object_name == Object_Static_to_Dynamic || objectB->object_name == Object_Static_to_Dynamic)
+            {
+                //どちらが岩のオブジェクトか特定
+                if (objectA->object_name == Object_Static_to_Dynamic)//Aが静的動的のオブジェクト
+                {
+                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                }
+                else
+                {
+                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                }
+            }
+       
+             
         }
 
         //静的プレイヤーとエネミーの衝突

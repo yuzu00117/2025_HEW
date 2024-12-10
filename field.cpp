@@ -22,7 +22,7 @@
 #include"enemy_dynamic.h"
 #include"enemy_static.h"
 #include"object_manager.h"
-#include"Item_Manager.h"
+
 
 
 
@@ -39,7 +39,6 @@ int Field::m_field_height = 0;
 
 
 ObjectManager& objectManager = ObjectManager::GetInstance();
-ItemManager& itemManager = ItemManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
@@ -119,20 +118,20 @@ void Field::Initialize()
 				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
 			}
 			if (field_map[y][x] == 7) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f),b2Vec2(1.0f,1.0f),1);
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 8.0f),b2Vec2(1.0f,1.0f),1);
 			}
 			if (field_map[y][x] == 8) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 10.0f), b2Vec2(3.0f, 1.0f), 3);
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 17.0f), b2Vec2(3.0f, 1.0f), 3);
 			}
 
 			if (field_map[y][x] == 9) {
-				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 2.0f,2);
+				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3.0f,2);
 			}
 
 
 			
 			if (field_map[y][x] == 10) {//足場ブロック
-				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.0f), b2Vec2(2.0f, 0.2f));
+				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.0f), b2Vec2(3.0f, 0.2f));
 			}
 
 
@@ -151,20 +150,27 @@ void Field::Initialize()
 			}
 
 			if (field_map[y][x] == 14) {//左下　傾斜
-				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), left_down);
+				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(17.0f,17.0f), left_down);
 			}
-			if (field_map[y][x] == 15) {//アイテム
-				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+
+
+			if (field_map[y][x] == 15) {//四角の静的動的オブジェクト
+				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Box_collider,1);
 			}
+
+			if (field_map[y][x] == 16) {//四角の静的動的オブジェクト
+				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(6.0f, 6.0f), Circle_collider, 1);
+			}
+
+			if (field_map[y][x] == 17) {//四角の静的動的オブジェクト
+				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Circle_collider, 1);
+			}
+
+
 		}
 	}
 
-
-		
-
-
 	objectManager.InitializeAll();
-	itemManager.InitializeAll();
 }
 
 
@@ -177,7 +183,6 @@ void Field::Update()
 	EnemyStatic::Update();
 
 	objectManager.UpdateAll();
-	itemManager.UpdateAll();
 }
 
 
@@ -237,7 +242,6 @@ void Field::Draw()
 
 
 	objectManager.DrawAll();
-	itemManager.DrawAll();
 
 	//アンカーポイントを描画
 	AnchorPoint::Draw();

@@ -17,6 +17,7 @@
 #include"player_position.h"
 #include"collider_type.h"
 #include"player_position.h"
+#include"create_filter.h"
 
 
 //テクスチャの入れ物
@@ -71,6 +72,8 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_le
 	wood_fixture.friction = 0.5f;//摩擦
 	wood_fixture.restitution = 0.0f;//反発係数
 	wood_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	wood_fixture.filter = createFilterExclude("object_filter",{});
+
 
 	b2Fixture* object_wood_fixture = m_Wood_body->CreateFixture(&wood_fixture);
 
