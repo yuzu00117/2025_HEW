@@ -164,8 +164,10 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
 
 Player::~Player()
 {
-    ////テクスチャの削除
-    //UnInitTexture(g_player_Texture);
+    if (g_player_Texture != nullptr)
+    {
+        UnInitTexture(g_player_Texture);
+    }
 }
 
 void Player::Initialize()
@@ -428,10 +430,7 @@ void Player::Finalize()
         world->DestroyBody(m_body);
         m_body = nullptr;
     }
-    if (g_player_Texture != nullptr)
-    {
-        UnInitTexture(g_player_Texture);
-    }
+
 }
 
 
