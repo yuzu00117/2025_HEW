@@ -213,7 +213,17 @@ void static_to_dynamic_block::Draw()
 
 void static_to_dynamic_block::Finalize()
 {
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
 
+
+	//ボディの削除
+	world->DestroyBody(object_body);
+
+	//テクスチャの解放
+	UnInitTexture(g_BoxRock_Texture);
+	UnInitTexture(g_coconut_Texture);
 
 }
 
