@@ -30,7 +30,7 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bF
 
 
 	b2BodyDef body;
-	body.type = b2_staticBody;							//静的なオブジェクトにするならture
+	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
 	body.position.Set(position.x, position.y);			//ポジションをセット
 	body.angle = angle;									//角度の定義
 	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
@@ -134,7 +134,7 @@ void EnemyStatic::CollisionPulledObject(b2Body* collision_enemy)
 		{
 			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
 			{
-				AnchorSpirit::EditAnchorSpiritValue(g_p_enemies_static[i]->GetSoulgage());
+				AnchorSpirit::EditAnchorSpiritValue(50);
 				g_p_enemies_static[i]->SetUse(false);
 				return;
 			}

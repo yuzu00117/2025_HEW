@@ -16,24 +16,17 @@
 #include"collider_type.h"
 #include"player_position.h"
 #include"one-way_platform.h"
+#include"create_filter.h"
+
 
 
 //テクスチャの入れ物
 //グローバル変数
-static ID3D11ShaderResourceView* g_one_way_platform_Texture = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_one_way_platform1_Texture = NULL;//アンカーのテクスチャ
-
-
-
-
-
+static ID3D11ShaderResourceView* g_one_way_platform_Texture = NULL;//足場ブロックのテクスチャ
+static ID3D11ShaderResourceView* g_one_way_platform1_Texture = NULL;//足場ブロックテクスチャ
 one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 size)
 {
-
 	SetSize(size);
-
-
-
 
 	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -54,7 +47,6 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 	local_Postion.y=local_Postion.y / BOX2D_SCALE_MANAGEMENT;
 
 
-
 	b2BodyDef one_way_platform_body;//木の幹の部分
 	one_way_platform_body.type = b2_staticBody;
 	one_way_platform_body.position.Set(Postion.x+local_Postion.x, Postion.y+local_Postion.y);//ローカルの補正もいれる
@@ -62,20 +54,21 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 
 	b2Body* m_one_way_platform_body = world->CreateBody(&one_way_platform_body);
 
-	SetObject_one_way_platform_Body(m_one_way_platform_body);
-
+	SetObject_one_way_platform_Body(m_one_way_platform_body);//ボディを登録
 
 
 	b2PolygonShape one_way_platform_shape;
-	one_way_platform_shape.SetAsBox(one_way_platform_size.x * 0.5, one_way_platform_size.y * 0.5);
+	one_way_platform_shape.SetAsBox(one_way_platform_size.x * 0.5, one_way_platform_size.y * 0.5);//シャープを設定
 
 	b2FixtureDef one_way_platform_fixture;
 
-	one_way_platform_fixture.shape = &one_way_platform_shape;
+	one_way_platform_fixture.shape = &one_way_platform_shape;//シャープを登録
 	one_way_platform_fixture.density = 3.0f;
 	one_way_platform_fixture.friction = 0.5f;//摩擦
 	one_way_platform_fixture.restitution = 0.0f;//反発係数
 	one_way_platform_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	one_way_platform_fixture.filter = createFilterExclude("one-way_platform_filter", {"object_filter"});
+	
 
 	b2Fixture* object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_fixture);
 
@@ -83,12 +76,12 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 	ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };//一旦壁判定
 	object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
 
-	object_one_way_platform_data->object_name = Object_one_way_platform;
+	object_one_way_platform_data->object_name = Object_one_way_platform;//オブジェクトの名前を定義しておく
 
 
-	int ID = object_one_way_platform_data->GenerateID();
-	object_one_way_platform_data->id = ID;
-	SetID(ID);
+	int ID = object_one_way_platform_data->GenerateID();//IDを取得して
+	object_one_way_platform_data->id = ID;//フィクスチャにIDを定義
+	SetID(ID);//クラスにIDを定義
 
 
 };
@@ -100,40 +93,36 @@ one_way_platform::~one_way_platform()
 
 void one_way_platform::Initialize()
 {
+	//視覚的に今センサーなのか定義している
 	//テクスチャのインクルード
-	g_one_way_platform_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");
-	g_one_way_platform1_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform1.png");
-
-
+	g_one_way_platform_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//センサーがオフ　あたり判定あり
+	g_one_way_platform1_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform1.png");//センサーがオン　あたり判定無し
 }
 
 void one_way_platform::Update()
 {
 	//プレイヤーより高いいちにあるとセンサーをオフに
+	//オブジェクトに関してすべて貫通
 	if (PlayerPosition::GetPlayerPosition().y+1/BOX2D_SCALE_MANAGEMENT < GetObject_one_way_platform_Body()->GetPosition().y)
 	{
 		if (GetObject_one_way_platform_Body()->GetFixtureList()->IsSensor() == true)//センサーをがオンいわゆる判定無しの場合
 		{
-			GetObject_one_way_platform_Body()->GetFixtureList()->SetSensor(false);
+			GetObject_one_way_platform_Body()->GetFixtureList()->SetSensor(false);//センサーをオフに
 		}
 	}
 	else
 	{
 		if (GetObject_one_way_platform_Body()->GetFixtureList()->IsSensor() == false)//センサーをがオンいわゆる判定無しの場合
 		{
-			GetObject_one_way_platform_Body()->GetFixtureList()->SetSensor(true);
+			GetObject_one_way_platform_Body()->GetFixtureList()->SetSensor(true);//センサーをオフに
 		}
 	}
-
 }
 
 
 void one_way_platform::Draw()
 {
-
 	///ここから調整してね
-
-
 	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
 	float scale = SCREEN_SCALE;
 
@@ -144,7 +133,6 @@ void one_way_platform::Draw()
 
 
 	b2Vec2  one_way_platform_pos = GetObject_one_way_platform_Body()->GetPosition();
-
 
 	// プレイヤー位置を考慮してスクロール補正を加える
 	//取得したbodyのポジションに対してBox2dスケールの補正を加える
@@ -166,10 +154,6 @@ void one_way_platform::Draw()
 		GetObject_one_way_platform_Body()->GetAngle(),
 		{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
-
-
-
-
 }
 
 void one_way_platform::Finalize()
