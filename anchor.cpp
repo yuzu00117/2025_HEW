@@ -277,7 +277,7 @@ void Anchor::Draw()
 
 void Anchor::Finalize()
 {
-
+	//アンカーの終了処理を追加するよ＾＾＾ん
 }
 
 
