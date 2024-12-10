@@ -13,6 +13,12 @@
 //体力ゲージとソウルゲージの画像が一つにまとめてる場合のテクスチャ
 ID3D11ShaderResourceView* g_gauge_Texture;
 
+ID3D11ShaderResourceView* g_gauge_lev1_Texture;
+
+ID3D11ShaderResourceView* g_gauge_lev2_Texture;
+
+ID3D11ShaderResourceView* g_gauge_lev3_Texture;
+
 //体力ゲージとソウルゲージの画像が分かれている場合のテクスチャ
 //ID3D11ShaderResourceView* g_spirit_gauge_Texture;
 //ID3D11ShaderResourceView* g_stamina_gauge_Texture;
@@ -23,6 +29,10 @@ void	StaminaSpiritGauge::Initialize()
 	//テクスチャのロード
 	//体力ゲージとソウルゲージの画像が一つにまとめてる場合のテクスチャ
 	g_gauge_Texture = InitTexture(L"asset\\texture\\sample_texture\\gauge.png");
+
+	g_gauge_lev1_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev1.png");
+	g_gauge_lev2_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev2.png");
+	g_gauge_lev3_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev3.png");
 
 	//体力ゲージとソウルゲージの画像が分かれている場合のテクスチャ
 	//g_spirit_gauge_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
@@ -75,6 +85,60 @@ void	StaminaSpiritGauge::Draw()
 		DrawSerialDividedSprite(temp_position, rotate, temp_scale, (int)MAX_STAMINA + (int)MAX_ANCHOR_SPIRIT, 1, 0, (int)total_value);
 
 	}
+
+	//現在のアンカーのレベルをしかくてきに表現
+	{
+		float stamina = PlayerStamina::GetPlayerStaminaValue();
+		float spirit = AnchorSpirit::GetAnchorSpiritValue();
+
+		float total_value = stamina + spirit;
+
+		XMFLOAT2 temp_scale;
+		temp_scale.x = 50;
+		temp_scale.y = 50;
+
+		XMFLOAT2 temp_position;
+		temp_position.x = (temp_scale.x / m_scale.x) * m_position.x;
+		temp_position.y = m_position.y+50;
+
+		float rotate = 0.0f;
+
+	
+	
+		switch (AnchorSpirit::GetAnchorLevel())
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_gauge_lev1_Texture);
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_gauge_lev2_Texture);
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_gauge_lev3_Texture);
+			break;
+		default:
+			break;
+		}
+
+		//描画
+		DrawSprite(
+			{ temp_position.x,
+			  temp_position.y },
+			0.0f,
+			{ temp_scale.x , temp_scale.y }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		);
+	
+
+	}
+	
+
+
+
+
+
+	//アンカーのレベルを視覚的に表現したい
+
+
 
 	////体力ゲージとソウルゲージの画像が分かれている場合の描画処理
 	//----------------------------------------------------------------------------------------------------------------------------------------------
@@ -133,3 +197,4 @@ void	StaminaSpiritGauge::Draw()
 
 
 }
+

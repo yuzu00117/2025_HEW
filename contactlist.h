@@ -23,6 +23,8 @@
 #include"anchor.h"
 #include"player.h"
 #include"object_manager.h"
+#include"enemy_static.h"
+#include"enemy_dynamic.h"
 
 
 
@@ -78,6 +80,8 @@ public:
 
         }
 
+
+        //プレイヤーとアンカーが触れた
         if ((objectA->collider_type == collider_player && objectB->collider_type == collider_anchor) ||
             (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player))
         {
@@ -119,13 +123,16 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
         {
 
-
-            Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
-
+            //状態が投げてる時にのみ以降する
+            if (Anchor::GetAnchorState() == Throwing_state)
+            {
+                Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
+            }
             // 接触位置を取得
             b2WorldManifold worldManifold;
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
+
 
             //木のオブジェクトの引っ張る処理
             if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
@@ -133,7 +140,7 @@ public:
                 //どちらが木のオブジェクトか特定
                 if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
                 {
-                    wood*wood_instance=object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
                 }
                 else
@@ -143,7 +150,6 @@ public:
                 }
 
             }
-
 
             //岩のオブジェクトの引っ張る処理
             if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
@@ -163,9 +169,112 @@ public:
             }
 
 
-
+            //静的動的のオブジェクトの
+            if (objectA->object_name == Object_Static_to_Dynamic || objectB->object_name == Object_Static_to_Dynamic)
+            {
+                //どちらが岩のオブジェクトか特定
+                if (objectA->object_name == Object_Static_to_Dynamic)//Aが静的動的のオブジェクト
+                {
+                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                }
+                else
+                {
+                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                }
+            }
+       
+             
         }
 
+        //静的プレイヤーとエネミーの衝突
+        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player) ||
+            (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_static))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPlayer(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPlayer(fixtureB->GetBody());
+            }
+        }
+
+        //動的プレイヤーとエネミーの衝突
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player) ||
+            (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_dynamic))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::CollisionPlayer(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic::CollisionPlayer(fixtureB->GetBody());
+            }
+        }
+
+        //引っ張られている状態のオブジェクトとエネミーの衝突
+        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_wall) ||
+            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_static)) &&
+            (Anchor::GetAnchorState() == Pulling_state))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPulledObject(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPulledObject(fixtureB->GetBody());
+            }
+        }
+
+        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_wall) ||
+            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_dynamic)) &&
+            (Anchor::GetAnchorState() == Pulling_state))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            {
+                EnemyDynamic::CollisionPulledObject(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            {
+                EnemyDynamic::CollisionPulledObject(fixtureB->GetBody());
+            }
+        }
+
+        //引っ張られている状態のオブジェクトとエネミーの衝突
+        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static)) &&
+            (Anchor::GetAnchorState() == Pulling_state))
+        {
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPulledObject(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic::CollisionPulledObject(fixtureB->GetBody());
+            }
+        }
+
+        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic)) &&
+            (Anchor::GetAnchorState() == Pulling_state))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            {
+                EnemyDynamic::CollisionPulledObject(fixtureA->GetBody());
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
+            {
+                EnemyDynamic::CollisionPulledObject(fixtureB->GetBody());
+            }
+        }
      
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 

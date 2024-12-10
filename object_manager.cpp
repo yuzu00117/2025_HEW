@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager.cpp
-// #description ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç®¡ç†ã‚’ã™ã‚‹CPPã€€
-// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
+// #description ƒIƒuƒWƒFƒNƒg‚ÌŠÇ—‚ğ‚·‚éCPP@
+// #make 2024/12/04@‰i–ì‹`–ç
 // #update 2024/12/04
-// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
-//          ãƒ»å™‚ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã£ã¦ã‚„ã¤ã‹ã‚‚ã­ãƒ¼
-//          ãƒ»ã“ã‚Œã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç®¡ç†ã„ã„ãªãƒ¼ã€€ãŒã¡ç¶ºéº—
-//          ãƒ»ä¸€ã‹æœˆå‰ã«ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼çŸ¥ã‚ŠãŸã‹ã£ãŸã‚ã†
+// #comment ’Ç‰ÁEC³—\’è
+//          E‰\‚Ìƒtƒ@ƒNƒgƒŠ[‚Á‚Ä‚â‚Â‚©‚à‚Ë[
+//          E‚±‚ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŠÇ—‚¢‚¢‚È[@‚ª‚¿ãY—í
+//          Eˆê‚©Œ‘O‚Éƒtƒ@ƒNƒgƒŠ[’m‚è‚½‚©‚Á‚½‚ß‚¤
 //----------------------------------------------------------------------------------------------------
 
 
@@ -14,70 +14,95 @@
 
 
 
-// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
+// ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
 ObjectManager& ObjectManager::GetInstance() {
     static ObjectManager instance;
     return instance;
 }
 
-// æœ¨ã‚’è¿½åŠ 
-void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool& right) {
-    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
-    woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,right));
+// –Ø‚ğ’Ç‰Á
+void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int& need_level) {
+    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,need_level));
 }
 
+//Šâ‚ğ’Ç‰Á
 void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level)
 {
     rockList.emplace_back(std::make_unique<rock>(position, radius, need_anchor_level));
 }
-// è¶³å ´ã‚’è¿½åŠ 
+
+// ‘«ê‚ğ’Ç‰Á
 void ObjectManager::AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position,const b2Vec2 &size) {
-    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
+    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
     one_way_platformList.emplace_back(std::make_unique<one_way_platform>(position, local_position, size));
 }
-// å‚¾æ–œã‚’è¿½åŠ 
+// ŒXÎ‚ğ’Ç‰Á
 void ObjectManager::AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect) {
-    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
+    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
     sloping_blockList.emplace_back(std::make_unique<sloping_block>(position, size, aspect));
 }
 
+//Ã“I¨“®“IƒuƒƒbƒN
+void ObjectManager::AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level) {
+    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    static_to_dynamic_blockList.emplace_back(std::make_unique<static_to_dynamic_block>(position,size,collider_type,need_level));
+}
 
-// ID ã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
+
+
+// ID ‚ğg‚Á‚Ä–Ø‚ğŒŸõ
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
+    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
 }
 
-// ID ã‚’ä½¿ã£ã¦å²©ã‚’æ¤œç´¢
+// ID ‚ğg‚Á‚ÄŠâ‚ğŒŸõ
 rock* ObjectManager::FindRockByID(int id) {
     for (const auto& w : rockList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+}
 
-//IDã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
+//ID‚ğg‚Á‚Ä–Ø‚ğŒŸõ
 one_way_platform* ObjectManager::Findone_way_platformByID(int id) {
     for (const auto& w : one_way_platformList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
+    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
 }
 
-// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–
-
+//ID‚ğg‚Á‚ÄŒXÎƒuƒƒbƒN‚ğŒŸõ
 sloping_block* ObjectManager::FindSloping_BlockByID(int id) {
     for (const auto& w : sloping_blockList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
+    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
 }
-      
-// å…¨ã¦ã®æœ¨ã‚’åˆæœŸåŒ–
+
+//ID‚ğg‚Á‚ÄÃ“I¨“®“IƒuƒƒbƒN‚ğŒŸõ
+static_to_dynamic_block* ObjectManager::FindStatic_to_Dynamic_BlcokID(int id) {
+    for (const auto& w : static_to_dynamic_blockList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+}
+
+
+// ‘S‚Ä‚Ì–Ø‚ğ‰Šú‰»
 void ObjectManager::InitializeAll() {
     for (auto& w : woodList) {
         w->Initialize();
@@ -86,7 +111,8 @@ void ObjectManager::InitializeAll() {
     for (auto& w : rockList) {
         w->Initialize();
     }
-  
+
+
     for (auto& w : one_way_platformList) {
         w->Initialize();
     }
@@ -94,15 +120,22 @@ void ObjectManager::InitializeAll() {
     for (auto& w : sloping_blockList) {
         w->Initialize();
     }
+
+    for (auto& w : static_to_dynamic_blockList) {
+        w->Initialize();
+    }
 }
 
-// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°
+// ‘S‚Ä‚Ì–Ø‚ğXV
 void ObjectManager::UpdateAll() {
     for (auto& w : woodList) {
         w->Update();
     }
 
+
     for (auto& w : rockList) {
+        w->Update();
+    }
 
     for (auto& w : one_way_platformList) {
         w->Update();
@@ -111,9 +144,13 @@ void ObjectManager::UpdateAll() {
     for (auto& w : sloping_blockList) {
         w->Update();
     }
+
+    for (auto& w : static_to_dynamic_blockList) {
+        w->Update();
+    }
 }
 
-// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
+// ‘S‚Ä‚Ì–Ø‚ğ•`‰æ
 void ObjectManager::DrawAll() {
     for (auto& w : woodList) {
         w->Draw();
@@ -130,20 +167,20 @@ void ObjectManager::DrawAll() {
     for (auto& w : sloping_blockList) {
         w->Draw();
     }
+
+    for (auto& w : static_to_dynamic_blockList) {
+        w->Draw();
+    }
 }
 
-// å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„
+// ‘S‚Ä‚Ì–Ø‚ğ”jŠü
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
         w->Finalize();
     }
-
     for (auto& w : rockList) {
         w->Finalize();
     }
-    woodList.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
-    rockList.clear();
-
     for (auto& w : one_way_platformList) {
         w->Finalize();
     }
@@ -152,10 +189,16 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : static_to_dynamic_blockList) {
+        w->Finalize();
+    }
 
-    woodList.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
+
+    woodList.clear(); // “®“I”z—ñ‚ğƒNƒŠƒA‚µ‚Äƒƒ‚ƒŠ‰ğ•ú
+    rockList.clear();
     one_way_platformList.clear();
     sloping_blockList.clear();
+    static_to_dynamic_blockList.clear();
 }
 
 

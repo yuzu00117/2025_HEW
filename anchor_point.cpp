@@ -15,6 +15,7 @@
 #include"texture.h"
 #include"player.h"
 #include"player_position.h"
+#include"anchor_spirit.h"
 
 #define MAX_ANCHOR_POINT_IN_SENSOR (10)//センサー内に存在できる最大のアンカーポイントの数
 
@@ -27,6 +28,13 @@ b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 
 //センサーの画像
 ID3D11ShaderResourceView* g_anchor_point_target_Texture = NULL;
+ID3D11ShaderResourceView* g_anchor_point_target_lev1_Texture = NULL;
+ID3D11ShaderResourceView* g_anchor_point_target_lev2_Texture = NULL;
+ID3D11ShaderResourceView* g_anchor_point_target_lev3_Texture = NULL;
+
+
+
+
 
 /**
  * @brief  フィールドのコンストラクタ
@@ -138,6 +146,9 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 void AnchorPoint::Initialize()
 {
 	g_anchor_point_target_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_purple.png");
+	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev1.png");
+	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev2.png");
+	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev3.png");
 }
 
 void AnchorPoint::Update()
@@ -188,13 +199,38 @@ void AnchorPoint::Draw()
 			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
+		
+			
+
+			b2Fixture*fixtureA= g_anchor_point_body[i]->GetFixtureList();
+			auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+
+			switch (objectA->need_anchor_level)
+			{
+			case 0:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
+				break;
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
+				break;
+			default:
+				break;
+			}
+
+
+		
 			
 			//draw
 			DrawSprite(
 				{ draw_x,
 				  draw_y },
-				0.0f,
+				g_anchor_point_body[i]->GetAngle(),
 				{50 ,50}///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 			);
 		}
@@ -217,7 +253,7 @@ void AnchorPoint::Draw()
 		{ draw_x,
 		  draw_y },
 		0.0f,
-		{ 25 ,25 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
 
@@ -238,6 +274,8 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 	// スティック方向のベクトル
 	if (g_select_anchor_point_body == nullptr) return;//nullだったら返す
 
+
+
 	// スティック方向のベクトル
 	b2Vec2 stick = { stick_x, -stick_y }; // Box2D の Y 軸方向に対応
 	stick.Normalize(); // 正規化して単位ベクトルにする
@@ -250,6 +288,11 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++) {
 		if (g_anchor_point_body[i] == nullptr) continue;//NULLだったら出る
+
+		b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
+		auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+
+		if (objectA->need_anchor_level > AnchorSpirit::GetAnchorLevel())continue;
 
 		// 各アンカーポイントへのベクトル
 		b2Vec2 targetPosition = g_anchor_point_body[i]->GetPosition();//配列を一つずつチェックしていく

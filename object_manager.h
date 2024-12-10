@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager
-// #description ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ãŸã‚ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ã‚¤ãƒ¡ãƒ¼ã‚¸ã«è¿‘ã„
-// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
+// #description ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚é‚½‚ß‚Ìƒtƒ@ƒNƒgƒŠ[‚ÌƒCƒ[ƒW‚É‹ß‚¢
+// #make 2024/12/04@‰i–ì‹`–ç
 // #update 2024/12/04
-// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
-//          ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œã‚‹ã”ã¨ã«ç”Ÿæˆã™ã‚‹æ„Ÿã˜
+// #comment ’Ç‰ÁEC³—\’è
+//          EƒIƒuƒWƒFƒNƒg‚ğì‚é‚²‚Æ‚É¶¬‚·‚éŠ´‚¶
 //----------------------------------------------------------------------------------------------------
 
 
@@ -14,69 +14,74 @@
 #include <vector>
 #include <memory>
 #include "wood.h"
-#include"rock.h"
 #include"one-way_platform.h"
 #include"sloping_block.h"
+#include"rock.h"
+#include"static_to_dynamic_block.h"
 
-// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç¨®é¡ã‚’å®šç¾©
+// ƒIƒuƒWƒFƒNƒg‚Ìí—Ş‚ğ’è‹`
 enum ObjectType {
     NULL_object,
-    Object_Wood, // æœ¨
-    Object_Rock, // å²©
-    Object_one_way_platform//è¶³å ´ã€€ã—ãŸã‹ã‚‰ã—ã‹ä¹—ã‚Œãªã„
+    Object_Wood, // –Ø
+    Object_Rock, // Šâ
+    Object_one_way_platform,//‘«ê@‚µ‚½‚©‚ç‚µ‚©æ‚ê‚È‚¢
+
+    Object_Static_to_Dynamic//Ã“I‚©‚ç“®“I‚É•ÏX‚·‚éƒIƒuƒWƒFƒNƒg
     
 };
 
 
-// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹
+// ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class ObjectManager {
 public:
-    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
+    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
     static ObjectManager& GetInstance();
 
-    // æœ¨ã‚’è¿½åŠ 
-    void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const bool&right);
+    // –Ø‚ğ’Ç‰Á
+    void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
+    //Šâ‚ğ’Ç‰Á
     void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
-      
+    //‘«ê‚ğ’Ç‰Á
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
-
+    //ŒXÎƒuƒƒbƒN‚Ì’Ç‰Á
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
+    //Ã“I¨“®“I‚ÌƒuƒƒbƒN‚Ì’Ç‰Á
+    void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
 
-
-    // ID ã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
+    // ID ‚ğg‚Á‚Ä–Ø‚ğŒŸõ
     wood* FindWoodByID(int id);
-
-
+    //ID‚ğg‚Á‚Ä@Šâ‚ğŒŸõ
     rock* FindRockByID(int id);
-
-    
+    //ID‚ğg‚Á‚Ä‘«êƒuƒƒbƒN‚ğŒŸõ
     one_way_platform* Findone_way_platformByID(int id);
-
+    //ID‚ğg‚Á‚ÄÎ–ÊƒuƒƒbƒN‚ğŒŸõ
     sloping_block* FindSloping_BlockByID(int id);
+    //ID‚ğg‚Á‚ÄÃ“I¨“®“IƒuƒƒbƒN‚ğ’Ç‰Á
+    static_to_dynamic_block* FindStatic_to_Dynamic_BlcokID(int id);
 
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ‰Šú‰»
     void InitializeAll();
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğXV
     void UpdateAll();
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ•`‰æ
     void DrawAll();
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ”jŠü
     void FinalizeAll();
 
 private:
-    std::vector<std::unique_ptr<wood>> woodList;
-    std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// è¶³å ´ã®ãƒªã‚¹ãƒˆ
-    std::vector<std::unique_ptr<sloping_block>> sloping_blockList;
+    std::vector<std::unique_ptr<wood>> woodList;//–Ø‚ÌƒŠƒXƒg
+    std::vector < std::unique_ptr<rock>>rockList;//Šâ‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// ‘«ê‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//Î–Ê‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//Ã“I¨“®“IƒuƒƒbƒN‹““®
     
 
-    std::vector < std::unique_ptr<rock>>rockList;
-
-    //ã“ã“ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã”ã¨ã«ãƒªã‚¹ãƒˆã‚’è¿½åŠ ã—ã¦ã„ãæ„Ÿã˜ã ã­ã‡ãƒ¼
+    //‚±‚±‚ÉƒIƒuƒWƒFƒNƒg‚²‚Æ‚ÉƒŠƒXƒg‚ğ’Ç‰Á‚µ‚Ä‚¢‚­Š´‚¶‚¾‚Ë‚¥[
 
 
     ObjectManager() = default;

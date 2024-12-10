@@ -74,24 +74,24 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 	switch (aspect)
 	{
 	case right_down:
-		vertices[0].Set(+sloping_block_size.x / 2, -sloping_block_size.y / 2); // 
-		vertices[1].Set(-sloping_block_size.x / 2, +sloping_block_size.y / 2);  // 
-		vertices[2].Set(sloping_block_size.x / 2, sloping_block_size.y / 2);   // 
+		vertices[0].Set(+sloping_block_size.x / 2, -sloping_block_size.y / 2); 
+		vertices[1].Set(-sloping_block_size.x / 2, +sloping_block_size.y / 2); 
+		vertices[2].Set(sloping_block_size.x / 2, sloping_block_size.y / 2);   
 		break;
 	case right_upper:
-		vertices[0].Set(+sloping_block_size.x / 2, -sloping_block_size.y / 2);   // 右上（直角）
-		vertices[1].Set(sloping_block_size.x / 2, sloping_block_size.y / 2);  // 左上
-		vertices[2].Set(-sloping_block_size.x / 2, -sloping_block_size.y / 2);  // 右下
+		vertices[0].Set(+sloping_block_size.x / 2, -sloping_block_size.y / 2);   
+		vertices[1].Set(sloping_block_size.x / 2, sloping_block_size.y / 2);  
+		vertices[2].Set(-sloping_block_size.x / 2, -sloping_block_size.y / 2);  
 		break;
 	case left_down:
-		vertices[0].Set(-sloping_block_size.x / 2, sloping_block_size.y / 2);      // 原点
-		vertices[1].Set(-sloping_block_size.x/2, -sloping_block_size.y/2);    // 右側
-		vertices[2].Set(sloping_block_size.x, sloping_block_size.y);  // 右上
+		vertices[0].Set(-sloping_block_size.x / 2, sloping_block_size.y / 2); 
+		vertices[1].Set(-sloping_block_size.x/2, -sloping_block_size.y/2); 
+		vertices[2].Set(sloping_block_size.x, sloping_block_size.y); 
 		break;
 	case left_upper:
-		vertices[0].Set(-sloping_block_size.x / 2, -sloping_block_size.y / 2);  // 左上（直角）
-		vertices[1].Set(sloping_block_size.x / 2, -sloping_block_size.y / 2); // 左下
-		vertices[2].Set(-sloping_block_size.x / 2, sloping_block_size.y / 2);   // 右上
+		vertices[0].Set(-sloping_block_size.x / 2, -sloping_block_size.y / 2); 
+		vertices[1].Set(sloping_block_size.x / 2, -sloping_block_size.y / 2);
+		vertices[2].Set(-sloping_block_size.x / 2, sloping_block_size.y / 2);
 		break;
 	default:
 		break;
@@ -114,11 +114,9 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 	object_sloping_block_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_sloping_block_data);
 
 
-	int ID = object_sloping_block_data->GenerateID();
-	object_sloping_block_data->id = ID;
-	SetID(ID);
-
-	
+	int ID = object_sloping_block_data->GenerateID();//IDを取得
+	object_sloping_block_data->id = ID;//フィクスチャに登録
+	SetID(ID);//クラスに登録
 
 };
 
@@ -129,7 +127,7 @@ sloping_block::~sloping_block()
 
 void sloping_block::Initialize()
 {
-	//アンカーの錨の部分（日本語）
+	//テクスチャの初期化
 	g_sloping_block_left_down_Texture=	InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_left_down.png");//左下
 	g_sloping_block_left_upper_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_left_upper.png");//左上
 	g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_right_down.png");//右下
@@ -139,15 +137,10 @@ void sloping_block::Initialize()
 
 void sloping_block::Update()
 {
-
-
 }
-
-
 
 void sloping_block::Draw()
 {
-
 	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
 	float scale = SCREEN_SCALE;
 
@@ -165,7 +158,8 @@ void sloping_block::Draw()
 	float draw_x = ((sloping_block_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((sloping_block_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	switch (GetBlockAspect())
+
+	switch (GetBlockAspect())//向きをコンストラクタでセットしてるのでそれを受け取って描画
 	{
 	case right_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_down_Texture);
@@ -179,12 +173,9 @@ void sloping_block::Draw()
 	case left_upper:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_upper_Texture);
 		break;
-
 	default:
 		break;
 	}
-	
-	
 
 	//draw
 	DrawSprite(
@@ -193,13 +184,8 @@ void sloping_block::Draw()
 		GetObjectSlopingBlockBody()->GetAngle(),
 		{ GetSlopingBlockSize().x * scale,GetSlopingBlockSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
-
-
-
-
 }
 
 void sloping_block::Finalize()
 {
-
 }

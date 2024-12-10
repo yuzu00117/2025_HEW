@@ -17,6 +17,7 @@
 #include"player_position.h"
 #include"collider_type.h"
 #include"player_position.h"
+#include"create_filter.h"
 
 
 //テクスチャの入れ物
@@ -28,13 +29,13 @@ static ID3D11ShaderResourceView* g_Rock_Texture2 = NULL;//アンカーのテクスチャ
 
 
 
-rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
+rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 {
 	//ボディは一つで　フィクスチャを二つ付ける構造にする
 
 
 
-	SetRockSize(b2Vec2(radius*2,radius*2));
+	SetRockSize(b2Vec2(radius * 2, radius * 2));
 	//SetAnchorPointSize(AnchorPoint_size);
 
 
@@ -52,8 +53,8 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 
 	//サイズを設定する
 	b2Vec2 rock_size;
-	rock_size.x = radius*2/ BOX2D_SCALE_MANAGEMENT;
-	rock_size.y = radius*2 / BOX2D_SCALE_MANAGEMENT;
+	rock_size.x = radius * 2 / BOX2D_SCALE_MANAGEMENT;
+	rock_size.y = radius * 2 / BOX2D_SCALE_MANAGEMENT;
 
 
 	b2BodyDef Rock_body;//木の幹の部分
@@ -78,6 +79,7 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 	rock_fixture.friction = 0.5f;//摩擦
 	rock_fixture.restitution = 0.0f;//反発係数
 	rock_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	rock_fixture.filter=createFilterExclude("object_filter", {});
 
 	b2Fixture* object_rock_fixture = m_Rock_body->CreateFixture(&rock_fixture);
 
@@ -97,6 +99,7 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 	rock_anchorpoint_fixture.friction = 0.5f;//摩擦
 	rock_anchorpoint_fixture.restitution = 0.0f;//反発係数
 	rock_anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	rock_anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
 
 	b2Fixture* object_rock_anchorpoint_fixture = m_Rock_body->CreateFixture(&rock_anchorpoint_fixture);
@@ -111,6 +114,8 @@ rock::rock(b2Vec2 Position, float radius, int need_anchor_level)
 	int ID = object_rock_anchorpoint_data->GenerateID();
 	object_rock_anchorpoint_data->id = ID;
 	SetID(ID);
+	object_rock_anchorpoint_data->need_anchor_level = set_need_anchor_level;
+	
 
 
 	//岩を倒しす時に必要になるForce とりあえずサイズに依存でつくる

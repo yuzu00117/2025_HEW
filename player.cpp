@@ -22,6 +22,8 @@
 #include"collider_type.h"
 #include"anchor_point.h"
 #include"anchor.h"
+#include"anchor_spirit.h"
+#include"create_filter.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
@@ -94,6 +96,9 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     fixture_circle_upper.friction = 3.0f;//摩擦
     fixture_circle_upper.restitution = 0.0f;//反発係数
     fixture_circle_upper.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+    fixture_circle_upper.filter = createFilterExclude("Player_filter",{});
+  
+ 
 
 
     //プレイヤーの下の円のコライダー
@@ -108,6 +113,10 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     fixture_circle_bottom.friction = 3.0f;//摩擦
     fixture_circle_bottom.restitution = 0.0f;//反発係数
     fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+    fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
+   
+  
+    
     //----------------------------------------------------
 
     //fixtureをbodyに登録
@@ -138,6 +147,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     fixture_sensor.friction = 0.0f;//摩擦
     fixture_sensor.restitution = 0.0f;//反発係数
     fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+    
  
     b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
 
@@ -240,6 +250,18 @@ void Player::Update()
 
 
 
+    //アンカーのレベルを手動で変えられるしょり　完成版ではけす
+    if (Keyboard_IsKeyDown(KK_O) || (state.dpadUp))
+    {
+        AnchorSpirit::EditAnchorSpiritValue(50); //加算
+    }
+
+    if (Keyboard_IsKeyDown(KK_P) || (state.dpadDown))
+    {
+        AnchorSpirit::EditAnchorSpiritValue(-50); //加算
+    }
+
+
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -253,6 +275,7 @@ void Player::Update()
 
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
+        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
         Anchor::SetAnchorState(Create_state);//作成状態に移行
     }
 
@@ -274,6 +297,7 @@ void Player::Update()
     case Connected_state://物体がくっついた状態　ジョイントの作成
 
         Anchor::CreateRotateJoint();//回転ジョイントを作成
+        AnchorSpirit::EditAnchorSpiritValue(-25);//アンカーを使ったらゲージを払う
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
         break;
 
@@ -287,7 +311,7 @@ void Player::Update()
         }
 
 
-        if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_T)))
+        if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_G)))
         {
             g_anchor_pulling_number = 200;
         }

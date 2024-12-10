@@ -73,20 +73,25 @@
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="wood.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="word.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="one-way_platform.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="static_to_dynamic_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="wood.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
     <ClCompile Include="rock.cpp">
-      <Filter>ソースファイル</Filter>
+      <Filter>ソースファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="rock.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="one-way_platform.cpp" />
     <ClCompile Include="sloping_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="create_filter.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -172,17 +177,28 @@
     <ClInclude Include="UI_StaminaSpirit_Gauge.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="wood.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="word.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="world_box2d.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="one-way_platform.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="static_to_dynamic_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
     <ClInclude Include="sloping_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="wood.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="rock.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="create_filter.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -246,6 +262,12 @@
     </Filter>
     <Filter Include="リソースファイル">
       <UniqueIdentifier>{0e2c73d9-6e34-4b29-9fe5-5c0987204aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\object">
+      <UniqueIdentifier>{584bb0d9-b9ec-4b93-b982-9b951f8a29b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\object">
+      <UniqueIdentifier>{375416ea-b702-4b0c-a96d-b3b0598669b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
