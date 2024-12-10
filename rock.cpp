@@ -203,5 +203,16 @@ void rock::Draw()
 
 void rock::Finalize()
 {
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
 
+
+	//ボディの削除
+	world->DestroyBody(Rock_body);
+
+	//画像の解放
+	UnInitTexture(g_Rock_Texture);
+	UnInitTexture(g_Rock_Texture1);
+	UnInitTexture(g_Rock_Texture2);
 }
