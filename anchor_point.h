@@ -47,6 +47,7 @@ public:
 	static void Initialize();
 	static void Update();
 	static void Draw();
+	static void Finalize();
 
 	/**
  * @brief 　ターゲットとしたアンカーポイントのボディを取得する関数
