@@ -118,7 +118,7 @@ void EnemyStatic::CollisionPlayer(b2Body* collision_enemy)
 		{
 			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
 			{
-				PlayerStamina::EditPlayerStaminaValue(-g_p_enemies_static[i]->GetDamage());
+				AnchorSpirit::EditAnchorSpiritValue(-50); //‰ÁZ
 				g_p_enemies_static[i]->SetUse(false);
 				return;
 			}
