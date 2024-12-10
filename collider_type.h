@@ -26,7 +26,6 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
     collider_anchor_chain,
 
     collider_ground,
-    collider_wall,
 
     collider_object,
 

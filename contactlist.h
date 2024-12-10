@@ -81,6 +81,7 @@ public:
         }
 
 
+
         //プレイヤーとアンカーが触れた
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_anchor) ||
             (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player_body))
@@ -217,8 +218,8 @@ public:
         }
 
         //引っ張られている状態のオブジェクトとエネミーの衝突
-        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_wall) ||
-            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_static)) &&
+        if (((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static)) &&
             (Anchor::GetAnchorState() == Pulling_state))
         {
             if (objectA->collider_type == collider_enemy_static)
@@ -232,8 +233,8 @@ public:
         }
 
         //引っ張られている状態のオブジェクトと動的エネミーの衝突
-        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_wall) ||
-            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_dynamic)) &&
+        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic)) &&
             (Anchor::GetAnchorState() == Pulling_state))
         {
             if (objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState)
