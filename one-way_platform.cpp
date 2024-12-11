@@ -158,5 +158,17 @@ void one_way_platform::Draw()
 
 void one_way_platform::Finalize()
 {
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	//bodyを削除する
+	world->DestroyBody(one_way_platform_body);
+
+
+	//テクスチャの解放
+	UnInitTexture(g_one_way_platform_Texture);
+	UnInitTexture(g_one_way_platform1_Texture);
+
 
 }

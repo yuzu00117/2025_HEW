@@ -123,15 +123,26 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
         {
 
+
+
             //状態が投げてる時にのみ以降する
             if (Anchor::GetAnchorState() == Throwing_state)
             {
-                Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
+                if (fixtureA->GetBody() == AnchorPoint::GetTargetAnchorPointBody() || fixtureB->GetBody() == AnchorPoint::GetTargetAnchorPointBody())//ぶつかった物体のどちらかが　ターゲットとしたアンカーポイントである
+                {
+                    Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
+                }
+                else
+                {
+                    return;//ぶつかったアンカーポイントがターゲットとしたアンカーポイントではない場合
+                }
+          
             }
             // 接触位置を取得
             b2WorldManifold worldManifold;
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
+
 
 
             //木のオブジェクトの引っ張る処理

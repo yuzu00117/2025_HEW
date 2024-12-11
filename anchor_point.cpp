@@ -264,7 +264,21 @@ void AnchorPoint::Draw()
 
 	//-------------------------------------------------------------------------------------------------------------------------
 }
+void AnchorPoint::Finalize()
+{
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
+	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
+	
+	world->DestroyBody(g_select_anchor_point_body);
+
+
+	//テクスチャの解放
+	UnInitTexture(g_anchor_point_target_lev1_Texture);
+	UnInitTexture(g_anchor_point_target_lev2_Texture);
+	UnInitTexture(g_anchor_point_target_lev3_Texture);
+	UnInitTexture(g_anchor_point_target_Texture);
+}
 
 void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 {

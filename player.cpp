@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name player.cpp
-// #description ƒvƒŒƒCƒ„[
-// #make 2024/11/22@‰i–ì‹`–ç
+// #description ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
+// #make 2024/11/22ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/22
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Åbody‚Æfixtureì‚Á‚ÄGetInstance‚Å‰Šú’l‚ğ“ü—Í
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§bodyã¨fixtureä½œã£ã¦GetInstanceã§åˆæœŸå€¤ã‚’å…¥åŠ›
 //----------------------------------------------------------------------------------------------------
 
 
@@ -25,14 +25,14 @@
 #include"anchor_spirit.h"
 #include"create_filter.h"
 
-//ƒeƒNƒXƒ`ƒƒ‚Ìƒ_ƒEƒ“ƒ[ƒh ƒOƒ[ƒoƒ‹•Ï”‚É‚µ‚Ä‚é
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã«ã—ã¦ã‚‹
 ID3D11ShaderResourceView* g_player_Texture=NULL;
 
 
-//ƒZƒ“ƒT[‚Ì‰æ‘œ
+//ã‚»ãƒ³ã‚µãƒ¼ã®ç”»åƒ
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 
-//staticƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
+//staticãƒ¡ãƒ³ãƒãƒ¼å¤‰æ•°ã®åˆæœŸåŒ–
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 int     Player::m_direction = 1;
@@ -51,7 +51,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     body.type = b2_dynamicBody;
     body.position.Set(position.x , position.y);
     body.angle = 0.0f;
-    body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+    body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
     body.userData.pointer = (uintptr_t)this;
 
 
@@ -64,68 +64,68 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
 
     m_body = world->CreateBody(&body);
 
-    player_body = m_body;//ƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğƒZƒbƒg
+    player_body = m_body;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒœãƒ‡ã‚£ã‚’ã‚»ãƒƒãƒˆ
 
    
-    SetSize(body_size);//ƒvƒŒƒCƒ„[•\¦‚ğ‚·‚é‚½‚ß‚ÉƒZƒbƒg‚·‚é
-    SetSensorSize(sensor_size);//ƒZƒ“ƒT[•\¦‚ğ‚·‚é‚½‚ß‚ÉƒZƒbƒg
+    SetSize(body_size);//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¡¨ç¤ºã‚’ã™ã‚‹ãŸã‚ã«ã‚»ãƒƒãƒˆã™ã‚‹
+    SetSensorSize(sensor_size);//ã‚»ãƒ³ã‚µãƒ¼è¡¨ç¤ºã‚’ã™ã‚‹ãŸã‚ã«ã‚»ãƒƒãƒˆ
 
 
     
  
     b2Vec2 size;
-    size.x = body_size.x/BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ğ‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ğ‚³‚°‚ÄA•¨—‰‰Z‚Ì‹““®‚ğ‘€ì‚µ‚â‚·‚­‚·‚é
+    size.x = body_size.x/BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
     size.y = body_size.y/BOX2D_SCALE_MANAGEMENT;
 
 
-    //ƒZƒ“ƒT[‚Ìİ’è—p‚Ì
-    b2Vec2 size_sensor;//–½–¼‚·‚Ü‚ñ
+    //ã‚»ãƒ³ã‚µãƒ¼ã®è¨­å®šç”¨ã®
+    b2Vec2 size_sensor;//å‘½åã™ã¾ã‚“
     size_sensor.x=sensor_size.x / BOX2D_SCALE_MANAGEMENT;
     size_sensor.y=sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-    //ƒvƒŒƒCƒ„[‚Ìã‚Ì‰~‚ÌƒRƒ‰ƒCƒ_[
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸Šã®å††ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
 //-------------------------------------------
     b2CircleShape circle_upper;
-    circle_upper.m_p.Set(position.x, position.y);//ã‚Ì•û‚Ì‰~
+    circle_upper.m_p.Set(position.x, position.y);//ä¸Šã®æ–¹ã®å††
     circle_upper.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
     b2FixtureDef fixture_circle_upper;
     fixture_circle_upper.shape = &circle_upper;
     fixture_circle_upper.density = 1.3f;
-    fixture_circle_upper.friction = 3.0f;//–€C
-    fixture_circle_upper.restitution = 0.0f;//”½”­ŒW”
-    fixture_circle_upper.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+    fixture_circle_upper.friction = 3.0f;//æ‘©æ“¦
+    fixture_circle_upper.restitution = 0.0f;//åç™ºä¿‚æ•°
+    fixture_circle_upper.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
     fixture_circle_upper.filter = createFilterExclude("Player_filter",{});
   
  
 
 
-    //ƒvƒŒƒCƒ„[‚Ì‰º‚Ì‰~‚ÌƒRƒ‰ƒCƒ_[
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸‹ã®å††ã®ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼
     //-------------------------------------------
     b2CircleShape circle_bottom;
-    circle_bottom.m_p.Set(position.x, position.y + 0.1f);//‰º‚Ì•û‚Ì‰~
+    circle_bottom.m_p.Set(position.x, position.y + 0.1f);//ä¸‹ã®æ–¹ã®å††
     circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
     b2FixtureDef fixture_circle_bottom;
     fixture_circle_bottom.shape = &circle_bottom;
     fixture_circle_bottom.density = 1.3f;
-    fixture_circle_bottom.friction = 3.0f;//–€C
-    fixture_circle_bottom.restitution = 0.0f;//”½”­ŒW”
-    fixture_circle_bottom.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+    fixture_circle_bottom.friction = 3.0f;//æ‘©æ“¦
+    fixture_circle_bottom.restitution = 0.0f;//åç™ºä¿‚æ•°
+    fixture_circle_bottom.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
     fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
    
   
     
     //----------------------------------------------------
 
-    //fixture‚ğbody‚É“o˜^
+    //fixtureã‚’bodyã«ç™»éŒ²
     b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
     b2Fixture* bottom_circle_fixture = m_body->CreateFixture(&fixture_circle_bottom);
 
-    // ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-    // ƒvƒŒƒCƒ„[‚É’l‚ğ“o˜^
-    // ƒvƒŒ[ƒ„[‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+    // ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å€¤ã‚’ç™»éŒ²
+    // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
     ObjectData* playerdata = new ObjectData{ collider_player };
     //player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
     upper_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
@@ -134,7 +134,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
   
     //--------------------------------------------------------------------------------------------------
     
-    //ƒvƒŒƒCƒ„[‚ÌƒZƒ“ƒT[‚ğV‚µ‚­‚Â‚­‚é
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚»ãƒ³ã‚µãƒ¼ã‚’æ–°ã—ãã¤ãã‚‹
 
     b2PolygonShape shape_sensor;
     shape_sensor.SetAsBox(size_sensor.x * 0.5, size_sensor.y * 0.5);
@@ -143,18 +143,18 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
 
     b2FixtureDef fixture_sensor;
     fixture_sensor.shape = &shape_sensor;
-    fixture_sensor.density = 0.0f;//–§“x
-    fixture_sensor.friction = 0.0f;//–€C
-    fixture_sensor.restitution = 0.0f;//”½”­ŒW”
-    fixture_sensor.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+    fixture_sensor.density = 0.0f;//å¯†åº¦
+    fixture_sensor.friction = 0.0f;//æ‘©æ“¦
+    fixture_sensor.restitution = 0.0f;//åç™ºä¿‚æ•°
+    fixture_sensor.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
     
  
     b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
 
 
-    // ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-   // ƒvƒŒƒCƒ„[‚É’l‚ğ“o˜^
-   // ƒvƒŒ[ƒ„[‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+    // ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+   // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å€¤ã‚’ç™»éŒ²
+   // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
     ObjectData* player_sensor_data = new ObjectData{ collider_player_sensor };
     player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
 
@@ -164,15 +164,13 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
 
 Player::~Player()
 {
-    ////ƒeƒNƒXƒ`ƒƒ‚Ìíœ
-    //UnInitTexture(g_player_Texture);
 
 }
 
 void Player::Initialize()
 {
   
-    //ƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh
+    //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ­ãƒ¼ãƒ‰
     g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
     g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
@@ -184,16 +182,16 @@ void Player::Initialize()
 
 void Player::Update()
 {
-    // ƒvƒŒƒCƒ„[‚ÌXVˆ—
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ›´æ–°å‡¦ç†
 
 
-    //ƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Í‚Ìó‚¯æ‚è
+    //ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›ã®å—ã‘å–ã‚Š
     ControllerState state = GetControllerInput();
 
-    //‰¡ˆÚ“®
+    //æ¨ªç§»å‹•
    //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-       //ƒXƒeƒBƒbƒN‚Ì’l‚ğó‚¯æ‚Á‚Ä³‹K‰»‚·‚é
+       //ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å€¤ã‚’å—ã‘å–ã£ã¦æ­£è¦åŒ–ã™ã‚‹
     float left_stick_x = state.leftStickX / 40000.0f;
     float left_stick_y = state.leftStickY / 40000.0f;
     b2Vec2 vel = m_body->GetLinearVelocity();
@@ -201,30 +199,30 @@ void Player::Update()
     b2Vec2 player_position = { PlayerPosition::GetPlayerPosition().x,PlayerPosition::GetPlayerPosition().y };
     b2Vec2 player_point = m_body->GetWorldPoint(player_position);
 
-    //â‘Î’l‚É•ÏX‚·‚é ƒfƒbƒgƒ][ƒ“‚ÌR¸‚Ég‚¤‚½‚ß@tool.cpp‚Éì‚Á‚½
-    //ƒfƒbƒgƒ][ƒ“‚ğ‚Â‚­‚é x,y‚Ì’l‚ğ‘«‚µ‚Äˆê’èˆÈãŒo‚Á‚½‚ç@ŒÄ‚Ño‚µ
+    //çµ¶å¯¾å€¤ã«å¤‰æ›´ã™ã‚‹ ãƒ‡ãƒƒãƒˆã‚¾ãƒ¼ãƒ³ã®å¯©æŸ»ã«ä½¿ã†ãŸã‚ã€€tool.cppã«ä½œã£ãŸ
+    //ãƒ‡ãƒƒãƒˆã‚¾ãƒ¼ãƒ³ã‚’ã¤ãã‚‹ x,yã®å€¤ã‚’è¶³ã—ã¦ä¸€å®šä»¥ä¸ŠçµŒã£ãŸã‚‰ã€€å‘¼ã³å‡ºã—
     if (0.5f < ReturnAbsoluteValue(left_stick_x) || Keyboard_IsKeyDown(KK_RIGHT) || Keyboard_IsKeyDown(KK_LEFT))
     {
-        // ¡‚ÌƒXƒeƒBƒbƒN’l‚ğA³‹K‰»‚µ‚Ä’PˆÊƒxƒNƒgƒ‹‚É‚·‚é
+        // ä»Šã®ã‚¹ãƒ†ã‚£ãƒƒã‚¯å€¤ã‚’ã€æ­£è¦åŒ–ã—ã¦å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã«ã™ã‚‹
         b2Vec2 stick = { left_stick_x,  left_stick_y };
         stick.Normalize();
 
-        //ó‘Ô‚É‚æ‚Á‚ÄƒXƒs[ƒh‚ª’²®‚³‚ê‚é
+        //çŠ¶æ…‹ã«ã‚ˆã£ã¦ã‚¹ãƒ”ãƒ¼ãƒ‰ãŒèª¿æ•´ã•ã‚Œã‚‹
        //----------------------------------------------------------
         float adjust_speed = 0.0f;
-        //ƒWƒƒƒ“ƒv‚µ‚Ä‚¢‚é‚ÍƒXƒs[ƒh‚Í”¼•ª‰º‚ª‚é
+        //ã‚¸ãƒ£ãƒ³ãƒ—ã—ã¦ã„ã‚‹æ™‚ã¯ã‚¹ãƒ”ãƒ¼ãƒ‰ã¯åŠåˆ†ä¸‹ãŒã‚‹
         if (GetIsJumping())
         {
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-        //‰EˆÚ“®
+        //å³ç§»å‹•
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
             m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
             m_direction = 1;
         }
-        //¶ˆÚ“®
+        //å·¦ç§»å‹•
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
             m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
@@ -234,10 +232,10 @@ void Player::Update()
     }
 
 
-    //ƒWƒƒƒ“ƒvˆ—
+    //ã‚¸ãƒ£ãƒ³ãƒ—å‡¦ç†
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    //ƒWƒƒƒ“ƒvƒ`ƒFƒbƒN
+    //ã‚¸ãƒ£ãƒ³ãƒ—ãƒã‚§ãƒƒã‚¯
     if (!m_is_jumping && !m_jump_pressed && ((Keyboard_IsKeyDown(KK_UP) || (state.buttonA))))
     {
         if (vel.y < max_velocity.y)
@@ -251,60 +249,60 @@ void Player::Update()
 
 
 
-    //ƒAƒ“ƒJ[‚ÌƒŒƒxƒ‹‚ğè“®‚Å•Ï‚¦‚ç‚ê‚é‚µ‚å‚è@Š®¬”Å‚Å‚Í‚¯‚·
+    //ã‚¢ãƒ³ã‚«ãƒ¼ã®ãƒ¬ãƒ™ãƒ«ã‚’æ‰‹å‹•ã§å¤‰ãˆã‚‰ã‚Œã‚‹ã—ã‚‡ã‚Šã€€å®Œæˆç‰ˆã§ã¯ã‘ã™
     if (Keyboard_IsKeyDown(KK_O) || (state.dpadUp))
     {
-        AnchorSpirit::EditAnchorSpiritValue(50); //‰ÁZ
+        AnchorSpirit::EditAnchorSpiritValue(50); //åŠ ç®—
     }
 
     if (Keyboard_IsKeyDown(KK_P) || (state.dpadDown))
     {
-        AnchorSpirit::EditAnchorSpiritValue(-50); //‰ÁZ
+        AnchorSpirit::EditAnchorSpiritValue(-50); //åŠ ç®—
     }
 
 
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-    //ƒvƒŒƒCƒ„[ƒ|ƒWƒVƒ‡ƒ“CPP‚ÌŠÖ”‚Éƒf[ƒ^‚ğƒZƒbƒg
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒã‚¸ã‚·ãƒ§ãƒ³CPPã®é–¢æ•°ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒãƒˆ
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 
 
- //ƒAƒ“ƒJ[‚Ìˆ—
+ //ã‚¢ãƒ³ã‚«ãƒ¼ã®å‡¦ç†
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-    if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//‰½‚à‘¶İ‚µ‚È‚¢ó‘Ô‚Åƒ{ƒ^ƒ““ü—Í‚ÅˆÚs‚·‚é
+    if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//ä½•ã‚‚å­˜åœ¨ã—ãªã„çŠ¶æ…‹ã§ãƒœã‚¿ãƒ³å…¥åŠ›ã§ç§»è¡Œã™ã‚‹
     {
-        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//Œ»İƒvƒŒƒCƒ„[‚ğ•W€‚Æ‚µ‚Ä‚¢‚È‚¢ê‡‚Å‚Ì‚µ‚å‚è
-        Anchor::SetAnchorState(Create_state);//ì¬ó‘Ô‚ÉˆÚs
+        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//ç¾åœ¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’æ¨™æº–ã¨ã—ã¦ã„ãªã„å ´åˆã§ã®ã—ã‚‡ã‚Š
+        Anchor::SetAnchorState(Create_state);//ä½œæˆçŠ¶æ…‹ã«ç§»è¡Œ
     }
 
     switch (Anchor::GetAnchorState())
     {
-    case Nonexistent_state://‰½‚à‚È‚¢ó‘Ô
-        //‚±‚±‚©‚ç‚ÌˆÚs‚Íã‚Ìƒ{ƒ^ƒ“‚ÅŠÇ—
+    case Nonexistent_state://ä½•ã‚‚ãªã„çŠ¶æ…‹
+        //ã“ã“ã‹ã‚‰ã®ç§»è¡Œã¯ä¸Šã®ãƒœã‚¿ãƒ³ã§ç®¡ç†
         break;
     case Create_state:
-        Anchor::CreateAnchor(b2Vec2(2.0f, 2.0f));//‚±‚±‚Ìˆø”‚ÅƒAƒ“ƒJ[‚Ì‘å‚«‚³‚Ì’²®‚ª‚Å‚«‚é‚æ[
-        Anchor::SetAnchorState(Throwing_state);//ƒAƒ“ƒJ[‚Ìó‘Ô‚ğ“Š‚°‚é‚Ä‚¢‚éó‘Ô‚ÉˆÚs
+        Anchor::CreateAnchor(b2Vec2(2.0f, 2.0f));//ã“ã“ã®å¼•æ•°ã§ã‚¢ãƒ³ã‚«ãƒ¼ã®å¤§ãã•ã®èª¿æ•´ãŒã§ãã‚‹ã‚ˆãƒ¼
+        Anchor::SetAnchorState(Throwing_state);//ã‚¢ãƒ³ã‚«ãƒ¼ã®çŠ¶æ…‹ã‚’æŠ•ã’ã‚‹ã¦ã„ã‚‹çŠ¶æ…‹ã«ç§»è¡Œ
         break;
-    case Throwing_state://•d‚ª”ò‚ñ‚Å‚¢‚éó‘Ô
-        Anchor::ThrowAnchorToAP();//ƒAƒ“ƒJ[‚ğƒ^[ƒQƒbƒg‚Æ‚µ‚½ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÉŒü‚©‚Á‚Ä“Š‚°‚éŠÖ”
+    case Throwing_state://éŒ¨ãŒé£›ã‚“ã§ã„ã‚‹çŠ¶æ…‹
+        Anchor::ThrowAnchorToAP();//ã‚¢ãƒ³ã‚«ãƒ¼ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ã—ãŸã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã«å‘ã‹ã£ã¦æŠ•ã’ã‚‹é–¢æ•°
 
 
-        //‚±‚±‚ÍƒRƒ“ƒ^ƒNƒgƒŠƒXƒg‚È‚¢‚ÌÚG”»’è‚©‚çÚGó‘Ô‚Ö‚ÆˆÚs
+        //ã“ã“ã¯ã‚³ãƒ³ã‚¿ã‚¯ãƒˆãƒªã‚¹ãƒˆãªã„ã®æ¥è§¦åˆ¤å®šã‹ã‚‰æ¥è§¦çŠ¶æ…‹ã¸ã¨ç§»è¡Œ
         break;
-    case Connected_state://•¨‘Ì‚ª‚­‚Á‚Â‚¢‚½ó‘Ô@ƒWƒ‡ƒCƒ“ƒg‚Ìì¬
+    case Connected_state://ç‰©ä½“ãŒãã£ã¤ã„ãŸçŠ¶æ…‹ã€€ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã®ä½œæˆ
 
-        Anchor::CreateRotateJoint();//‰ñ“]ƒWƒ‡ƒCƒ“ƒg‚ğì¬
-        AnchorSpirit::EditAnchorSpiritValue(-25);//ƒAƒ“ƒJ[‚ğg‚Á‚½‚çƒQ[ƒW‚ğ•¥‚¤
-        Anchor::SetAnchorState(Pulling_state);//ˆø‚Á’£‚èó‘Ô‚ÉˆÚs
+        Anchor::CreateRotateJoint();//å›è»¢ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’ä½œæˆ
+        AnchorSpirit::EditAnchorSpiritValue(-25);//ã‚¢ãƒ³ã‚«ãƒ¼ã‚’ä½¿ã£ãŸã‚‰ã‚²ãƒ¼ã‚¸ã‚’æ‰•ã†
+        Anchor::SetAnchorState(Pulling_state);//å¼•ã£å¼µã‚ŠçŠ¶æ…‹ã«ç§»è¡Œ
         break;
 
-    case Pulling_state://ˆø‚Á’£‚Á‚Ä‚¢‚éó‘Ô
+    case Pulling_state://å¼•ã£å¼µã£ã¦ã„ã‚‹çŠ¶æ…‹
 
-        //ŒÄ‚Î‚ê‚½‰ñ”‚Å‚·‚é‚©‚Ë@‚Æ‚è‚ ‚¦‚¸2•b‚Å
+        //å‘¼ã°ã‚ŒãŸå›æ•°ã§ã™ã‚‹ã‹ã­ã€€ã¨ã‚Šã‚ãˆãš2ç§’ã§
         if (g_anchor_pulling_number > 100)
         {
             Anchor::DeleteRotateJoint();
@@ -317,13 +315,13 @@ void Player::Update()
             g_anchor_pulling_number = 200;
         }
 
-        g_anchor_pulling_number++;//ƒAƒ“ƒJ[‚ªˆø‚Á’£‚é
+        g_anchor_pulling_number++;//ã‚¢ãƒ³ã‚«ãƒ¼ãŒå¼•ã£å¼µã‚‹
 
         break;
 
-    case Deleting_state://íœ‚µ‚Ä‚¢‚éó‘Ô
+    case Deleting_state://å‰Šé™¤ã—ã¦ã„ã‚‹çŠ¶æ…‹
         g_anchor_pulling_number = 0;
-        Anchor::DeleteAnchor();//ƒAƒ“ƒJ[‚ğíœ
+        Anchor::DeleteAnchor();//ã‚¢ãƒ³ã‚«ãƒ¼ã‚’å‰Šé™¤
 
         Anchor::SetAnchorState(Nonexistent_state);
 
@@ -335,11 +333,11 @@ void Player::Update()
 
  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
-    //ƒXƒeƒBƒbƒN‚Ì’l‚ğó‚¯æ‚Á‚Ä³‹K‰»‚·‚é
+    //ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å€¤ã‚’å—ã‘å–ã£ã¦æ­£è¦åŒ–ã™ã‚‹
     float stick_x= state.rightStickX / 32768.0f;
     float stick_y= state.rightStickY / 32768.0f;
 
-    //keybord‚Å‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìİ’è X²
+    //keybordã§ã®ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®è¨­å®š Xè»¸
     if (Keyboard_IsKeyDown(KK_A))
     {
         stick_x = -1.0f;
@@ -349,7 +347,7 @@ void Player::Update()
         stick_x = 1.0f;
     }
 
-    //keybord‚Å‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìİ’è@‚x²
+    //keybordã§ã®ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®è¨­å®šã€€ï¼¹è»¸
     if (Keyboard_IsKeyDown(KK_W))
     {
         stick_y = +1.0f;
@@ -361,14 +359,14 @@ void Player::Update()
    
 
 
-    //â‘Î’l‚É•ÏX‚·‚é ƒfƒbƒgƒ][ƒ“‚ÌR¸‚Ég‚¤‚½‚ß@tool.cpp‚Éì‚Á‚½
-    //ƒfƒbƒgƒ][ƒ“‚ğ‚Â‚­‚é x,y‚Ì’l‚ğ‘«‚µ‚Äˆê’èˆÈãŒo‚Á‚½‚ç@ŒÄ‚Ño‚µ
+    //çµ¶å¯¾å€¤ã«å¤‰æ›´ã™ã‚‹ ãƒ‡ãƒƒãƒˆã‚¾ãƒ¼ãƒ³ã®å¯©æŸ»ã«ä½¿ã†ãŸã‚ã€€tool.cppã«ä½œã£ãŸ
+    //ãƒ‡ãƒƒãƒˆã‚¾ãƒ¼ãƒ³ã‚’ã¤ãã‚‹ x,yã®å€¤ã‚’è¶³ã—ã¦ä¸€å®šä»¥ä¸ŠçµŒã£ãŸã‚‰ã€€å‘¼ã³å‡ºã—
     if (0.98 < ReturnAbsoluteValue(stick_x) + ReturnAbsoluteValue(stick_y))
     {
         AnchorPoint::SelectAnchorPoint(stick_x, stick_y);
     }
 
-    //ƒvƒŒƒCƒ„[ƒ|ƒWƒVƒ‡ƒ“CPP‚ÌŠÖ”‚Éƒf[ƒ^‚ğƒZƒbƒg
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒã‚¸ã‚·ãƒ§ãƒ³CPPã®é–¢æ•°ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒãƒˆ
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 
 
@@ -377,26 +375,26 @@ void Player::Update()
 void Player::Draw()
 {
 
-    // ƒRƒ‰ƒCƒ_[‚ÆˆÊ’uî•ñ‚Ì•â³‚ğ‚·‚é‚½‚ß
+    // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ä½ç½®æƒ…å ±ã®è£œæ­£ã‚’ã™ã‚‹ãŸã‚
     float scale = SCREEN_SCALE;
 
-    // ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (16m x 9m ‚Ì‰ğ‘œ“x‚ÅA’†‰›‚Í x = 8, y = 4.5 ‚Æ‰¼’è)
+    // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (16m x 9m ã®è§£åƒåº¦ã§ã€ä¸­å¤®ã¯ x = 8, y = 4.5 ã¨ä»®å®š)
     b2Vec2 screen_center;
     screen_center.x = SCREEN_CENTER_X;
     screen_center.y = SCREEN_CENTER_Y;
 
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_Texture);
 
-    // ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+    // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
     b2Vec2 player_position;
     player_position.x = m_body->GetPosition().x;
     player_position.y = m_body->GetPosition().y;
 
 
-    //ƒvƒŒƒCƒ„[‚Í‰æ–Ê’†‰›‚ÉŒÅ’èA‚Ü‚ •â³’l‚Í‚¢‚ê‚é‚ñ‚â‚¯‚Ç
-    //‚Ù‚©‚ÌplayerˆÈŠO‚Ì•¨‘Ì‚ÍƒvƒŒƒCƒ„[•ªPosition‚ğˆø‚¢‚Ä
-   // •`‰æˆÊ’u‚ğ’²®‚µ‚ÄAƒvƒŒƒCƒ„[‚ªƒXƒNƒŠ[ƒ“’†‰›‚É•\¦‚³‚ê‚é‚æ‚¤‚É‚·‚é
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯ç”»é¢ä¸­å¤®ã«å›ºå®šã€ã¾ã‚è£œæ­£å€¤ã¯ã„ã‚Œã‚‹ã‚“ã‚„ã‘ã©
+    //ã»ã‹ã®playerä»¥å¤–ã®ç‰©ä½“ã¯ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åˆ†Positionã‚’å¼•ã„ã¦
+   // æç”»ä½ç½®ã‚’èª¿æ•´ã—ã¦ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ã«è¡¨ç¤ºã•ã‚Œã‚‹ã‚ˆã†ã«ã™ã‚‹
     DrawSprite(
         { screen_center.x,
           screen_center.y },
@@ -405,10 +403,10 @@ void Player::Draw()
     );
 
     //----------------------------------------------------------------------------------------
-    //ƒZƒ“ƒT[•`‰æ
+    //ã‚»ãƒ³ã‚µãƒ¼æç”»
 
 
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
     DrawSprite(
@@ -425,20 +423,22 @@ void Player::Draw()
 void Player::Finalize()
 {
     if (m_body) {
-        // ƒ{ƒfƒB‚ğíœ
+        // ãƒœãƒ‡ã‚£ã‚’å‰Šé™¤
         Box2dWorld& box2d_world = Box2dWorld::GetInstance();
         b2World* world = box2d_world.GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
     }
+
     if (g_player_Texture != nullptr)
     {
         UnInitTexture(g_player_Texture);
     }
+
 }
 
 
-//ƒ{ƒfƒB‚ğŠO•”‚©‚çæ“¾‚·‚é‚½‚ß‚Éì‚Á‚½ŠÖ”
+//ãƒœãƒ‡ã‚£ã‚’å¤–éƒ¨ã‹ã‚‰å–å¾—ã™ã‚‹ãŸã‚ã«ä½œã£ãŸé–¢æ•°
 b2Body* Player::GetOutSidePlayerBody()
 {
     return player_body;

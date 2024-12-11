@@ -251,13 +251,18 @@ void Field::Draw()
 
 void Field::Finalize()
 {
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
 	// 2次元配列のメモリ解放
 	for (int y = 0; y < m_field_height; ++y) {
 
 		for (int x = 0; x < m_field_width; ++x) {
 
 			if (m_p_field_array[y][x] != nullptr) {
-
+				
+				world->DestroyBody(m_p_field_array[y][x]->GetFieldBody());//フィールドを消す
 				delete m_p_field_array[y][x];
 				m_p_field_array[y][x] = nullptr;
 			}
