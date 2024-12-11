@@ -22,9 +22,9 @@
 
 //テクスチャの入れ物
 //グローバル変数
-static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
+static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//木のテクスチャ２
+static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチャ３
 
 
 int ObjectData::current_id = 0;
@@ -270,4 +270,15 @@ void wood::Draw()
 void wood::Finalize()
 {
 
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	//ボディの削除
+	world->DestroyBody(Wood_body);
+
+	//テクスチャの解放
+	UnInitTexture(g_Wood_Texture);
+	UnInitTexture(g_Wood_Texture1);
+	UnInitTexture(g_Wood_Texture2);
 }
