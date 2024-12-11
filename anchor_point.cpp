@@ -343,3 +343,5 @@ b2Body* AnchorPoint::GetTargetAnchorPointBody()
 {
 	return g_select_anchor_point_body;
 }
+
+

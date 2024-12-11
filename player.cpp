@@ -35,14 +35,14 @@ ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 //staticメンバー変数の初期化
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
-int     Player::m_direction = 1;
+bool     Player::m_direction = 1;
 
 
 
 b2Body* player_body;
 
 
-int g_anchor_pulling_number = 0;
+int g_anchor_frame_management_number = 0;
 
 Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nullptr)
 {
@@ -226,7 +226,7 @@ void Player::Update()
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
             m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
-            m_direction = -1;
+            m_direction = 0;
         }
 
     }
@@ -272,11 +272,24 @@ void Player::Update()
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+    //オブジェクトに投げるアンカー処理の呼び出し
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
         Anchor::SetAnchorState(Create_state);//作成状態に移行
     }
+
+
+    //通常攻撃のアンカーの呼び出し
+    if ((Keyboard_IsKeyDown(KK_N) || (state.buttonX)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
+    {
+        Anchor::SetAnchorState(WaitCraateNormalAttack_state);
+    }
+
+ 
+    //プレーの向いている方向　swtich文的の仕様的に外でやる
+    bool right = GetDirection();
 
     switch (Anchor::GetAnchorState())
     {
@@ -298,12 +311,14 @@ void Player::Update()
         Anchor::CreateRotateJoint();//回転ジョイントを作成
         AnchorSpirit::EditAnchorSpiritValue(-25);//アンカーを使ったらゲージを払う
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
+
+        g_anchor_frame_management_number = 0;
         break;
 
     case Pulling_state://引っ張っている状態
 
         //呼ばれた回数でするかね　とりあえず2秒で
-        if (g_anchor_pulling_number > 100)
+        if (g_anchor_frame_management_number > 100)
         {
             Anchor::DeleteRotateJoint();
             Anchor::PullingAnchor();
@@ -312,22 +327,58 @@ void Player::Update()
 
         if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_G)))
         {
-            g_anchor_pulling_number = 200;
+            g_anchor_frame_management_number = 200;
         }
 
-        g_anchor_pulling_number++;//アンカーが引っ張る
+        g_anchor_frame_management_number++;//アンカーが引っ張る
 
         break;
 
     case Deleting_state://削除している状態
-        g_anchor_pulling_number = 0;
+        g_anchor_frame_management_number = 0;
         Anchor::DeleteAnchor();//アンカーを削除
 
         Anchor::SetAnchorState(Nonexistent_state);
 
         break;
 
+    case WaitCraateNormalAttack_state:
+        //通常攻撃の発生前の待ち状態
+
+        g_anchor_frame_management_number++;
+        if (45 < g_anchor_frame_management_number)
+        {
+            g_anchor_frame_management_number = 0;
+            Anchor::SetAnchorState(CreateNormalAttack_state);//通常攻撃発生
+        }
+
+        break;
+    case CreateNormalAttack_state:
+
+        //通常攻撃の判定をつくる
+        Anchor::CreateNormalAttack(b2Vec2(2.0f, 2.0f), right);//通常攻撃のボディをつくる
+
+        Anchor::SetAnchorState(NowAttackngNormalAttack);
+        break;
+    case NowAttackngNormalAttack:
+        //攻撃中
+        g_anchor_frame_management_number++;
+        if (g_anchor_frame_management_number < 15)
+        {
+            g_anchor_frame_management_number = 0;
+            Anchor::SetAnchorState(DeletingNormaklAttack_state);
+        }
+
+        break;
+    case DeletingNormaklAttack_state:
+        //通常攻撃を削除する
+        Anchor::DeleteNormalAttackAnchor();
+        Anchor::SetAnchorState(Nonexistent_state);
+
+        break;
+
     default:
+
         break;
     }
 
@@ -441,3 +492,9 @@ b2Body* Player::GetOutSidePlayerBody()
 {
     return player_body;
 }
+
+
+
+    
+
+

@@ -34,6 +34,9 @@ public:
 	void Draw();
 	void Finalize();
 
+
+
+
 	static b2Body* GetOutSidePlayerBody();
 
 	//描画用にサイズを持たせておく
@@ -72,8 +75,8 @@ public:
 	}
 
 	//今のプレイヤーの向きを取得
-	// 右向き：1    左向き：-1
-	int		GetDirection() {
+	// 右向き：1    左向き：0
+	bool GetDirection() {
 		return m_direction;
 	}
 
@@ -115,7 +118,7 @@ private:
 
 	//プレイヤーの向き
 	// 右向き：1    左向き：-1
-	static int		m_direction;
+	static bool		m_direction;
 
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;

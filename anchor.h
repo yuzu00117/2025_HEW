@@ -19,6 +19,12 @@ enum AnchorState        //player.cppないのupdateで管理する際に利用している
 	Connected_state,	//くっついている状態
 	Pulling_state,		//引っ張っている状態
 	Deleting_state,
+
+	WaitCraateNormalAttack_state,//通常攻撃の発生前フレーム消費のため　45フレーム
+	CreateNormalAttack_state,//通常攻撃を作成する状態
+	NowAttackngNormalAttack,//通常攻撃の攻撃中
+	DeletingNormaklAttack_state,//削除した時
+
 };
 
 
@@ -72,21 +78,35 @@ public:
 	 */
 	static void DeleteAnchor();
 
-
-
-
-	/**
-	 * @brief アンカーの生成と削除を管理する関数
-	 */
-	static void ToggleAnchor();
-
-
 	/**
 	 * @brief  ぶつかったら回転ジョイントを付ける
 	 */
 	static void CreateRotateJoint();
 
 	static void DeleteRotateJoint();
+
+
+	/*
+		
+	*/
+	static void CreateNormalAttack(b2Vec2 anchor_size, bool right);
+
+	/**
+	 * @brief  通常攻撃をするためのボディをつくる
+	 * @param anchor_size 　攻撃範囲
+	 * @param right 　標準したい向き
+	 */
+	void CreateNormalAttackAnchorBody(b2Vec2 anchor_size,bool right);
+
+
+	static void UpdateNormalAttack();
+
+	static void DrawNormalAttack();
+
+
+	static void DeleteNormalAttackAnchor();
+
+	void DeleteNormalAttackAnchorBody();
 
 
 
@@ -100,6 +120,16 @@ public:
 		m_body = anchor_body;
 	}
 
+
+	b2Body* GetNormalAttackAnchorBody(void)
+	{
+		return m_normal_attack_body;
+	}
+
+	void SetNormalAttackAnchorBody(b2Body* anchor_normal_attack_body)
+	{
+		m_normal_attack_body = anchor_normal_attack_body;
+	}
 
 	//描画用にサイズを持たせておく
 	b2Vec2 GetSize() const
@@ -134,6 +164,8 @@ public:
 private:
 	//プレイヤーのBodyをもつ
 	b2Body* m_body;
+
+	b2Body* m_normal_attack_body;
 
 	b2Vec2 m_anchor_size;
 
