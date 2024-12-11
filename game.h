@@ -34,7 +34,7 @@ public:
 
 
 
-	HRESULT Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
+	void Initialize();
 	void Update();
 	void Draw();
 	void Finalize();

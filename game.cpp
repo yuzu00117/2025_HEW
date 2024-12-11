@@ -21,26 +21,17 @@
 #include"anchor.h"
 #include"word.h"
 #include"debug.h"
+#include"scene.h"
+
+
+//グローバル変数
+static ID3D11ShaderResourceView* g_Texture = NULL;
 
 
 
 
-HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
+void Game::Initialize()
 {
-	//レンダリング処理の初期化
-	InitRenderer(hInstance, hWnd, bWindow);
-
-	//サウンドの初期化
-	InitSound(hWnd);
-
-	//ポリゴン
-	InitSprite();
-
-	//文字（絵）
-	InitializeWord();
-
-	//コントローラーの初期化
-	controller.Initialize(hInstance,hWnd);
 
 	//プレイヤーの初期化
 	player.Initialize();
@@ -66,20 +57,16 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitializeDebug();
 #endif // !_DEBUG
 
-	return S_OK;
 }
 
 void Game::Finalize(void)
 {
+
 	//ポリゴン
 	UninitSprite();
 
 	//コントローラーの終了処理
 	controller.Release();
-
-	//サウンドの終了処理
-	UninitSound();
-
 
 	//プレイヤーの終了処理
 	player.Finalize();
@@ -95,7 +82,7 @@ void Game::Finalize(void)
 
 	//体力ソウルゲージUIの終了処理
 	stamina_spirit_gauge.Finalize();
-	
+
 	//レンダリングの終了処理
 	UninitRenderer();
 
@@ -157,7 +144,6 @@ void Game::Draw(void)
 	stamina_spirit_gauge.Draw();
 
 
-
 #ifdef _DEBUG
 	//デバッグ文字
 	DrawDebug();
@@ -177,8 +163,6 @@ Game::Game()
 {
 	//プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
 	player = Player::GetInstance();//シングルトン
-
-	
 }
 
 Game::~Game()

@@ -166,6 +166,7 @@ Player::~Player()
 {
     ////テクスチャの削除
     //UnInitTexture(g_player_Texture);
+
 }
 
 void Player::Initialize()
@@ -265,7 +266,7 @@ void Player::Update()
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-        //プレイヤーポジションCPPの関数にデータをセット
+    //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 
 
@@ -369,6 +370,8 @@ void Player::Update()
 
     //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
+
 }
 
 void Player::Draw()
