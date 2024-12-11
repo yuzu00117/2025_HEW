@@ -1,19 +1,10 @@
-//-----------------------------------------------------------------------------------------------------
-// #name main.cpp
-// #description main 
-// #make 2024/11/02　　永野義也
-// #update 2024/11/02
-// #comment 追加・修正予定
-//          ・基本的に授業通りのテンプレート引っ張ってきた
-//          
-//----------------------------------------------------------------------------------------------------
-
 #include <Windows.h>
 #include "renderer.h"
 #include "sprite.h"
 #include "keyboard.h"
 #include "sound.h"
-#include"game.h"
+#include "game.h"
+#include "scene.h"
 
 
 
@@ -50,11 +41,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
 
 
-
-
-	Game& game = Game::GetInstance();
-
-	
+	//もともと合ったGAMEのクラスでGetInstanceとっていたのを無くした
 
 	//ウィンドウクラスの登録
 	WNDCLASS wc = {};
@@ -92,10 +79,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 
 	//DirectXの初期化（ウィンドウを作成した後に行う）
-	if (FAILED(game.Initialize(hInstance, hWnd, true)))
+	if (FAILED(AllInitializeScene(hInstance,hWnd,true)))//<<GAMEにInit変更
 	{
 		return -1;
 	}
+
 
 	//時間計測用
 	DWORD dwExecLastTime;
@@ -111,6 +99,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//ウィンドウ表示(Init()の後に呼ばないとダメ)
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
+
+	InitializeScene();//<<変更
 
 	//メッセージループ
 	MSG    msg;
@@ -154,8 +144,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			{
 				dwExecLastTime = dwCurrentTime;
 
-				game.Update();
-				game.Draw();
+
+				UpdateScene();//<<変更
+				DrawScene();//<<変更
+
+
 
 				dwFrameCount++;
 			}
@@ -165,7 +158,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	timeEndPeriod(1);
 
 	//終了
-	game.Finalize();
+	FinalizeScene();//<<変更
 	return (int)msg.wParam;
 }
 
