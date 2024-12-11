@@ -27,12 +27,15 @@ private:
 	int m_soulgage;
 	//エネミーを倒した際に獲るスコア
 	int m_score;
+	
 	//使用中判定
 	bool m_use;
+	//センサー内判定
+	bool m_in_screen;
 public:
 	Enemy() = default;
-	Enemy(int life, int damage, int soulgage, int score, bool use)
-		:m_life(life), m_damage(damage), m_soulgage(soulgage), m_score(score), m_use(use) {}
+	Enemy(int life, int damage, int soulgage, int score, bool use, bool in_screen)
+		:m_life(life), m_damage(damage), m_soulgage(soulgage), m_score(score), m_use(use), m_in_screen(false) {}
 	virtual ~Enemy() = default;
 
 	int GetLife()
@@ -69,6 +72,15 @@ public:
 	void SetUse(bool use)
 	{
 		m_use = use;
+	}
+
+	bool GetInScreen()
+	{
+		return m_in_screen;
+	}
+	void SetInScreen(bool in_screen)
+	{
+		m_in_screen = in_screen;
 	}
 
 	virtual void UpdateEnemy() = 0;

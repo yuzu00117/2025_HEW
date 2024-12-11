@@ -32,8 +32,14 @@ public:
 
 	static void Update();
 	virtual void UpdateEnemy();
+	//エネミーがプレイヤーに触れた時の処理
 	static void CollisionPlayer(b2Body* collision_enemy);
+	//エネミーが動いている状態のオブジェクトに触れた時の処理
 	static void CollisionPulledObject(b2Body* collision_enemy);
+	//エネミーがセンサー内に入った時の処理
+	static void InPlayerSensor(b2Body* collision_enemy);
+	//エネミーがセンサー外に出た時の処理
+	static void OutPlayerSensor(b2Body* collision_enemy);
 	static void Finalize();
 };
 

@@ -25,9 +25,9 @@ enum ObjectType {
     Object_Wood, // 木
     Object_Rock, // 岩
     Object_one_way_platform,//足場　したからしか乗れない
-
     Object_Static_to_Dynamic//静的から動的に変更するオブジェクト
     
+
 };
 
 
