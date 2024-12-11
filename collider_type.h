@@ -31,6 +31,8 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
 
     collider_anchor_point,
 
+    collider_normal_attack_anchor,
+
     collider_enemy_dynamic,
     collider_enemy_static,
 };

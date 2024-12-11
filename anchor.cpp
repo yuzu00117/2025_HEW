@@ -20,6 +20,7 @@
 #include"world_box2d.h"
 #include"collider_type.h"
 #include"contactlist.h"
+#include"create_filter.h"
 
 //グローバル変数
 static ID3D11ShaderResourceView* g_Anchor_Texture = NULL;//アンカーのテクスチャ
@@ -270,8 +271,8 @@ void Anchor::Draw()
 		
 	}
 
-	DrawChain();
-	
+	DrawChain();//チェーンの描画処理
+	DrawNormalAttack();//通常攻撃の描写
 }
 
 
@@ -412,7 +413,8 @@ AnchorState Anchor::GetAnchorState()
 
 
 
-void Anchor::DrawChain() {
+void Anchor::DrawChain() 
+{
 
 
 	// スケール設定
@@ -423,6 +425,12 @@ void Anchor::DrawChain() {
 
 	// プレイヤーとアンカーの位置を取得
 	b2Body* anchor = g_anchor_instance->GetAnchorBody();
+
+	if (anchor == nullptr)
+	{
+		return;
+	}
+
 	b2Vec2 anchor_position = anchor->GetPosition();
 	b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
 
@@ -464,5 +472,177 @@ void Anchor::DrawChain() {
 }
 
 
+void Anchor::CreateNormalAttack(b2Vec2 anchor_size, bool right)
+{
+
+	if (g_anchor_instance == nullptr)
+	{
+		g_anchor_instance = new Anchor();//NULLだったらアンカーを作って上げる
+	}
+	g_anchor_instance->CreateNormalAttackAnchorBody(anchor_size, right);	
+}
+	
+void Anchor::DeleteNormalAttackAnchor()
+{
+	g_anchor_instance->DeleteNormalAttackAnchorBody();
+}
 
 
+void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
+{
+	//アンカーの錨の部分を作ってあげちゃう
+	b2Body* player_body = Player::GetOutSidePlayerBody();			//プレイヤーのBody情報を取得
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	//サイズの補正をする
+	b2Vec2 anchor_size;
+	anchor_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
+	anchor_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
+
+	b2BodyDef body;
+
+	body.type = b2_dynamicBody;
+
+
+	if (right)//右かどうか
+	{
+		//プレイヤーのサイズの情報を貰ってきてないから　プレイヤーのサイズに変更あったときだるい
+		body.position.Set(player_body->GetPosition().x + (1/2 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの右側に生成
+	}
+	else
+	{
+		body.position.Set(player_body->GetPosition().x - (1/2 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの左側に生成
+	}
+	body.fixedRotation = false;//回転する
+
+	b2Body* m_body = world->CreateBody(&body);
+
+	m_normal_attack_body = m_body;
+
+
+
+	////--------------------------------------------------------------------------------------------------
+	//通常攻撃のフィクスチャ
+	b2FixtureDef fixture;
+
+	// クラス内に b2Shape をメンバーとして保持する場合の例
+	b2PolygonShape shape; // クラスのメンバー変数として保持
+	shape.SetAsBox(anchor_size.x * 0.5, anchor_size.y * 0.5);
+
+	fixture.shape = &shape;//形を設定
+	fixture.density = 0.1f;//密度
+	fixture.friction = 0.0f;//摩擦
+	fixture.restitution = 0.0f;//反発係数
+	fixture.isSensor = true;//センサーかどうか
+
+
+	b2Fixture* m_anchorpoint_fixture = m_body->CreateFixture(&fixture);
+
+
+	ObjectData* object_anchorpoint_data = new ObjectData{ collider_normal_attack_anchor };
+	m_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+
+
+	
+
+	//プレイヤーとジョイントする
+	b2WeldJointDef jointDef;
+	jointDef.bodyA = Player::GetOutSidePlayerBody();//プレイヤーのボディ
+	jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//通常攻撃のアンカーのボディ
+
+	if (right)//右かどうか
+	{
+		//プレイヤー側
+		jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+		//通常攻撃側
+		jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
+	}
+	else//左側
+	{
+		//プレイヤー側
+		jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+		//通常攻撃側
+		jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
+	}
+	jointDef.collideConnected = false;//ジョイントした物体同士の接触を消す
+
+	world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+}
+
+void Anchor::UpdateNormalAttack()
+{
+
+}
+
+void Anchor::DrawNormalAttack()
+{
+	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	float scale = SCREEN_SCALE;
+
+	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
+
+
+	if (g_anchor_instance == nullptr)
+	{
+		return;
+	}
+
+	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
+
+	if (anchor != nullptr)
+	{
+		b2Vec2 position;
+		position.x = anchor->GetPosition().x;
+		position.y = anchor->GetPosition().y;
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
+
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			0.0	,
+			{ 2 * scale, 2 * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		);
+
+	}
+}
+
+void Anchor::DeleteNormalAttackAnchorBody()
+{
+
+	// ワールドのインスタンスを取得
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	// アンカーのジョイントを削除
+	if (m_normal_attack_body != nullptr)
+	{
+		// アンカーに関連付けられたすべてのジョイントを取得し削除
+		for (b2JointEdge* jointEdge = m_normal_attack_body->GetJointList(); jointEdge != nullptr; )
+		{
+			b2Joint* joint = jointEdge->joint;
+			jointEdge = jointEdge->next; // 次のジョイントエッジを保存
+
+			// ジョイントをワールドから削除
+			world->DestroyJoint(joint);
+		}
+
+		// アンカーのボディを削除
+		world->DestroyBody(m_normal_attack_body);
+		m_normal_attack_body = nullptr;
+	}
+
+}
