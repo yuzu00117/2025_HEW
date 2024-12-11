@@ -71,8 +71,10 @@ public:
     
 
         // プレーヤーと地面が衝突したかを判定
-        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg)) {
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -81,9 +83,10 @@ public:
         }
 
 
+
         //プレイヤーとアンカーが触れた
-        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_anchor) ||
-            (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player))
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_anchor) ||
+            (objectA->collider_type == collider_anchor && objectB->collider_type == collider_player_body))
         {
             if (Anchor::GetAnchorState() == Pulling_state)
             {
@@ -189,8 +192,8 @@ public:
         }
 
         //静的プレイヤーとエネミーの衝突
-        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player) ||
-            (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_static))
+        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_static))
         {
             if (objectA->collider_type == collider_enemy_static)
             {
@@ -203,8 +206,8 @@ public:
         }
 
         //動的プレイヤーとエネミーの衝突
-        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player) ||
-            (objectA->collider_type == collider_player && objectB->collider_type == collider_enemy_dynamic))
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_dynamic))
         {
             if (objectA->collider_type == collider_enemy_dynamic)
             {
@@ -232,9 +235,10 @@ public:
             }
         }
 
-        //引っ張られている状態のアンカーポイントと動的エネミーの衝突
-        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_wall) ||
-            (objectA->collider_type == collider_wall && objectB->collider_type == collider_enemy_dynamic)))
+        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic)) &&
+            (Anchor::GetAnchorState() == Pulling_state))
         {
             if ((objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
@@ -294,8 +298,11 @@ public:
         if (!objectA || !objectB)return;//NULLチェック
 
         // プレーヤーと地面が衝突したかを判定
-        if ((objectA->collider_type == collider_player && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player)) {
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg)) {
+
             // 衝突処理（プレーヤーと地面が接触した時）
 
 
