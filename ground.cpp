@@ -47,7 +47,7 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 
 
 
-	//上の面 (ground)
+	//ふぃくすちゃー
 	//-----------------------------------------------------------------------
 	b2Vec2 upper_size;
 	upper_size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする

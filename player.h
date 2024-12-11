@@ -110,7 +110,7 @@ private:
 	//ジャンプ中かどうか
 	static bool    m_is_jumping;
 	//ジャンプする時の力（ジャンプできる高さに影響）
-	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.30f);
+	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.40f);
 
 	//横移動スピード
 	float   m_speed = 0.04f;

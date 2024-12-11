@@ -84,20 +84,6 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-    //プレイヤーの上の円のコライダー
-//-------------------------------------------
-    //b2CircleShape circle_upper;
-    //circle_upper.m_p.Set(position.x, position.y);//上の方の円
-    //circle_upper.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
-
-    //b2FixtureDef fixture_circle_upper;
-    //fixture_circle_upper.shape = &circle_upper;
-    //fixture_circle_upper.density = 1.3f;
-    //fixture_circle_upper.friction = 3.0f;//摩擦
-    //fixture_circle_upper.restitution = 0.0f;//反発係数
-    //fixture_circle_upper.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-    //fixture_circle_upper.filter = createFilterExclude("Player_filter",{});
-
 
  //プレイヤーの真ん中の長方形ボディ
 //-------------------------------------------
@@ -141,7 +127,6 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     ObjectData* playerdata_body = new ObjectData{ collider_player_body };
     ObjectData* playerdata_leg = new ObjectData{ collider_player_leg };
 
-    // upper_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_);
     body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_body);
     bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_leg);
 

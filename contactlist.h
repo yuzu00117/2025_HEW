@@ -72,7 +72,9 @@ public:
 
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)) {
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg)) {
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -297,7 +299,10 @@ public:
 
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)) {
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg)) {
+
             // 衝突処理（プレーヤーと地面が接触した時）
 
 
