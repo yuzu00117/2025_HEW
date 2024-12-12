@@ -1,23 +1,8 @@
-//-----------------------------------------------------------------------------------------------------
-// #name player.cpp
-// #description プレイヤー
-// #make 2024/11/22　永野義也
-// #update 2024/11/22
-// #comment 追加・修正予定
-//          ・コンストラクタでbodyとfixture作ってGetInstanceで初期値を入力
-//----------------------------------------------------------------------------------------------------
-
-
-
-
-#include"include/box2d/box2d.h"
 #include"player.h"
-#include"world_box2d.h"
 #include"texture.h"
 #include"Xinput_controller.h"
 #include"sprite.h"
 #include"keyboard.h"
-#include<Windows.h>
 #include"player_position.h"
 #include"collider_type.h"
 #include"anchor_point.h"
@@ -35,27 +20,27 @@ ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 //staticメンバー変数の初期化
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
-bool     Player::m_direction = 1;
+int     Player::m_direction = 1;
 
 
 
 b2Body* player_body;
 
 
-int g_anchor_frame_management_number = 0;
+int g_anchor_pulling_number = 0;
 
-Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nullptr)
+Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nullptr)
 {
 
     b2BodyDef body;
     body.type = b2_dynamicBody;
-    body.position.Set(position.x, position.y);
+    body.position.Set(position.x , position.y);
     body.angle = 0.0f;
     body.fixedRotation = true;//回転を固定にする
     body.userData.pointer = (uintptr_t)this;
 
 
-
+    
 
     Box2dWorld& box2d_world = Box2dWorld::GetInstance();
     b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -66,73 +51,74 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
 
     player_body = m_body;//プレイヤーのボディをセット
 
-    
+   
     SetSize(body_size);//プレイヤー表示をするためにセットする
     SetSensorSize(sensor_size);//センサー表示をするためにセット
 
 
-
-
+    
+ 
     b2Vec2 size;
-    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
-    size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
+    size.x = body_size.x/BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
+    size.y = body_size.y/BOX2D_SCALE_MANAGEMENT;
 
 
     //センサーの設定用の
     b2Vec2 size_sensor;//命名すまん
-    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
-    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
+    size_sensor.x=sensor_size.x / BOX2D_SCALE_MANAGEMENT;
+    size_sensor.y=sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-
- //プレイヤーの真ん中の長方形ボディ
+    //プレイヤーの上の円のコライダー
 //-------------------------------------------
-    b2PolygonShape rectangle_body;
-    rectangle_body.SetAsBox(size.x * 0.5, size.y * 0.5f);
+    b2CircleShape circle_upper;
+    circle_upper.m_p.Set(position.x, position.y);//上の方の円
+    circle_upper.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
-    b2FixtureDef fixture_rectangle_body;
-    fixture_rectangle_body.shape = &rectangle_body;
-    fixture_rectangle_body.density = 1.0f;//密度
-    fixture_rectangle_body.friction = 0.001f;//摩擦
-    fixture_rectangle_body.restitution = 0.1f;//反発係数
-    fixture_rectangle_body.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+    b2FixtureDef fixture_circle_upper;
+    fixture_circle_upper.shape = &circle_upper;
+    fixture_circle_upper.density = 1.3f;
+    fixture_circle_upper.friction = 3.0f;//摩擦
+    fixture_circle_upper.restitution = 0.0f;//反発係数
+    fixture_circle_upper.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+    fixture_circle_upper.filter = createFilterExclude("Player_filter",{});
+  
+ 
 
 
     //プレイヤーの下の円のコライダー
     //-------------------------------------------
     b2CircleShape circle_bottom;
-    circle_bottom.m_p.Set(0.0f, size.y/2);//下の方の円
+    circle_bottom.m_p.Set(position.x, position.y + 0.1f);//下の方の円
     circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
     b2FixtureDef fixture_circle_bottom;
     fixture_circle_bottom.shape = &circle_bottom;
     fixture_circle_bottom.density = 1.3f;
-    fixture_circle_bottom.friction = 1.0f;//摩擦
+    fixture_circle_bottom.friction = 3.0f;//摩擦
     fixture_circle_bottom.restitution = 0.0f;//反発係数
     fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
     fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
-
-
-
+   
+  
+    
     //----------------------------------------------------
 
     //fixtureをbodyに登録
-    //b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
-    b2Fixture* body_rectangle_fixture = m_body->CreateFixture(&fixture_rectangle_body);
+    b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
     b2Fixture* bottom_circle_fixture = m_body->CreateFixture(&fixture_circle_bottom);
 
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
     // プレーヤーにユーザーデータを登録
-    ObjectData* playerdata_body = new ObjectData{ collider_player_body };
-    ObjectData* playerdata_leg = new ObjectData{ collider_player_leg };
+    ObjectData* playerdata = new ObjectData{ collider_player };
+    //player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
+    upper_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
+    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
 
-    body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_body);
-    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_leg);
-
-
+  
     //--------------------------------------------------------------------------------------------------
-
+    
     //プレイヤーのセンサーを新しくつくる
 
     b2PolygonShape shape_sensor;
@@ -146,8 +132,8 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     fixture_sensor.friction = 0.0f;//摩擦
     fixture_sensor.restitution = 0.0f;//反発係数
     fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
-
-
+    
+ 
     b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
 
 
@@ -163,7 +149,9 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
 
 Player::~Player()
 {
- 
+    ////テクスチャの削除
+    //UnInitTexture(g_player_Texture);
+
 }
 
 void Player::Initialize()
@@ -225,7 +213,7 @@ void Player::Update()
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
             m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
-            m_direction = 0;
+            m_direction = -1;
         }
 
     }
@@ -263,7 +251,7 @@ void Player::Update()
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-        //プレイヤーポジションCPPの関数にデータをセット
+    //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 
 
@@ -271,24 +259,11 @@ void Player::Update()
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-    //オブジェクトに投げるアンカー処理の呼び出し
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
         Anchor::SetAnchorState(Create_state);//作成状態に移行
     }
-
-
-    //通常攻撃のアンカーの呼び出し
-    if ((Keyboard_IsKeyDown(KK_N) || (state.buttonX)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
-    {
-        Anchor::SetAnchorState(WaitCraateNormalAttack_state);
-    }
-
- 
-    //プレーの向いている方向　swtich文的の仕様的に外でやる
-    bool right = GetDirection();
 
     switch (Anchor::GetAnchorState())
     {
@@ -310,14 +285,12 @@ void Player::Update()
         Anchor::CreateRotateJoint();//回転ジョイントを作成
         AnchorSpirit::EditAnchorSpiritValue(-25);//アンカーを使ったらゲージを払う
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
-
-        g_anchor_frame_management_number = 0;
         break;
 
     case Pulling_state://引っ張っている状態
 
         //呼ばれた回数でするかね　とりあえず2秒で
-        if (g_anchor_frame_management_number > 100)
+        if (g_anchor_pulling_number > 100)
         {
             Anchor::DeleteRotateJoint();
             Anchor::PullingAnchor();
@@ -326,58 +299,22 @@ void Player::Update()
 
         if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_G)))
         {
-            g_anchor_frame_management_number = 200;
+            g_anchor_pulling_number = 200;
         }
 
-        g_anchor_frame_management_number++;//アンカーが引っ張る
+        g_anchor_pulling_number++;//アンカーが引っ張る
 
         break;
 
     case Deleting_state://削除している状態
-        g_anchor_frame_management_number = 0;
+        g_anchor_pulling_number = 0;
         Anchor::DeleteAnchor();//アンカーを削除
 
         Anchor::SetAnchorState(Nonexistent_state);
 
         break;
 
-    case WaitCraateNormalAttack_state:
-        //通常攻撃の発生前の待ち状態
-
-        g_anchor_frame_management_number++;
-        if (45 < g_anchor_frame_management_number)
-        {
-            g_anchor_frame_management_number = 0;
-            Anchor::SetAnchorState(CreateNormalAttack_state);//通常攻撃発生
-        }
-
-        break;
-    case CreateNormalAttack_state:
-
-        //通常攻撃の判定をつくる
-        Anchor::CreateNormalAttack(b2Vec2(2.0f, 2.0f), right);//通常攻撃のボディをつくる
-
-        Anchor::SetAnchorState(NowAttackngNormalAttack);
-        break;
-    case NowAttackngNormalAttack:
-        //攻撃中
-        g_anchor_frame_management_number++;
-        if (g_anchor_frame_management_number < 15)
-        {
-            g_anchor_frame_management_number = 0;
-            Anchor::SetAnchorState(DeletingNormaklAttack_state);
-        }
-
-        break;
-    case DeletingNormaklAttack_state:
-        //通常攻撃を削除する
-        Anchor::DeleteNormalAttackAnchor();
-        Anchor::SetAnchorState(Nonexistent_state);
-
-        break;
-
     default:
-
         break;
     }
 
@@ -418,6 +355,8 @@ void Player::Update()
 
     //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
+
 }
 
 void Player::Draw()
@@ -477,12 +416,10 @@ void Player::Finalize()
         world->DestroyBody(m_body);
         m_body = nullptr;
     }
-
     if (g_player_Texture != nullptr)
     {
         UnInitTexture(g_player_Texture);
     }
-
 }
 
 
@@ -491,9 +428,3 @@ b2Body* Player::GetOutSidePlayerBody()
 {
     return player_body;
 }
-
-
-
-    
-
-
