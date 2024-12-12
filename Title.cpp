@@ -1,36 +1,25 @@
-//-----------------------------------------------------------------------------------------------------
-// #name square_collider.cpp
-// #description 四角のあたり判定
-// #make 2024/11/02　　永野義也
-// #update 2024/11/02
-// #comment 追加・修正予定
-//          ・ここで四角のあたり判定のコンストラクタしてる
-// 　　　　 ・ここでほとんどの処理を管理してる
-//          ・引数足らない気がするもっといろいろつけれるけどデフォルトはこれとして、これの継承さきで作ろうかなって思ってる（反発係数とかね）
-// 　　　　 ・とあいえ結構な情報入っているので、いや分けろよって言われたら　うんってなる　あんまり細分化してもやりずらくねって思ったけど　かえるなら別にいいよ
-//          
-//----------------------------------------------------------------------------------------------------
 
 
-#include "Title.h"
+#include"title.h"
 #include "sprite.h"
 #include "texture.h"
+#include"scene.h"
+#include"Xinput_controller.h"
+#include"keyboard.h"
 
-//マクロ定義
-#define RADIUS 300.0f
-#define INNNER_RAD (((NUM_VERTEX - 2) * M_PI) / NUM_VERTEX)
+
 
 //グローバル変数
 static ID3D11ShaderResourceView* g_Texture = NULL;
 
 //初期化処理
-void InitTitle(void)
+void InitializeTitle(void)
 {
-	g_Texture = InitTexture(L"asset\\texture\\majo002.jpg");
+	g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
 }
 
 //終了処理
-void UninitTitle(void)
+void FinalizeTitle(void)
 {
 	//テクスチャの解放
 	UnInitTexture(g_Texture);
@@ -39,6 +28,11 @@ void UninitTitle(void)
 //更新処理
 void UpdateTitle(void) 
 {
+	//ゲームのセレクトに移行
+	if (Keyboard_IsKeyDown(KK_SPACE))
+	{
+		ChangeScene(SCENE_GAMESELECT);
+	}
 	
 }
 
