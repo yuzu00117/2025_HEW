@@ -94,6 +94,9 @@
     <ClCompile Include="create_filter.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="display.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -199,6 +202,9 @@
       <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="create_filter.h">
+      <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="display.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

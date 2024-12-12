@@ -135,6 +135,7 @@
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
+    <ClCompile Include="display.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
     <ClInclude Include="enemy.h" />

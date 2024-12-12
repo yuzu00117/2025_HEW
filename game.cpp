@@ -21,7 +21,7 @@
 #include"anchor.h"
 #include"word.h"
 #include"debug.h"
-
+#include"display.h"
 
 
 
@@ -115,6 +115,8 @@ void Game::Update(void)
 	// Box2D ワールドのステップ更新
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	world->Step(1.0f / 60.0f, 6, 2);
+
+	display::Update();
 
 	//プレイヤーの更新処理
 	player.Update();

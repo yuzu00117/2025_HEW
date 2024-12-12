@@ -23,7 +23,10 @@ void UninitSprite(void);
 
 //	一枚の画像のすべてを描画
 // (Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ)
-void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha = 1.0f);
+void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha = 1.0f);//Box２ｄように中身を変えている
+
+//上と基本的には同じだがスケールの調整が変更されていない旧型
+void DrawSpriteOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha = 1.0f);
 
 //	一枚の画像を分割して、その中の一つだけを描画
 //(Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ)

@@ -14,8 +14,8 @@
 
 #define SCREEN_SCALE (32.f) //ワールドの描画に用いる定数　描画自体に倍率をかける　数値が高いほど寄りになる
 
-#define SCREEN_CENTER_X (600.0f)//プレイヤーを真ん中よりも少し右に表示するために利用している
-#define SCREEN_CENTER_Y (350.0f)
+#define SCREEN_CENTER_X (0)//プレイヤーを真ん中よりも少し右に表示するために利用している
+#define SCREEN_CENTER_Y (0)
 
 //Box2dないの単位調整え利用している
 //このBox2dの１の単位は１ｍなので１ｍ＊１ｍのブロックを制作するとでかすぎて、それを動かすために必要な力も膨大な物になる

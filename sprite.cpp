@@ -12,6 +12,7 @@
 
 #include "sprite.h"
 #include "keyboard.h"
+#include"display.h"
 
 //マクロ定義
 #define NUM_VERTEX 4
@@ -102,11 +103,68 @@ void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha)
 	SetViewMatrix(view);
 
 	//移動・回転マトリクス設定
+	XMMATRIX world, rot, trans, scale,box2d_scale,box2d_trans;
+	scale = XMMatrixScaling(Scale.x, Scale.y, 0.0f);
+	rot = XMMatrixRotationZ(Rotation);
+	trans = XMMatrixTranslation(Position.x, Position.y, 0.0f);
+
+	//今回加えるスケール調整を追加している
+	box2d_scale = XMMatrixScaling(display::GetDisplayScale(), display::GetDisplayScale(), 0.0f);
+
+	//横軸の調整
+	box2d_trans= XMMatrixTranslation(display::GetDisplayWidth(),display::GetDisplayHeight() , 0.0f);
+
+	
+
+	world = scale * rot * trans*box2d_scale*box2d_trans;
+	SetWorldMatrix(world);
+
+	//プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//マテリアル設定（半年後に現れる）
+	MATERIAL material;
+	ZeroMemory(&material, sizeof(material));
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
+	SetMaterial(material);
+
+	g_Vertex[0].texcoord = XMFLOAT2(0.f, 0.f);
+	g_Vertex[1].texcoord = XMFLOAT2(1.f, 0.f);
+	g_Vertex[2].texcoord = XMFLOAT2(0.f, 1.f);
+	g_Vertex[3].texcoord = XMFLOAT2(1.f, 1.f);
+
+	SetVertexSprite();
+
+	//ポリゴン描画
+	GetDeviceContext()->Draw(NUM_VERTEX, 0);
+}
+
+//描画処理
+void DrawSpriteOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha)
+{
+	//頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+	//プロジェクションマトリクス設定
+	XMMATRIX projection;
+	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	SetProjectionMatrix(projection);
+
+	//ビューマトリクス設定
+	XMMATRIX view;
+	view = XMMatrixIdentity();
+	SetViewMatrix(view);
+
+	//移動・回転マトリクス設定
 	XMMATRIX world, rot, trans, scale;
 	scale = XMMatrixScaling(Scale.x, Scale.y, 0.0f);
 	rot = XMMatrixRotationZ(Rotation);
 	trans = XMMatrixTranslation(Position.x, Position.y, 0.0f);
-	world = scale * rot * trans;
+
+
+	world = scale * rot * trans ;
 	SetWorldMatrix(world);
 
 	//プリミティブトポロジ設定

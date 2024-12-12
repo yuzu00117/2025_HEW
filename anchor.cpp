@@ -148,8 +148,6 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	body.userData.pointer = (uintptr_t)this;
 
 
-
-
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
@@ -159,12 +157,9 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 
 	player_body = m_body;//プレイヤーのボディをセット
 
-	
 
 
 	SetSize(anchor_size);//プレイヤー表示をするためにセットする
-
-
 
 
 
