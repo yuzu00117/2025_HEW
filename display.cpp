@@ -9,10 +9,11 @@
 
 #include"display.h"
 #include"keyboard.h"
+#include"anchor_spirit.h"
 
 // 静的メンバ変数の定義（1回だけ行う）
 
-float display::m_display_scale = 0.5;//スケールの初期値の倍率
+float display::m_display_scale = 1;//スケールの初期値の倍率
 
 float display::m_display_width = 650;//横幅
 float display::m_display_height =300;//縦
@@ -47,6 +48,28 @@ void display::Update()
 	//{
 	//	SetDisplayWidth(+10);
 	//}
+
+
+	//-----------------------------------------------------------------------------------------------------------
+	//アンカーのレベルに応じた変更
+
+
+	if (AnchorSpirit::GetAnchorLevel() == 3)
+	{
+		if (GetDisplayScale() >= 0.5)
+		{
+			SetDisplayScale(-0.01);
+		}
+	}
+	else
+	{
+		if (GetDisplayScale() <= 1)
+		{
+			SetDisplayScale(0.01);
+		}
+	}
+
+	
 }
 
 //スケーリング
