@@ -44,18 +44,18 @@ b2Body* player_body;
 
 int g_anchor_frame_management_number = 0;
 
-Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nullptr)
+Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nullptr)
 {
 
     b2BodyDef body;
     body.type = b2_dynamicBody;
-    body.position.Set(position.x , position.y);
+    body.position.Set(position.x, position.y);
     body.angle = 0.0f;
     body.fixedRotation = true;//回転を固定にする
     body.userData.pointer = (uintptr_t)this;
 
 
-    
+
 
     Box2dWorld& box2d_world = Box2dWorld::GetInstance();
     b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -66,74 +66,73 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
 
     player_body = m_body;//プレイヤーのボディをセット
 
-   
+    
     SetSize(body_size);//プレイヤー表示をするためにセットする
     SetSensorSize(sensor_size);//センサー表示をするためにセット
 
 
-    
- 
+
+
     b2Vec2 size;
-    size.x = body_size.x/BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
-    size.y = body_size.y/BOX2D_SCALE_MANAGEMENT;
+    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
+    size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
     //センサーの設定用の
     b2Vec2 size_sensor;//命名すまん
-    size_sensor.x=sensor_size.x / BOX2D_SCALE_MANAGEMENT;
-    size_sensor.y=sensor_size.y / BOX2D_SCALE_MANAGEMENT;
+    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
+    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-    //プレイヤーの上の円のコライダー
+
+ //プレイヤーの真ん中の長方形ボディ
 //-------------------------------------------
-    b2CircleShape circle_upper;
-    circle_upper.m_p.Set(position.x, position.y);//上の方の円
-    circle_upper.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
+    b2PolygonShape rectangle_body;
+    rectangle_body.SetAsBox(size.x * 0.5, size.y * 0.5f);
 
-    b2FixtureDef fixture_circle_upper;
-    fixture_circle_upper.shape = &circle_upper;
-    fixture_circle_upper.density = 1.3f;
-    fixture_circle_upper.friction = 3.0f;//摩擦
-    fixture_circle_upper.restitution = 0.0f;//反発係数
-    fixture_circle_upper.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-    fixture_circle_upper.filter = createFilterExclude("Player_filter",{});
-  
- 
+    b2FixtureDef fixture_rectangle_body;
+    fixture_rectangle_body.shape = &rectangle_body;
+    fixture_rectangle_body.density = 1.0f;//密度
+    fixture_rectangle_body.friction = 0.001f;//摩擦
+    fixture_rectangle_body.restitution = 0.1f;//反発係数
+    fixture_rectangle_body.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
 
     //プレイヤーの下の円のコライダー
     //-------------------------------------------
     b2CircleShape circle_bottom;
-    circle_bottom.m_p.Set(position.x, position.y + 0.1f);//下の方の円
+    circle_bottom.m_p.Set(0.0f, size.y/2);//下の方の円
     circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
     b2FixtureDef fixture_circle_bottom;
     fixture_circle_bottom.shape = &circle_bottom;
     fixture_circle_bottom.density = 1.3f;
-    fixture_circle_bottom.friction = 3.0f;//摩擦
+    fixture_circle_bottom.friction = 1.0f;//摩擦
     fixture_circle_bottom.restitution = 0.0f;//反発係数
     fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
     fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
-   
-  
-    
+
+
+
     //----------------------------------------------------
 
     //fixtureをbodyに登録
-    b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
+    //b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
+    b2Fixture* body_rectangle_fixture = m_body->CreateFixture(&fixture_rectangle_body);
     b2Fixture* bottom_circle_fixture = m_body->CreateFixture(&fixture_circle_bottom);
 
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
     // プレーヤーにユーザーデータを登録
-    ObjectData* playerdata = new ObjectData{ collider_player };
-    //player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
-    upper_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
-    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
+    ObjectData* playerdata_body = new ObjectData{ collider_player_body };
+    ObjectData* playerdata_leg = new ObjectData{ collider_player_leg };
 
-  
+    body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_body);
+    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_leg);
+
+
     //--------------------------------------------------------------------------------------------------
-    
+
     //プレイヤーのセンサーを新しくつくる
 
     b2PolygonShape shape_sensor;
@@ -147,8 +146,8 @@ Player::Player(b2Vec2 position, b2Vec2 body_size,b2Vec2 sensor_size) :m_body(nul
     fixture_sensor.friction = 0.0f;//摩擦
     fixture_sensor.restitution = 0.0f;//反発係数
     fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
-    
- 
+
+
     b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
 
 
