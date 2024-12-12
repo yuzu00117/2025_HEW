@@ -6,10 +6,10 @@
 #include "gameover.h"
 #include "result.h"
 #include "renderer.h"
-#include "sound.h"
 #include "directx_controller.h"
 #include "word.h"
 #include "debug.h"
+
 
 
 #include "sprite.h"
@@ -48,8 +48,10 @@ HRESULT AllInitializeScene(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //初期化処理
 void InitializeScene()
 {
+	//ゲーム画面の初期化
 	g_Scene = SCENE_NONE;
 
+	//最初に表示する場所
 	ChangeScene(SCENE_TITLE);
 }
 
@@ -57,7 +59,7 @@ void InitializeScene()
 //終了処理
 void FinalizeScene()
 {
-
+	//ゲームからインスタンスをとってファイナライズに呼んでいる
 	Game& game = Game::GetInstance();
 
 
@@ -71,7 +73,6 @@ void FinalizeScene()
 
 	//コントローラーの終了処理
 	controller.Release();
-
 
 
 	game.Finalize();//最後に呼び出すファイル
@@ -91,19 +92,19 @@ void UpdateScene()
 	{
 	case SCENE_NONE:
 		break;
-	case SCENE_TITLE:
+	case SCENE_TITLE://タイトル
 		UpdateTitle();
 		break;
-	case SCENE_GAMESELECT:
+	case SCENE_GAMESELECT://ステージセレクト
 		UpdateGameSelect();
 		break;
-	case SCENE_GAME:
+	case SCENE_GAME://ゲーム
 		game.Update();
 		break;
-	case SCENE_GAMEOVER:
+	case SCENE_GAMEOVER://ゲームオーバー
 		UpdateGameOver();
 		break;
-	case SCENE_RESULT:
+	case SCENE_RESULT://リザルト
 		UpdateResult();
 		break;
 	default:
@@ -126,19 +127,19 @@ void DrawScene()
 	{
 	case SCENE_NONE:
 		break;
-	case SCENE_TITLE:
+	case SCENE_TITLE://タイトル
 		DrawTitle();
 		break;
-	case SCENE_GAMESELECT:
+	case SCENE_GAMESELECT://ステージセレクト
 		DrawGameSelect();
 		break;
-	case SCENE_GAME:
+	case SCENE_GAME://ゲーム
 		game.Draw();
 		break;
-	case SCENE_GAMEOVER:
+	case SCENE_GAMEOVER://ゲームオーバー
 		DrawGameOver();
 		break;
-	case SCENE_RESULT:
+	case SCENE_RESULT://リザルト
 		DrawResult();
 		break;
 	default:
@@ -162,19 +163,19 @@ void ChangeScene(GAME_SCENE scene)
 	{
 	case SCENE_NONE:
 		break;
-	case SCENE_TITLE:
+	case SCENE_TITLE://タイトル
 		FinalizeTitle();
 		break;
-	case SCENE_GAMESELECT:
+	case SCENE_GAMESELECT://ゲームセレクト
 		FinalizeGameSelect();
 		break;
-	case SCENE_GAME:
+	case SCENE_GAME://ゲーム
 		//オブジェクトが消されたら追加する方針
 		break;
-	case SCENE_GAMEOVER:
+	case SCENE_GAMEOVER://ゲームオーバー
 		FinalizeGameOver();
 		break;
-	case SCENE_RESULT:
+	case SCENE_RESULT://リザルト
 		FinalizeResult();
 		break;
 	default:
@@ -187,19 +188,19 @@ void ChangeScene(GAME_SCENE scene)
 	{
 	case SCENE_NONE:
 		break;
-	case SCENE_TITLE:
+	case SCENE_TITLE://タイトル
 		InitializeTitle();
 		break;
-	case SCENE_GAMESELECT:
+	case SCENE_GAMESELECT://ゲームセレクト
 		InitializeGameSelect();
 		break;
-	case SCENE_GAME:
+	case SCENE_GAME://ゲーム
 		game.Initialize();
 		break;
-	case SCENE_GAMEOVER:
+	case SCENE_GAMEOVER://ゲームオーバー
 		InitializeGameOver();
 		break;
-	case SCENE_RESULT:
+	case SCENE_RESULT://リザルト
 		InitializeResult();
 		break;
 	default:

@@ -28,7 +28,7 @@ void FinalizeTitle(void)
 //更新処理
 void UpdateTitle(void) 
 {
-
+	//ゲームのセレクトに移行
 	if (Keyboard_IsKeyDown(KK_SPACE))
 	{
 		ChangeScene(SCENE_GAMESELECT);

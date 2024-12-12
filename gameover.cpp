@@ -26,11 +26,13 @@ void FinalizeGameOver(void)
 //更新処理
 void UpdateGameOver(void)
 {
+	//タイトル画面に移行
 	if (Keyboard_IsKeyDown(KK_M))
 	{
 		ChangeScene(SCENE_TITLE);
 	}
 
+	//ゲームのセレクトに移行
 	if (Keyboard_IsKeyDown(KK_N))
 	{
 		ChangeScene(SCENE_GAMESELECT);

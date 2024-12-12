@@ -26,13 +26,14 @@ void FinalizeResult(void)
 //更新処理
 void UpdateResult(void)
 {
-
-	if (Keyboard_IsKeyDown(KK_C))
+	//ゲームのセレクトに移行
+	if (Keyboard_IsKeyDown(KK_N))
 	{
 		ChangeScene(SCENE_GAMESELECT);
 	}
 
-	if (Keyboard_IsKeyDown(KK_T))
+	//タイトルに移行
+	if (Keyboard_IsKeyDown(KK_M))
 	{
 		ChangeScene(SCENE_TITLE);
 	}

@@ -2,7 +2,6 @@
 #define SCENE_H
 
 #include <windows.h>
-#include"player.h"  
 
 enum GAME_SCENE
 {

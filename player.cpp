@@ -1,23 +1,8 @@
-//-----------------------------------------------------------------------------------------------------
-// #name player.cpp
-// #description プレイヤー
-// #make 2024/11/22　永野義也
-// #update 2024/11/22
-// #comment 追加・修正予定
-//          ・コンストラクタでbodyとfixture作ってGetInstanceで初期値を入力
-//----------------------------------------------------------------------------------------------------
-
-
-
-
-#include"include/box2d/box2d.h"
 #include"player.h"
-#include"world_box2d.h"
 #include"texture.h"
 #include"Xinput_controller.h"
 #include"sprite.h"
 #include"keyboard.h"
-#include<Windows.h>
 #include"player_position.h"
 #include"collider_type.h"
 #include"anchor_point.h"
