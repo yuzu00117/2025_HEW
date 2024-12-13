@@ -22,6 +22,7 @@
 #include"word.h"
 #include"debug.h"
 #include"display.h"
+#include"bg.h"
 
 
 
@@ -41,6 +42,9 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	//コントローラーの初期化
 	controller.Initialize(hInstance,hWnd);
+
+	//背景の初期化
+	Bg::Initialize();
 
 	//プレイヤーの初期化
 	player.Initialize();
@@ -80,6 +84,8 @@ void Game::Finalize(void)
 	//サウンドの終了処理
 	UninitSound();
 
+	//背景の終了処理
+	Bg::Finalize();
 
 	//プレイヤーの終了処理
 	player.Finalize();
@@ -118,6 +124,9 @@ void Game::Update(void)
 
 	display::Update();
 
+	//背景の更新処理
+	Bg::Update();
+
 	//プレイヤーの更新処理
 	player.Update();
 
@@ -145,6 +154,9 @@ void Game::Draw(void)
 
 	//2D描画なので深度無効
 	SetDepthEnable(false);
+
+	//背景の描画処理
+	Bg::Draw();
 
 	//プレイヤーの描画処理
 	player.Draw();
