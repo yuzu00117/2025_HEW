@@ -204,7 +204,9 @@ public:
 
         //静的プレイヤーとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_body) ||
-            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_static))
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_static)||
+            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_static))
         {
             if (objectA->collider_type == collider_enemy_static)
             {
@@ -218,7 +220,9 @@ public:
 
         //動的プレイヤーとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_body) ||
-            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_dynamic))
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_dynamic)||
+            (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_dynamic))
         {
             if (objectA->collider_type == collider_enemy_dynamic)
             {
