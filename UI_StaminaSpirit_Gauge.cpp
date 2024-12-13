@@ -121,7 +121,7 @@ void	StaminaSpiritGauge::Draw()
 		}
 
 		//•`‰æ
-		DrawSprite(
+		DrawSpriteOld(
 			{ temp_position.x,
 			  temp_position.y },
 			0.0f,
