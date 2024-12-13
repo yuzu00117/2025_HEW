@@ -283,6 +283,9 @@ void Anchor::Finalize()
 	anchor_create_joint_flag = false;
 	now_anchor_state = Nonexistent_state;
 
+
+
+	if(g_anchor_instance!=nullptr)
 	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
 
 	UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
