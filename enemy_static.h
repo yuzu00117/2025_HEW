@@ -2,7 +2,7 @@
 // #name enemy.h
 // #description 静的エネミーのヘッダーファイル
 // #make 2024/11/19
-// #update 2024/12/04
+// #update 2024/12/13
 // #comment 追加・修正予定
 //          ・
 //           
@@ -21,26 +21,19 @@
 #define ENEMY_STATIC_SOULGAGE (100)
 #define ENEMY_STATIC_SCORE (100)
 
-class EnemyStatic :public Enemy, public Field
+class EnemyStatic :public Enemy
 {
 private:
 	
 public:
 	EnemyStatic() = default;
-	EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture);
-	~EnemyStatic() {  };
+	EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
+	~EnemyStatic() = default;
 	
-	static void Update();
-	virtual void UpdateEnemy();
-	//エネミーがプレイヤーに触れた時の処理
-	static void CollisionPlayer(b2Body* collision_enemy);
-	//エネミーが動いている状態のオブジェクトに触れた時の処理
-	static void CollisionPulledObject(b2Body* collision_enemy);
-	//エネミーがセンサー内に入った時の処理
-	static void InPlayerSensor(b2Body* collision_enemy);
-	//エネミーがセンサー外に出た時の処理
-	static void OutPlayerSensor(b2Body* collision_enemy);
-	static void Finalize();
+	void Initialize() override;
+	void Finalize() override;
+	void Update() override;
+	void Draw() override;
 };
 
 #endif	//ENEMY_STATIC_H
