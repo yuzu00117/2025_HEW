@@ -14,6 +14,7 @@
 #include "keyboard.h"
 #include "sound.h"
 #include"game.h"
+#include"scene.h"
 
 
 
@@ -92,10 +93,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 
 	//DirectXの初期化（ウィンドウを作成した後に行う）
-	if (FAILED(game.Initialize(hInstance, hWnd, true)))
-	{
-		return -1;
-	}
+	
+		//レンダリング処理の初期化
+	InitRenderer(hInstance, hWnd, true);
+
+	//サウンドの初期化
+	InitSound(hWnd);
+
+	//ポリゴン
+	InitSprite();
+
+		
+
+		
+
+	
 
 	//時間計測用
 	DWORD dwExecLastTime;
@@ -114,6 +126,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	//メッセージループ
 	MSG    msg;
+
+	//シーンの管理
+	SceneManager scene_manager;
+	scene_manager.RegisterScene(1, []() { return std::make_unique<MenuScene>(); });
+	scene_manager.RegisterScene(2, []() { return std::make_unique<GameScene>(); });
+
+	//初期シーンの設定
+	scene_manager.ChangeScene(2);
+	
 
 	while (1)
 	{
@@ -154,8 +175,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			{
 				dwExecLastTime = dwCurrentTime;
 
-				game.Update();
-				game.Draw();
+			
+
+				scene_manager.Update();
+
+				scene_manager.Draw();
 
 				dwFrameCount++;
 			}
