@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------------------------------------
 // #name game.cpp
 // #description game
-// #make 2024/11/02@@‰i–ì‹`–ç
+// #make 2024/11/02ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/02
-// #comment ’Ç‰ÁEC³—\’è
-//          E‚±‚±‚Å‰Šú‰»AXVA•`‰æAI—¹ˆ—‚ğŠÇ—‚µ‚Ä‚¢‚é
-// @@@@ E‚±‚±‚É’¼‚Å’l‚Ô‚¿‚ñ‚ÅƒeƒXƒg‚µ‚Ä‚é‚©‚çAƒeƒXƒgI‚í‚Á‚½‚çÁ‚·‚æI
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã“ã“ã§åˆæœŸåŒ–ã€æ›´æ–°ã€æç”»ã€çµ‚äº†å‡¦ç†ã‚’ç®¡ç†ã—ã¦ã„ã‚‹
+// ã€€ã€€ã€€ã€€ ãƒ»ã“ã“ã«ç›´ã§å€¤ã¶ã¡è¾¼ã‚“ã§ãƒ†ã‚¹ãƒˆã—ã¦ã‚‹ã‹ã‚‰ã€ãƒ†ã‚¹ãƒˆçµ‚ã‚ã£ãŸã‚‰æ¶ˆã™ã‚ˆï¼
 //          
 //----------------------------------------------------------------------------------------------------
 
@@ -22,36 +22,44 @@
 #include"word.h"
 #include"debug.h"
 #include"display.h"
+#include"bg.h"
 #include"scene.h"
+
 
 
 void Game::Initialize()
 {
 
-	//•¶šiŠGj
+	//æ–‡å­—ï¼ˆçµµï¼‰
 	InitializeWord();
 
-	//ƒvƒŒƒCƒ„[‚Ì‰Šú‰»
+	//ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®åˆæœŸåŒ–
+	controller.Initialize(hInstance,hWnd);
+
+	//èƒŒæ™¯ã®åˆæœŸåŒ–
+	Bg::Initialize();
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸåŒ–
 	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), b2Vec2(40, 30));
 
-	//ƒAƒ“ƒJ[‚Ì‰Šú‰»
+	//ã‚¢ãƒ³ã‚«ãƒ¼ã®åˆæœŸåŒ–
 	Anchor::Initialize();
 
-	//ƒtƒB[ƒ‹ƒh‚Ì‰Šú‰»
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®åˆæœŸåŒ–
 	Field::Initialize();
 
-	//‘Ì—Íƒ\ƒEƒ‹ƒQ[ƒWUI‚Ì‰Šú‰»
+	//ä½“åŠ›ã‚½ã‚¦ãƒ«ã‚²ãƒ¼ã‚¸UIã®åˆæœŸåŒ–
 	stamina_spirit_gauge.Initialize();
 
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
-	// Õ“ËƒŠƒXƒi[‚ğƒ[ƒ‹ƒh‚É“o˜^
+	// è¡çªãƒªã‚¹ãƒŠãƒ¼ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²
 	MyContactListener& contactListener = MyContactListener::GetInstance();
 	world->SetContactListener(&contactListener);
 
 
 
 #ifndef _DEBUG
-	//ƒfƒoƒbƒO•¶š
+	//ãƒ‡ãƒãƒƒã‚°æ–‡å­—
 	InitializeDebug();
 #endif // !_DEBUG
 
@@ -60,30 +68,40 @@ void Game::Initialize()
 
 void Game::Finalize(void)
 {
-	
+	//ãƒãƒªã‚´ãƒ³
+	UninitSprite();
 
-	//ƒvƒŒƒCƒ„[‚ÌI—¹ˆ—
+	//ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®çµ‚äº†å‡¦ç†
+	controller.Release();
+
+	//ã‚µã‚¦ãƒ³ãƒ‰ã®çµ‚äº†å‡¦ç†
+	UninitSound();
+
+	//èƒŒæ™¯ã®çµ‚äº†å‡¦ç†
+	Bg::Finalize();
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çµ‚äº†å‡¦ç†
 	player.Finalize();
 
-	//ƒAƒ“ƒJ[I—¹ˆ—
+	//ã‚¢ãƒ³ã‚«ãƒ¼çµ‚äº†å‡¦ç†
 	Anchor::Finalize();
 
-	//ƒtƒB[ƒ‹ƒh‚ÌI—¹ˆ—
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®çµ‚äº†å‡¦ç†
 	Field::Finalize();
 
 	
 
-	//•¶šiŠGj
+	//æ–‡å­—ï¼ˆçµµï¼‰
 	FinalizeWord();
 
-	//‘Ì—Íƒ\ƒEƒ‹ƒQ[ƒWUI‚ÌI—¹ˆ—
+	//ä½“åŠ›ã‚½ã‚¦ãƒ«ã‚²ãƒ¼ã‚¸UIã®çµ‚äº†å‡¦ç†
 	stamina_spirit_gauge.Finalize();
 	
 	
 
 
 #ifdef _DEBUG
-	//ƒfƒoƒbƒO•¶š
+	//ãƒ‡ãƒãƒƒã‚°æ–‡å­—
 	FinalizeDebug();
 #endif // _DEBUG
 
@@ -94,23 +112,26 @@ void Game::Finalize(void)
 void Game::Update(void)
 {
 
-	// Box2D ƒ[ƒ‹ƒh‚ÌƒXƒeƒbƒvXV
+	// Box2D ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¹ãƒ†ãƒƒãƒ—æ›´æ–°
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	world->Step(1.0f / 60.0f, 6, 2);
 
 	display::Update();
 
-	//ƒvƒŒƒCƒ„[‚ÌXVˆ—
+	//èƒŒæ™¯ã®æ›´æ–°å‡¦ç†
+	Bg::Update();
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ›´æ–°å‡¦ç†
 	player.Update();
 
-	//ƒAƒ“ƒJ[‚ÌXVˆ—
+	//ã‚¢ãƒ³ã‚«ãƒ¼ã®æ›´æ–°å‡¦ç†
 	Anchor::Update();
 
-	//ƒtƒB[ƒ‹ƒh‚ÌXVˆ—
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®æ›´æ–°å‡¦ç†
 	Field::Update();
 
 
-	//ƒV[ƒ“‘JˆÚ‚ÌŠm”F‚æ‚¤@@ƒAƒ“ƒJ[‚Ìstate‚ª‘Ò‚¿ó‘Ô‚Ì
+	//ã‚·ãƒ¼ãƒ³é·ç§»ã®ç¢ºèªã‚ˆã†ã€€ã€€ã‚¢ãƒ³ã‚«ãƒ¼ã®stateãŒå¾…ã¡çŠ¶æ…‹ã®æ™‚
 	if (Keyboard_IsKeyDown(KK_R)&&Anchor::GetAnchorState()==Nonexistent_state)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
@@ -118,7 +139,7 @@ void Game::Update(void)
 	}
 
 #ifdef _DEBUG
-	//ƒfƒoƒbƒO•¶š
+	//ãƒ‡ãƒãƒƒã‚°æ–‡å­—
 	UpdateDebug();
 #endif // _DEBUG
 
@@ -127,45 +148,48 @@ void Game::Update(void)
 
 void Game::Draw(void)
 {
-	//ƒoƒbƒtƒ@ƒNƒŠƒA
+	//ãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢
 	Clear();
 
-	//2D•`‰æ‚È‚Ì‚Å[“x–³Œø
+	//2Dæç”»ãªã®ã§æ·±åº¦ç„¡åŠ¹
 	SetDepthEnable(false);
 
-	//ƒvƒŒƒCƒ„[‚Ì•`‰æˆ—
+	//èƒŒæ™¯ã®æç”»å‡¦ç†
+	Bg::Draw();
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æç”»å‡¦ç†
 	player.Draw();
 
-	//ƒtƒB[ƒ‹ƒh‚Ì•`‰æˆ—
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®æç”»å‡¦ç†
 	Field::Draw();
 
-	//ƒAƒ“ƒJ[‚Ì•`‰æˆ—
+	//ã‚¢ãƒ³ã‚«ãƒ¼ã®æç”»å‡¦ç†
 	Anchor::Draw();
 
-	//‘Ì—Íƒ\ƒEƒ‹ƒQ[ƒWUI‚Ì•`‰æˆ—
+	//ä½“åŠ›ã‚½ã‚¦ãƒ«ã‚²ãƒ¼ã‚¸UIã®æç”»å‡¦ç†
 	stamina_spirit_gauge.Draw();
 
 
 
 #ifdef _DEBUG
-	//ƒfƒoƒbƒO•¶š
+	//ãƒ‡ãƒãƒƒã‚°æ–‡å­—
 	DrawDebug();
 #endif // _DEBUG
 
-	//ƒoƒbƒNƒoƒbƒtƒ@Aƒtƒƒ“ƒgƒoƒbƒtƒ@“ü‚ê‘Ö‚¦
+	//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã€ãƒ•ãƒ­ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡å…¥ã‚Œæ›¿ãˆ
 	Present();
 }
 
 
 
 /**
- * @fn  GameƒNƒ‰ƒX‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
- * @brief GameƒNƒ‰ƒX‚Ìƒƒ“ƒo•Ï”‚Ì’†‚É‚ ‚éƒNƒ‰ƒX‚ÉƒVƒ“ƒOƒ‹ƒgƒ“‚ÅƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚¢‚ê‚é
+ * @fn  Gameã‚¯ãƒ©ã‚¹ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * @brief Gameã‚¯ãƒ©ã‚¹ã®ãƒ¡ãƒ³ãƒå¤‰æ•°ã®ä¸­ã«ã‚ã‚‹ã‚¯ãƒ©ã‚¹ã«ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã§ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ã„ã‚Œã‚‹
  */
 Game::Game()
 {
-	//ƒvƒŒƒCƒ„[‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä—ˆ‚ÄGameƒNƒ‰ƒX‚Ìƒƒ“ƒo‚ğ“o˜^‚·‚é
-	player = Player::GetInstance();//ƒVƒ“ƒOƒ‹ƒgƒ“
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦æ¥ã¦Gameã‚¯ãƒ©ã‚¹ã®ãƒ¡ãƒ³ãƒã‚’ç™»éŒ²ã™ã‚‹
+	player = Player::GetInstance();//ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³
 
 	
 }
