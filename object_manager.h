@@ -54,7 +54,7 @@ public:
     //静的→動的のブロックの追加
     void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
     // 引っ張れる床を追加
-    void AddMovableGround(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level);
+    void AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level);
     //静的エネミー生成
     void AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
     //動的エネミー生成

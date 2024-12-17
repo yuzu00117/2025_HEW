@@ -9,7 +9,8 @@
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
-
+static ID3D11ShaderResourceView* g_Ground_Texture1 = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Ground_Texture2 = NULL;//アンカーのテクスチャ
 
 
 movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
@@ -147,7 +148,10 @@ movable_ground::~movable_ground()
 
 void movable_ground::Initialize()
 {
-	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_ground.png");
+	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
+	g_Ground_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
+	g_Ground_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+
 }
 
 void movable_ground::Update()
@@ -161,7 +165,7 @@ void movable_ground::Draw()
 
 
 
-// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
 	float scale = SCREEN_SCALE;
 
 	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
@@ -169,49 +173,15 @@ void movable_ground::Draw()
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
+	b2Vec2 GroundPos = GetObjectGroundBody()->GetPosition();
 
-	b2Vec2 Ground_pos = GetObjectGroundBody()->GetPosition();
-	b2Vec2 AnchorPoint_pos = GetObjectAnchorPointBody()->GetPosition();
-
-
-	b2Vec2 Ground_size = GetGroundSize();
-	b2Vec2 AnchorPoint_size = GetAnchorPointSize();
-	// 木の中心をローカル座標から計算
-	float groundLocalCenterX = 0.0f;
-	float groundLocalCenterY = 0.0f;
-
-	// アンカーポイントの中心をローカル座標から計算
-	float anchorLocalCenterX = 0.0f;
-	float anchorLocalCenterY = 0.0f;
-
-	// 回転角度（ラジアン）
-	float angle = GetObjectGroundBody()->GetAngle();
-
-	// 回転行列を適用してワールド座標を計算
-	b2Vec2 groundWorldCenter(
-		Ground_pos.x + groundLocalCenterX * cos(angle) - groundLocalCenterY * sin(angle),
-		Ground_pos.y + groundLocalCenterX * sin(angle) + groundLocalCenterY * cos(angle)
-	);
-
-	b2Vec2 anchorWorldCenter(
-		AnchorPoint_pos.x + anchorLocalCenterX * cos(angle) - anchorLocalCenterY * sin(angle),
-		AnchorPoint_pos.y + anchorLocalCenterX * sin(angle) + anchorLocalCenterY * cos(angle)
-	);
-
-	// 木とアンカーポイントの中心位置を加重平均で計算
-	float totalHeight = Ground_size.y + AnchorPoint_size.y;
-	float centerX = (groundWorldCenter.x * Ground_size.y + anchorWorldCenter.x * AnchorPoint_size.y) / totalHeight;
-	float centerY = (groundWorldCenter.y * Ground_size.y + anchorWorldCenter.y * AnchorPoint_size.y) / totalHeight;
-
-	// 中心点
-	b2Vec2 textureCenter(centerX, centerY);
 
 
 
 	// プレイヤー位置を考慮してスクロール補正を加える
 	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	float draw_x = ((GroundPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((GroundPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
@@ -221,13 +191,26 @@ void movable_ground::Draw()
 		{ draw_x,
 		  draw_y },
 		GetObjectAnchorPointBody()->GetAngle(),
-		{ GetGroundSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		{ GetGroundSize().x * scale,GetGroundSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
 }
 
 void movable_ground::Finalize()
 {
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	//ボディの削除
+	world->DestroyBody(Ground_body);
+
+	//テクスチャの解放
+	UnInitTexture(g_Ground_Texture);
+	UnInitTexture(g_Ground_Texture1);
+	UnInitTexture(g_Ground_Texture2);
+
+
 }
 
 void movable_ground::Pulling_ground(b2Vec2 pulling_power)

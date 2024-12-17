@@ -49,9 +49,9 @@ void ObjectManager::AddStatic_to_Dynamic_block(const b2Vec2& position, const b2V
     static_to_dynamic_blockList.emplace_back(std::make_unique<static_to_dynamic_block>(position,size,collider_type,need_level));
 }
 
-void ObjectManager::AddMovableGround(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level){
+void ObjectManager::AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level){
     // 既存の 3 引数コンストラクタを利用して生成
-    movable_groundList.emplace_back(std::make_unique<wood>(position, groundSize, anchorPointSize, need_level));
+    movable_groundList.emplace_back(std::make_unique<movable_ground>(position, groundSize, anchorPointSize, need_level));
 }
 
 //静的エネミー生成
@@ -228,6 +228,11 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Update();
+    }
+
+
     for (auto& w : enemy_staticList) {
         if(w)
         {
@@ -265,6 +270,10 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Draw();
+    }
+
     for (auto& w : enemy_staticList) {
         w->Draw();
     }
@@ -294,6 +303,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Finalize();
+    }
+
     for (auto& w : enemy_staticList) {
         w->Finalize();
     }
@@ -304,6 +317,7 @@ void ObjectManager::FinalizeAll() {
     one_way_platformList.clear();
     sloping_blockList.clear();
     static_to_dynamic_blockList.clear();
+    movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
 
