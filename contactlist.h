@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2024/11/22
+// #update 2024/12/13
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -202,7 +202,7 @@ public:
              
         }
 
-        //静的プレイヤーとエネミーの衝突
+        //プレイヤーと静的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_static)||
             (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_leg) ||
@@ -210,15 +210,17 @@ public:
         {
             if (objectA->collider_type == collider_enemy_static)
             {
-                EnemyStatic::CollisionPlayer(fixtureA->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->CollisionPlayer();
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
-                EnemyStatic::CollisionPlayer(fixtureB->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                enemy_instance->CollisionPlayer();
             }
         }
 
-        //動的プレイヤーとエネミーの衝突
+        //プレイヤーと動的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_dynamic)||
             (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_leg) ||
@@ -226,11 +228,13 @@ public:
         {
             if (objectA->collider_type == collider_enemy_dynamic)
             {
-                EnemyDynamic::CollisionPlayer(fixtureA->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->CollisionPlayer();
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
-                EnemyDynamic::CollisionPlayer(fixtureB->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionPlayer();
             }
         }
 
@@ -241,29 +245,32 @@ public:
             if ((objectA->collider_type == collider_enemy_static) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
-                EnemyStatic::CollisionPulledObject(fixtureA->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
             }
             else if ((objectB->collider_type == collider_enemy_static) &&
                 (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
-                EnemyStatic::CollisionPulledObject(fixtureB->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
             }
         }
 
         //引っ張られている状態のオブジェクトと動的エネミーの衝突
         if (((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic)) &&
-            (Anchor::GetAnchorState() == Pulling_state))
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic)))
         {
-            if ((objectA->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState) &&
+            if ((objectA->collider_type == collider_enemy_dynamic) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
-                EnemyDynamic::CollisionPulledObject(fixtureA->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
             }
-            else if ((objectB->collider_type == collider_enemy_dynamic && Anchor::GetAnchorState) &&
+            else if ((objectB->collider_type == collider_enemy_dynamic) &&
                 (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
-                EnemyDynamic::CollisionPulledObject(fixtureB->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
             }
         }
      
@@ -273,11 +280,14 @@ public:
         {
             if (objectA->collider_type == collider_enemy_static)
             {
-                EnemyStatic::InPlayerSensor(fixtureA->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->InPlayerSensor();
+
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
-                EnemyStatic::InPlayerSensor(fixtureB->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                enemy_instance->InPlayerSensor();
             }
         }
 
@@ -287,11 +297,13 @@ public:
         {
             if (objectA->collider_type == collider_enemy_dynamic)
             {
-                EnemyDynamic::InPlayerSensor(fixtureA->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->InPlayerSensor();
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
-                EnemyDynamic::InPlayerSensor(fixtureB->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->InPlayerSensor();
             }
         }
     }
@@ -299,7 +311,8 @@ public:
 //               衝突終了時
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     void EndContact(b2Contact* contact) override {
-        // 衝突したフィクスチャを取得
+        ObjectManager& object_manager = ObjectManager::GetInstance();
+
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
         b2Fixture* fixtureB = contact->GetFixtureB();
@@ -357,11 +370,19 @@ public:
         {
             if (objectA->collider_type == collider_enemy_static)
             {
-                EnemyStatic::OutPlayerSensor(fixtureA->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                if (enemy_instance)
+                {
+                    enemy_instance->OutPlayerSensor();
+                }
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
-                EnemyStatic::OutPlayerSensor(fixtureB->GetBody());
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                if (enemy_instance)
+                {
+                    enemy_instance->OutPlayerSensor();
+                }
             }
         }
 
@@ -371,11 +392,13 @@ public:
         {
             if (objectA->collider_type == collider_enemy_dynamic)
             {
-                EnemyDynamic::OutPlayerSensor(fixtureA->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->OutPlayerSensor();
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
-                EnemyDynamic::OutPlayerSensor(fixtureB->GetBody());
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->OutPlayerSensor();
             }
         }
     }
