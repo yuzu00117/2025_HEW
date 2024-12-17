@@ -22,6 +22,7 @@
 #include"word.h"
 #include"debug.h"
 #include"display.h"
+#include"player_life.h"
 
 
 
@@ -50,6 +51,9 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	//フィールドの初期化
 	Field::Initialize();
+
+	//残機の初期化
+	PlayerLife::Initialize();
 
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
@@ -80,6 +84,8 @@ void Game::Finalize(void)
 	//サウンドの終了処理
 	UninitSound();
 
+	//残機の終了処理
+	PlayerLife::Initialize();
 
 	//プレイヤーの終了処理
 	player.Finalize();
@@ -118,6 +124,9 @@ void Game::Update(void)
 
 	display::Update();
 
+	//残機の更新処理
+	PlayerLife::Update();
+
 	//プレイヤーの更新処理
 	player.Update();
 
@@ -154,6 +163,9 @@ void Game::Draw(void)
 
 	//アンカーの描画処理
 	Anchor::Draw();
+
+	//残機の描画処理
+	PlayerLife::Draw();
 
 	//体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
