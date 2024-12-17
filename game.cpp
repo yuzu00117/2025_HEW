@@ -32,7 +32,7 @@ void Game::Initialize()
 	InitializeWord();
 
 	//プレイヤーの初期化
-	player.Initialize();
+	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), b2Vec2(40, 30));
 
 	//アンカーの初期化
 	Anchor::Initialize();
