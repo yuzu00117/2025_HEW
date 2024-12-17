@@ -98,6 +98,9 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="stage_select.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">

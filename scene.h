@@ -53,6 +53,18 @@ public:
     void Finalize() override;
 };
 
+class StageSelectScene :public Scene {
+
+public:
+    void Initialize() override;
+
+    void Update() override;
+
+    void Draw()override;
+
+    void Finalize() override;
+};
+
 class GameScene : public Scene {
 public:
 
@@ -102,24 +114,24 @@ public:
     SceneManager& operator=(const SceneManager&) = delete;
 
     // シーンの登録
-    void RegisterScene(int id, std::function<std::unique_ptr<Scene>()> factory) {
-        sceneRegistry[id] = factory;
+    void RegisterScene(SCENE_NAME scene_name, std::function<std::unique_ptr<Scene>()> factory) {
+        sceneRegistry[scene_name] = factory;
     }
 
     // シーンの切り替え
-    void ChangeScene(int id) {
+    void ChangeScene(SCENE_NAME scene_name) {
         if (currentScene) {
             currentScene->Finalize(); // 現在のシーンの終了処理
         }
 
-        auto it = sceneRegistry.find(id);
+        auto it = sceneRegistry.find(scene_name);
         if (it != sceneRegistry.end()) {
             currentScene = it->second(); // 新しいシーンの生成
             currentScene->Initialize();  // 初期化処理
         }
         else {
             currentScene = nullptr;
-            std::cerr << "Error: Scene ID " << id << " not registered!" << std::endl;
+           
         }
     }
 
