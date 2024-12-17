@@ -24,23 +24,11 @@
 #include"display.h"
 
 
-
-HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
+void Game::Initialize()
 {
-	//レンダリング処理の初期化
-	InitRenderer(hInstance, hWnd, bWindow);
-
-	//サウンドの初期化
-	InitSound(hWnd);
-
-	//ポリゴン
-	InitSprite();
 
 	//文字（絵）
 	InitializeWord();
-
-	//コントローラーの初期化
-	controller.Initialize(hInstance,hWnd);
 
 	//プレイヤーの初期化
 	player.Initialize();
@@ -66,7 +54,7 @@ HRESULT Game::Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitializeDebug();
 #endif // !_DEBUG
 
-	return S_OK;
+	
 }
 
 void Game::Finalize(void)
@@ -74,8 +62,7 @@ void Game::Finalize(void)
 	//ポリゴン
 	UninitSprite();
 
-	//コントローラーの終了処理
-	controller.Release();
+	
 
 	//サウンドの終了処理
 	UninitSound();
@@ -127,7 +114,7 @@ void Game::Update(void)
 	//フィールドの更新処理
 	Field::Update();
 
-	controller.CheckInput();
+
 
 
 #ifdef _DEBUG
