@@ -262,6 +262,7 @@ void Field::Finalize()
   
 	EnemyDynamic::Finalize();
 	EnemyStatic::Finalize();
+	AnchorPoint::Finalize();
 
 	objectManager.FinalizeAll();
 

@@ -185,7 +185,7 @@ void AnchorPoint::Draw()
 
 	//センサーないのすべてのAPにマークをつける
 	//---------------------------------------------------------------------------------------------------------------
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 	{
 		if (g_anchor_point_body[i]!=nullptr)
 		{
@@ -269,8 +269,16 @@ void AnchorPoint::Finalize()
 	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
 	
-	world->DestroyBody(g_select_anchor_point_body);
+	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
+	{
+		g_anchor_point_body[i] = nullptr;
+	}
 
+
+	if (g_select_anchor_point_body != nullptr)
+	{
+		world->DestroyBody(g_select_anchor_point_body);
+	}
 
 	//テクスチャの解放
 	UnInitTexture(g_anchor_point_target_lev1_Texture);

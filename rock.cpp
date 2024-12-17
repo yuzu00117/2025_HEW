@@ -213,6 +213,10 @@ void rock::Finalize()
 		world->DestroyBody(Rock_body);
 	}
 
+	if (GetObjectAnchorPointBody() != nullptr)
+	{
+		world->DestroyBody(AnchorPoint_body);
+	}
 	//‰æ‘œ‚Ì‰ð•ú
 	UnInitTexture(g_Rock_Texture);
 	UnInitTexture(g_Rock_Texture1);
