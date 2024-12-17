@@ -14,6 +14,7 @@
 #include "keyboard.h"
 #include "sound.h"
 #include"game.h"
+#include"scene.h"
 
 
 
@@ -92,10 +93,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	}
 
 	//DirectXの初期化（ウィンドウを作成した後に行う）
-	if (FAILED(game.Initialize(hInstance, hWnd, true)))
+	
+	if (FAILED(FirstInit(hInstance, hWnd, true)))
 	{
 		return -1;
 	}
+
 
 	//時間計測用
 	DWORD dwExecLastTime;
@@ -114,6 +117,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	//メッセージループ
 	MSG    msg;
+	SceneManager& sceneManager = SceneManager::GetInstance();
+
+
+	
+	sceneManager.RegisterScene(SCENE_TITLE, []() { return std::make_unique<TitleScene>(); });
+	sceneManager.RegisterScene(SCENE_STAGE_SELECT, []() { return std::make_unique<StageSelectScene>(); });
+	sceneManager.RegisterScene(SCENE_GAME, []() { return std::make_unique<GameScene>(); });
+	sceneManager.RegisterScene(SCENE_RESULT, []() { return std::make_unique<ResulttScene>(); });
+	
+
+	//初期シーンの設定
+	sceneManager.ChangeScene(SCENE_TITLE);
+	
 
 	while (1)
 	{
@@ -154,8 +170,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			{
 				dwExecLastTime = dwCurrentTime;
 
-				game.Update();
-				game.Draw();
+			
+
+				sceneManager.Update();
+
+				sceneManager.Draw();
 
 				dwFrameCount++;
 			}
@@ -201,5 +220,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 
 
+HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
+{
+	//レンダリング処理の初期化
+	InitRenderer(hInstance, hWnd, bWindow);
+
+	//サウンドの初期化
+	InitSound(hWnd);
+
+	//ポリゴン
+	InitSprite();
+
+	return S_OK;
+}
+
+void FinalFinalize()
+{
+	//ポリゴン
+	UninitSprite();
+
+	//サウンドの終了処理
+	UninitSound();
+
+	//レンダリングの終了処理
+	UninitRenderer();
+}
 
 
