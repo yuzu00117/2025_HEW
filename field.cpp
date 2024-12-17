@@ -274,6 +274,8 @@ void Field::Finalize()
   
 	EnemyDynamic::Finalize();
 	EnemyStatic::Finalize();
+
+	objectManager.FinalizeAll();
 }
 
 

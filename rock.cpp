@@ -207,7 +207,7 @@ void rock::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-
+	
 	//ƒ{ƒfƒB‚Ìíœ
 	world->DestroyBody(Rock_body);
 

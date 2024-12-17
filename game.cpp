@@ -22,6 +22,7 @@
 #include"word.h"
 #include"debug.h"
 #include"display.h"
+#include"scene.h"
 
 
 void Game::Initialize()
@@ -77,6 +78,8 @@ void Game::Finalize(void)
 	//フィールドの終了処理
 	Field::Finalize();
 
+	
+
 	//文字（絵）
 	FinalizeWord();
 
@@ -115,7 +118,12 @@ void Game::Update(void)
 	Field::Update();
 
 
-
+	//シーン遷移の確認がよう
+	if (Keyboard_IsKeyDown(KK_R))
+	{
+		SceneManager& sceneManager = SceneManager::GetInstance();
+		sceneManager.ChangeScene(SCENE_RESULT);
+	}
 
 #ifdef _DEBUG
 	//デバッグ文字

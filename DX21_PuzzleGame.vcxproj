@@ -150,6 +150,7 @@
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="result.cpp" />
     <ClCompile Include="rock.cpp" />
     <ClCompile Include="sloping_block.cpp" />
     <ClCompile Include="sound.cpp" />

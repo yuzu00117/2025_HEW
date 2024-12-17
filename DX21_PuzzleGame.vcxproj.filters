@@ -101,6 +101,9 @@
     <ClCompile Include="stage_select.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
