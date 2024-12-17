@@ -8,6 +8,7 @@
 //			・マップを管理する基底クラスでグランドなどが継承している
 //			・12/01 フィールドのマップチップをcsvを用いた描画に変更
 //				・マップの変更はcsvファイルを編集してください
+//			・12/17 266~267でエラー吐いたのでコメントアウト中。詳しくは264行目のコメント見てください
 //----------------------------------------------------------------------------------------------------
 #include"tool.h"
 #include"include/box2d/box2d.h"
@@ -260,8 +261,10 @@ void Field::Finalize()
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
   
-	EnemyDynamic::Finalize();
-	EnemyStatic::Finalize();
+	// Enemyの終了処理の呼び方違うぽくてエラー吐いちゃったので、一旦コメントアウトしてます
+	// 静的でないメンバー参照は特定のオブジェクトを基準とする相対参照である必要があります←とのこと
+	//EnemyDynamic::Finalize();
+	//EnemyStatic::Finalize();
 	AnchorPoint::Finalize();
 
 	objectManager.FinalizeAll();
