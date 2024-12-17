@@ -6,10 +6,27 @@
 #include <functional>
 #include <memory>
 #include"game.h"
+#include"sound.h"
+#include"sprite.h"
+
+//シーンの種類
+enum SCENE_NAME
+{
+   SCENE_TITLE,
+   SCENE_OP,
+   SCENE_STAGE_SELECT,
+   SCENE_GAME,
+   SCENE_RESULT,
+};
+
+
 
 // シーン基底クラス
 class Scene {
 public:
+
+   
+
     virtual ~Scene() = default;
     // 初期化処理
     virtual void Initialize() {}
@@ -25,24 +42,15 @@ public:
    
 };
 
-class MenuScene : public Scene {
+class TitleScene : public Scene {
 public:
-    void Initialize() override {
-        std::cout << "Menu Scene Initialized" << std::endl;
-    }
+    void Initialize() override;
 
-    void Update() override {
-        std::cout << "Menu Scene Updating" << std::endl;
-    }
+    void Update() override;
 
-    void Draw()override
-    {
-        std::cout << "Menu Scene Drawing" << std::endl;
-    }
+    void Draw()override;
 
-    void Finalize() override {
-        std::cout << "Menu Scene Finalized" << std::endl;
-    }
+    void Finalize() override;
 };
 
 class GameScene : public Scene {
@@ -71,14 +79,28 @@ public:
         game.Finalize();
     }
 };
-
-// シーン管理クラス
 class SceneManager {
 private:
+    // シーンの登録マップ
     std::unordered_map<int, std::function<std::unique_ptr<Scene>()>> sceneRegistry;
+
+    // 現在のシーン
     std::unique_ptr<Scene> currentScene;
 
+    // コンストラクタを private にして外部からのインスタンス化を防ぐ
+    SceneManager() = default;
+
 public:
+    // シングルトンインスタンスを取得する関数
+    static SceneManager& GetInstance() {
+        static SceneManager instance;
+        return instance;
+    }
+
+    // コピーコンストラクタと代入演算子を無効化
+    SceneManager(const SceneManager&) = delete;
+    SceneManager& operator=(const SceneManager&) = delete;
+
     // シーンの登録
     void RegisterScene(int id, std::function<std::unique_ptr<Scene>()> factory) {
         sceneRegistry[id] = factory;
@@ -86,16 +108,18 @@ public:
 
     // シーンの切り替え
     void ChangeScene(int id) {
-        // 現在のシーンの終了処理を実行
         if (currentScene) {
-            currentScene->Finalize();
+            currentScene->Finalize(); // 現在のシーンの終了処理
         }
 
-        // 新しいシーンを生成
         auto it = sceneRegistry.find(id);
         if (it != sceneRegistry.end()) {
-            currentScene = it->second();
-            currentScene->Initialize();
+            currentScene = it->second(); // 新しいシーンの生成
+            currentScene->Initialize();  // 初期化処理
+        }
+        else {
+            currentScene = nullptr;
+            std::cerr << "Error: Scene ID " << id << " not registered!" << std::endl;
         }
     }
 
@@ -106,11 +130,9 @@ public:
         }
     }
 
-    //描画処理
-    void Draw()
-    {
-        if (currentScene)
-        {
+    // 描画処理
+    void Draw() {
+        if (currentScene) {
             currentScene->Draw();
         }
     }

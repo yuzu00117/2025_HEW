@@ -185,7 +185,7 @@ void AnchorPoint::Draw()
 
 	//センサーないのすべてのAPにマークをつける
 	//---------------------------------------------------------------------------------------------------------------
-	for (int i = 0; i < BOX2D_SCALE_MANAGEMENT; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		if (g_anchor_point_body[i]!=nullptr)
 		{
@@ -236,25 +236,29 @@ void AnchorPoint::Draw()
 		}
 	}
 
-	b2Vec2 position;
-	position.x = g_select_anchor_point_body->GetPosition().x;
-	position.y = g_select_anchor_point_body->GetPosition().y;
 
-	// プレイヤー位置を考慮してスクロール補正を加える
-	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	if (g_select_anchor_point_body != nullptr) 
+	{
+		b2Vec2 position;
+		position.x = g_select_anchor_point_body->GetPosition().x;
+		position.y = g_select_anchor_point_body->GetPosition().y;
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		0.0f,
-		{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-	);
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			0.0f,
+			{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		);
+	}
 
 
 	//-------------------------------------------------------------------------------------------------------------------------

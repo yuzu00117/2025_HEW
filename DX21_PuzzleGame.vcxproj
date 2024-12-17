@@ -151,13 +151,12 @@
     <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="rock.cpp" />
-    <ClCompile Include="scene_manager_Instance.cpp" />
-    <ClCompile Include="scene_manager_instance.h" />
     <ClCompile Include="sloping_block.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
