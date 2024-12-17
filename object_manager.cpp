@@ -49,6 +49,11 @@ void ObjectManager::AddStatic_to_Dynamic_block(const b2Vec2& position, const b2V
     static_to_dynamic_blockList.emplace_back(std::make_unique<static_to_dynamic_block>(position,size,collider_type,need_level));
 }
 
+void ObjectManager::AddMovableGround(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level){
+    // 既存の 3 引数コンストラクタを利用して生成
+    movable_groundList.emplace_back(std::make_unique<wood>(position, groundSize, anchorPointSize, need_level));
+}
+
 //静的エネミー生成
 void ObjectManager::AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 {
@@ -110,6 +115,16 @@ static_to_dynamic_block* ObjectManager::FindStatic_to_Dynamic_BlcokID(int id) {
         }
     }
     return nullptr; // 見つからない場合は nullptr を返す
+}
+
+movable_ground* ObjectManager::FindMovable_GroundID(int id)
+{
+    for (const auto& w : movable_groundList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr;
 }
 
 //IDを使って静的エネミーを検索
