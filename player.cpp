@@ -23,6 +23,7 @@
 #include"anchor_point.h"
 #include"anchor.h"
 #include"anchor_spirit.h"
+#include"scene.h"
 #include"create_filter.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
@@ -183,7 +184,6 @@ void Player::Update()
 {
     // プレイヤーの更新処理
 
-
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
 
@@ -197,6 +197,8 @@ void Player::Update()
     b2Vec2 max_velocity = { 1.8f , 1.2f };
     b2Vec2 player_position = { PlayerPosition::GetPlayerPosition().x,PlayerPosition::GetPlayerPosition().y };
     b2Vec2 player_point = m_body->GetWorldPoint(player_position);
+
+
 
     //絶対値に変更する デットゾーンの審査に使うため　tool.cppに作った
     //デットゾーンをつくる x,yの値を足して一定以上経ったら　呼び出し
