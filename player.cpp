@@ -154,7 +154,18 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     //プレイヤーのセンサーを新しくつくる
 
     b2PolygonShape shape_sensor;
-    shape_sensor.SetAsBox(size_sensor.x * 0.5, size_sensor.y * 0.5);
+
+
+    b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
+
+    // 反時計回りで頂点を設定
+    vertices[0].Set(-size_sensor.x / 2, size_sensor.y / 2 / 3);  // 左下
+    vertices[1].Set(size_sensor.x / 2, size_sensor.y / 2 / 3);   // 右下
+    vertices[2].Set(size_sensor.x / 2, -size_sensor.y / 2);    // 右上
+    vertices[3].Set(-size_sensor.x / 2, -size_sensor.y / 2);   // 左上
+
+
+    shape_sensor.Set(vertices, 4);
 
 
 
@@ -164,6 +175,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     fixture_sensor.friction = 0.0f;//摩擦
     fixture_sensor.restitution = 0.0f;//反発係数
     fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+    
 
 
     b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
