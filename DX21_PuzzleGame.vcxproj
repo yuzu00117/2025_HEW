@@ -144,6 +144,7 @@
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="movable_ground.cpp" />
     <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="one-way_platform.cpp" />
     <ClCompile Include="player.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="movable_ground.h" />
     <ClInclude Include="object_manager.h" />
     <ClInclude Include="one-way_platform.h" />
     <ClInclude Include="player.h" />
