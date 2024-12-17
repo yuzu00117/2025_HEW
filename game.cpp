@@ -22,9 +22,7 @@
 #include"word.h"
 #include"debug.h"
 #include"display.h"
-#include"bg.h"
 #include"scene.h"
-
 
 
 void Game::Initialize()
@@ -32,12 +30,6 @@ void Game::Initialize()
 
 	//文字（絵）
 	InitializeWord();
-
-	//コントローラーの初期化
-	controller.Initialize(hInstance,hWnd);
-
-	//背景の初期化
-	Bg::Initialize();
 
 	//プレイヤーの初期化
 	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), b2Vec2(40, 30));
@@ -63,22 +55,12 @@ void Game::Initialize()
 	InitializeDebug();
 #endif // !_DEBUG
 
-	
+
 }
 
 void Game::Finalize(void)
 {
-	//ポリゴン
-	UninitSprite();
 
-	//コントローラーの終了処理
-	controller.Release();
-
-	//サウンドの終了処理
-	UninitSound();
-
-	//背景の終了処理
-	Bg::Finalize();
 
 	//プレイヤーの終了処理
 	player.Finalize();
@@ -89,15 +71,15 @@ void Game::Finalize(void)
 	//フィールドの終了処理
 	Field::Finalize();
 
-	
+
 
 	//文字（絵）
 	FinalizeWord();
 
 	//体力ソウルゲージUIの終了処理
 	stamina_spirit_gauge.Finalize();
-	
-	
+
+
 
 
 #ifdef _DEBUG
@@ -118,9 +100,6 @@ void Game::Update(void)
 
 	display::Update();
 
-	//背景の更新処理
-	Bg::Update();
-
 	//プレイヤーの更新処理
 	player.Update();
 
@@ -132,7 +111,7 @@ void Game::Update(void)
 
 
 	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
-	if (Keyboard_IsKeyDown(KK_R)&&Anchor::GetAnchorState()==Nonexistent_state)
+	if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
 		sceneManager.ChangeScene(SCENE_RESULT);
@@ -153,9 +132,6 @@ void Game::Draw(void)
 
 	//2D描画なので深度無効
 	SetDepthEnable(false);
-
-	//背景の描画処理
-	Bg::Draw();
 
 	//プレイヤーの描画処理
 	player.Draw();
@@ -191,7 +167,7 @@ Game::Game()
 	//プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
 	player = Player::GetInstance();//シングルトン
 
-	
+
 }
 
 Game::~Game()
