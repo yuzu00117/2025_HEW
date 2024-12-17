@@ -234,4 +234,16 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	return S_OK;
 }
 
+void FinalFinalize()
+{
+	//ポリゴン
+	UninitSprite();
+
+	//サウンドの終了処理
+	UninitSound();
+
+	//レンダリングの終了処理
+	UninitRenderer();
+}
+
 

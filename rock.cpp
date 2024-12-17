@@ -207,9 +207,11 @@ void rock::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-	
-	//ボディの削除
-	world->DestroyBody(Rock_body);
+	if (GetObjectRockBody() != nullptr)
+	{
+		//ボディの削除
+		world->DestroyBody(Rock_body);
+	}
 
 	//画像の解放
 	UnInitTexture(g_Rock_Texture);

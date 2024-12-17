@@ -60,14 +60,7 @@ void Game::Initialize()
 
 void Game::Finalize(void)
 {
-	//ポリゴン
-	UninitSprite();
-
 	
-
-	//サウンドの終了処理
-	UninitSound();
-
 
 	//プレイヤーの終了処理
 	player.Finalize();
@@ -86,8 +79,7 @@ void Game::Finalize(void)
 	//体力ソウルゲージUIの終了処理
 	stamina_spirit_gauge.Finalize();
 	
-	//レンダリングの終了処理
-	UninitRenderer();
+	
 
 
 #ifdef _DEBUG
