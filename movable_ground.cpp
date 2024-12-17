@@ -1,16 +1,18 @@
 #include "movable_ground.h"
 #include"texture.h"
 #include"collider_type.h"
+#include"create_filter.h"
+#include"player_position.h"
+#include"sprite.h"
 
 
 //テクスチャの入れ物
 //グローバル変数
-static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
-
-int ObjectData::current_id = 0;
+static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
 
 
-movable_ground::movable_ground(b2Vec2 position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
+
+movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
 {
 	SetGroundSize(Ground_size);
 	SetAnchorPointSize(AnchorPoint_size);
@@ -31,38 +33,38 @@ movable_ground::movable_ground(b2Vec2 position, b2Vec2 Ground_size, b2Vec2 Ancho
 	ground_size.y = Ground_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-	b2BodyDef Ground_body;//木の幹の部分
+	b2BodyDef Ground_body;//床の幹の部分
 	Ground_body.type = b2_dynamicBody;
-	Ground_body.position.Set(Postion.x, Postion.y);
+	Ground_body.position.Set(Position.x, Position.y);
 	Ground_body.fixedRotation = false;
 
-	b2Body* m_Wood_body = world->CreateBody(&Wood_body);
+	b2Body* m_Ground_body = world->CreateBody(&Ground_body);
 
-	SetObjectWoodBody(m_Wood_body);
-
-
-
-	b2PolygonShape Wood_shape;
-	Wood_shape.SetAsBox(wood_size.x * 0.5, wood_size.y * 0.5);
-
-	b2FixtureDef wood_fixture;
-
-	wood_fixture.shape = &Wood_shape;
-	wood_fixture.density = 3.0f;
-	wood_fixture.friction = 0.5f;//摩擦
-	wood_fixture.restitution = 0.0f;//反発係数
-	wood_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	wood_fixture.filter = createFilterExclude("object_filter", {});
+	SetObjectGroundBody(m_Ground_body);
 
 
-	b2Fixture* object_wood_fixture = m_Wood_body->CreateFixture(&wood_fixture);
+
+	b2PolygonShape Ground_shape;
+	Ground_shape.SetAsBox(ground_size.x * 0.5, ground_size.y * 0.5);
+
+	b2FixtureDef ground_fixture;
+
+	ground_fixture.shape = &Ground_shape;
+	ground_fixture.density = 1.0f;
+	ground_fixture.friction = 0.3f;//摩擦
+	ground_fixture.restitution = 0.1f;//反発係数
+	ground_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	ground_fixture.filter = createFilterExclude("object_filter", {});
+
+
+	b2Fixture* object_ground_fixture = m_Ground_body->CreateFixture(&ground_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_wood_data = new ObjectData{ collider_object };//一旦壁判定
-	object_wood_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_wood_data);
+	ObjectData* object_ground_data = new ObjectData{ collider_ground };//引っ張られてない時はcollider_ground、引っ張れてる時はcollider_object
+	object_ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_ground_data);
 
 	//---------------------------------------------------------------------------//
-	//2つめのボディ　木の上のアンカーポイントをつくる
+	//2つめのボディ　床の上のアンカーポイントをつくる
 
 	//サイズの補正をいれる
 	b2Vec2 anchorpoint_size;
@@ -71,11 +73,11 @@ movable_ground::movable_ground(b2Vec2 position, b2Vec2 Ground_size, b2Vec2 Ancho
 
 
 
-	b2BodyDef anchorpoint_body;//木の幹の部分
+	b2BodyDef anchorpoint_body;//床の幹の部分
 	anchorpoint_body.type = b2_dynamicBody;
 	anchorpoint_body.position.Set(
-		Postion.x,
-		Postion.y + (wood_size.y / 2) + (anchorpoint_size.y / 2));
+		Position.x - (ground_size.x / 2) + (anchorpoint_size.x / 2),
+		Position.y - (ground_size.y / 2) + (anchorpoint_size.y / 2));
 	anchorpoint_body.fixedRotation = false;
 
 	b2Body* m_AnchorPoint_body = world->CreateBody(&anchorpoint_body);
@@ -101,17 +103,17 @@ movable_ground::movable_ground(b2Vec2 position, b2Vec2 Ground_size, b2Vec2 Ancho
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
-	object_anchorpoint_data->object_name = Object_Wood;
+	object_anchorpoint_data->object_name = Object_Movable_Ground;
 
 
 	int ID = object_anchorpoint_data->GenerateID();
 	object_anchorpoint_data->id = ID;
 	SetID(ID);
 
-	//木を倒しす時に必要になるForce とりあえずサイズに依存でつくる
+	//床を引っ張る時に必要になるForce とりあえずサイズに依存でつくる
 	b2Vec2 need_power;
 
-	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//１は必要に応じて変更して
+	need_power.x = ((GetGroundSize().x * GetGroundSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//１は必要に応じて変更して
 	need_power.y = 10.0f;//縦に必要な力はない
 
 
@@ -126,16 +128,16 @@ movable_ground::movable_ground(b2Vec2 position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//ジョイントする
 
 	b2WeldJointDef jointDef;
-	jointDef.bodyA = m_Wood_body;
+	jointDef.bodyA = m_Ground_body;
 	jointDef.bodyB = m_AnchorPoint_body;
-	jointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // 木の上端
+	jointDef.localAnchorA.Set(0.0f, -ground_size.y * 0.5f); // 床の上端
 	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
 	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
 	world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加
 
 	//-------------------------------------------------------------------------------------------
-	//木を倒す為に必要な挙動
+	//床を引っ張る為に必要な挙動
 
 }
 
@@ -145,6 +147,7 @@ movable_ground::~movable_ground()
 
 void movable_ground::Initialize()
 {
+	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_ground.png");
 }
 
 void movable_ground::Update()
@@ -153,12 +156,88 @@ void movable_ground::Update()
 
 void movable_ground::Draw()
 {
+	///ここから調整してね
+
+
+
+
+// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	float scale = SCREEN_SCALE;
+
+	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
+
+
+	b2Vec2 Ground_pos = GetObjectGroundBody()->GetPosition();
+	b2Vec2 AnchorPoint_pos = GetObjectAnchorPointBody()->GetPosition();
+
+
+	b2Vec2 Ground_size = GetGroundSize();
+	b2Vec2 AnchorPoint_size = GetAnchorPointSize();
+	// 木の中心をローカル座標から計算
+	float groundLocalCenterX = 0.0f;
+	float groundLocalCenterY = 0.0f;
+
+	// アンカーポイントの中心をローカル座標から計算
+	float anchorLocalCenterX = 0.0f;
+	float anchorLocalCenterY = 0.0f;
+
+	// 回転角度（ラジアン）
+	float angle = GetObjectGroundBody()->GetAngle();
+
+	// 回転行列を適用してワールド座標を計算
+	b2Vec2 groundWorldCenter(
+		Ground_pos.x + groundLocalCenterX * cos(angle) - groundLocalCenterY * sin(angle),
+		Ground_pos.y + groundLocalCenterX * sin(angle) + groundLocalCenterY * cos(angle)
+	);
+
+	b2Vec2 anchorWorldCenter(
+		AnchorPoint_pos.x + anchorLocalCenterX * cos(angle) - anchorLocalCenterY * sin(angle),
+		AnchorPoint_pos.y + anchorLocalCenterX * sin(angle) + anchorLocalCenterY * cos(angle)
+	);
+
+	// 木とアンカーポイントの中心位置を加重平均で計算
+	float totalHeight = Ground_size.y + AnchorPoint_size.y;
+	float centerX = (groundWorldCenter.x * Ground_size.y + anchorWorldCenter.x * AnchorPoint_size.y) / totalHeight;
+	float centerY = (groundWorldCenter.y * Ground_size.y + anchorWorldCenter.y * AnchorPoint_size.y) / totalHeight;
+
+	// 中心点
+	b2Vec2 textureCenter(centerX, centerY);
+
+
+
+	// プレイヤー位置を考慮してスクロール補正を加える
+	//取得したbodyのポジションに対してBox2dスケールの補正を加える
+	float draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
+
+	//draw
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetObjectAnchorPointBody()->GetAngle(),
+		{ GetGroundSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+	);
+
 }
 
 void movable_ground::Finalize()
 {
 }
 
-void movable_ground::Pulling_ground(b2Vec2 pullingpower)
+void movable_ground::Pulling_ground(b2Vec2 pulling_power)
 {
+	b2Body* body = GetObjectAnchorPointBody();
+	//プレイヤー側に倒す
+	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	{
+		pulling_power.x = pulling_power.x * -1;
+	}
+
+	body->SetLinearVelocity(pulling_power);
 }

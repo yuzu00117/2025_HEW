@@ -28,6 +28,7 @@ enum ObjectType {
     Object_Rock, // 岩
     Object_one_way_platform,//足場　したからしか乗れない
     Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
+    Object_Movable_Ground,  //引っ張れる床 引っ張っている時はコライダータイプがcollider_groundからcollider_objectに変わる。
     
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー

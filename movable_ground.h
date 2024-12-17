@@ -9,7 +9,7 @@
 class movable_ground
 {
 public:
-	movable_ground(b2Vec2 position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level);
+	movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level);
 	~movable_ground();
 
 
