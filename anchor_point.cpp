@@ -163,7 +163,7 @@ void AnchorPoint::Update()
 		if (Anchor::GetAnchorCreateJointFlag() != true)
 		{
 			Player& player = Player::GetInstance();//ゲットインスタンス
-			g_select_anchor_point_body = player.GetPlayerBody();
+			g_select_anchor_point_body = player.GetOutSidePlayerBody();
 		}
 	}
 
@@ -240,7 +240,7 @@ void AnchorPoint::Draw()
 	if (g_select_anchor_point_body != nullptr) 
 	{
 		b2Vec2 position;
-		position.x = g_select_anchor_point_body->GetPosition().x;
+ 		position.x = g_select_anchor_point_body->GetPosition().x;
 		position.y = g_select_anchor_point_body->GetPosition().y;
 
 		// プレイヤー位置を考慮してスクロール補正を加える

@@ -16,20 +16,27 @@
 class Player
 {
 public:
-	Player() {};
+	Player();
 
-	Player(b2Vec2 position, b2Vec2 size,b2Vec2 sensor_size);
+
 	~Player();
 
 
 	// シングルトンのインスタンス取得 　このクラスでは一つのインスタンスしか認めない
-	static Player& GetInstance(b2Vec2 position = b2Vec2(1, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(40,30)) {
-		static Player instance(position, size,sensor_size); // Initialized only once
-		return instance;
-	}
+	//static Player& GetInstance(b2Vec2 position = b2Vec2(1, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(40,30)) {
+	//	static Player instance(position, size,sensor_size); // Initialized only once
+	//	return instance;
+	//}
 	
 
-	void Initialize();
+		// シングルトンインスタンス取得
+	static Player& GetInstance() {
+		static Player instance;
+		return instance;
+	}
+
+	 // プレイヤーの初期化
+	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size);
 	void Update();
 	void Draw();
 	void Finalize();

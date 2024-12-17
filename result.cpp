@@ -12,7 +12,7 @@ ID3D11ShaderResourceView* g_result_Texture = NULL;
 
 void ResulttScene::Initialize()
 {
-	g_result_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_stage_select.png");
+	g_result_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_result.png");
 }
 
 void ResulttScene::Update()
