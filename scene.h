@@ -76,6 +76,18 @@ public:
     void Finalize() override;
 };
 
+class ResulttScene :public Scene {
+
+public:
+    void Initialize() override;
+
+    void Update() override;
+
+    void Draw()override;
+
+    void Finalize() override;
+};
+
 class GameScene : public Scene {
 public:
 

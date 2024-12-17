@@ -259,6 +259,12 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
+  
+	EnemyDynamic::Finalize();
+	EnemyStatic::Finalize();
+
+	objectManager.FinalizeAll();
+
 }
 
 
