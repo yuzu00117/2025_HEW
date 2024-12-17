@@ -196,6 +196,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Initialize();
+    }
+
     for (auto& w : enemy_staticList) {
         w->Initialize();
     }

@@ -156,7 +156,9 @@ void movable_ground::Initialize()
 
 void movable_ground::Update()
 {
+
 }
+
 
 void movable_ground::Draw()
 {
@@ -185,6 +187,8 @@ void movable_ground::Draw()
 
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
+
+	b2Vec2 size = GetGroundSize();
 
 	//draw
 	DrawSprite(

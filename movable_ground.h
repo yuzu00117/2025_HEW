@@ -56,7 +56,7 @@ public:
 
 
 
-
+	
 	///-----------------------------------------------------------------------------
 	//アンカーポイント
 
@@ -93,6 +93,8 @@ private:
 	b2Body* AnchorPoint_body;
 
 	b2Vec2 m_AnchorPoint_size;
+
+	bool change_dynamic_flag;
 
 };
 

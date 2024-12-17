@@ -165,6 +165,23 @@ public:
 
             }
 
+            //引っ張れる床のオブジェクトの引っ張る処理
+            if (objectA->object_name == Object_Movable_Ground || objectB->object_name == Object_Movable_Ground)
+            {
+                //どちらが岩のオブジェクトか特定
+                if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
+                {
+                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    ground_instance->Pulling_ground(objectA->add_force);//木を引っ張る処理を呼び出す
+                }
+                else
+                {
+                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    ground_instance->Pulling_ground(objectB->add_force);//木を引っ張る処理を呼び出す
+                }
+
+            }
+
             //岩のオブジェクトの引っ張る処理
             if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
             {
