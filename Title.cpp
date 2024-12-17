@@ -23,7 +23,7 @@ void TitleScene::Update()
 	if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
-		sceneManager.ChangeScene(2);
+		sceneManager.ChangeScene(SCENE_STAGE_SELECT);
 	};
 }
 

@@ -121,11 +121,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 
 	
-	sceneManager.RegisterScene(1, []() { return std::make_unique<TitleScene>(); });
-	sceneManager.RegisterScene(2, []() { return std::make_unique<GameScene>(); });
+	sceneManager.RegisterScene(SCENE_TITLE, []() { return std::make_unique<TitleScene>(); });
+	sceneManager.RegisterScene(SCENE_STAGE_SELECT, []() { return std::make_unique<StageSelectScene>(); });
+	sceneManager.RegisterScene(SCENE_GAME, []() { return std::make_unique<GameScene>(); });
 
 	//‰ŠúƒV[ƒ“‚Ìİ’è
-	sceneManager.ChangeScene(1);
+	sceneManager.ChangeScene(SCENE_TITLE);
 	
 
 	while (1)
