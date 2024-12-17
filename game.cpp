@@ -110,8 +110,8 @@ void Game::Update(void)
 	Field::Update();
 
 
-	//シーン遷移の確認がよう
-	if (Keyboard_IsKeyDown(KK_R))
+	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
+	if (Keyboard_IsKeyDown(KK_R)&&Anchor::GetAnchorState()==Nonexistent_state)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
 		sceneManager.ChangeScene(SCENE_RESULT);

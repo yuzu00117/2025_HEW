@@ -188,4 +188,23 @@ void sloping_block::Draw()
 
 void sloping_block::Finalize()
 {
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	if (GetObjectSlopingBlockBody() != nullptr)
+	{
+		//ボディの削除
+		world->DestroyBody(SlopingBlock_body);
+	}
+
+	
+	//テクスチャの解放
+	UnInitTexture(g_sloping_block_left_down_Texture);
+	UnInitTexture(g_sloping_block_left_upper_Texture);
+	UnInitTexture(g_sloping_block_right_down_Texture);
+	UnInitTexture(g_sloping_block_right_upper_Texture);
+
 }
