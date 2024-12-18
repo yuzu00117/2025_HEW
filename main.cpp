@@ -36,6 +36,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 //グローバル変数
+HWND hWnd;
+
 #ifdef _DEBUG
 int g_CountFPS;
 char g_DebugStr[2048] = WINDOW_CAPTION;
@@ -70,7 +72,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	AdjustWindowRect(&rc, WS_EX_OVERLAPPEDWINDOW, FALSE);
 
 	//ウィンドウの作成
-	HWND hWnd = CreateWindow(
+	hWnd = CreateWindow(
 		CLASS_NAME,         //使用するウィンドウクラス
 		WINDOW_CAPTION,     //ウィンドウの名前
 		WS_OVERLAPPEDWINDOW,//
@@ -122,6 +124,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	
 	sceneManager.RegisterScene(SCENE_TITLE, []() { return std::make_unique<TitleScene>(); });
+	sceneManager.RegisterScene(SCENE_TITLE, []() { return std::make_unique<OP_Scene>(); });
 	sceneManager.RegisterScene(SCENE_STAGE_SELECT, []() { return std::make_unique<StageSelectScene>(); });
 	sceneManager.RegisterScene(SCENE_GAME, []() { return std::make_unique<GameScene>(); });
 	sceneManager.RegisterScene(SCENE_RESULT, []() { return std::make_unique<ResulttScene>(); });
@@ -244,6 +247,17 @@ void FinalFinalize()
 
 	//レンダリングの終了処理
 	UninitRenderer();
+}
+
+
+HWND* GetWindowsHandle()
+{
+	return &hWnd;
+}
+
+void SetWindowsHandle(HWND temp)
+{
+	hWnd = temp;
 }
 
 

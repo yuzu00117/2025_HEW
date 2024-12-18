@@ -147,6 +147,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="one-way_platform.cpp" />
+    <ClCompile Include="op.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="video.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
     <ClCompile Include="word.cpp" />
@@ -200,6 +202,7 @@
     <ClInclude Include="static_to_dynamic_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="video.h" />
     <ClInclude Include="wood.h" />
     <ClInclude Include="UI_StaminaSpirit_Gauge.h" />
     <ClInclude Include="word.h" />

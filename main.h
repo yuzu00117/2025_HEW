@@ -65,4 +65,9 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 
 void FinalFinalize();
 
+//Windowsからハンドルを取るためにハンドルのアドレスを取得する
+HWND* GetWindowsHandle();
+void	SetWindowsHandle(HWND temp);
+
+
 #endif //_MAIN_H
