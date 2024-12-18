@@ -22,6 +22,8 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
 
     collider_player_sensor,
 
+    collider_level3_player_sensor,
+
     collider_anchor,
     collider_anchor_chain,
 

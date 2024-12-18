@@ -114,6 +114,7 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 
 
 
+
 void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 {
 	//センサーからでたアンカーポイントのボディを配列から削除する

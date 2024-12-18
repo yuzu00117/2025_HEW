@@ -12,7 +12,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+
+#include"include/box2d/box2d.h"
 #include"world_box2d.h"
+
+
 class Player
 {
 public:
@@ -41,7 +45,7 @@ public:
 	void Draw();
 	void Finalize();
 
-
+	void Player_sensor_size_change(int anchor_level);
 
 
 	static b2Body* GetOutSidePlayerBody();
@@ -101,6 +105,16 @@ public:
 
 
 
+	b2Vec2 GetSensorSizeLev1_2(void)
+	{
+		return Sensor_size_Lev1_2;
+	}
+
+	b2Vec2 GetSensorSizeLev3(void)
+	{
+		return Sensor_size_Lev3;
+	}
+
 private:
 
 	//プレイヤーのBodyをもつ
@@ -131,6 +145,11 @@ private:
 
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;
+
+
+	//レベルに応じたセンサーの大きさを記述したもの
+	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40, 34);
+	b2Vec2 Sensor_size_Lev3 = b2Vec2(80, 68);
 };
 
 #endif // !PLAYER_H

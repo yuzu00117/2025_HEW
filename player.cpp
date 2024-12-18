@@ -58,7 +58,14 @@ Player::~Player()
 
 void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 {
-  
+    if (m_body) {
+        // ボディを削除
+        Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+        b2World* world = box2d_world.GetBox2dWorldPointer();
+        world->DestroyBody(m_body);
+        m_body = nullptr;
+    }
+
     //テクスチャのロード
     g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
@@ -194,6 +201,11 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 void Player::Update()
 {
     // プレイヤーの更新処理
+    
+    //センサーの画面サイズに応じた大きさの変動
+    Player_sensor_size_change(AnchorSpirit::GetAnchorLevel());
+
+
 
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
@@ -208,8 +220,7 @@ void Player::Update()
     b2Vec2 max_velocity = { 1.8f , 1.2f };
     b2Vec2 player_position = { PlayerPosition::GetPlayerPosition().x,PlayerPosition::GetPlayerPosition().y };
     b2Vec2 player_point = m_body->GetWorldPoint(player_position);
-
-
+   
 
     //絶対値に変更する デットゾーンの審査に使うため　tool.cppに作った
     //デットゾーンをつくる x,yの値を足して一定以上経ったら　呼び出し
@@ -342,6 +353,9 @@ void Player::Update()
             g_anchor_frame_management_number = 200;
         }
 
+
+
+
         g_anchor_frame_management_number++;//アンカーが引っ張る
 
         break;
@@ -433,6 +447,29 @@ void Player::Update()
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 }
 
+
+void Player::Player_sensor_size_change(int anchor_level)
+{
+    if (anchor_level < 3)//アンカーレベルの１、２の時
+    {
+        if (GetSensorSize() == GetSensorSizeLev3())//センサーの大きさを取得して
+        {
+            b2Vec2 pos=GetPlayerBody()->GetPosition();
+            Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev1_2());
+        }
+    }
+
+    if (anchor_level == 3)//アンカーレベルが３の時
+    {
+        if (GetSensorSize() == GetSensorSizeLev1_2())//大きさを取得して差分があれば
+        {
+            b2Vec2 pos = GetPlayerBody()->GetPosition();
+            Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
+        }
+    }
+}
+
+
 void Player::Draw()
 {
     if (m_body != nullptr) {
@@ -467,17 +504,17 @@ void Player::Draw()
         //センサー描画
 
 
-        // シェーダリソースを設定
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        //// シェーダリソースを設定
+        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        DrawSprite(
-            { screen_center.x,
-              screen_center.y },
-            m_body->GetAngle(),
-            { GetSensorSize().x * scale,GetSensorSize().y * scale }
-        );
-        float size_sensor = GetSensorSize().x * scale;
-        float size = GetSize().x * scale;
+        //DrawSprite(
+        //    { screen_center.x,
+        //      screen_center.y },
+        //    m_body->GetAngle(),
+        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        //);
+        //float size_sensor = GetSensorSize().x * scale;
+        //float size = GetSize().x * scale;
 
     }
 }
