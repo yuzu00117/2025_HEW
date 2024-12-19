@@ -132,6 +132,7 @@
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
+    <ClCompile Include="bg.cpp" />
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="anchor_spirit.h" />
+    <ClInclude Include="bg.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />

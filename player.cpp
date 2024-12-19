@@ -1,15 +1,3 @@
-//-----------------------------------------------------------------------------------------------------
-// #name player.cpp
-// #description プレイヤー
-// #make 2024/11/22　永野義也
-// #update 2024/11/22
-// #comment 追加・修正予定
-//          ・コンストラクタでbodyとfixture作ってGetInstanceで初期値を入力
-//----------------------------------------------------------------------------------------------------
-
-
-
-
 #include"include/box2d/box2d.h"
 #include"player.h"
 #include"world_box2d.h"
@@ -252,6 +240,16 @@ void Player::Update()
             m_direction = 0;
         }
 
+        //playerのスピード上昇
+        //上がり方がわかりずらいかもしれない
+        if (Keyboard_IsKeyDownTrigger(KK_Q))
+        {
+            m_speed = 0.75f;
+
+        }
+
+
+
     }
 
 
@@ -270,6 +268,12 @@ void Player::Update()
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 
+
+    //ジャンプのバフ
+    if (Keyboard_IsKeyDownTrigger(KK_Z))
+    {
+        m_jump_force = b2Vec2(0.0f, -0.40f * 1.5f);
+    }
 
 
     //アンカーのレベルを手動で変えられるしょり　完成版ではけす

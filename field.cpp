@@ -2,7 +2,7 @@
 // #name field.cpp
 // #description csvを用いてマップチップを作成し、描画するファイル
 // #make 2024/11/04　永野義也
-// #update 2024/12/01
+// #update 2024/12/13
 // #comment 追加・修正予定
 //          ・Fieldの設定をしてる  呼び出しの仕方としてｈスコープ解決演算子使ってやって （Field::Draw)
 //			・マップを管理する基底クラスでグランドなどが継承している
@@ -43,8 +43,6 @@ ObjectManager& objectManager = ObjectManager::GetInstance();
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
 static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//アンカーポイントのテクスチャ
-static ID3D11ShaderResourceView* g_EnemyDynamic_Texture = NULL;	//動的エネミーのテクスチャ
-static ID3D11ShaderResourceView* g_EnemyStatic_Texture = NULL;	//静的エネミーのテクスチャ
 
 Field::Field()
 {
@@ -65,8 +63,6 @@ void Field::Initialize()
 	//テクスチャの初期化
 	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
 	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
-	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
-	g_EnemyStatic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");//静的エネミーのテクスチャ
 
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
@@ -112,10 +108,10 @@ void Field::Initialize()
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
 			if (field_map[y][x] == 5) {
-				m_p_field_array[y][x] = new EnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, false, true, enemy_static_texture);
+				objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
 			if (field_map[y][x] == 6) {
-				m_p_field_array[y][x] = new EnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, enemy_dynamic_texture);
+				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
 			if (field_map[y][x] == 7) {
 				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 8.0f),b2Vec2(1.0f,1.0f),1);
@@ -179,8 +175,6 @@ void Field::Update()
 {
 	//アンカーポイントの更新
 	AnchorPoint::Update();
-	EnemyDynamic::Update();
-	EnemyStatic::Update();
 
 	objectManager.UpdateAll();
 }
@@ -218,12 +212,6 @@ void Field::Draw()
 					break;
 				case ground_texture:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
-					break;
-				case enemy_dynamic_texture:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
-					break;
-				case enemy_static_texture:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyStatic_Texture);
 					break;
 				default:
 					break;
@@ -271,12 +259,11 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
-  
-	EnemyDynamic::Finalize();
-	EnemyStatic::Finalize();
-	AnchorPoint::Finalize();
 
+	//終了処理
+	AnchorPoint::Finalize();
 	objectManager.FinalizeAll();
+
 }
 
 

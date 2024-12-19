@@ -19,15 +19,18 @@
 #include"main.h"
 #include<iostream>
 #include"player.h"
+#include"player_stamina.h"
+#include"anchor_spirit.h"
 
 
 #define	MAX_WORD	(100)
-#define NUMBER_PARAMETER	(1)
+#define NUMBER_PARAMETER	(3)
 
 enum PARAMETER
 {
 	PARAMETER_PLAYER_POSITION = 0,
-
+	PARAMETER_PLAYER_STAMINA,
+	PARAMETER_SPIRIT_GAUGE,
 };
 
 
@@ -95,7 +98,26 @@ void	UpdateDebug()
 				//位置情報を文字列に変換
 				words = ToString(L"プ レ イ ヤ ー Position : ", g_player_position.x, L" , ", g_player_position.y);
 				//文字列を画像に変換
-				SetWord(words, g_word[PARAMETER_PLAYER_POSITION], MAX_WORD);
+				SetWord(words, g_word[i], MAX_WORD);
+				break;				
+				//プレイヤーの体力
+			case PARAMETER_PLAYER_STAMINA:
+				//プレイヤーの位置情報
+				float stamina;
+				stamina = PlayerStamina::GetPlayerStaminaValue();
+				//位置情報を文字列に変換
+				words = ToString(L"プ レ イ ヤ ー Stamina : ", stamina);
+				//文字列を画像に変換
+				SetWord(words, g_word[i], MAX_WORD);
+				break;		
+				//ソウルゲージ
+			case PARAMETER_SPIRIT_GAUGE:
+				//プレイヤーの位置情報
+				float spirit = AnchorSpirit::GetAnchorSpiritValue();
+				//位置情報を文字列に変換
+				words = ToString(L"ソ ー ル ゲ ー ジ : ", spirit);
+				//文字列を画像に変換
+				SetWord(words, g_word[i], MAX_WORD);
 				break;
 			}
 		}
@@ -131,7 +153,17 @@ void	DrawDebug()
 			case PARAMETER_PLAYER_POSITION:
 				first_word_position.x = (screen_rightup.x - screen_rightup.x / 4) * scale;
 				first_word_position.y = (screen_rightup.y + distance_y * i) * scale;
-				DrawWord(first_word_position, word_scales, word_rotate, g_word[PARAMETER_PLAYER_POSITION]);
+				DrawWord(first_word_position, word_scales, word_rotate, g_word[i]);
+				break;			
+			case PARAMETER_PLAYER_STAMINA:
+				first_word_position.x = (screen_rightup.x - screen_rightup.x / 4) * scale;
+				first_word_position.y = (screen_rightup.y + distance_y * i) * scale;
+				DrawWord(first_word_position, word_scales, word_rotate, g_word[i]);
+				break;			
+			case PARAMETER_SPIRIT_GAUGE:
+				first_word_position.x = (screen_rightup.x - screen_rightup.x / 4) * scale;
+				first_word_position.y = (screen_rightup.y + distance_y * i) * scale;
+				DrawWord(first_word_position, word_scales, word_rotate, g_word[i]);
 				break;
 			}
 		}

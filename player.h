@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name player.h
-// #description ƒvƒŒƒCƒ„[
+// #description ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 // #make 2024/11/19
 // #update 2024/11/20
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Åbody‚Æfixtureì‚Á‚ÄGetInstance‚Å‚Â‚­‚é
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§bodyã¨fixtureä½œã£ã¦GetInstanceã§ã¤ãã‚‹
 //           
 //----------------------------------------------------------------------------------------------------
 
@@ -13,7 +13,9 @@
 #define PLAYER_H
 
 
+
 #include"include/box2d/box2d.h"
+
 #include"world_box2d.h"
 
 
@@ -26,20 +28,20 @@ public:
 	~Player();
 
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾ @‚±‚ÌƒNƒ‰ƒX‚Å‚Íˆê‚Â‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚µ‚©”F‚ß‚È‚¢
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾— ã€€ã“ã®ã‚¯ãƒ©ã‚¹ã§ã¯ä¸€ã¤ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã—ã‹èªã‚ãªã„
 	//static Player& GetInstance(b2Vec2 position = b2Vec2(1, 0), b2Vec2 size = b2Vec2(1, 2),b2Vec2 sensor_size=b2Vec2(40,30)) {
 	//	static Player instance(position, size,sensor_size); // Initialized only once
 	//	return instance;
 	//}
 	
 
-		// ƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+		// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 	static Player& GetInstance() {
 		static Player instance;
 		return instance;
 	}
 
-	 // ƒvƒŒƒCƒ„[‚Ì‰Šú‰»
+	 // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸåŒ–
 	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size);
 	void Update();
 	void Draw();
@@ -50,45 +52,46 @@ public:
 
 	static b2Body* GetOutSidePlayerBody();
 
-	//•`‰æ—p‚ÉƒTƒCƒY‚ğ‚½‚¹‚Ä‚¨‚­
+	//æç”»ç”¨ã«ã‚µã‚¤ã‚ºã‚’æŒãŸã›ã¦ãŠã
 	b2Vec2 GetSize() const 
 	{
 		return m_p_size;
 	}
 	void SetSize(b2Vec2 size)
 	{
-		//‚±‚Ìˆ—‚ÍŠG‚ªã‚ª‚Á‚½‚çƒvƒŒƒCƒ„[‚Æ°‚ÌŠÔ‚ÌŒ„ŠÔ‚ğ’²®‚·‚éˆ—
+		//ã“ã®å‡¦ç†ã¯çµµãŒä¸ŠãŒã£ãŸã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨åºŠã®é–“ã®éš™é–“ã‚’èª¿æ•´ã™ã‚‹å‡¦ç†
 		//size.y = size.y + 1;
 		m_p_size = size;
 	}
 
-	//•`‰æ—p‚ÉƒTƒCƒY‚ğ‚½‚¹‚Ä‚¨‚­
+	//æç”»ç”¨ã«ã‚µã‚¤ã‚ºã‚’æŒãŸã›ã¦ãŠã
 	b2Vec2 GetSensorSize() const {return m_sensor_size;}
 	void SetSensorSize(b2Vec2 sensor_size) {
 		m_sensor_size = sensor_size;
 	}
 
 
-	//¡ƒWƒƒƒ“ƒv’†‚©‚Ç‚¤‚©‚ğƒZƒbƒg
+	//ä»Šã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã‹ã©ã†ã‹ã‚’ã‚»ãƒƒãƒˆ
 	void SetIsJumping(bool flag)
 	{
 		m_is_jumping = flag;
 	}
-	//¡ƒWƒƒƒ“ƒv’†‚©‚Ç‚¤‚©‚ğæ“¾
+	//ä»Šã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã‹ã©ã†ã‹ã‚’å–å¾—
 	bool GetIsJumping(void)
 	{
 		return m_is_jumping;
 	}
 
 
-	//¡‚Ì‘¬“x‚ğæ“¾
+
+	//ä»Šã®é€Ÿåº¦ã‚’å–å¾—
 	float	GetSpeed()
 	{
 		return m_speed;
 	}
 
-	//¡‚ÌƒvƒŒƒCƒ„[‚ÌŒü‚«‚ğæ“¾
-	// ‰EŒü‚«F1    ¶Œü‚«F0
+	//ä»Šã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ãã‚’å–å¾—
+	// å³å‘ãï¼š1    å·¦å‘ãï¼š0
 	bool GetDirection() {
 		return m_direction;
 	}
@@ -117,37 +120,37 @@ public:
 
 private:
 
-	//ƒvƒŒƒCƒ„[‚ÌBody‚ğ‚à‚Â
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Bodyã‚’ã‚‚ã¤
 	b2Body* m_body;
 
-	//•`‰æ—p‚ÌBody‚ÌƒTƒCƒY‚à‚Á‚Ä‚¨‚­@
-	// ——R‚Æ‚µ‚Ä‚Í‚±‚¢‚Â‚ÌƒTƒCƒY‚ğbox2d‚È‚¢‚ÅŠÇ—‚·‚é‚Ì‚Í‚¾‚é‚¢‚©‚ç
-	//Body‚©‚çfixture‚Æ‚Á‚Ä‚«‚ÄƒTƒCƒYŠm”F‚µ‚Ä[@‚»‚Ì‚ÍlŠp‚¾‚©‚ç[@‚¾‚é‚¢@‚µ‚Ä‚à‚¢‚¢‚©‚à
+	//æç”»ç”¨ã®Bodyã®ã‚µã‚¤ã‚ºã‚‚ã£ã¦ãŠãã€€
+	// ç†ç”±ã¨ã—ã¦ã¯ã“ã„ã¤ã®ã‚µã‚¤ã‚ºã‚’box2dãªã„ã§ç®¡ç†ã™ã‚‹ã®ã¯ã ã‚‹ã„ã‹ã‚‰
+	//Bodyã‹ã‚‰fixtureã¨ã£ã¦ãã¦ã‚µã‚¤ã‚ºç¢ºèªã—ã¦ãƒ¼ã€€ãã®æ™‚ã¯å››è§’ã ã‹ã‚‰ãƒ¼ã€€ã ã‚‹ã„ã€€ã—ã¦ã‚‚ã„ã„ã‹ã‚‚
 	b2Vec2 m_p_size;
 
-	//ƒZƒ“ƒT[—p‚ÌƒTƒCƒY
+	//ã‚»ãƒ³ã‚µãƒ¼ç”¨ã®ã‚µã‚¤ã‚º
 	b2Vec2 m_sensor_size;
 
 
-	//ƒWƒƒƒ“ƒvƒ{ƒ^ƒ“‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚©iƒgƒŠƒK[§Œäj
+	//ã‚¸ãƒ£ãƒ³ãƒ—ãƒœã‚¿ãƒ³æŠ¼ã•ã‚ŒãŸã‹ã©ã†ã‹ï¼ˆãƒˆãƒªã‚¬ãƒ¼åˆ¶å¾¡ï¼‰
 	static bool m_jump_pressed;
-	//ƒWƒƒƒ“ƒv’†‚©‚Ç‚¤‚©
+	//ã‚¸ãƒ£ãƒ³ãƒ—ä¸­ã‹ã©ã†ã‹
 	static bool    m_is_jumping;
-	//ƒWƒƒƒ“ƒv‚·‚é‚Ì—ÍiƒWƒƒƒ“ƒv‚Å‚«‚é‚‚³‚É‰e‹¿j
+	//ã‚¸ãƒ£ãƒ³ãƒ—ã™ã‚‹æ™‚ã®åŠ›ï¼ˆã‚¸ãƒ£ãƒ³ãƒ—ã§ãã‚‹é«˜ã•ã«å½±éŸ¿ï¼‰
 	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.40f);
 
-	//‰¡ˆÚ“®ƒXƒs[ƒh
+	//æ¨ªç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰
 	float   m_speed = 0.04f;
 
-	//ƒvƒŒƒCƒ„[‚ÌŒü‚«
-	// ‰EŒü‚«F1    ¶Œü‚«F-1
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ã
+	// å³å‘ãï¼š1    å·¦å‘ãï¼š-1
 	static bool		m_direction;
 
-	//ƒAƒ“ƒJ[‚ğg—p’†‚æƒtƒ‰ƒO
+	//ã‚¢ãƒ³ã‚«ãƒ¼ã‚’ä½¿ç”¨ä¸­ã‚ˆãƒ•ãƒ©ã‚°
 	bool m_is_use_anchor = false;
 
 
-	//ƒŒƒxƒ‹‚É‰‚¶‚½ƒZƒ“ƒT[‚Ì‘å‚«‚³‚ğ‹Lq‚µ‚½‚à‚Ì
+	//ãƒ¬ãƒ™ãƒ«ã«å¿œã˜ãŸã‚»ãƒ³ã‚µãƒ¼ã®å¤§ãã•ã‚’è¨˜è¿°ã—ãŸã‚‚ã®
 	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40, 34);
 	b2Vec2 Sensor_size_Lev3 = b2Vec2(80, 68);
 };
