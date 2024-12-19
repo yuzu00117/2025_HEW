@@ -23,6 +23,7 @@
 #include"debug.h"
 #include"display.h"
 #include"scene.h"
+#include"player.h"
 
 
 void Game::Initialize()
@@ -31,8 +32,11 @@ void Game::Initialize()
 	//文字（絵）
 	InitializeWord();
 
-	//プレイヤーの初期化
-	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), b2Vec2(40, 30));
+
+	//�v���C���[�̏�����
+	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
+
+
 
 	//アンカーの初期化
 	Anchor::Initialize();

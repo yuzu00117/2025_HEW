@@ -17,10 +17,10 @@
 #include"player_position.h"
 #include"anchor_spirit.h"
 
-#define MAX_ANCHOR_POINT_IN_SENSOR (10)//センサー内に存在できる最大のアンカーポイントの数
+#define MAX_ANCHOR_POINT_IN_SENSOR (40)//センサー内に存在できる最大のアンカーポイントの数
 
 
-b2Body* g_anchor_point_body[10];//アンカーポイントのボディを設定　グローバル変数
+b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR];//アンカーポイントのボディを設定　グローバル変数
 
 b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 
@@ -111,6 +111,7 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 		}
 	}
 }
+
 
 
 
