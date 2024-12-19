@@ -80,6 +80,17 @@ void EnemyStatic::Initialize()
 
 void EnemyStatic::Finalize()
 {
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	if (GetBody() != nullptr)
+	{
+		world->DestroyBody(GetBody());
+	}
+
 	UnInitTexture(g_EnemyStatic_Texture);
 }
 
