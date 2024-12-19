@@ -162,8 +162,8 @@ void Field::Initialize()
 				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Circle_collider, 1);
 			}
 
-			if (field_map[y][x] == 18) {
-				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 20.0f), b2Vec2(1.0f, 1.0f), 1);
+			if (field_map[y][x] == 18) {//
+				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 5.0f), b2Vec2(1.0f, 1.0f), 1);
 			}
 
 		}

@@ -82,8 +82,22 @@ public:
 		AnchorPoint_body = body;
 	}
 
+	//今引っ張られているのかを取得
+	bool	GetIfPulling() {
+		return pulling;
+	}
+
+	//今引っ張られているのかをセット
+	void	SetIfPulling(bool flag) {
+		pulling = flag;
+	}
+
 private:
 	int id; // 各インスタンス固有の ID
+
+	bool pulling;
+	int m_Frame_PullingForce_AfterDestoryEnemy = 0;
+	b2Vec2	add_force;
 
 	b2Body* Ground_body;
 
@@ -93,8 +107,6 @@ private:
 	b2Body* AnchorPoint_body;
 
 	b2Vec2 m_AnchorPoint_size;
-
-	bool change_dynamic_flag;
 
 };
 

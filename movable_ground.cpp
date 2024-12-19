@@ -9,8 +9,6 @@
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
-static ID3D11ShaderResourceView* g_Ground_Texture1 = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_Ground_Texture2 = NULL;//アンカーのテクスチャ
 
 
 movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
@@ -31,38 +29,45 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//サイズを設定する
 	b2Vec2 ground_size;
 	ground_size.x = Ground_size.x / BOX2D_SCALE_MANAGEMENT;
-	ground_size.y = Ground_size.y / BOX2D_SCALE_MANAGEMENT;
+	ground_size.y = Ground_size.y / BOX2D_SCALE_MANAGEMENT * 0.995f;
 
 
-	b2BodyDef Ground_body;//床の幹の部分
-	Ground_body.type = b2_dynamicBody;
-	Ground_body.position.Set(Position.x, Position.y);
-	Ground_body.fixedRotation = false;
+	b2BodyDef ground_body;//床の部分
+	ground_body.type = b2_dynamicBody;
+	ground_body.position.Set(Position.x, Position.y);
+	ground_body.fixedRotation = true;
 
-	b2Body* m_Ground_body = world->CreateBody(&Ground_body);
+	b2Body* p_Ground_body = world->CreateBody(&ground_body);
 
-	SetObjectGroundBody(m_Ground_body);
+	SetObjectGroundBody(p_Ground_body);
 
 
 
-	b2PolygonShape Ground_shape;
-	Ground_shape.SetAsBox(ground_size.x * 0.5, ground_size.y * 0.5);
+	b2PolygonShape ground_shape;
+	ground_shape.SetAsBox(ground_size.x * 0.5, ground_size.y * 0.5);
 
 	b2FixtureDef ground_fixture;
 
-	ground_fixture.shape = &Ground_shape;
+	ground_fixture.shape = &ground_shape;
 	ground_fixture.density = 1.0f;
 	ground_fixture.friction = 0.3f;//摩擦
-	ground_fixture.restitution = 0.1f;//反発係数
+	ground_fixture.restitution = 0.0f;//反発係数
 	ground_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 	ground_fixture.filter = createFilterExclude("object_filter", {});
 
 
-	b2Fixture* object_ground_fixture = m_Ground_body->CreateFixture(&ground_fixture);
+	b2Fixture* object_ground_fixture = p_Ground_body->CreateFixture(&ground_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_ground_data = new ObjectData{ collider_ground };//引っ張られてない時はcollider_ground、引っ張れてる時はcollider_object
+	ObjectData* object_ground_data = new ObjectData{ collider_ground };//一旦壁判定
 	object_ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_ground_data);
+
+	object_ground_data->object_name = Object_Movable_Ground;
+
+	int ID = object_ground_data->GenerateID();
+	object_ground_data->id = ID;
+	SetID(ID);
+
 
 	//---------------------------------------------------------------------------//
 	//2つめのボディ　床の上のアンカーポイントをつくる
@@ -74,12 +79,12 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 
 
 
-	b2BodyDef anchorpoint_body;//床の幹の部分
+	b2BodyDef anchorpoint_body;//アンカーポイントの部分
 	anchorpoint_body.type = b2_dynamicBody;
 	anchorpoint_body.position.Set(
-		Position.x - (ground_size.x / 2) + (anchorpoint_size.x / 2),
-		Position.y - (ground_size.y / 2) + (anchorpoint_size.y / 2));
-	anchorpoint_body.fixedRotation = false;
+		Position.x,
+		Position.y + (ground_size.y / 2) + (anchorpoint_size.y / 2));
+	anchorpoint_body.fixedRotation = true;
 
 	b2Body* m_AnchorPoint_body = world->CreateBody(&anchorpoint_body);
 
@@ -96,7 +101,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	anchorpoint_fixture.density = 1.0f;
 	anchorpoint_fixture.friction = 0.05f;//摩擦
 	anchorpoint_fixture.restitution = 0.0f;//反発係数
-	anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	anchorpoint_fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
@@ -107,9 +112,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	object_anchorpoint_data->object_name = Object_Movable_Ground;
 
 
-	int ID = object_anchorpoint_data->GenerateID();
-	object_anchorpoint_data->id = ID;
-	SetID(ID);
+	object_anchorpoint_data->id = id;
 
 	//床を引っ張る時に必要になるForce とりあえずサイズに依存でつくる
 	b2Vec2 need_power;
@@ -119,6 +122,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 
 
 	object_anchorpoint_data->add_force = need_power;
+	add_force = object_anchorpoint_data->add_force;
 
 
 	//アンカーレベルの設定
@@ -129,9 +133,9 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//ジョイントする
 
 	b2WeldJointDef jointDef;
-	jointDef.bodyA = m_Ground_body;
+	jointDef.bodyA = p_Ground_body;
 	jointDef.bodyB = m_AnchorPoint_body;
-	jointDef.localAnchorA.Set(0.0f, -ground_size.y * 0.5f); // 床の上端
+	jointDef.localAnchorA.Set(-ground_size.x * 0.5f, -ground_size.y * 0.5f); // 床の上端
 	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
 	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
@@ -149,13 +153,28 @@ movable_ground::~movable_ground()
 void movable_ground::Initialize()
 {
 	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
-	g_Ground_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
-	g_Ground_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
-
 }
 
 void movable_ground::Update()
 {
+	if (pulling || (!pulling && m_Frame_PullingForce_AfterDestoryEnemy < 60 && m_Frame_PullingForce_AfterDestoryEnemy > 0))
+	{
+
+		Pulling_ground(add_force);
+		if (!pulling)
+		{
+			m_Frame_PullingForce_AfterDestoryEnemy++;
+		}
+		else
+		{
+			m_Frame_PullingForce_AfterDestoryEnemy = 1;
+		}
+	}
+	if (m_Frame_PullingForce_AfterDestoryEnemy >= 60)
+	{
+		m_Frame_PullingForce_AfterDestoryEnemy = 0;
+	}
+
 
 }
 
@@ -211,8 +230,6 @@ void movable_ground::Finalize()
 
 	//テクスチャの解放
 	UnInitTexture(g_Ground_Texture);
-	UnInitTexture(g_Ground_Texture1);
-	UnInitTexture(g_Ground_Texture2);
 
 
 }
@@ -220,10 +237,14 @@ void movable_ground::Finalize()
 void movable_ground::Pulling_ground(b2Vec2 pulling_power)
 {
 	b2Body* body = GetObjectAnchorPointBody();
-	//プレイヤー側に倒す
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	//プレイヤー側に引っ張る
+	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x )//プレイヤーが左側
 	{
-		pulling_power.x = pulling_power.x * -1;
+		pulling_power.x = pulling_power.x * -5;
+	}
+	else
+	{
+		pulling_power.x = 0.0f;
 	}
 
 	body->SetLinearVelocity(pulling_power);
