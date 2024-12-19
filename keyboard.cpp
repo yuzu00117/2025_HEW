@@ -21,7 +21,14 @@ static_assert(sizeof(Keyboard_State) == 256 / 8, "キーボード状態構造体のサイズ不
 
 
 static Keyboard_State gState = {};
+static Keyboard_State gStateOld = {};
 
+
+void keycopy()
+{
+    gStateOld = gState; //前回のキー情報を保存
+
+}
 
 static void keyDown(int key)
 {
@@ -60,6 +67,20 @@ bool Keyboard_IsKeyDown(Keyboard_Keys key, const Keyboard_State* pState)
     return false;
 }
 
+bool Keyboard_IsKeyDownTrigger(Keyboard_Keys key)
+{
+    if (key <= 0xfe)
+    {
+        unsigned int* p = (unsigned int*)&gState;
+        unsigned int* p2 = (unsigned int*)&gStateOld;
+
+        unsigned int bf = 1u << (key & 0x1f);
+
+        return ((p[(key >> 5)] & bf) ^ (p2[(key >> 5)] & bf)) & (p[(key >> 5)] & bf);
+
+    }
+    return false;
+}
 
 bool Keyboard_IsKeyUp(Keyboard_Keys key, const Keyboard_State* pState)
 {
@@ -91,10 +112,15 @@ const Keyboard_State* Keyboard_GetState(void)
     return &gState;
 }
 
+const Keyboard_State* Keyboard_GetStateOld(void)
+{
+    return &gStateOld;
+}
 
 void Keyboard_Reset(void)
 {
     ZeroMemory(&gState, sizeof(Keyboard_State));
+    ZeroMemory(&gStateOld, sizeof(Keyboard_State));
 }
 
 

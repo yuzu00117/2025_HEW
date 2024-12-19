@@ -414,6 +414,10 @@ void Keyboard_Reset(void);
 void Keyboard_ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);
 
 
+bool Keyboard_IsKeyDownTrigger(Keyboard_Keys key);
+void    keycopy();
+
+
 //
 // For a Win32 desktop application, call this function from your Window Message Procedure
 //

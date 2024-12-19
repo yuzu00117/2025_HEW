@@ -12,6 +12,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+
 #include"world_box2d.h"
 class Player
 {
@@ -75,6 +76,7 @@ public:
 	{
 		return m_is_jumping;
 	}
+
 
 
 	//¡‚Ì‘¬“x‚ğæ“¾
