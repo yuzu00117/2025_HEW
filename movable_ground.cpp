@@ -157,25 +157,10 @@ void movable_ground::Initialize()
 
 void movable_ground::Update()
 {
-	if (pulling || (!pulling && m_Frame_PullingForce_AfterDestoryEnemy < 60 && m_Frame_PullingForce_AfterDestoryEnemy > 0))
+	if (pulling)
 	{
-
 		Pulling_ground(add_force);
-		if (!pulling)
-		{
-			m_Frame_PullingForce_AfterDestoryEnemy++;
-		}
-		else
-		{
-			m_Frame_PullingForce_AfterDestoryEnemy = 1;
-		}
 	}
-	if (m_Frame_PullingForce_AfterDestoryEnemy >= 60)
-	{
-		m_Frame_PullingForce_AfterDestoryEnemy = 0;
-	}
-
-
 }
 
 
