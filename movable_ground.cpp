@@ -55,8 +55,6 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	ground_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 	ground_fixture.filter = createFilterExclude("object_filter", {});
 
-	//初期位置で隣接にstaticな敵がいる時最初から当たり判定出る問題を防ぐために
-	//------------------------------------------------
 
 	b2Fixture* object_ground_fixture = p_Ground_body->CreateFixture(&ground_fixture);
 
