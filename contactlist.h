@@ -262,6 +262,7 @@ public:
         if ((objectA->collider_type == collider_enemy_static && objectB->object_name == Object_Movable_Ground) ||
             (objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_enemy_static))
         {
+
             if ((objectA->collider_type == collider_enemy_static) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
@@ -339,32 +340,16 @@ public:
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic))
         {
+
             if ((objectA->collider_type == collider_enemy_dynamic) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
-                //もしオブジェクトが引っ張れる床の場合
-                if (objectB->object_name == Object_Movable_Ground) {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    //床が静止状態の場合
-                    if (ground_instance->GetObjectGroundBody()->GetLinearVelocity().x == 0.0f || ground_instance->GetIfPulling() == false) {
-                        return;
-                    }
-
-                }
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
                 enemy_instance->CollisionPulledObject();
             }
             else if ((objectB->collider_type == collider_enemy_dynamic) &&
                 (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
-                //もしオブジェクトが引っ張れる床の場合
-                if (objectA->object_name == Object_Movable_Ground) 
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    if (ground_instance->GetObjectGroundBody()->GetLinearVelocity().x == 0.0f || ground_instance->GetIfPulling() == false) {
-                        return;
-                    }
-                }
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
                 enemy_instance->CollisionPulledObject();
             }
