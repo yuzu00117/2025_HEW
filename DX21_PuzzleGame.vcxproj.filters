@@ -97,6 +97,9 @@
     <ClCompile Include="display.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="enemy_attack.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -206,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="display.h">
       <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_attack.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

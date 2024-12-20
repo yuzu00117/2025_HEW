@@ -88,7 +88,7 @@ public:
 	}
 	void SetDamage(int damage)
 	{
-		m_life = damage;
+		m_damage = damage;
 	}
 
 	int GetSoulgage()
@@ -97,7 +97,7 @@ public:
 	}
 	void SetSoulgage(int soulgage)
 	{
-		m_life = soulgage;
+		m_soulgage = soulgage;
 	}
 
 	bool GetUse()

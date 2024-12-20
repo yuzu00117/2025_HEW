@@ -63,8 +63,8 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
 	// カスタムデータを作成して設定
-	// 動的エネミーに値を登録
-	// 動的エネミーにユーザーデータを登録
+	// 静的エネミーに値を登録
+	// 静的エネミーにユーザーデータを登録
 	ObjectData* data = new ObjectData{ collider_enemy_static };
 	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 	data->object_name = Object_Enemy_Static;
