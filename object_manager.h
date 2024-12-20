@@ -20,6 +20,7 @@
 #include"static_to_dynamic_block.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"enemy_attack.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -29,8 +30,9 @@ enum ObjectType {
     Object_one_way_platform,//足場　したからしか乗れない
     Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
     
-    Object_Enemy_Static,//静的エネミー
+    Object_Enemy_Static, //静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
+    Object_Enemy_Attack, //エネミーの攻撃
 };
 
 
@@ -55,6 +57,8 @@ public:
     void AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
     //動的エネミー生成
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
+    //エネミーの攻撃の生成
+    void AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -70,11 +74,15 @@ public:
     EnemyStatic* FindEnemyStaticByID(int id);
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
+    //IDを使ってエネミーの攻撃を検索
+    EnemyAttack* FindEnemyAttackByID(int id);
 
     //指定の静的エネミーを削除
     void DestroyEnemyStatic(int id);
     //指定の動的エネミーを削除
     void DestroyEnemyDynamic(int id);
+    //指定のエネミーの攻撃を削除
+    void DestroyEnemyAttack(int id);
 
 
     // 全てのオブジェクトを初期化
@@ -95,8 +103,9 @@ private:
     std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// 足場のリスト
     std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//斜面のリスト
     std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//静的→動的ブロック挙動
-    std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
+    std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;  //静的エネミーのリスト
     std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//静的エネミーのリスト
+    std::vector<std::unique_ptr<EnemyAttack>> enemy_attackList;  //エネミーの攻撃のリスト
 
     //ここにオブジェクトごとにリストを追加していく感じ
 

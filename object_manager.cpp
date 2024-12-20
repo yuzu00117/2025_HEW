@@ -59,6 +59,11 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
 {
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
+//エネミーの攻撃の生成
+void ObjectManager::AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle)
+{
+    enemy_attackList.emplace_back(std::make_unique<EnemyAttack>(position, body_size, angle));
+}
 
 
 
@@ -132,6 +137,16 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+//IDを使ってエネミーの攻撃を検索
+EnemyAttack* ObjectManager::FindEnemyAttackByID(int id)
+{
+    for (auto& w : enemy_attackList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
 
 //指定の静的エネミーを削除
 void ObjectManager::DestroyEnemyStatic(int id)
@@ -152,6 +167,18 @@ void ObjectManager::DestroyEnemyDynamic(int id)
     for (auto& w : enemy_dynamicList) {
         if (w->GetID() == id) {
             enemy_dynamicList.erase(enemy_dynamicList.begin() + cnt);
+            break;
+        }
+        ++cnt;
+    }
+}
+//指定のエネミーの攻撃を削除
+void ObjectManager::DestroyEnemyAttack(int id)
+{
+    int cnt = 0;
+    for (auto& w : enemy_attackList) {
+        if (w->GetID() == id) {
+            enemy_attackList.erase(enemy_attackList.begin() + cnt);
             break;
         }
         ++cnt;
@@ -186,6 +213,10 @@ void ObjectManager::InitializeAll() {
     }
 
     for (auto& w : enemy_dynamicList) {
+        w->Initialize();
+    }
+
+    for (auto& w : enemy_attackList) {
         w->Initialize();
     }
 }
@@ -226,6 +257,13 @@ void ObjectManager::UpdateAll() {
             w->Update();
         }
     }
+
+    for (auto& w : enemy_attackList) {
+        if (w)
+        {
+            w->Update();
+        }
+    }
 }
 
 // 全ての木を描画
@@ -257,6 +295,10 @@ void ObjectManager::DrawAll() {
     for (auto& w : enemy_dynamicList) {
         w->Draw();
     }
+
+    for (auto& w : enemy_attackList) {
+        w->Draw();
+    }
 }
 
 // 全ての木を破棄
@@ -280,6 +322,9 @@ void ObjectManager::FinalizeAll() {
     }
 
     for (auto& w : enemy_staticList) {
+        w->Finalize();
+    }
+    for (auto& w : enemy_attackList) {
         w->Finalize();
     }
 
