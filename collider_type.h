@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name collider_type.h
-// #description ƒRƒ‰ƒCƒ_[‚Ìí—Ş‚ğƒZƒbƒg
-// #make 2024/11/22@‰i–ì‹`–ç
-// #update 2024/11/22
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒRƒ‰ƒCƒ_[‚Ìí—Ş‚ğ‘‚â‚µ‚½‚¢‚Æ‚«‚É•ÏX‚µ‚Ä‚Ë
+// #description ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ç¨®é¡ã‚’ã‚»ãƒƒãƒˆ
+// #make 2024/11/22ã€€æ°¸é‡ç¾©ä¹Ÿ
+// #update 2024/12/20
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ç¨®é¡ã‚’å¢—ã‚„ã—ãŸã„ã¨ãã«å¤‰æ›´ã—ã¦ã­
 //----------------------------------------------------------------------------------------------------
 
 
@@ -15,7 +15,7 @@
 #include"include/box2d/box2d.h"
 #include"object_manager.h"
 
-enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰Á‚µ‚½‚¢ê‡‚±‚±‚É‘«‚µ‚Ä@‰º‚ÅƒZƒbƒg‚µ‚Ä‚Ë
+enum ColliderTypeList//ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã®æ¥è§¦åˆ¤å®šã§ä½¿ã†ã€€æ–°ãŸãªã‚ãŸã‚Šåˆ¤å®šã®ç¨®é¡ã‚’è¿½åŠ ã—ãŸã„å ´åˆã“ã“ã«è¶³ã—ã¦ã€€ä¸‹ã§ã‚»ãƒƒãƒˆã—ã¦ã­
 {
     collider_player_body,
     collider_player_leg,
@@ -35,38 +35,38 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
 
     collider_enemy_dynamic,
     collider_enemy_static,
-    collider_enemy_sensor,
+  ã€€collider_enemy_sensor,
     collider_enemy_attack,
 };
 
 
-// ƒJƒXƒ^ƒ€ƒf[ƒ^ƒNƒ‰ƒX@‚±‚±‚ÅƒRƒ‰ƒCƒ_[‚Ìƒ^ƒCƒv‚ğƒZƒbƒg
+// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚¯ãƒ©ã‚¹ã€€ã“ã“ã§ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚¿ã‚¤ãƒ—ã‚’ã‚»ãƒƒãƒˆ
 class ObjectData {
 public:
-    ColliderTypeList collider_type; // ƒRƒ‰ƒCƒ_[‚Ìƒ^ƒCƒv‚ğƒZƒbƒg                     
-    void* extra;                    // ’Ç‰Áî•ñ‚ ‚é‚È‚çƒZƒbƒg
+    ColliderTypeList collider_type; // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ã‚¿ã‚¤ãƒ—ã‚’ã‚»ãƒƒãƒˆ                     
+    void* extra;                    // è¿½åŠ æƒ…å ±ã‚ã‚‹ãªã‚‰ã‚»ãƒƒãƒˆ
 
     // Constructor
     ObjectData(const ColliderTypeList type)
         : collider_type(type), extra(nullptr) {}
 
 
-    b2Vec2 add_force = { 0.0f,0.0f };// ’Ç‰Á‚Ìb2vecƒf[ƒ^
-    ObjectType object_name;  // ’Ç‰Á‚Ì•¶š—ñƒf[ƒ^
-    int id;//ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚é‚½‚ß‚ÌID
+    b2Vec2 add_force = { 0.0f,0.0f };// è¿½åŠ ã®b2vecãƒ‡ãƒ¼ã‚¿
+    ObjectType object_name;  // è¿½åŠ ã®æ–‡å­—åˆ—ãƒ‡ãƒ¼ã‚¿
+    int id;//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ãŸã‚ã®ID
 
     int need_anchor_level;
 
-    // ID ‚ğ¶¬‚·‚éŠÖ”
+    // ID ã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°
     static int GenerateID() {
-        return current_id++;//‘S‚Ä‚ÌID‚ğŠÇ—
+        return current_id++;//å…¨ã¦ã®IDã‚’ç®¡ç†
     }
 
 private:
-    // Ã“IƒJƒEƒ“ƒ^ ID
+    // é™çš„ã‚«ã‚¦ãƒ³ã‚¿ ID
     static int current_id;
 
-  
+
 
 
 };

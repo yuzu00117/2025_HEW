@@ -27,6 +27,7 @@
 #include "dinput.h"
 #include "mmsystem.h"
 
+
 #pragma warning(pop)
 
 
@@ -60,6 +61,8 @@ using namespace DirectX;
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
+HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 
+void FinalFinalize();
 
 #endif //_MAIN_H

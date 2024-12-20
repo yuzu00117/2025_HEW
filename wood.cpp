@@ -274,9 +274,17 @@ void wood::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-	//ボディの削除
-	world->DestroyBody(Wood_body);
 
+	if (GetObjectWoodBody() != nullptr)
+	{
+		//ボディの削除
+		world->DestroyBody(Wood_body);
+	}
+
+	if (GetObjectAnchorPointBody() != nullptr)
+	{
+		world->DestroyBody(AnchorPoint_body);
+	}
 	//テクスチャの解放
 	UnInitTexture(g_Wood_Texture);
 	UnInitTexture(g_Wood_Texture1);

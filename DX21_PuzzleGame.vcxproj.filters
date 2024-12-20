@@ -99,6 +99,12 @@
     </ClCompile>
     <ClCompile Include="enemy_attack.cpp">
       <Filter>ソースファイル\enemy</Filter>
+    <ClCompile Include="title.cpp" />
+    <ClCompile Include="stage_select.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソースファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +219,7 @@
     <ClInclude Include="enemy_attack.h">
       <Filter>ヘッダーファイル\enemy</Filter>
     </ClInclude>
+    <ClInclude Include="scene.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">

@@ -31,7 +31,7 @@ float	AnchorSpirit::GetAnchorSpiritValue()
 void	AnchorSpirit::EditAnchorSpiritValue(float value)
 {
 	//プレイヤーの体力がMAXの時だけソウル値の更新できる
-	if (PlayerStamina::GetPlayerStaminaValue() == MAX_STAMINA)
+	if (PlayerStamina::GetPlayerStaminaValue() >= MAX_STAMINA)
 	{
 		m_spirit += value;
 

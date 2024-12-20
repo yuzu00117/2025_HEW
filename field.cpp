@@ -259,6 +259,11 @@ void Field::Finalize()
 	}
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
+
+	//終了処理
+	AnchorPoint::Finalize();
+	objectManager.FinalizeAll();
+
 }
 
 
