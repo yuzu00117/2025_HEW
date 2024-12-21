@@ -97,6 +97,7 @@
     <ClCompile Include="display.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="player_life.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="stage_select.cpp">
       <Filter>ソースファイル</Filter>
@@ -214,6 +215,7 @@
     <ClInclude Include="display.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="player_life.h" />
     <ClInclude Include="scene.h" />
   </ItemGroup>
   <ItemGroup>
