@@ -16,7 +16,7 @@
 float display::m_display_scale = 1;//スケールの初期値の倍率
 
 float display::m_display_width = 650;//横幅
-float display::m_display_height =300;//縦
+float display::m_display_height =540;//縦
 
 
 display::display()
@@ -31,23 +31,23 @@ void display::Update()
 {
 	//デバック用
 
-	//if (Keyboard_IsKeyDown(KK_D0))
-	//{
-	//	SetDisplayScale(-0.1f);
-	//}
-	//if (Keyboard_IsKeyDown(KK_D9))
-	//{
-	//	SetDisplayScale(+0.1);
-	//}
+	if (Keyboard_IsKeyDown(KK_D0))
+	{
+		SetDisplayScale(-0.01f);
+	}
+	if (Keyboard_IsKeyDown(KK_D9))
+	{
+		SetDisplayScale(+0.01);
+	}
 
-	//if (Keyboard_IsKeyDown(KK_D8))
-	//{
-	//	SetDisplayWidth(-10);
-	//}
-	//if (Keyboard_IsKeyDown(KK_D7))
-	//{
-	//	SetDisplayWidth(+10);
-	//}
+	if (Keyboard_IsKeyDown(KK_D8))
+	{
+		SetDisplayWidth(-10);
+	}
+	if (Keyboard_IsKeyDown(KK_D7))
+	{
+		SetDisplayWidth(+10);
+	}
 
 
 	//-----------------------------------------------------------------------------------------------------------

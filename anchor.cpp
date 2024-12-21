@@ -51,7 +51,7 @@ Anchor::Anchor()
 
 Anchor::~Anchor()
 {
-	DestroyAnchorBody();
+	
 }
 
 
@@ -273,7 +273,20 @@ void Anchor::Draw()
 
 void Anchor::Finalize()
 {
+	//アンカーの終了処理を追加するよ
 
+	 // 静的フラグや状態のリセット
+	anchor_create_joint_flag = false;
+	now_anchor_state = Nonexistent_state;
+
+
+
+	if(g_anchor_instance!=nullptr)
+	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
+
+	UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
+	UnInitTexture(g_Anchor_Texture);	  //アンカーのテクスチャの解放
+	
 }
 
 

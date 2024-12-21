@@ -132,6 +132,7 @@
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
+    <ClCompile Include="bg.cpp" />
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
@@ -151,12 +152,15 @@
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="result.cpp" />
     <ClCompile Include="rock.cpp" />
     <ClCompile Include="sloping_block.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="stage_select.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
@@ -167,6 +171,7 @@
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="anchor_spirit.h" />
+    <ClInclude Include="bg.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />
@@ -190,6 +195,7 @@
     <ClInclude Include="player_stamina.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="rock.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="sloping_block.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />

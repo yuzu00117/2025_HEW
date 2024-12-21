@@ -1,15 +1,3 @@
-//-----------------------------------------------------------------------------------------------------
-// #name player.cpp
-// #description プレイヤー
-// #make 2024/11/22　永野義也
-// #update 2024/11/22
-// #comment 追加・修正予定
-//          ・コンストラクタでbodyとfixture作ってGetInstanceで初期値を入力
-//----------------------------------------------------------------------------------------------------
-
-
-
-
 #include"include/box2d/box2d.h"
 #include"player.h"
 #include"world_box2d.h"
@@ -23,6 +11,7 @@
 #include"anchor_point.h"
 #include"anchor.h"
 #include"anchor_spirit.h"
+#include"scene.h"
 #include"create_filter.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
@@ -44,8 +33,32 @@ b2Body* player_body;
 
 int g_anchor_frame_management_number = 0;
 
-Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nullptr)
+Player::Player()
 {
+    //ここではbodyを生成しない
+}
+
+
+Player::~Player()
+{
+ 
+}
+
+void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
+{
+    if (m_body) {
+        // ボディを削除
+        Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+        b2World* world = box2d_world.GetBox2dWorldPointer();
+        world->DestroyBody(m_body);
+        m_body = nullptr;
+    }
+
+    //テクスチャのロード
+    g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
+
+    g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
+
 
     b2BodyDef body;
     body.type = b2_dynamicBody;
@@ -66,7 +79,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
 
     player_body = m_body;//プレイヤーのボディをセット
 
-    
+
     SetSize(body_size);//プレイヤー表示をするためにセットする
     SetSensorSize(sensor_size);//センサー表示をするためにセット
 
@@ -85,8 +98,8 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
 
 
 
- //プレイヤーの真ん中の長方形ボディ
-//-------------------------------------------
+    //プレイヤーの真ん中の長方形ボディ
+   //-------------------------------------------
     b2PolygonShape rectangle_body;
     rectangle_body.SetAsBox(size.x * 0.5, size.y * 0.5f);
 
@@ -101,7 +114,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     //プレイヤーの下の円のコライダー
     //-------------------------------------------
     b2CircleShape circle_bottom;
-    circle_bottom.m_p.Set(0.0f, size.y/2);//下の方の円
+    circle_bottom.m_p.Set(0.0f, size.y / 2);//下の方の円
     circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
     b2FixtureDef fixture_circle_bottom;
@@ -136,7 +149,18 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     //プレイヤーのセンサーを新しくつくる
 
     b2PolygonShape shape_sensor;
-    shape_sensor.SetAsBox(size_sensor.x * 0.5, size_sensor.y * 0.5);
+
+
+    b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
+
+    // 反時計回りで頂点を設定
+    vertices[0].Set(-size_sensor.x / 2, size_sensor.y / 2 / 3);  // 左下
+    vertices[1].Set(size_sensor.x / 2, size_sensor.y / 2 / 3);   // 右下
+    vertices[2].Set(size_sensor.x / 2, -size_sensor.y / 2);    // 右上
+    vertices[3].Set(-size_sensor.x / 2, -size_sensor.y / 2);   // 左上
+
+
+    shape_sensor.Set(vertices, 4);
 
 
 
@@ -146,6 +170,7 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     fixture_sensor.friction = 0.0f;//摩擦
     fixture_sensor.restitution = 0.0f;//反発係数
     fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+    
 
 
     b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
@@ -158,30 +183,16 @@ Player::Player(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size) :m_body(nu
     player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
 
     //---------------------------------------------------------------------------------------------------
-}
-
-
-Player::~Player()
-{
- 
-}
-
-void Player::Initialize()
-{
-  
-    //テクスチャのロード
-    g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
-
-    g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
-
-
-    
 
 }
 
 void Player::Update()
 {
     // プレイヤーの更新処理
+    
+    //センサーの画面サイズに応じた大きさの変動
+    Player_sensor_size_change(AnchorSpirit::GetAnchorLevel());
+
 
 
     //コントローラーの入力の受け取り
@@ -197,6 +208,7 @@ void Player::Update()
     b2Vec2 max_velocity = { 1.8f , 1.2f };
     b2Vec2 player_position = { PlayerPosition::GetPlayerPosition().x,PlayerPosition::GetPlayerPosition().y };
     b2Vec2 player_point = m_body->GetWorldPoint(player_position);
+   
 
     //絶対値に変更する デットゾーンの審査に使うため　tool.cppに作った
     //デットゾーンをつくる x,yの値を足して一定以上経ったら　呼び出し
@@ -228,6 +240,16 @@ void Player::Update()
             m_direction = 0;
         }
 
+        //playerのスピード上昇
+        //上がり方がわかりずらいかもしれない
+        if (Keyboard_IsKeyDownTrigger(KK_Q))
+        {
+            m_speed = 0.75f;
+
+        }
+
+
+
     }
 
 
@@ -246,6 +268,12 @@ void Player::Update()
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 
+
+    //ジャンプのバフ
+    if (Keyboard_IsKeyDownTrigger(KK_Z))
+    {
+        m_jump_force = b2Vec2(0.0f, -0.40f * 1.5f);
+    }
 
 
     //アンカーのレベルを手動で変えられるしょり　完成版ではけす
@@ -328,6 +356,9 @@ void Player::Update()
         {
             g_anchor_frame_management_number = 200;
         }
+
+
+
 
         g_anchor_frame_management_number++;//アンカーが引っ張る
 
@@ -420,52 +451,76 @@ void Player::Update()
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 }
 
+
+void Player::Player_sensor_size_change(int anchor_level)
+{
+    if (anchor_level < 3)//アンカーレベルの１、２の時
+    {
+        if (GetSensorSize() == GetSensorSizeLev3())//センサーの大きさを取得して
+        {
+            b2Vec2 pos=GetPlayerBody()->GetPosition();
+            Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev1_2());
+        }
+    }
+
+    if (anchor_level == 3)//アンカーレベルが３の時
+    {
+        if (GetSensorSize() == GetSensorSizeLev1_2())//大きさを取得して差分があれば
+        {
+            b2Vec2 pos = GetPlayerBody()->GetPosition();
+            Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
+        }
+    }
+}
+
+
 void Player::Draw()
 {
+    if (m_body != nullptr) {
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
 
-    // コライダーと位置情報の補正をするため
-    float scale = SCREEN_SCALE;
+        // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
 
-    // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
-    b2Vec2 screen_center;
-    screen_center.x = SCREEN_CENTER_X;
-    screen_center.y = SCREEN_CENTER_Y;
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_Texture);
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_Texture);
-
-    // コライダーの位置の取得（プレイヤーの位置）
-    b2Vec2 player_position;
-    player_position.x = m_body->GetPosition().x;
-    player_position.y = m_body->GetPosition().y;
-
-
-    //プレイヤーは画面中央に固定、まあ補正値はいれるんやけど
-    //ほかのplayer以外の物体はプレイヤー分Positionを引いて
-   // 描画位置を調整して、プレイヤーがスクリーン中央に表示されるようにする
-    DrawSprite(
-        { screen_center.x,
-          screen_center.y },
-        m_body->GetAngle(),
-        {GetSize().x* scale,GetSize().y * scale }
-    );
-
-    //----------------------------------------------------------------------------------------
-    //センサー描画
+        // コライダーの位置の取得（プレイヤーの位置）
+        b2Vec2 player_position;
+        player_position.x = m_body->GetPosition().x;
+        player_position.y = m_body->GetPosition().y;
 
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        //プレイヤーは画面中央に固定、まあ補正値はいれるんやけど
+        //ほかのplayer以外の物体はプレイヤー分Positionを引いて
+       // 描画位置を調整して、プレイヤーがスクリーン中央に表示されるようにする
+        DrawSprite(
+            { screen_center.x,
+              screen_center.y },
+            m_body->GetAngle(),
+            { GetSize().x * scale,GetSize().y * scale }
+        );
 
-    DrawSprite(
-        { screen_center.x,
-          screen_center.y },
-        m_body->GetAngle(),
-        { GetSensorSize().x * scale,GetSensorSize().y * scale }
-    );
-    float size_sensor = GetSensorSize().x * scale;
-    float size = GetSize().x * scale;
-  
+        //----------------------------------------------------------------------------------------
+        //センサー描画
+
+
+        //// シェーダリソースを設定
+        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+
+        //DrawSprite(
+        //    { screen_center.x,
+        //      screen_center.y },
+        //    m_body->GetAngle(),
+        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        //);
+        //float size_sensor = GetSensorSize().x * scale;
+        //float size = GetSize().x * scale;
+
+    }
 }
 
 void Player::Finalize()

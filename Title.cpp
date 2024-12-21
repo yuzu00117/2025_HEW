@@ -1,50 +1,69 @@
 //-----------------------------------------------------------------------------------------------------
-// #name square_collider.cpp
-// #description 四角のあたり判定
-// #make 2024/11/02　　永野義也
-// #update 2024/11/02
+// #name title.cpp
+// #description タイトルつくったよー
+// #make 2024/12/17　　永野義也
+// #update 2024/12/17
 // #comment 追加・修正予定
-//          ・ここで四角のあたり判定のコンストラクタしてる
-// 　　　　 ・ここでほとんどの処理を管理してる
-//          ・引数足らない気がするもっといろいろつけれるけどデフォルトはこれとして、これの継承さきで作ろうかなって思ってる（反発係数とかね）
-// 　　　　 ・とあいえ結構な情報入っているので、いや分けろよって言われたら　うんってなる　あんまり細分化してもやりずらくねって思ったけど　かえるなら別にいいよ
-//          
+//          ・タイトル作ったさねー
+//           
 //----------------------------------------------------------------------------------------------------
 
+#include"scene.h"
+#include"sprite.h"
+#include"texture.h"
+#include"Xinput_controller.h"
+#include"Xinput.h"
+#include"keyboard.h"
+#include"main.h"
 
-#include "Title.h"
-#include "sprite.h"
-#include "texture.h"
 
-//マクロ定義
-#define RADIUS 300.0f
-#define INNNER_RAD (((NUM_VERTEX - 2) * M_PI) / NUM_VERTEX)
+//テクスチャのダウンロード グローバル変数にしてる
+ID3D11ShaderResourceView* g_title_Texture = NULL;
 
-//グローバル変数
-static ID3D11ShaderResourceView* g_Texture = NULL;
-
-//初期化処理
-void InitTitle(void)
+void TitleScene::Initialize()
 {
-	g_Texture = InitTexture(L"asset\\texture\\majo002.jpg");
+	g_title_Texture= InitTexture(L"asset\\texture\\sample_texture\\sample_title.png");
 }
 
-//終了処理
-void UninitTitle(void)
+void TitleScene::Update()
 {
-	//テクスチャの解放
-	UnInitTexture(g_Texture);
+	//コントローラーの入力の受け取り
+	ControllerState state = GetControllerInput();
+
+	if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+	{
+		SceneManager& sceneManager = SceneManager::GetInstance();
+		sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+	};
 }
 
-//更新処理
-void UpdateTitle(void) 
+void TitleScene::Draw()
 {
-	
+
+	//バッファクリア
+	Clear();
+
+	//2D描画なので深度無効
+	SetDepthEnable(false);
+
+	if (g_title_Texture != nullptr)
+	{
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_Texture);
+
+		DrawSpriteOld(
+			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+			0.0f,
+			XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT)
+		);
+	}
+
+	//バックバッファ、フロントバッファ入れ替え
+	Present();
+
 }
 
-//描画処理
-void DrawTitle(void)
+void TitleScene::Finalize()
 {
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
-	DrawSprite({ SCREEN_XCENTER, SCREEN_YCENTER }, 0.0f, { SCREEN_WIDTH, SCREEN_HEIGHT });
+	UnInitTexture(g_title_Texture);
 }

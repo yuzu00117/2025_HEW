@@ -2,7 +2,7 @@
 // #name enemy.h
 // #description 静的エネミーのcppファイル
 // #make 2024/11/19
-// #update 2024/12/04
+// #update 2024/12/13
 // #comment 追加・修正予定
 //          ・
 //           
@@ -19,18 +19,15 @@
 #include"player_position.h"
 #include"contactlist.h"
 #include"anchor_spirit.h"
+#include"object_manager.h"
 
-EnemyStatic* g_p_enemies_static[ENEMY_MAX] = { nullptr };
+static ID3D11ShaderResourceView* g_EnemyStatic_Texture = NULL;	//静的エネミーのテクスチャ
 
-EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
+EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE, true, false)
 {
-	//テクスチャをセット
-	SetFieldTexture(texture);
-
-
 	b2BodyDef body;
-	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
+	body.type = b2_staticBody;							//静的なオブジェクトにするならture
 	body.position.Set(position.x, position.y);			//ポジションをセット
 	body.angle = angle;									//角度の定義
 	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
@@ -40,7 +37,7 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bF
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
 	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
-	SetFieldBody(world->CreateBody(&body));//Bodyをワールドに固定
+	SetBody(world->CreateBody(&body));//Bodyをワールドに固定
 
 
 	SetSize(body_size);//表示用にサイズをセットしとく、表示のときにGetSizeを呼び出す
@@ -63,121 +60,84 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle, bool bF
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
 
-	b2Fixture* enemy_static_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
+	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
 	// カスタムデータを作成して設定
 	// 動的エネミーに値を登録
 	// 動的エネミーにユーザーデータを登録
 	ObjectData* data = new ObjectData{ collider_enemy_static };
 	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (!g_p_enemies_static[i])
-		{
-			g_p_enemies_static[i] = this;
-			return;
-		}
-	}
+	data->object_name = Object_Enemy_Static;
+	int ID = data->GenerateID();
+	data->id = ID;
+	SetID(ID);
 }
 
-void EnemyStatic::Update()
+void EnemyStatic::Initialize()
 {
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (g_p_enemies_static[i])
-		{
-			if (g_p_enemies_static[i]->GetUse() && g_p_enemies_static[i]->GetInScreen())
-			{
-				g_p_enemies_static[i]->UpdateEnemy();
-			}
-			else if(!g_p_enemies_static[i]->GetUse())
-			{
-				//ワールドに登録したbodyの削除(追加予定)
-				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-				b2World* world = box2d_world.GetBox2dWorldPointer();
-				world->DestroyBody(g_p_enemies_static[i]->GetFieldBody());
-
-				Field::DeleteFieldObject(g_p_enemies_static[i]->GetFieldBody());
-				g_p_enemies_static[i] = nullptr;
-			}
-		}
-	}
-}
-
-void EnemyStatic::UpdateEnemy()
-{
-
-}
-
-void EnemyStatic::CollisionPlayer(b2Body* collision_enemy)
-{
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (g_p_enemies_static[i])
-		{
-			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
-			{
-				AnchorSpirit::EditAnchorSpiritValue(-50); //加算
-				g_p_enemies_static[i]->SetUse(false);
-				return;
-			}
-		}
-	}
-}
-
-void EnemyStatic::CollisionPulledObject(b2Body* collision_enemy)
-{
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (g_p_enemies_static[i])
-		{
-			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
-			{
-				AnchorSpirit::EditAnchorSpiritValue(50);
-				g_p_enemies_static[i]->SetUse(false);
-				return;
-			}
-		}
-	}
-}
-
-void EnemyStatic::InPlayerSensor(b2Body* collision_enemy)
-{
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (g_p_enemies_static[i])
-		{
-			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
-			{
-				g_p_enemies_static[i]->SetInScreen(true);
-				return;
-			}
-		}
-	}
-}
-void EnemyStatic::OutPlayerSensor(b2Body* collision_enemy)
-{
-	for (int i = 0; i < ENEMY_MAX; i++)
-	{
-		if (g_p_enemies_static[i])
-		{
-			if (g_p_enemies_static[i]->GetFieldBody() == collision_enemy)
-			{
-				g_p_enemies_static[i]->SetInScreen(false);
-				return;
-			}
-		}
-	}
+	g_EnemyStatic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");//静的エネミーのテクスチャ
 }
 
 void EnemyStatic::Finalize()
 {
-	for (int i = 0; i < ENEMY_MAX; i++)
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	if (GetBody() != nullptr)
 	{
-		if (g_p_enemies_static[i])
-		{
-			g_p_enemies_static[i] = nullptr;
-		}
+		world->DestroyBody(GetBody());
 	}
+
+	UnInitTexture(g_EnemyStatic_Texture);
+}
+
+void EnemyStatic::Update()
+{
+	if (GetUse() && GetInScreen())
+	{
+
+	}
+	else if (!GetUse())
+	{
+		//ワールドに登録したbodyの削除
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+		world->DestroyBody(GetBody());
+
+		//オブジェクトマネージャー内のエネミー削除
+		ObjectManager& object_manager = ObjectManager::GetInstance();
+		object_manager.DestroyEnemyStatic(GetID());
+	}
+}
+
+void EnemyStatic::Draw()
+{
+	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	float scale = SCREEN_SCALE;
+
+	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
+
+	b2Vec2 position = GetBody()->GetPosition();
+
+	// プレイヤー位置を考慮してスクロール補正を加える
+	//取得したbodyのポジションに対してBox2dスケールの補正を加える
+	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+	//貼るテクスチャを指定
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyStatic_Texture);
+
+	//draw
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetBody()->GetAngle(),
+		{ GetSize().x * scale , GetSize().y * scale }
+	);
 }

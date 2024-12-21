@@ -34,13 +34,13 @@ public:
 
 
 
-	HRESULT Initialize(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
+	void Initialize();
 	void Update();
 	void Draw();
 	void Finalize();
 
 private:
-	DirectInputController controller;
+	
 	Player player;
 	StaminaSpiritGauge stamina_spirit_gauge;
 	
