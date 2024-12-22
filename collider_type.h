@@ -28,6 +28,7 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
     collider_ground,
 
     collider_object,
+    collider_object_destroyer_of_enemy,  //ƒIƒuƒWƒFƒNƒg‚É•t‚¢‚Ä‚¢‚é“G‚ğÁ‚·ƒZƒ“ƒT[
 
     collider_anchor_point,
 

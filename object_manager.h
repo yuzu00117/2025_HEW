@@ -35,6 +35,7 @@ enum ObjectType {
     Object_Enemy_Dynamic,//動的エネミー
 };
 
+class Object{};
 
 // オブジェクトを管理するクラス
 class ObjectManager {
@@ -76,6 +77,9 @@ public:
     EnemyStatic* FindEnemyStaticByID(int id);
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
+    
+    //IDとオブジェクトタイプでオブジェクトを検索
+    Object* FindObjectByID_ObjectType(int id, ObjectType type);
 
     //指定の静的エネミーを削除
     void DestroyEnemyStatic(int id);

@@ -44,8 +44,8 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 
 
 	b2PolygonShape ground_shape;
-	ground_shape.SetAsBox(ground_size.x * 0.5, ground_size.y * 0.5);
-
+	ground_shape.SetAsBox(ground_size.x * 0.48, ground_size.y * 0.5);
+	
 	b2FixtureDef ground_fixture;
 
 	ground_fixture.shape = &ground_shape;
@@ -55,19 +55,37 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	ground_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 	ground_fixture.filter = createFilterExclude("object_filter", {});
 
-	//初期位置で隣接にstaticな敵がいる時最初から当たり判定出る問題を防ぐために
-	//------------------------------------------------
+	//敵をけすかどうかのセンサー
+	b2PolygonShape sensor_shape;
+	b2Vec2 vertices[4];
+	vertices[0].Set(-ground_size.x * 0.5f, -ground_size.y * 0.3f );
+	vertices[1].Set( 0.0f , -ground_size.y * 0.3f);
+	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.4f);
+	vertices[3].Set(0.0f , ground_size.y*0.4f );
+	sensor_shape.Set(vertices, 4);
+
+	b2FixtureDef sensor_fixture;
+
+	sensor_fixture.shape = &sensor_shape;
+	sensor_fixture.density = 1.0f;
+	sensor_fixture.friction = 0.0f;//摩擦
+	sensor_fixture.restitution = 0.0f;//反発係数
+	sensor_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	sensor_fixture.filter = createFilterExclude("object_filter", {});
 
 	b2Fixture* object_ground_fixture = p_Ground_body->CreateFixture(&ground_fixture);
+	b2Fixture* object_sensor_fixture = p_Ground_body->CreateFixture(&sensor_fixture);
 
 	// カスタムデータを作成して設定
 	ObjectData* object_ground_data = new ObjectData{ collider_ground };//一旦壁判定
+	ObjectData* object_sensor_data = new ObjectData{ collider_object_destroyer_of_enemy };//一旦壁判定
 	object_ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_ground_data);
-
+	object_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_sensor_data);
 	object_ground_data->object_name = Object_Movable_Ground;
 
 	int ID = object_ground_data->GenerateID();
 	object_ground_data->id = ID;
+	object_sensor_data->id = ID;
 	SetID(ID);
 
 
@@ -162,6 +180,18 @@ void movable_ground::Update()
 	if (pulling)
 	{
 		Pulling_ground(add_force);
+
+		for (auto w : enemy_static)
+		{
+			w->CollisionPulledObject();	
+		}
+		enemy_static.clear();
+
+		for (auto w : enemy_dynamic)
+		{
+			w->CollisionPulledObject();
+		}
+		enemy_dynamic.clear();
 	}
 }
 
@@ -236,3 +266,4 @@ void movable_ground::Pulling_ground(b2Vec2 pulling_power)
 
 	body->SetLinearVelocity(pulling_power);
 }
+

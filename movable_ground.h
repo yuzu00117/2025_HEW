@@ -3,7 +3,12 @@
 #ifndef MOVABLE_GROUND_H
 #define MOVABLE_GROUND_H
 
+#include <iostream>
+#include <list>
+#include<algorithm>
 #include"include/box2d/box2d.h"
+#include"enemy_static.h"
+#include"enemy_dynamic.h"
 
 
 class movable_ground
@@ -92,12 +97,42 @@ public:
 		pulling = flag;
 	}
 
+	void	AddContactedEnemyList(EnemyStatic* enemy)
+	{
+		enemy_static.push_back(enemy);
+	}
+	void	AddContactedEnemyList(EnemyDynamic* enemy)
+	{
+		enemy_dynamic.push_back(enemy);
+	}
+
+	void	DeleteContactedEnemyList(EnemyStatic* enemy)
+	{
+		auto it = enemy_static.begin();
+		it = std::find(enemy_static.begin(), enemy_static.end(), enemy);
+		if (it != enemy_static.end() && *it == enemy)
+		{
+			enemy_static.erase(it);
+		}
+	}
+
+	void	DeleteContactedEnemyList(EnemyDynamic* enemy)
+	{
+		auto it = enemy_dynamic.begin();
+		it = std::find(enemy_dynamic.begin(), enemy_dynamic.end(), enemy);
+		if (it != enemy_dynamic.end() && *it == enemy)
+		{
+			enemy_dynamic.erase(it);
+		}
+	}
+
 private:
 	int id; // 各インスタンス固有の ID
 
 	bool pulling;
-	int m_Frame_PullingForce_AfterDestoryEnemy = 0;
 	b2Vec2	add_force;
+	std::list<EnemyStatic*>enemy_static;
+	std::list<EnemyDynamic*>enemy_dynamic;
 
 	b2Body* Ground_body;
 
