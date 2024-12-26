@@ -52,28 +52,10 @@
     <ClCompile Include="anchor_point.cpp">
       <Filter>ソースファイル\anchor</Filter>
     </ClCompile>
-    <ClCompile Include="field.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="debug.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="game.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ground.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="object_manager.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="UI_StaminaSpirit_Gauge.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="word.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="one-way_platform.cpp">
@@ -91,11 +73,44 @@
     <ClCompile Include="sloping_block.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="create_filter.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="display.cpp">
       <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="create_filter.cpp">
+      <Filter>ソースファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="object_manager.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="player_life.cpp">
+      <Filter>ソースファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソースファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_select.cpp">
+      <Filter>ソースファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソースファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="debug.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_StaminaSpirit_Gauge.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="word.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="bg.cpp">
+      <Filter>ソースファイル\field</Filter>
+    </ClCompile>
+    <ClCompile Include="field.cpp">
+      <Filter>ソースファイル\field</Filter>
+    </ClCompile>
+    <ClCompile Include="ground.cpp">
+      <Filter>ソースファイル\field</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,17 +150,8 @@
     <ClInclude Include="anchor_spirit.h">
       <Filter>ヘッダーファイル\anchor</Filter>
     </ClInclude>
-    <ClInclude Include="contactlist.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="collider_type.h">
       <Filter>ヘッダーファイル\collider</Filter>
-    </ClInclude>
-    <ClInclude Include="field.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="debug.h">
-      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="DirectXTex.h">
       <Filter>ヘッダーファイル\directX</Filter>
@@ -153,13 +159,7 @@
     <ClInclude Include="game.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ground.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="object_manager.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
@@ -176,12 +176,6 @@
     </ClInclude>
     <ClInclude Include="tool.h">
       <Filter>ヘッダーファイル\tool</Filter>
-    </ClInclude>
-    <ClInclude Include="UI_StaminaSpirit_Gauge.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="word.h">
-      <Filter>ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="world_box2d.h">
       <Filter>ヘッダーファイル</Filter>
@@ -201,11 +195,41 @@
     <ClInclude Include="rock.h">
       <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="create_filter.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="display.h">
       <Filter>ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="contactlist.h">
+      <Filter>ヘッダーファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="create_filter.h">
+      <Filter>ヘッダーファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="object_manager.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="player_life.h">
+      <Filter>ヘッダーファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダーファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_StaminaSpirit_Gauge.h">
+      <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="word.h">
+      <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="field.h">
+      <Filter>ヘッダーファイル\field</Filter>
+    </ClInclude>
+    <ClInclude Include="bg.h">
+      <Filter>ヘッダーファイル\field</Filter>
+    </ClInclude>
+    <ClInclude Include="ground.h">
+      <Filter>ヘッダーファイル\field</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +298,24 @@
     </Filter>
     <Filter Include="ヘッダーファイル\object">
       <UniqueIdentifier>{375416ea-b702-4b0c-a96d-b3b0598669b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\scene">
+      <UniqueIdentifier>{00afac6e-7fa8-4a2c-965b-d451b9feaa16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\scene">
+      <UniqueIdentifier>{edf1b41c-e4e9-475d-9d54-2a62ab4276bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\UI">
+      <UniqueIdentifier>{a6142faf-f4f6-40d1-bac9-2c0ff68409e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\UI">
+      <UniqueIdentifier>{05e024a7-2808-4a5e-b53d-065900fc716b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\field">
+      <UniqueIdentifier>{0e4f2319-2617-44e5-8ba6-9e7587da3c12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\field">
+      <UniqueIdentifier>{f488acad-3d4e-42c5-83e1-fe9247782d38}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -162,8 +162,12 @@ void one_way_platform::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-	//bodyを削除する
-	world->DestroyBody(one_way_platform_body);
+
+	if (GetObject_one_way_platform_Body() != nullptr)
+	{
+		//bodyを削除する
+		world->DestroyBody(one_way_platform_body);
+	}
 
 
 	//テクスチャの解放

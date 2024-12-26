@@ -17,10 +17,10 @@
 #include"player_position.h"
 #include"anchor_spirit.h"
 
-#define MAX_ANCHOR_POINT_IN_SENSOR (10)//センサー内に存在できる最大のアンカーポイントの数
+#define MAX_ANCHOR_POINT_IN_SENSOR (40)//センサー内に存在できる最大のアンカーポイントの数
 
 
-b2Body* g_anchor_point_body[10];//アンカーポイントのボディを設定　グローバル変数
+b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR];//アンカーポイントのボディを設定　グローバル変数
 
 b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 
@@ -114,6 +114,7 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 
 
 
+
 void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 {
 	//センサーからでたアンカーポイントのボディを配列から削除する
@@ -163,7 +164,7 @@ void AnchorPoint::Update()
 		if (Anchor::GetAnchorCreateJointFlag() != true)
 		{
 			Player& player = Player::GetInstance();//ゲットインスタンス
-			g_select_anchor_point_body = player.GetPlayerBody();
+			g_select_anchor_point_body = player.GetOutSidePlayerBody();
 		}
 	}
 
@@ -185,7 +186,7 @@ void AnchorPoint::Draw()
 
 	//センサーないのすべてのAPにマークをつける
 	//---------------------------------------------------------------------------------------------------------------
-	for (int i = 0; i < BOX2D_SCALE_MANAGEMENT; i++)
+	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 	{
 		if (g_anchor_point_body[i]!=nullptr)
 		{
@@ -236,25 +237,29 @@ void AnchorPoint::Draw()
 		}
 	}
 
-	b2Vec2 position;
-	position.x = g_select_anchor_point_body->GetPosition().x;
-	position.y = g_select_anchor_point_body->GetPosition().y;
 
-	// プレイヤー位置を考慮してスクロール補正を加える
-	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	if (g_select_anchor_point_body != nullptr) 
+	{
+		b2Vec2 position;
+ 		position.x = g_select_anchor_point_body->GetPosition().x;
+		position.y = g_select_anchor_point_body->GetPosition().y;
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		0.0f,
-		{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-	);
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			0.0f,
+			{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		);
+	}
 
 
 	//-------------------------------------------------------------------------------------------------------------------------
@@ -265,8 +270,23 @@ void AnchorPoint::Finalize()
 	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
 	
-	world->DestroyBody(g_select_anchor_point_body);
+	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
+	{
+		g_anchor_point_body[i] = nullptr;
+	}
 
+
+	if (g_select_anchor_point_body != nullptr)
+	{
+		if (Player::GetOutSidePlayerBody() != g_select_anchor_point_body)
+		{
+			world->DestroyBody(g_select_anchor_point_body);
+		}
+		else
+		{
+			g_select_anchor_point_body = nullptr;
+		}
+	}
 
 	//テクスチャの解放
 	UnInitTexture(g_anchor_point_target_lev1_Texture);

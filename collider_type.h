@@ -65,7 +65,7 @@ private:
     // 静的カウンタ ID
     static int current_id;
 
-  
+
 
 
 };
