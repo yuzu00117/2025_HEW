@@ -1,3 +1,11 @@
+//-----------------------------------------------------------------------------------------------------
+// #name movable_ground.cpp
+// #description 引っ張れる床のCPP
+// #make 2024/12/26　王泳心
+// #update 2024/12/26
+// #comment 追加・修正予定
+//         
+//----------------------------------------------------------------------------------------------------
 #include "movable_ground.h"
 #include"texture.h"
 #include"collider_type.h"
@@ -62,7 +70,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	vertices[1].Set( 0.0f , -ground_size.y * 0.3f);
 	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.4f);
 	vertices[3].Set(0.0f , ground_size.y*0.4f );
-	sensor_shape.Set(vertices, 4);
+	sensor_shape.Set(vertices, 4);	//センサーのローカル位置を変更
 
 	b2FixtureDef sensor_fixture;
 
@@ -244,6 +252,7 @@ void movable_ground::Finalize()
 
 	//ボディの削除
 	world->DestroyBody(Ground_body);
+	world->DestroyBody(AnchorPoint_body);
 
 	//テクスチャの解放
 	UnInitTexture(g_Ground_Texture);
