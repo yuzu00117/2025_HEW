@@ -32,7 +32,31 @@ public:
 	void Draw();
 	void Finalize();
 
+	//引っ張るを実行
 	void Pulling_ground(b2Vec2 pullingpower);
+
+	//　当たっている敵リストから敵の情報を消す（例えば敵と離れた時とか）
+	void	DeleteContactedEnemyList(EnemyStatic* enemy)
+	{
+		auto it = enemy_static.begin();
+		it = std::find(enemy_static.begin(), enemy_static.end(), enemy);
+		if (it != enemy_static.end() && *it == enemy)
+		{
+			enemy_static.erase(it);
+		}
+	}
+
+	//　当たっている敵リストから敵の情報を消す（例えば敵と離れた時とか）
+	void	DeleteContactedEnemyList(EnemyDynamic* enemy)
+	{
+		auto it = enemy_dynamic.begin();
+		it = std::find(enemy_dynamic.begin(), enemy_dynamic.end(), enemy);
+		if (it != enemy_dynamic.end() && *it == enemy)
+		{
+			enemy_dynamic.erase(it);
+		}
+	}
+
 
 
 	// ID を取得する
@@ -114,33 +138,13 @@ public:
 		enemy_dynamic.push_back(enemy);
 	}
 
-	void	DeleteContactedEnemyList(EnemyStatic* enemy)
-	{
-		auto it = enemy_static.begin();
-		it = std::find(enemy_static.begin(), enemy_static.end(), enemy);
-		if (it != enemy_static.end() && *it == enemy)
-		{
-			enemy_static.erase(it);
-		}
-	}
-
-	void	DeleteContactedEnemyList(EnemyDynamic* enemy)
-	{
-		auto it = enemy_dynamic.begin();
-		it = std::find(enemy_dynamic.begin(), enemy_dynamic.end(), enemy);
-		if (it != enemy_dynamic.end() && *it == enemy)
-		{
-			enemy_dynamic.erase(it);
-		}
-	}
-
 private:
 	int id; // 各インスタンス固有の ID
 
-	bool pulling;
-	b2Vec2	add_force;
-	std::list<EnemyStatic*>enemy_static;
-	std::list<EnemyDynamic*>enemy_dynamic;
+	bool pulling;	//今引っ張っているのか
+	b2Vec2	add_force;	//引っ張る力
+	std::list<EnemyStatic*>enemy_static;	//今当たっている動かない敵のリスト
+	std::list<EnemyDynamic*>enemy_dynamic;	//今当たっている動く敵のリスト
 
 	b2Body* Ground_body;
 
