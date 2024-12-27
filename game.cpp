@@ -25,6 +25,7 @@
 #include"player_life.h"
 #include"scene.h"
 #include"player.h"
+#include"anchor_spirit.h"
 
 
 void Game::Initialize()
@@ -38,6 +39,8 @@ void Game::Initialize()
 	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
 
 
+	//ソウルゲージの初期化
+	AnchorSpirit::Initialize();
 
 	//アンカーの初期化
 	Anchor::Initialize();
