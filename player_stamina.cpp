@@ -18,6 +18,11 @@
 float	PlayerStamina::m_stamina = 300.0f;
 
 
+void PlayerStamina::Initialize()
+{
+	m_stamina = 300.0f;
+}
+
 float	PlayerStamina::GetPlayerStaminaValue()
 {
 	return m_stamina;
