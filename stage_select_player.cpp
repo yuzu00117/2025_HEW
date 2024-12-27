@@ -16,6 +16,7 @@
 #include"texture.h"
 #include"Xinput_controller.h"
 #include"collider_type.h"
+#include"tool.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_stage_select_player_Texture = NULL;
@@ -23,7 +24,7 @@ ID3D11ShaderResourceView* g_stage_select_player_Texture = NULL;
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
 
 StageSelectPlayer::StageSelectPlayer()
-    : m_body(nullptr), m_size(30.0f), m_world(nullptr) {}
+    : m_body(nullptr), m_size(60.0f), m_world(nullptr) {}
 
 StageSelectPlayer::~StageSelectPlayer() {
     Finalize();
@@ -32,7 +33,7 @@ StageSelectPlayer::~StageSelectPlayer() {
 void StageSelectPlayer::Initialize(b2World* world, float x, float y) {
 
     //画像のインクルード
-    g_stage_select_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
+    g_stage_select_player_Texture = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_player.png");
     
     
     m_world = world;
@@ -114,12 +115,14 @@ void StageSelectPlayer::Draw() {
     float x = position.x * SCALE; // メートルからピクセルに変換
     float y = position.y * SCALE;
 
+    double angle = DegreesToRadians(330);
+
     // シェーダリソースを設定
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_player_Texture);
 
     DrawSpriteOld(
         XMFLOAT2(x, y),
-        0.0f,
+        angle,
         XMFLOAT2(m_size, m_size)
     );
 }

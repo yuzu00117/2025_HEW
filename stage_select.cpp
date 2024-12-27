@@ -11,11 +11,49 @@
 #include"stage_point.h"
 #include"stage_point_factory.h"
 #include"stage_select_contact_list.h"
+#include"tool.h"
+#include"easing.h"
 
 
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
 //テクスチャのダウンロード グローバル変数にしてる
-ID3D11ShaderResourceView* g_stage_select_Texture = NULL;
+
+//背景の表示
+ID3D11ShaderResourceView* g_stage_select_background_Texture = NULL;
+
+
+//Aボタン押した時のエフェクト
+ID3D11ShaderResourceView* g_stage_select_tap_effect_Texture = NULL;
+
+//コインのキラキラのエフェクト
+ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture = NULL;
+//コインのキラキラのエフェクト1
+ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture1 = NULL;
+//コインのキラキラのエフェクト2
+ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture2 = NULL;
+//コインのキラキラのエフェクト3
+ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture3 = NULL;
+//コインのキラキラのエフェクト4
+ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture4= NULL;
+
+//チュートリアルステージのやホップアップ
+ID3D11ShaderResourceView* g_stage_select_hopup_tutorial_Texture = NULL;
+//１－１のホップアップ
+ID3D11ShaderResourceView* g_stage_select_hopup_1_1_Texture = NULL;
+//まだ解放してないマップのホップアップ
+ID3D11ShaderResourceView* g_stage_select_hopup_unknow_Texture = NULL;
+
+//管理用に使う数字
+ID3D11ShaderResourceView* g_stage_select_number_Texture = NULL;
+
+
+//決定した時に使うズームイン
+ID3D11ShaderResourceView* g_stage_select_fade_black_Texture = NULL;
+
+//決定してステージにとぶまでにテクスチャなくなる問題を潰すためのくろ
+ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
+
+
 
 // メンバ変数として保持
 
@@ -25,7 +63,32 @@ StagePointFactory m_stagePointFactory;
 
 void StageSelectScene::Initialize()
 {
-	g_stage_select_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_stage_select.png");
+	//背景の初期化
+	g_stage_select_background_Texture = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_background.png");
+
+	g_stage_select_coin_effect_Texture= InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_coin_effect.png");
+
+	g_stage_select_coin_effect_Texture1 = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_coin_effect1.png");
+
+	g_stage_select_coin_effect_Texture2 = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_coin_effect2.png");
+
+	g_stage_select_coin_effect_Texture3 = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_coin_effect3.png");
+
+	g_stage_select_coin_effect_Texture4 = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_coin_effect4.png");
+
+	g_stage_select_tap_effect_Texture= InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_tap_effect.png");
+
+	g_stage_select_hopup_tutorial_Texture= InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_hopup_tutorial.png");
+
+	g_stage_select_hopup_1_1_Texture= InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_hopup_1-1.png");
+
+	g_stage_select_hopup_unknow_Texture=InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_hopup_unknow.png");
+
+	g_stage_select_number_Texture = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_number.png");
+
+	g_stage_select_fade_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\sample_fade_black.png");
+
+	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
 
 	//ワールドをつくる
@@ -36,15 +99,16 @@ void StageSelectScene::Initialize()
 	
 	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 	//プレイヤーの定義
-	m_player.Initialize(m_world, 640, 300);
+	m_player.Initialize(m_world, 250, 500);
 
 	//初期のポジションを定義
 	m_player.SetTouchStagePointBody(m_player.GetBody());
 
 	// ステージポイントの生成
-	m_stagePointFactory.CreateStagePoint(m_world, 400.0f, 560.0f, 40.0f,1);
-	m_stagePointFactory.CreateStagePoint(m_world, 1000.0f, 360.0f, 40.0f,2);
-	m_stagePointFactory.CreateStagePoint(m_world, 1200.0f, 360.0f, 40.0f,3);
+	m_stagePointFactory.CreateStagePoint(m_world, 322.0f, 335.0f, 110.0f,1);
+	m_stagePointFactory.CreateStagePoint(m_world, 530.0f, 210.0f, 110.0f,2);
+	m_stagePointFactory.CreateStagePoint(m_world, 700.0f, 360.0f,100.0f,3);
+	m_stagePointFactory.CreateStagePoint(m_world, 980.0f, 440.0f, 100.0f, 4);
 
 	StageSelectContactListener& listener = StageSelectContactListener::GetInstance();
 	m_world->SetContactListener(&listener);
@@ -82,37 +146,62 @@ void StageSelectScene::Update()
 		/* ステージポイントの更新*/
 		m_stagePointFactory.Update();
 	
+
+		//タップのエフェクト用の
+		if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+		{
+			if (g_tap_addition == 0)
+			{
+
+				int random_num;
+				random_num = g_coin_effect_random_number = GetRandomInt(1, 360);
+
+				g_tap_effect_angle = DegreesToRadians(random_num);
+
+				g_tap_addition = 1;
+			}
+		}
 	
 
-		switch (m_player.GetTouchStageSelectNum())
+		//カーソルをステージポイントにあててる時
+		if (m_player.GetTouchStageSelectNum() != 0)
 		{
-		case 0:
-			break;
-
-		case 1:
 			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
 			{
-				SceneManager& sceneManager = SceneManager::GetInstance();
-				sceneManager.ChangeScene(SCENE_GAME);
-			};
-			break;
+				fade_rate = 0.01;
+			}
+		}
 
-		case 2:
-			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+
+		
+
+		
+		//フェードの関数になったら
+		if (1<=fade_rate)
+		{
+			SceneManager& sceneManager = SceneManager::GetInstance();
+		
+			switch (m_player.GetTouchStageSelectNum())
 			{
-				SceneManager& sceneManager = SceneManager::GetInstance();
-				sceneManager.ChangeScene(SCENE_GAME);
-			};
-			break;
+			case 0:
+				break;
 
-		case 3:
-			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
-			{
-				SceneManager& sceneManager = SceneManager::GetInstance();
+			case 1:
 				sceneManager.ChangeScene(SCENE_GAME);
-			};
-			break;
+				break;
+			case 2:
 
+				sceneManager.ChangeScene(SCENE_GAME);
+				break;
+
+			case 3:
+				sceneManager.ChangeScene(SCENE_GAME);
+				break;
+
+			case 4:
+				sceneManager.ChangeScene(SCENE_GAME);
+				break;
+			}
 		}
 
 
@@ -128,10 +217,16 @@ void StageSelectScene::Draw()
 		//2D描画なので深度無効
 		SetDepthEnable(false);
 
-		if (g_stage_select_Texture != nullptr)
+		//プレイヤーのインスタンスの確保
+		StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
+
+
+		//-------------------------------------------------------------------------------------------
+		//背景
+		if (g_stage_select_background_Texture != nullptr)
 		{
 			// シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_Texture);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_background_Texture);
 
 			DrawSpriteOld(
 				XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
@@ -139,61 +234,646 @@ void StageSelectScene::Draw()
 				XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT)
 			);
 		}
-
-		StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
-		m_player.Draw();
+		//------------------------------------------------------------------------------------------------------
 
 
-		// ステージポイントの描画
-		m_stagePointFactory.Draw();
+		//------------------------------------------------------------------------------------------------------
+		//コイン描画
+		
+		//大変ばちぼこに頭悪いかも
+
+		if (g_coin_effect_random_number == 0)
+		{
+			g_coin_effect_random_number = GetRandomInt(1,10);
+		}
+
+		if (g_coin_effect_random_number1 == 0)
+		{
+			g_coin_effect_random_number1 = GetRandomInt(1, 10);
+		}
+
+		if (g_coin_effect_random_number2 == 0)
+		{
+			g_coin_effect_random_number2 = GetRandomInt(1, 10);
+		}
+
+		if (g_coin_effect_random_number3 == 0)
+		{
+			g_coin_effect_random_number3 = GetRandomInt(1, 10);
+		}
+
+		if (g_coin_effect_random_number4 == 0)
+		{
+			g_coin_effect_random_number4 = GetRandomInt(1, 10);
+		}
+
+
+	
+
+
+
+		g_coin_addition++;
+		g_coin_addition1++;
+		g_coin_addition2++;
+		g_coin_addition3++;
+		g_coin_addition4++;
+
+		
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_coin_effect_Texture);
+
+		switch (g_coin_effect_random_number)
+		{
+		case 1:
+			//左上金貨　左下
+			DrawDividedSprite(XMFLOAT2(140,100), 0.0f,XMFLOAT2(70,70), 5, 6, g_coin_addition/2, 1.0);
+		
+			break;
+		case 2:
+			//左下錨
+			DrawDividedSprite(XMFLOAT2(220, 550), 30.0f, XMFLOAT2(90, 90), 5, 6, g_coin_addition / 2, 1.0);
+
+			break;
+		case 3:
+			//錨鎖　左上
+			DrawDividedSprite(XMFLOAT2(30, 250), 0.0f, XMFLOAT2(50, 50), 5, 6, g_coin_addition / 2, 1.0);
+
+			break;
+		case 4:
+			//錨鎖　した
+			DrawDividedSprite(XMFLOAT2(30, 400), 0.0f, XMFLOAT2(50, 50), 5, 6, g_coin_addition / 2, 1.0);
+
+			break;
+		case 5:
+			//左上金貨　左上
+			DrawDividedSprite(XMFLOAT2(40, 30), 0.0f, XMFLOAT2(70, 70), 5, 6, g_coin_addition / 2, 1.0);
+
+			break;
+		case 6:
+			//右上 がち右上
+			DrawDividedSprite(XMFLOAT2(1180, 30), 0.0f, XMFLOAT2(70, 70), 5, 6, g_coin_addition / 2, 1.0);
+
+			break;
+		case 7:
+			//右上　ちと右上
+			DrawDividedSprite(XMFLOAT2(1050, 75), 0.0f, XMFLOAT2(70, 70), 5, 6, g_coin_addition / 2, 1.0);
+			break;
+		case 8:
+			//右上　ちとちと右上
+			DrawDividedSprite(XMFLOAT2(1100, 275), 0.0f, XMFLOAT2(70, 70), 5, 6, g_coin_addition / 2, 1.0);
+			break;
+		case 9:
+			//右下　がち
+			DrawDividedSprite(XMFLOAT2(1250, 680), 0.0f, XMFLOAT2(70, 70), 5, 6, g_coin_addition / 2, 1.0);
+			break;
+
+		case 10:
+			//右下　ちと
+			DrawDividedSprite(XMFLOAT2(1110, 480), 0.0f, XMFLOAT2(70, 70), 5, 6, g_coin_addition / 2, 1.0);
+			break;
+		default:
+			break;
+		}
+
+
+
+
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_coin_effect_Texture1);
+
+		switch (g_coin_effect_random_number1)
+		{
+		case 1:
+			//左上金貨　左下
+			DrawDividedSprite(XMFLOAT2(140, 100), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+
+			break;
+		case 2:
+			//左下錨
+			DrawDividedSprite(XMFLOAT2(220, 550), 30.0f, XMFLOAT2(90, 90), 5, 5, g_coin_addition1 / 2, 1.0);
+
+			break;
+		case 3:
+			//錨鎖　左上
+			DrawDividedSprite(XMFLOAT2(30, 250), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition1 / 2, 1.0);
+
+			break;
+		case 4:
+			//錨鎖　した
+			DrawDividedSprite(XMFLOAT2(30, 400), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition1 / 2, 1.0);
+
+			break;
+		case 5:
+			//左上金貨　左上
+			DrawDividedSprite(XMFLOAT2(40, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+
+			break;
+		case 6:
+			//右上 がち右上
+			DrawDividedSprite(XMFLOAT2(1180, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+
+			break;
+		case 7:
+			//右上　ちと右上
+			DrawDividedSprite(XMFLOAT2(1050, 75), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+			break;
+		case 8:
+			//右上　ちとちと右上
+			DrawDividedSprite(XMFLOAT2(1100, 275), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+			break;
+		case 9:
+			//右下　がち
+			DrawDividedSprite(XMFLOAT2(1250, 680), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+			break;
+
+		case 10:
+			//右下　ちと
+			DrawDividedSprite(XMFLOAT2(1110, 480), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition1 / 2, 1.0);
+			break;
+		default:
+			break;
+		}
+
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_coin_effect_Texture2);
+
+		switch (g_coin_effect_random_number2)
+		{
+		case 1:
+			//左上金貨　左下
+			DrawDividedSprite(XMFLOAT2(140, 100), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+
+			break;
+		case 2:
+			//左下錨
+			DrawDividedSprite(XMFLOAT2(220, 550), 30.0f, XMFLOAT2(90, 90), 5, 5, g_coin_addition2 / 2, 1.0);
+
+			break;
+		case 3:
+			//錨鎖　左上
+			DrawDividedSprite(XMFLOAT2(30, 250), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition2 / 2, 1.0);
+
+			break;
+		case 4:
+			//錨鎖　した
+			DrawDividedSprite(XMFLOAT2(30, 400), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition2 / 2, 1.0);
+
+			break;
+		case 5:
+			//左上金貨　左上
+			DrawDividedSprite(XMFLOAT2(40, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+
+			break;
+		case 6:
+			//右上 がち右上
+			DrawDividedSprite(XMFLOAT2(1180, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+
+			break;
+		case 7:
+			//右上　ちと右上
+			DrawDividedSprite(XMFLOAT2(1050, 75), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+			break;
+		case 8:
+			//右上　ちとちと右上
+			DrawDividedSprite(XMFLOAT2(1100, 275), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+			break;
+		case 9:
+			//右下　がち
+			DrawDividedSprite(XMFLOAT2(1250, 680), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+			break;
+
+		case 10:
+			//右下　ちと
+			DrawDividedSprite(XMFLOAT2(1110, 480), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition2 / 2, 1.0);
+			break;
+		default:
+			break;
+		}
+
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_coin_effect_Texture3);
+
+		switch (g_coin_effect_random_number3)
+		{
+		case 1:
+			//左上金貨　左下
+			DrawDividedSprite(XMFLOAT2(140, 100), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+
+			break;
+		case 2:
+			//左下錨
+			DrawDividedSprite(XMFLOAT2(220, 550), 30.0f, XMFLOAT2(90, 90), 5, 5, g_coin_addition3 / 2, 1.0);
+
+			break;
+		case 3:
+			//錨鎖　左上
+			DrawDividedSprite(XMFLOAT2(30, 250), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition3 / 2, 1.0);
+
+			break;
+		case 4:
+			//錨鎖　した
+			DrawDividedSprite(XMFLOAT2(30, 400), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition3 / 2, 1.0);
+
+			break;
+		case 5:
+			//左上金貨　左上
+			DrawDividedSprite(XMFLOAT2(40, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+
+			break;
+		case 6:
+			//右上 がち右上
+			DrawDividedSprite(XMFLOAT2(1180, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+
+			break;
+		case 7:
+			//右上　ちと右上
+			DrawDividedSprite(XMFLOAT2(1050, 75), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+			break;
+		case 8:
+			//右上　ちとちと右上
+			DrawDividedSprite(XMFLOAT2(1100, 275), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+			break;
+		case 9:
+			//右下　がち
+			DrawDividedSprite(XMFLOAT2(1250, 680), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+			break;
+
+		case 10:
+			//右下　ちと
+			DrawDividedSprite(XMFLOAT2(1110, 480), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition3 / 2, 1.0);
+			break;
+		default:
+			break;
+		}
+
+
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_coin_effect_Texture4);
+
+		switch (g_coin_effect_random_number4)
+		{
+		case 1:
+			//左上金貨　左下
+			DrawDividedSprite(XMFLOAT2(140, 100), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+
+			break;
+		case 2:
+			//左下錨
+			DrawDividedSprite(XMFLOAT2(220, 550), 30.0f, XMFLOAT2(90, 90), 5, 5, g_coin_addition4 / 2, 1.0);
+
+			break;
+		case 3:
+			//錨鎖　左上
+			DrawDividedSprite(XMFLOAT2(30, 250), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition4 / 2, 1.0);
+
+			break;
+		case 4:
+			//錨鎖　した
+			DrawDividedSprite(XMFLOAT2(30, 400), 0.0f, XMFLOAT2(50, 50), 5, 5, g_coin_addition4 / 2, 1.0);
+
+			break;
+		case 5:
+			//左上金貨　左上
+			DrawDividedSprite(XMFLOAT2(40, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+
+			break;
+		case 6:
+			//右上 がち右上
+			DrawDividedSprite(XMFLOAT2(1180, 30), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+
+			break;
+		case 7:
+			//右上　ちと右上
+			DrawDividedSprite(XMFLOAT2(1050, 75), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+			break;
+		case 8:
+			//右上　ちとちと右上
+			DrawDividedSprite(XMFLOAT2(1100, 275), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+			break;
+		case 9:
+			//右下　がち
+			DrawDividedSprite(XMFLOAT2(1250, 680), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+			break;
+
+		case 10:
+			//右下　ちと
+			DrawDividedSprite(XMFLOAT2(1110, 480), 0.0f, XMFLOAT2(70, 70), 5, 5, g_coin_addition4 / 2, 1.0);
+			break;
+		default:
+			break;
+		}
+		
+
+		if (60 < g_coin_addition)
+		{
+			g_coin_addition = 0;
+			g_coin_effect_random_number = 0;
+		}
+
+		if (50 < g_coin_addition1)
+		{
+			g_coin_addition1 = 0;
+			g_coin_effect_random_number1 = 0;
+		}
+
+		if (50 < g_coin_addition2)
+		{
+			g_coin_addition2 = 0;
+			g_coin_effect_random_number2 = 0;
+		}
+
+		if (50 < g_coin_addition3)
+		{
+			g_coin_addition3 = 0;
+			g_coin_effect_random_number3 = 0;
+		}
+
+		if (50 < g_coin_addition4)
+		{
+			g_coin_addition4 = 0;
+			g_coin_effect_random_number4 = 0;
+		}
+
+
+		//------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+		//-------------------------------------------------------------------------------------------
+		//ポップアップの描画
 
 		b2Vec2 pos = m_player.GetTouchStagePointBody()->GetPosition();
 
+		rate += 0.03;
+		// イージングがかかった値を保存する変数
+		double easingRate;
+		easingRate = Ease::InCubic(rate);
+
+
+
+		//---------------------------------------
+		//ホップアップに表示する数字の管理
+		int max_score = max_coin_cnt;//最大数の確保
+		int now_score;
+
+		
+
+		if (1 < easingRate)
+		{
+			easingRate = 1;
+		}
+		
 		switch (m_player.GetTouchStageSelectNum())
 		{
 		case 0:
+			rate = 0;
 			break;
 
 		case 1:
-			
+			//----------------------------------------------------------------------------
+			//チュートリアル
+
+
 			// シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_Texture);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_tutorial_Texture);
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x*SCALE,(pos.y*SCALE)-100),
+				XMFLOAT2(pos.x*SCALE,(pos.y*SCALE)-(170*easingRate)),
 				0.0f,
-				XMFLOAT2(200, 200)
+				XMFLOAT2(300*easingRate, 230*easingRate),
+				easingRate
 			);
 
 
+			if (0.9 < easingRate)
+			{
+				//--------------------------------------------------------------------------
+				// 最大数の管理
+				// -------------------------------------------------------------------------
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					max_score /= 10;
+				}
+
+				//------------------------------------------------------------------------------
+				//取得数管理
+				//-----------------------------------------------------------------------------
+				now_score = get_tutorial_coin_cnt;
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					max_score /= 10;
+				}
+
+			}
 			break;
 		case 2:
 		
 			// シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_Texture);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_1_1_Texture);
+
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) - 100),
+				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) + (170 * easingRate)),
 				0.0f,
-				XMFLOAT2(200, 200)
+				XMFLOAT2(300 * easingRate, 230 * easingRate),
+				easingRate
 			);
+
+			if (0.9 < easingRate)
+			{
+				//--------------------------------------------------------------------------
+				// 最大数の管理
+				// -------------------------------------------------------------------------
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					max_score /= 10;
+				}
+
+				//------------------------------------------------------------------------------
+				//取得数管理
+				//-----------------------------------------------------------------------------
+				now_score = get_1_1_coin_cnt;
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					max_score /= 10;
+				}
+
+			}
 
 			break;
 		case 3:
 			
 			// シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_Texture);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_unknow_Texture);
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) - 100),
+				XMFLOAT2(pos.x* SCALE, (pos.y* SCALE) - (170 * easingRate)),
 				0.0f,
-				XMFLOAT2(200, 200)
+				XMFLOAT2(300 * easingRate, 230 * easingRate),
+				easingRate
 			);
 
+
+			if (0.9 < easingRate)
+			{
+				//--------------------------------------------------------------------------
+				// 最大数の管理
+				// -------------------------------------------------------------------------
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					max_score /= 10;
+				}
+
+				//------------------------------------------------------------------------------
+				//取得数管理
+				//-----------------------------------------------------------------------------
+				now_score = get_1_2_coin_cnt;
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					max_score /= 10;
+				}
+
+			}
+			break;
+
+		case 4:
+
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_unknow_Texture);
+
+			DrawSpriteOld(
+				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) - (170 * easingRate)),
+				0.0f,
+				XMFLOAT2(300 * easingRate, 230 * easingRate),
+				easingRate
+			);
+
+			if (0.9 < easingRate)
+			{
+				//--------------------------------------------------------------------------
+				// 最大数の管理
+				// -------------------------------------------------------------------------
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					max_score /= 10;
+				}
+
+				//------------------------------------------------------------------------------
+				//取得数管理
+				//-----------------------------------------------------------------------------
+				now_score = get_1_3_coin_cnt;
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
+
+				for (int i = 0; i < 2; i++) {
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					max_score /= 10;
+				}
+
+			}
 			break;
 		default:
 			break;
 		}
+
+
+		// ステージポイントの描画
+		m_stagePointFactory.Draw();
+
+
+
+		//-----------------------------------------------------------------------------//
+		//タップした時にでるエフェクト
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_tap_effect_Texture);
+		if (g_tap_addition != 0)
+		{
+
+
+			b2Vec2 pos = m_player.GetBody()->GetPosition();
+			g_tap_addition++;
+
+
+		
+			DrawDividedSprite(XMFLOAT2((pos.x*SCALE)-50, (pos.y*SCALE)-50),g_tap_effect_angle, XMFLOAT2(100, 100), 3, 3 ,g_tap_addition/3, 1.0);
+
+			if (20 < g_tap_addition)
+			{
+				g_tap_addition = 0;
+			}
+
+		}
+		//----------------------------------------------------------------------------------//
+
+	
+		m_player.Draw();
+
+		double fadeeasingRate=0;
+		if (fade_rate != 0)
+		{
+			fade_rate += 0.03;
+			fadeeasingRate = Ease::InCubic(fade_rate);
+			if (1 < fadeeasingRate)
+			{
+				fadeeasingRate = 1;
+				
+			}
+			
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_fade_black_Texture);
+
+			DrawSpriteOld(
+				XMFLOAT2(pos.x* SCALE, pos.y* SCALE),
+				0.0f,
+				XMFLOAT2(2000-(2000*fadeeasingRate), 2000-(2000 * fadeeasingRate))
+			);
+			DrawSpriteOld(
+				XMFLOAT2(pos.x* SCALE, pos.y* SCALE),
+				0.0f,
+				XMFLOAT2(2000 , 2000)
+			);
+
+			if (0.9 < fade_rate)
+			{
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_black_Texture);
+				DrawSpriteOld(
+					XMFLOAT2(pos.x * SCALE, pos.y * SCALE),
+					0.0f,
+					XMFLOAT2(2000, 2000)
+				);
+			}
+		}
+
+		//----------------------------------------------------------------------------------------------
 
 		//バックバッファ、フロントバッファ入れ替え
 		Present();
@@ -204,10 +884,23 @@ void StageSelectScene::Finalize()
 {
 	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 	m_player.Finalize();
-	/*m_stagePointFactory.Finalize();*/
+	m_stagePointFactory.Finalize();
 
 
-	UnInitTexture(g_stage_select_Texture);
+	UnInitTexture(g_stage_select_background_Texture);
+	UnInitTexture(g_stage_select_coin_effect_Texture);
+	UnInitTexture(g_stage_select_coin_effect_Texture1);
+	UnInitTexture(g_stage_select_coin_effect_Texture2);
+	UnInitTexture(g_stage_select_coin_effect_Texture3);
+	UnInitTexture(g_stage_select_coin_effect_Texture4);
+	UnInitTexture(g_stage_select_tap_effect_Texture);
+	UnInitTexture(g_stage_select_hopup_tutorial_Texture);
+	UnInitTexture(g_stage_select_hopup_1_1_Texture);
+	UnInitTexture(g_stage_select_hopup_unknow_Texture);
+	UnInitTexture(g_stage_select_number_Texture);
+	UnInitTexture(g_stage_select_fade_black_Texture);
+	UnInitTexture(g_stage_select_black_Texture);
+	
 	// ワールド解放
 	if (m_world) {
 		DestroyWorld(m_world);

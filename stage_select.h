@@ -31,6 +31,52 @@ public:
 private:
     b2World* m_world;
 
+
+    //コインの表示につかうランダム関数
+    int g_coin_effect_random_number;
+    int g_coin_effect_random_number1;
+    int g_coin_effect_random_number2;
+    int g_coin_effect_random_number3;
+    int g_coin_effect_random_number4;
+
+
+    // コインのUV管理用の変数
+    int g_coin_addition = 10;
+    int g_coin_addition1 = 20;
+    int g_coin_addition2 = 30;
+    int g_coin_addition3= 40;
+    int g_coin_addition4 = 50;
+
+
+    // タップのUV管理用の変数
+    int g_tap_addition = 0;
+
+    //タップのエフェクトの角度を管理する
+    float g_tap_effect_angle;
+
+    // 進行度（仮）
+    double rate = 0.0;
+    //ホップアップのスコア表示のため
+    int max_coin_cnt = 30;
+
+    //ステージごとに取得したコインの数 チュートリアル
+    int get_tutorial_coin_cnt = 0;
+    //ステージごとに取得したコインの数　１－１
+    int get_1_1_coin_cnt = 0;
+    //ステージごとに取得したコインの数　１－２
+    int get_1_2_coin_cnt = 0;
+    //ステージごとに取得したコインの数　１－３
+    int get_1_3_coin_cnt = 0;
+
+
+
+    //フェードの時に使う 進行度
+    double fade_rate = 0.0f;
+
+    
+
+
+ 
 };
 
 void DestroyWorld(b2World*& world);

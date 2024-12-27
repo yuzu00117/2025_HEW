@@ -137,6 +137,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="display.cpp" />
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
+    <ClInclude Include="easing.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_static.h" />

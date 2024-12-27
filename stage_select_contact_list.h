@@ -63,6 +63,9 @@ public:
                 case 3:
                     m_player.SetTouchStageSelectNum(3);
                     break;
+                case 4:
+                    m_player.SetTouchStageSelectNum(4);
+                    break;
                 default:
                     break;
                 }
@@ -80,6 +83,9 @@ public:
                     break;
                 case 3:
                     m_player.SetTouchStageSelectNum(3);
+                    break;
+                case 4:
+                    m_player.SetTouchStageSelectNum(4);
                     break;
                 default:
                     break;
