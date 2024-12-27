@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------------------------------
+// #name stage_point.cpp
+// #description ステージセレクトをする際に使用する、ステージのポイントのあたり判定のボディを作ってる
+// #make 2024/12/27　　永野義也
+// #update 2024/12/27
+// #comment 追加・修正予定
+//                      ・特になし
+//           
+//----------------------------------------------------------------------------------------------------
 #include "stage_point.h"
 #include "texture.h"
 #include "main.h"
@@ -13,7 +22,7 @@ StagePoint::StagePoint()
     : m_body(nullptr), m_size(20.0f), m_world(nullptr) {}
 
 StagePoint::~StagePoint() {
-  /*  Finalize();*/
+ 
 }
 
 void StagePoint::Initialize(b2World* world, float x, float y, float size,int id) {
