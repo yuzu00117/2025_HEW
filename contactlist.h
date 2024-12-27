@@ -25,6 +25,7 @@
 #include"object_manager.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"Item_Manager.h"
 
 
 
@@ -53,6 +54,7 @@ public:
     void BeginContact(b2Contact* contact) override {
 
         ObjectManager& object_manager = ObjectManager::GetInstance();
+        ItemManager& item_manager = ItemManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -304,6 +306,26 @@ public:
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
                 enemy_instance->InPlayerSensor();
+            }
+        }
+
+        // プレーヤーとアイテムが衝突したかを判定
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)) {
+            // 衝突処理（プレーヤーと地面が接触した時）
+
+            //どちらがアイテムか特定
+            if (objectA->Item_name == ITEM_SPEED_UP)//Aがアイテム
+            {
+                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectA->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                item_instance->Function();
+                item_instance->SetDestory(true);//削除を呼び出す
+            }
+            else
+            {
+                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectB->id);
+                item_instance->Function();
+                item_instance->SetDestory(true);//削除を呼び出す
             }
         }
     }
