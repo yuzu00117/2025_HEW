@@ -152,6 +152,7 @@
     <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="one-way_platform.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="player_life.cpp" />
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="object_manager.h" />
     <ClInclude Include="one-way_platform.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="player_life.h" />
     <ClInclude Include="player_position.h" />
     <ClInclude Include="player_stamina.h" />
     <ClInclude Include="renderer.h" />
