@@ -163,7 +163,7 @@ void Field::Initialize()
 			}
 
 			if (field_map[y][x] == 18) {//
-				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 5.0f), b2Vec2(1.0f, 1.0f), 1);
+				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 5.0f), b2Vec2(1.0f, 1.0f), 3);
 			}
 
 		}
