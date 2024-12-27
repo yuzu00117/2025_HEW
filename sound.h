@@ -18,6 +18,7 @@
 
 #include <windows.h>
 #include "xaudio2.h"
+#include "cri_adx2le.h"
 
 
 bool InitSound(HWND hWnd);
