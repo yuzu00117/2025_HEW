@@ -87,16 +87,12 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
 
 void	ItemSpeedUp::Update()
 {
-    if (m_destory)
+    if (m_destory && m_body != nullptr)
     {
         //ボディの情報を消す
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
-
-        //オブジェクトマネージャー内のエネミー削除
-        ItemManager& item_manager = ItemManager::GetInstance();
-        item_manager.DestroyItem(GetID(), ITEM_SPEED_UP);
     }
 }
 

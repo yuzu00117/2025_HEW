@@ -311,7 +311,9 @@ public:
 
         // プレーヤーとアイテムが衝突したかを判定
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
-            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)) {
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item)||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
             // 衝突処理（プレーヤーと地面が接触した時）
 
             //どちらがアイテムか特定

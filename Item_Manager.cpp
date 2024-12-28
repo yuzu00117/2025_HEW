@@ -38,10 +38,7 @@ void ItemManager::InitializeAll() {
 // 全てのアイテムを更新
 void ItemManager::UpdateAll() {
     for (auto& w : m_SpeedUp_List) {
-		if(w)
-		{
-			w->Update();
-		}
+		w->Update();
     }
 }
 
@@ -60,23 +57,6 @@ void ItemManager::FinalizeAll() {
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
-void ItemManager::DestroyItem(int id, ItemType type)
-{
-	int cnt = 0;
-	switch (type)
-	{
-	case ITEM_SPEED_UP:
-		for (auto& w : m_SpeedUp_List) {
-			if (w->GetID() == id) {
-				m_SpeedUp_List.erase(m_SpeedUp_List.begin() + cnt);
-				return;
-			}
-			++cnt;
-		}
-		break;
-	}
-
-}
 
 
 

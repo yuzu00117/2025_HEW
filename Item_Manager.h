@@ -46,9 +46,6 @@ public:
 	// 全てのアイテムを破棄
 	void FinalizeAll();
 
-	//指定のアイテムを削除
-	void DestroyItem(int id, ItemType type);
-
 
 
 private:
