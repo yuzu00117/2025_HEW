@@ -11,6 +11,7 @@
 #include "texture.h"
 #include "main.h"
 #include"collider_type.h"
+#include"stage_select_player.h"
 
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
 
@@ -71,6 +72,9 @@ void StagePoint::Draw() {
     float x = position.x * SCALE; // メートルからピクセルに変換
     float y = position.y * SCALE;
 
+
+
+
     switch (id)
     {
     case 0:
@@ -96,12 +100,23 @@ void StagePoint::Draw() {
     default:
         break;
     }
-  
+
+    float SCALE=1;
+
+    StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
+    if (0 != m_player.GetTouchStageSelectNum())
+    {
+        if (id == m_player.GetTouchStageSelectNum())
+        {
+            SCALE = 1.5;
+        }
+    }
+
 
     DrawSpriteOld(
         XMFLOAT2(x, y),
         0.0f,
-        XMFLOAT2(m_size, m_size)
+        XMFLOAT2(m_size*SCALE, m_size*SCALE)
     );
 }
 

@@ -235,8 +235,11 @@ void StageSelectScene::Draw()
 			);
 		}
 		//------------------------------------------------------------------------------------------------------
+		
+		
 
 
+		
 		//------------------------------------------------------------------------------------------------------
 		//コイン描画
 		
@@ -266,9 +269,6 @@ void StageSelectScene::Draw()
 		{
 			g_coin_effect_random_number4 = GetRandomInt(1, 10);
 		}
-
-
-	
 
 
 
@@ -602,7 +602,8 @@ void StageSelectScene::Draw()
 		//------------------------------------------------------------------------------------------------------
 
 
-
+			// ステージポイントの描画
+		m_stagePointFactory.Draw();
 
 
 
@@ -645,7 +646,7 @@ void StageSelectScene::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_tutorial_Texture);
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x*SCALE,(pos.y*SCALE)-(170*easingRate)),
+				XMFLOAT2(pos.x*SCALE,(pos.y*SCALE)-(195*easingRate)),
 				0.0f,
 				XMFLOAT2(300*easingRate, 230*easingRate),
 				easingRate
@@ -661,7 +662,7 @@ void StageSelectScene::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 92 + (-15 * i), (pos.y * SCALE) - 128), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
 					max_score /= 10;
 				}
 
@@ -673,7 +674,7 @@ void StageSelectScene::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 45 + (-15 * i), (pos.y * SCALE) - 128), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
 					max_score /= 10;
 				}
 
@@ -686,7 +687,7 @@ void StageSelectScene::Draw()
 
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) + (170 * easingRate)),
+				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) + (195 * easingRate)),
 				0.0f,
 				XMFLOAT2(300 * easingRate, 230 * easingRate),
 				easingRate
@@ -694,26 +695,26 @@ void StageSelectScene::Draw()
 
 			if (0.9 < easingRate)
 			{
-				//--------------------------------------------------------------------------
-				// 最大数の管理
-				// -------------------------------------------------------------------------
-				// シェーダリソースを設定
+			//--------------------------------------------------------------------------
+			// 最大数の管理
+			// -------------------------------------------------------------------------
+			// シェーダリソースを設定
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 92 + (-15 * i), (pos.y * SCALE) + 270), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
 					max_score /= 10;
 				}
 
 				//------------------------------------------------------------------------------
 				//取得数管理
 				//-----------------------------------------------------------------------------
-				now_score = get_1_1_coin_cnt;
+				now_score = get_tutorial_coin_cnt;
 
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 45 + (-15 * i), (pos.y * SCALE) + 270), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
 					max_score /= 10;
 				}
 
@@ -726,7 +727,7 @@ void StageSelectScene::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_unknow_Texture);
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x* SCALE, (pos.y* SCALE) - (170 * easingRate)),
+				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) - (195 * easingRate)),
 				0.0f,
 				XMFLOAT2(300 * easingRate, 230 * easingRate),
 				easingRate
@@ -742,19 +743,19 @@ void StageSelectScene::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 92 + (-15 * i), (pos.y * SCALE) - 128), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
 					max_score /= 10;
 				}
 
 				//------------------------------------------------------------------------------
 				//取得数管理
 				//-----------------------------------------------------------------------------
-				now_score = get_1_2_coin_cnt;
+				now_score = get_tutorial_coin_cnt;
 
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 45 + (-15 * i), (pos.y * SCALE) - 128), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
 					max_score /= 10;
 				}
 
@@ -767,11 +768,12 @@ void StageSelectScene::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_hopup_unknow_Texture);
 
 			DrawSpriteOld(
-				XMFLOAT2(pos.x * SCALE, (pos.y * SCALE) - (170 * easingRate)),
+				XMFLOAT2(pos.x* SCALE, (pos.y* SCALE) - (195 * easingRate)),
 				0.0f,
 				XMFLOAT2(300 * easingRate, 230 * easingRate),
 				easingRate
 			);
+
 
 			if (0.9 < easingRate)
 			{
@@ -782,19 +784,19 @@ void StageSelectScene::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 90 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 92 + (-15 * i), (pos.y * SCALE) - 128), 0.0f, XMFLOAT2(15, 15), 10, 1, max_score);
 					max_score /= 10;
 				}
 
 				//------------------------------------------------------------------------------
 				//取得数管理
 				//-----------------------------------------------------------------------------
-				now_score = get_1_3_coin_cnt;
+				now_score = get_tutorial_coin_cnt;
 
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_number_Texture);
 
 				for (int i = 0; i < 2; i++) {
-					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 40 + (-15 * i), (pos.y * SCALE) - 105), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
+					DrawDividedSprite(XMFLOAT2((pos.x * SCALE) + 45 + (-15 * i), (pos.y * SCALE) - 128), 0.0f, XMFLOAT2(15, 15), 10, 1, now_score);
 					max_score /= 10;
 				}
 
@@ -805,8 +807,7 @@ void StageSelectScene::Draw()
 		}
 
 
-		// ステージポイントの描画
-		m_stagePointFactory.Draw();
+	
 
 
 
@@ -823,7 +824,7 @@ void StageSelectScene::Draw()
 
 
 		
-			DrawDividedSprite(XMFLOAT2((pos.x*SCALE)-50, (pos.y*SCALE)-50),g_tap_effect_angle, XMFLOAT2(100, 100), 3, 3 ,g_tap_addition/3, 1.0);
+			DrawDividedSprite(XMFLOAT2((pos.x*SCALE)-20, (pos.y*SCALE)-20),g_tap_effect_angle, XMFLOAT2(100, 100), 3, 3 ,g_tap_addition/3, 1.0);
 
 			if (20 < g_tap_addition)
 			{

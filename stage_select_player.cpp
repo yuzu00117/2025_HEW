@@ -20,6 +20,7 @@
 
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_stage_select_player_Texture = NULL;
+ID3D11ShaderResourceView* g_stage_select_player_click_Texture = NULL;
 
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
 
@@ -34,6 +35,7 @@ void StageSelectPlayer::Initialize(b2World* world, float x, float y) {
 
     //画像のインクルード
     g_stage_select_player_Texture = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_player.png");
+    g_stage_select_player_click_Texture = InitTexture(L"asset\\texture\\stage_select_texture\\stage_select_player_click.png");
     
     
     m_world = world;
@@ -84,7 +86,7 @@ void StageSelectPlayer::Update() {
     if (std::abs(left_stick_y) < deadZone) left_stick_y = 0.0f;
 
     // 移動速度を設定
-    const float maxSpeed = 10.0f; // 最大速度
+    const float maxSpeed = 15.0f; // 最大速度
     float velocityX = left_stick_x * maxSpeed;
     float velocityY = left_stick_y * maxSpeed;
 

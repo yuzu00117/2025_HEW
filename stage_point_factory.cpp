@@ -30,6 +30,7 @@ void StagePointFactory::Update() {
 
 void StagePointFactory::Draw() {
     for (auto& point : m_stagePoints) {
+        
         point.Draw();
     }
 }
