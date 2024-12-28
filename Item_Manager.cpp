@@ -27,6 +27,12 @@ void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, boo
 	m_SpeedUp_List.emplace_back(std::make_unique<ItemSpeedUp>(position, body_size, angle, shape_polygon, Alpha));
 }
 
+void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool shape_polygon, float Alpha)
+{
+    // 既存の引数コンストラクタを利用して生成
+    m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, shape_polygon, Alpha));
+}
+
 
 ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
 {
@@ -38,10 +44,23 @@ ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
 	return nullptr; // 見つからない場合は nullptr を返す
 }
 
+ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
+{
+    for (const auto& w : m_Spirit_List) {
+        if (w->GetID() == ID) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
 
 // 全てのアイテムを初期化
 void ItemManager::InitializeAll() {
     for (auto& w : m_SpeedUp_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_Spirit_List) {
         w->Initialize();
     }
 }
@@ -51,11 +70,17 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_SpeedUp_List) {
 		w->Update();
     }
+    for (auto& w : m_Spirit_List) {
+        w->Update();
+    }
 }
 
 // 全てのアイテムを描画
 void ItemManager::DrawAll() {
     for (auto& w : m_SpeedUp_List) {
+        w->Draw();
+    }
+    for (auto& w : m_Spirit_List) {
         w->Draw();
     }
 }
@@ -65,7 +90,11 @@ void ItemManager::FinalizeAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Finalize();
     }
+    for (auto& w : m_Spirit_List) {
+        w->Finalize();
+    }
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
 

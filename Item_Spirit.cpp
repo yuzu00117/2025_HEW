@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------------------------------
-// #name Item_SpeedUp.cpp
-// #description     スピードアップアイテム
+// #name Item_Spirit.cpp
+// #description		ソウル（敵が落とすアイテム）
 // #make 2024/12/28　王泳心
 // #update 2024/12/28
 // #comment 追加・修正予定
@@ -8,20 +8,19 @@
 //
 // 
 //----------------------------------------------------------------------------------------------------
-#include"Item_SpeedUp.h"
+#include "Item_Spirit.h"
+#include "texture.h"
+#include "sprite.h"
+#include "player_position.h"
 #include"world_box2d.h"
 #include"collider_type.h"
-#include"renderer.h"
-#include"sprite.h"
-#include"texture.h"
-#include"player_position.h"
-#include"player.h"
-#include"Item_Manager.h"
+#include"player_stamina.h"
+
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
 
-ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
-	:m_size(body_size), m_Alpha(Alpha)
+ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool shape_polygon, float Alpha)
+    :m_size(body_size), m_Alpha(Alpha), m_recovery(recovery)
 {
     b2BodyDef body;
     body.type = b2_dynamicBody;
@@ -86,8 +85,8 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
- 
-    data->Item_name = ITEM_SPEED_UP;
+
+    data->Item_name = ITEM_SPIRIT;
     int ID = data->GenerateID();
     data->id = ID;
     SetID(ID);
@@ -95,7 +94,7 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
 
 }
 
-void	ItemSpeedUp::Update()
+void	ItemSpirit::Update()
 {
     if (m_destory && m_body != nullptr)
     {
@@ -106,23 +105,22 @@ void	ItemSpeedUp::Update()
     }
 }
 
-void    ItemSpeedUp::Function()
+void    ItemSpirit::Function()
 {
-    Player player = Player::GetInstance();
-    player.SetSpeed(0.04f);
+    PlayerStamina::EditPlayerStaminaValue(m_recovery);
 }
 
 
-void ItemSpeedUp::Initialize()
+void ItemSpirit::Initialize()
 {
-    
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\speed_up.png");
+
+    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\tama.png");
 
 }
 
 
 
-void ItemSpeedUp::Draw()
+void ItemSpirit::Draw()
 {
     if (m_body != nullptr)
     {
@@ -162,7 +160,7 @@ void ItemSpeedUp::Draw()
 }
 
 
-void ItemSpeedUp::Finalize()
+void ItemSpirit::Finalize()
 {
 
     if (GetBody() != nullptr)
@@ -179,6 +177,6 @@ void ItemSpeedUp::Finalize()
     }
 }
 
-ItemSpeedUp::~ItemSpeedUp()
+ItemSpirit::~ItemSpirit()
 {
 }

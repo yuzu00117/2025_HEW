@@ -149,6 +149,7 @@
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
+    <ClCompile Include="Item_Spirit.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object_manager.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="Item_Manager.h" />
     <ClInclude Include="Item_SpeedUp.h" />
+    <ClInclude Include="Item_Spirit.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="object_manager.h" />
