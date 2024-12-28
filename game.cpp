@@ -26,6 +26,7 @@
 #include"scene.h"
 #include"player.h"
 #include"player_stamina.h"
+#include"anchor_spirit.h"
 
 
 void Game::Initialize()
@@ -40,6 +41,9 @@ void Game::Initialize()
 
 	//プレイヤーの体力の初期化
 	PlayerStamina::Initialize();
+
+	//ソウルゲージの初期化
+	AnchorSpirit::Initialize();
 
 	//アンカーの初期化
 	Anchor::Initialize();
