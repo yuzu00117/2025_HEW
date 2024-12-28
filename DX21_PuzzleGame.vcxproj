@@ -110,7 +110,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;Xinput.lib;%(AdditionalDependencies);cri_ware_pcx64_le_import.lib</AdditionalDependencies>
+      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
