@@ -22,6 +22,7 @@
 #include"enemy_dynamic.h"
 #include"enemy_static.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
 
 
@@ -39,6 +40,7 @@ int Field::m_field_height = 0;
 
 
 ObjectManager& objectManager = ObjectManager::GetInstance();
+ItemManager& itemManager = ItemManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
@@ -162,11 +164,18 @@ void Field::Initialize()
 				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Circle_collider, 1);
 			}
 
+			if (field_map[y][x] == 18) {//スピードアップアイテム
+				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
+			if (field_map[y][x] == 19) {//引っ張れる床
+				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 20.0f), b2Vec2(1.0f, 1.0f), 3);
+			}
 
 		}
 	}
 
 	objectManager.InitializeAll();
+	itemManager.InitializeAll();
 }
 
 
@@ -177,6 +186,7 @@ void Field::Update()
 	AnchorPoint::Update();
 
 	objectManager.UpdateAll();
+	itemManager.UpdateAll();
 }
 
 
@@ -230,6 +240,7 @@ void Field::Draw()
 
 
 	objectManager.DrawAll();
+	itemManager.DrawAll();
 
 	//アンカーポイントを描画
 	AnchorPoint::Draw();
@@ -263,6 +274,7 @@ void Field::Finalize()
 	//終了処理
 	AnchorPoint::Finalize();
 	objectManager.FinalizeAll();
+	itemManager.FinalizeAll();
 
 }
 

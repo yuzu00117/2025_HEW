@@ -29,7 +29,7 @@ static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチャ３
 
 int ObjectData::current_id = 0;
 
-wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
+wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
 
 	SetWoodSize(Wood_size);
@@ -53,7 +53,7 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_le
 
 	b2BodyDef Wood_body;//木の幹の部分
 	Wood_body.type = b2_dynamicBody;
-	Wood_body.position.Set(Postion.x, Postion.y);
+	Wood_body.position.Set(Position.x, Position.y);
 	Wood_body.fixedRotation = false;
 
 	b2Body* m_Wood_body = world->CreateBody(&Wood_body);
@@ -94,8 +94,8 @@ wood::wood(b2Vec2 Postion, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_le
 	b2BodyDef anchorpoint_body;//木の幹の部分
 	anchorpoint_body.type = b2_dynamicBody;
 	anchorpoint_body.position.Set(
-		Postion.x,
-		Postion.y + (wood_size.y / 2) + (anchorpoint_size.y / 2));
+		Position.x,
+		Position.y + (wood_size.y / 2) + (anchorpoint_size.y / 2));
 	anchorpoint_body.fixedRotation = false;
 
 	b2Body* m_AnchorPoint_body = world->CreateBody(&anchorpoint_body);

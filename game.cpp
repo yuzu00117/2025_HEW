@@ -22,8 +22,11 @@
 #include"word.h"
 #include"debug.h"
 #include"display.h"
+#include"player_life.h"
 #include"scene.h"
 #include"player.h"
+#include"player_stamina.h"
+#include"anchor_spirit.h"
 
 
 void Game::Initialize()
@@ -36,13 +39,20 @@ void Game::Initialize()
 	//�v���C���[�̏�����
 	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
 
+	//プレイヤーの体力の初期化
+	PlayerStamina::Initialize();
 
+	//ソウルゲージの初期化
+	AnchorSpirit::Initialize();
 
 	//アンカーの初期化
 	Anchor::Initialize();
 
 	//フィールドの初期化
 	Field::Initialize();
+
+	//�c�@�̏�����
+	PlayerLife::Initialize();
 
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
@@ -65,6 +75,8 @@ void Game::Initialize()
 void Game::Finalize(void)
 {
 
+	//�c�@�̏I������
+	PlayerLife::Initialize();
 
 	//プレイヤーの終了処理
 	player.Finalize();
@@ -104,6 +116,10 @@ void Game::Update(void)
 
 	display::Update();
 
+	//�c�@�̍X�V����
+	PlayerLife::Update();
+
+	//�v���C���[�̍X�V����
 	//プレイヤーの更新処理
 	player.Update();
 
@@ -146,7 +162,11 @@ void Game::Draw(void)
 	//アンカーの描画処理
 	Anchor::Draw();
 
-	//体力ソウルゲージUIの描画処理
+	//�c�@�̕`�揈��
+	PlayerLife::Draw();
+
+	//�̗̓\�E���Q�[�WUI�̕`�揈��
+  //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
 
 
