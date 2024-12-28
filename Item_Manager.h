@@ -46,6 +46,9 @@ public:
 	// 全てのアイテムを破棄
 	void FinalizeAll();
 
+	//指定のアイテムを削除
+	void DestroyItem(int id, ItemType type);
+
 
 
 private:
@@ -56,9 +59,6 @@ private:
 	ItemManager() = default;
 	ItemManager(const ItemManager&) = delete;
 	ItemManager& operator=(const ItemManager&) = delete;
-
-	//アイテムがリストの中で何番目か
-	int ID_SpeedUp_List = -1;
 
 };
 

@@ -30,6 +30,8 @@ public:
 	//描画サイズセット
 	void SetSize(b2Vec2 size) { m_size = size; }
 
+	//これから消えるかどうかを取得
+	bool	GetDestory() { return m_destory; }
 	//これから消えるかどうかをセット
 	void	SetDestory(bool flag) { m_destory = flag; }
 	//アイテムがゲットされた時の処理
@@ -37,10 +39,9 @@ public:
 
 
 	void Initialize();
-	bool Update();
+	void Update();
 	void Draw();
 	void Finalize();
-
 
 private:
 	// 各インスタンス固有の ID
