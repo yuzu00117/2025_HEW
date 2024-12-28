@@ -87,7 +87,7 @@ void EnemyAttack::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 	world->DestroyBody(GetBody());
-	m_body = nullptr;
+	SetBody(nullptr);
 }
 
 void EnemyAttack::Update()
@@ -99,10 +99,11 @@ void EnemyAttack::Update()
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 		world->DestroyBody(GetBody());
+		SetBody(nullptr);
 
 		//オブジェクトマネージャー内のエネミー削除
 		ObjectManager& object_manager = ObjectManager::GetInstance();
-		object_manager.DestroyEnemyDynamic(GetID());
+		object_manager.DestroyEnemyAttack(GetID());
 	}
 }
 

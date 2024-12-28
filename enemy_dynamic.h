@@ -37,9 +37,11 @@ private:
 	//¶Œü‚« true : ‰EŒü‚« false
 	bool m_direction = true;
 
+	int m_attack_ID = -999;
 	int m_attack_counter = 0;
 	const int m_attack_birth = 30;
 	const int m_attack_finish = 45;
+
 	b2Vec2 m_size_sensor = b2Vec2(0.0,0.0);
 public:
 	EnemyDynamic() = default;

@@ -108,16 +108,6 @@ void EnemyDynamic::Initialize()
 
 void EnemyDynamic::Finalize()
 {
-
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
-
-
-	if (GetBody() != nullptr)
-	{
-		world->DestroyBody(GetBody());
-	}
 	UnInitTexture(g_EnemyDynamic_Texture);
 	UnInitTexture(g_EnemySensor_Texture);
 
@@ -156,6 +146,7 @@ void EnemyDynamic::Update()
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 		world->DestroyBody(GetBody());
+		SetBody(nullptr);
 
 		//オブジェクトマネージャー内のエネミー削除
 		ObjectManager& object_manager = ObjectManager::GetInstance();
@@ -197,15 +188,15 @@ void EnemyDynamic::Draw()
 	//============================================================
 	//テスト:センサー描画
 	//貼るテクスチャを指定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	//GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ m_size_sensor.x * scale , m_size_sensor.y * scale }
-	);
+	////draw
+	//DrawSprite(
+	//	{ draw_x,
+	//	  draw_y },
+	//	GetBody()->GetAngle(),
+	//	{ m_size_sensor.x * scale , m_size_sensor.y * scale }
+	//);
 }
 
 //移動
