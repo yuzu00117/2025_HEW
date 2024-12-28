@@ -226,7 +226,7 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitRenderer(hInstance, hWnd, bWindow);
 
 	//サウンドの初期化
-	InitSound(hWnd);
+	CRIInitialize();
 
 	//ポリゴン
 	InitSprite();
@@ -240,7 +240,7 @@ void FinalFinalize()
 	UninitSprite();
 
 	//サウンドの終了処理
-	UninitSound();
+	CRIFinalize();
 
 	//レンダリングの終了処理
 	UninitRenderer();

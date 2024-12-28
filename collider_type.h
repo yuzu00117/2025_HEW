@@ -14,23 +14,24 @@
 #include <string>
 #include"include/box2d/box2d.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
 enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあたり判定の種類を追加したい場合ここに足して　下でセットしてね
 {
     collider_player_body,
     collider_player_leg,
-
     collider_player_sensor,
 
     collider_anchor,
     collider_anchor_chain,
+    collider_anchor_point,
 
     collider_ground,
 
     collider_object,
     collider_object_destroyer_of_enemy,  //オブジェクトに付いている敵を消すセンサー
 
-    collider_anchor_point,
+    collider_item,
 
     collider_normal_attack_anchor,
 
@@ -51,7 +52,8 @@ public:
 
 
     b2Vec2 add_force = { 0.0f,0.0f };// 追加のb2vecデータ
-    ObjectType object_name;  // 追加の文字列データ
+    ObjectType object_name;  // 追加の文字列データ(オブジェクト用)
+    ItemType Item_name; //  追加の文字列データ（アイテム用）
     int id;//オブジェクトを管理するためのID
 
     int need_anchor_level;

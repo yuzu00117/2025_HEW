@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2024/12/13
+// #update 2024/12/28
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -25,6 +25,7 @@
 #include"object_manager.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"Item_Manager.h"
 
 
 
@@ -53,6 +54,7 @@ public:
     void BeginContact(b2Contact* contact) override {
 
         ObjectManager& object_manager = ObjectManager::GetInstance();
+        ItemManager& item_manager = ItemManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -374,6 +376,31 @@ public:
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
                 enemy_instance->InPlayerSensor();
+            }
+        }
+
+        // プレーヤーとアイテムが衝突したかを判定
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item)||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
+
+            //最初に　objectB　が item　だと仮定する
+            auto item = objectB;
+            //どちらがアイテムか特定
+            if (objectA->collider_type == collider_item)//Aがアイテム
+            {
+                item = objectA;
+            }
+
+            //アイテム種類別に処理する
+            switch (item->Item_name)
+            {
+            case ITEM_SPEED_UP:
+                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                item_instance->Function();
+                item_instance->SetDestory(true);//削除を呼び出す
+                break;
             }
         }
     }
