@@ -76,6 +76,12 @@
     <ClCompile Include="display.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="enemy_attack.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    <ClCompile Include="title.cpp" />
+    <ClCompile Include="stage_select.cpp">
+      <Filter>ソースファイル</Filter>
+
     <ClCompile Include="create_filter.cpp">
       <Filter>ソースファイル\collider</Filter>
     </ClCompile>
@@ -84,6 +90,7 @@
     </ClCompile>
     <ClCompile Include="player_life.cpp">
       <Filter>ソースファイル\player</Filter>
+
     </ClCompile>
     <ClCompile Include="result.cpp">
       <Filter>ソースファイル\scene</Filter>
@@ -198,6 +205,10 @@
     <ClInclude Include="display.h">
       <Filter>ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="enemy_attack.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h" />
     <ClInclude Include="contactlist.h">
       <Filter>ヘッダーファイル\collider</Filter>
     </ClInclude>
