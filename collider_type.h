@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name collider_type.h
-// #description コライダーの種類をセット
-// #make 2024/11/22　永野義也
+// #description �R���C�_�[�̎�ނ�Z�b�g
+// #make 2024/11/22�@�i��`��
 // #update 2024/11/22
-// #comment 追加・修正予定
-//          ・コライダーの種類を増やしたいときに変更してね
+// #comment �ǉ��E�C���\��
+//          �E�R���C�_�[�̎�ނ𑝂₵�����Ƃ��ɕύX���Ă�
 //----------------------------------------------------------------------------------------------------
 
 
@@ -14,16 +14,17 @@
 #include <string>
 #include"include/box2d/box2d.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
-enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあたり判定の種類を追加したい場合ここに足して　下でセットしてね
+enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���@�V���Ȃ����蔻��̎�ނ�ǉ��������ꍇ�����ɑ����ā@���ŃZ�b�g���Ă�
 {
     collider_player_body,
     collider_player_leg,
-
     collider_player_sensor,
 
     collider_anchor,
     collider_anchor_chain,
+    collider_anchor_point,
 
     collider_ground,
 
@@ -31,7 +32,7 @@ enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあ
 
     collider_object,
 
-    collider_anchor_point,
+    collider_item,
 
     collider_normal_attack_anchor,
 
@@ -46,30 +47,31 @@ enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあ
 };
 
 
-// カスタムデータクラス　ここでコライダーのタイプをセット
+// �J�X�^���f�[�^�N���X�@�����ŃR���C�_�[�̃^�C�v��Z�b�g
 class ObjectData {
 public:
-    ColliderTypeList collider_type; // コライダーのタイプをセット                     
-    void* extra;                    // 追加情報あるならセット
+    ColliderTypeList collider_type; // �R���C�_�[�̃^�C�v��Z�b�g                     
+    void* extra;                    // �ǉ���񂠂�Ȃ�Z�b�g
 
     // Constructor
     ObjectData(const ColliderTypeList type)
         : collider_type(type), extra(nullptr) {}
 
 
-    b2Vec2 add_force = { 0.0f,0.0f };// 追加のb2vecデータ
-    ObjectType object_name;  // 追加の文字列データ
-    int id;//オブジェクトを管理するためのID
+    b2Vec2 add_force = { 0.0f,0.0f };// �ǉ���b2vec�f�[�^
+    ObjectType object_name;  // �ǉ��̕�����f�[�^(�I�u�W�F�N�g�p)
+    ItemType Item_name; //  �ǉ��̕�����f�[�^�i�A�C�e���p�j
+    int id;//�I�u�W�F�N�g��Ǘ����邽�߂�ID
 
     int need_anchor_level;
 
-    // ID を生成する関数
+    // ID �𐶐�����֐�
     static int GenerateID() {
-        return current_id++;//全てのIDを管理
+        return current_id++;//�S�Ă�ID��Ǘ�
     }
 
 private:
-    // 静的カウンタ ID
+    // �ÓI�J�E���^ ID
     static int current_id;
 
 
