@@ -35,7 +35,8 @@ enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあ
 
     collider_enemy_dynamic,
     collider_enemy_static,
-  　collider_enemy_sensor,
+
+    collider_enemy_sensor,
     collider_enemy_attack,
 };
 

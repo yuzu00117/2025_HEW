@@ -125,9 +125,7 @@ void EnemyDynamic::Finalize()
 	ObjectManager& object_manager = ObjectManager::GetInstance();
 	object_manager.DestroyEnemyDynamic(GetID());
 
-	//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+
 	world->DestroyBody(GetBody());
 	SetBody(nullptr);
 }
