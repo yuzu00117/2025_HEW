@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------------------------------
+// #name Item_SpeedUp.cpp
+// #description     スピードアップアイテム
+// #make 2024/12/28　王泳心
+// #update 2024/12/28
+// #comment 追加・修正予定
+//      
+//
+// 
+//----------------------------------------------------------------------------------------------------
+
 #include"Item_SpeedUp.h"
 #include"world_box2d.h"
 #include"collider_type.h"
@@ -155,12 +166,20 @@ void ItemSpeedUp::Draw()
 void ItemSpeedUp::Finalize()
 {
 
-}
-
-ItemSpeedUp::~ItemSpeedUp()
-{
+    if (GetBody() != nullptr)
+    {
+        //ワールドのインスタンスを持ってくる
+        Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+        b2World* world = box2d_world.GetBox2dWorldPointer();
+        world->DestroyBody(GetBody());
+        SetBody(nullptr);
+    }
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
     }
+}
+
+ItemSpeedUp::~ItemSpeedUp()
+{
 }

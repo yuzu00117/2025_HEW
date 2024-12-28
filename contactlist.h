@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2024/12/13
+// #update 2024/12/28
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -314,7 +314,6 @@ public:
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item)||
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
-            // 衝突処理（プレーヤーと地面が接触した時）
 
             //最初に　objectB　が item　だと仮定する
             auto item = objectB;
