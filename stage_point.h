@@ -43,6 +43,8 @@ private:
     b2Body* m_body; // ステージポイントのBox2Dボディ
     float m_size;   // ステージポイントのサイズ
     b2World* m_world; // 参照用
+
+    int effect_cnt;
 };
 
 #endif // !STAGE_POINT_H
