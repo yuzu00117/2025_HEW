@@ -141,6 +141,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="display.cpp" />
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
@@ -163,7 +164,10 @@
     <ClCompile Include="sloping_block.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="stage_point.cpp" />
+    <ClCompile Include="stage_point_factory.cpp" />
     <ClCompile Include="stage_select.cpp" />
+    <ClCompile Include="stage_select_player.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
@@ -185,6 +189,7 @@
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
+    <ClInclude Include="easing.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_static.h" />
@@ -207,6 +212,11 @@
     <ClInclude Include="sloping_block.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="stage_point.h" />
+    <ClInclude Include="stage_point_factory.h" />
+    <ClInclude Include="stage_select.h" />
+    <ClInclude Include="stage_select_contact_list.h" />
+    <ClInclude Include="stage_select_player.h" />
     <ClInclude Include="static_to_dynamic_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
