@@ -178,7 +178,7 @@ void StageSelectScene::Update()
 		//カーソルをステージポイントにあててる時
 		if (m_player.GetTouchStageSelectNum() != 0)
 		{
-			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+			if ((Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))&&fade_rate==0.0f)
 			{
 				fade_rate = 0.01;
 			}
