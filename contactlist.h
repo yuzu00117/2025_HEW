@@ -316,18 +316,22 @@ public:
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
             // 衝突処理（プレーヤーと地面が接触した時）
 
+            //最初に　objectB　が item　だと仮定する
+            auto item = objectB;
             //どちらがアイテムか特定
-            if (objectA->Item_name == ITEM_SPEED_UP)//Aがアイテム
+            if (objectA->collider_type == collider_item)//Aがアイテム
             {
-                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectA->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                item_instance->Function();
-                item_instance->SetDestory(true);//削除を呼び出す
+                item = objectA;
             }
-            else
+
+            //アイテム種類別に処理する
+            switch (item->Item_name)
             {
-                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(objectB->id);
+            case ITEM_SPEED_UP:
+                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 item_instance->Function();
                 item_instance->SetDestory(true);//削除を呼び出す
+                break;
             }
         }
     }
