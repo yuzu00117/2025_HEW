@@ -225,9 +225,8 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//レンダリング処理の初期化
 	InitRenderer(hInstance, hWnd, bWindow);
 
-	//2024/12/27 CRIに移行する関係で、一度コメントアウトで無効化
 	//サウンドの初期化
-	//InitSound(hWnd);
+	CRIInitialize();
 
 	//ポリゴン
 	InitSprite();
@@ -240,9 +239,8 @@ void FinalFinalize()
 	//ポリゴン
 	UninitSprite();
 
-	//2024/12/27 CRIに移行する関係で、一度コメントアウトで無効化
 	//サウンドの終了処理
-	//UninitSound();
+	CRIFinalize();
 
 	//レンダリングの終了処理
 	UninitRenderer();
