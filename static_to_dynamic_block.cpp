@@ -9,14 +9,13 @@
 
 #include"include/box2d/box2d.h"
 #include"world_box2d.h"
-#include"collider_type.h"
 #include"sprite.h"
 #include"texture.h"
 #include"player_position.h"
-#include"collider_type.h"
 #include"player_position.h"
 #include"static_to_dynamic_block.h"
 #include"create_filter.h"
+#include"collider_type.h"
 
 
 //テクスチャの入れ物
