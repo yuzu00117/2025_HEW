@@ -66,12 +66,25 @@ public:
         m_stage_point_body = body;
     }
 
+    bool GetTapTextureFlag()
+    {
+        return tap_texture_flag;
+    }
+
+    void SetTapTextureFlag(bool flag)
+    {
+        tap_texture_flag = flag;
+    }
+
 private:
     b2Body* m_body;           // プレイヤーのBox2Dボディ
     float m_size;             // プレイヤーのサイズ
     b2World* m_world;         // Box2Dワールド（参照用）
 
     b2Body* m_stage_point_body;
+
+
+    bool tap_texture_flag;
 
 
     int touch_stage_select_number;

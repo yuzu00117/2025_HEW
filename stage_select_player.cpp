@@ -117,14 +117,20 @@ void StageSelectPlayer::Draw() {
     float x = position.x * SCALE; // メートルからピクセルに変換
     float y = position.y * SCALE;
 
-    double angle = DegreesToRadians(330);
-
     // シェーダリソースを設定
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_player_Texture);
 
+    if (GetTapTextureFlag())//フラグのオンか
+    {
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_player_click_Texture);
+    }
+
+
+
     DrawSpriteOld(
         XMFLOAT2(x, y),
-        angle,
+        0.0,
         XMFLOAT2(m_size, m_size)
     );
 }

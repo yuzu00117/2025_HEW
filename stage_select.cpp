@@ -159,6 +159,8 @@ void StageSelectScene::Update()
 				g_tap_effect_angle = DegreesToRadians(random_num);
 
 				g_tap_addition = 1;
+
+				m_player.SetTapTextureFlag(true);
 			}
 		}
 	
@@ -829,6 +831,7 @@ void StageSelectScene::Draw()
 			if (20 < g_tap_addition)
 			{
 				g_tap_addition = 0;
+				m_player.SetTapTextureFlag(false);
 			}
 
 		}
