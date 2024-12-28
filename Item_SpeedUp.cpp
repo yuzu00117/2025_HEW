@@ -1,3 +1,14 @@
+//-----------------------------------------------------------------------------------------------------
+// #name Item_SpeedUp.cpp
+// #description     スピードアップアイテム
+// #make 2024/12/28　王泳心
+// #update 2024/12/28
+// #comment 追加・修正予定
+//      
+//
+// 
+//----------------------------------------------------------------------------------------------------
+
 #include"Item_SpeedUp.h"
 #include"world_box2d.h"
 #include"collider_type.h"
@@ -85,9 +96,15 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
 
 }
 
-bool	ItemSpeedUp::Update()
+void	ItemSpeedUp::Update()
 {
-    return m_destory;
+    if (m_destory && m_body != nullptr)
+    {
+        //ボディの情報を消す
+        b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+        world->DestroyBody(m_body);
+        m_body = nullptr;
+    }
 }
 
 void    ItemSpeedUp::Function()
@@ -108,48 +125,61 @@ void ItemSpeedUp::Initialize()
 
 void ItemSpeedUp::Draw()
 {
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+    if (m_body != nullptr)
+    {
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 
-    // コライダーと位置情報の補正をするため
-    float scale = SCREEN_SCALE;
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
 
-    b2Vec2 screen_center;
-    screen_center.x = SCREEN_CENTER_X;
-    screen_center.y = SCREEN_CENTER_Y;
-
-
-    // コライダーの位置の取得（アイテムーの位置）
-    b2Vec2 position;
-    position.x = m_body->GetPosition().x;
-    position.y = m_body->GetPosition().y;
-
-    // プレイヤー位置を考慮してスクロール補正を加える
-    //取得したbodyのポジションに対してBox2dスケールの補正を加える
-    float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-    float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
 
 
-    //描画
-    DrawSprite(
-        { draw_x,
-          draw_y },
-        m_body->GetAngle(),
-        { GetSize().x * scale,GetSize().y * scale },
-        m_Alpha
-    );
+        // コライダーの位置の取得（アイテムーの位置）
+        b2Vec2 position;
+        position.x = m_body->GetPosition().x;
+        position.y = m_body->GetPosition().y;
+
+
+        // プレイヤー位置を考慮してスクロール補正を加える
+        //取得したbodyのポジションに対してBox2dスケールの補正を加える
+        float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+        //描画
+        DrawSprite(
+            { draw_x,
+              draw_y },
+            m_body->GetAngle(),
+            { GetSize().x * scale,GetSize().y * scale },
+            m_Alpha
+        );
+
+    }
 }
 
 
 void ItemSpeedUp::Finalize()
 {
 
-}
-
-ItemSpeedUp::~ItemSpeedUp()
-{
+    if (GetBody() != nullptr)
+    {
+        //ワールドのインスタンスを持ってくる
+        Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+        b2World* world = box2d_world.GetBox2dWorldPointer();
+        world->DestroyBody(GetBody());
+        SetBody(nullptr);
+    }
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
     }
+}
+
+ItemSpeedUp::~ItemSpeedUp()
+{
 }
