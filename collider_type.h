@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------------------------------
 // #name collider_type.h
-// #description �R���C�_�[�̎�ނ�Z�b�g
+// #description �R���C�_�[�̎�ނ��Z�b�g
 // #make 2024/11/22�@�i��`��
 // #update 2024/11/22
 // #comment �ǉ��E�C���\��
@@ -28,9 +28,8 @@ enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���
 
     collider_ground,
 
-
-
     collider_object,
+    collider_object_destroyer_of_enemy,  //�I�u�W�F�N�g�ɕt���Ă���G�������Z���T�[
 
     collider_item,
 
@@ -39,18 +38,15 @@ enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���
     collider_enemy_dynamic,
     collider_enemy_static,
 
-
-
     collider_stage_select_point,
     collider_stage_select_player,
-
 };
 
 
-// �J�X�^���f�[�^�N���X�@�����ŃR���C�_�[�̃^�C�v��Z�b�g
+// �J�X�^���f�[�^�N���X�@�����ŃR���C�_�[�̃^�C�v���Z�b�g
 class ObjectData {
 public:
-    ColliderTypeList collider_type; // �R���C�_�[�̃^�C�v��Z�b�g                     
+    ColliderTypeList collider_type; // �R���C�_�[�̃^�C�v���Z�b�g                     
     void* extra;                    // �ǉ���񂠂�Ȃ�Z�b�g
 
     // Constructor
@@ -61,13 +57,13 @@ public:
     b2Vec2 add_force = { 0.0f,0.0f };// �ǉ���b2vec�f�[�^
     ObjectType object_name;  // �ǉ��̕�����f�[�^(�I�u�W�F�N�g�p)
     ItemType Item_name; //  �ǉ��̕�����f�[�^�i�A�C�e���p�j
-    int id;//�I�u�W�F�N�g��Ǘ����邽�߂�ID
+    int id;//�I�u�W�F�N�g���Ǘ����邽�߂�ID
 
     int need_anchor_level;
 
     // ID �𐶐�����֐�
     static int GenerateID() {
-        return current_id++;//�S�Ă�ID��Ǘ�
+        return current_id++;//�S�Ă�ID���Ǘ�
     }
 
 private:

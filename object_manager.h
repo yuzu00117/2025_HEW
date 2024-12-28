@@ -18,6 +18,7 @@
 #include"sloping_block.h"
 #include"rock.h"
 #include"static_to_dynamic_block.h"
+#include"movable_ground.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 
@@ -28,11 +29,13 @@ enum ObjectType {
     Object_Rock, // 岩
     Object_one_way_platform,//足場　したからしか乗れない
     Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
+    Object_Movable_Ground,  //引っ張れる床 
     
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
 };
 
+class Object{};
 
 // オブジェクトを管理するクラス
 class ObjectManager {
@@ -51,6 +54,8 @@ public:
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
     //静的→動的のブロックの追加
     void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
+    // 引っ張れる床を追加
+    void AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level);
     //静的エネミー生成
     void AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
     //動的エネミー生成
@@ -66,10 +71,15 @@ public:
     sloping_block* FindSloping_BlockByID(int id);
     //IDを使って静的→動的ブロックを追加
     static_to_dynamic_block* FindStatic_to_Dynamic_BlcokID(int id);
+    //IDを使って引っ張れる床を検索
+    movable_ground* FindMovable_GroundID(int id);
     //IDを使って静的エネミーを検索
     EnemyStatic* FindEnemyStaticByID(int id);
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
+    
+    //IDとオブジェクトタイプでオブジェクトを検索
+    Object* FindObjectByID_ObjectType(int id, ObjectType type);
 
     //指定の静的エネミーを削除
     void DestroyEnemyStatic(int id);
@@ -95,6 +105,7 @@ private:
     std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// 足場のリスト
     std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//斜面のリスト
     std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//静的→動的ブロック挙動
+    std::vector<std::unique_ptr<movable_ground>> movable_groundList;//木のリスト
     std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
     std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//静的エネミーのリスト
 
