@@ -15,6 +15,7 @@
 #include"world_box2d.h"
 #include"collider_type.h"
 #include"player_stamina.h"
+#include"create_filter.h"
 
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
@@ -34,6 +35,7 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
     b2World* world = box2d_world.GetBox2dWorldPointer();
 
     m_body = world->CreateBody(&body);
+    m_body->SetLinearDamping(20.0f); //落下速度を制限する（値が大きいほどゆっくり）
 
     SetSize(body_size);//プレイヤー表示をするためにセットする
 
@@ -59,6 +61,7 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
         fixture.friction = 0.3f;//摩擦
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        //fixture.filter = createFilterExclude("item_filter", { "Player_filter" });
 
         p_fixture = m_body->CreateFixture(&fixture);
 
@@ -68,13 +71,19 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
     else
     {
         b2CircleShape shape;
-        shape.m_radius = size.x * 0.5f;
+        if (size.x > size.y) {
+            shape.m_radius = size.x * 0.5f;
+        }
+        else {
+            shape.m_radius = size.y * 0.5f;
+        }
 
         fixture.shape = &shape;
         fixture.density = 1.0f;//密度
         fixture.friction = 0.3f;//摩擦
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        //fixture.filter = createFilterExclude("item_filter", { "Player_filter" });
 
         p_fixture = m_body->CreateFixture(&fixture);
     }

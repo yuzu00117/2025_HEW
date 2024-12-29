@@ -31,6 +31,9 @@ void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, floa
 {
     // 既存の引数コンストラクタを利用して生成
     m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, shape_polygon, Alpha));
+   //　新しく作ったものの初期化処理
+    auto& lastSpirit = *m_Spirit_List.back();
+    lastSpirit.Initialize();
 }
 
 

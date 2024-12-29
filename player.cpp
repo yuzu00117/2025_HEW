@@ -109,6 +109,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     fixture_rectangle_body.friction = 0.001f;//摩擦
     fixture_rectangle_body.restitution = 0.1f;//反発係数
     fixture_rectangle_body.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+    fixture_rectangle_body.filter = createFilterExclude("Player_filter", {});
 
 
     //プレイヤーの下の円のコライダー

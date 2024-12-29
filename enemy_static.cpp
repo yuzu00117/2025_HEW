@@ -20,6 +20,7 @@
 #include"contactlist.h"
 #include"anchor_spirit.h"
 #include"object_manager.h"
+#include"Item_Manager.h"
 
 static ID3D11ShaderResourceView* g_EnemyStatic_Texture = NULL;	//静的エネミーのテクスチャ
 
@@ -102,6 +103,10 @@ void EnemyStatic::Update()
 	}
 	else if (!GetUse())
 	{
+		//ソウルを落とす
+		ItemManager& item_manager = ItemManager::GetInstance();
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage(), false);
+
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
