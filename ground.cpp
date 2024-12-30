@@ -12,6 +12,7 @@
 #include"include/box2d/box2d.h"
 #include"world_box2d.h"
 #include"contactlist.h"
+#include"create_filter.h"
 
 
 /**
@@ -66,7 +67,7 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	fixture.friction = 0.3f;//摩擦
 	fixture.restitution = 0.1f;//反発係数
 	fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-
+	fixture.filter = createFilterExclude("ground_filter", {});
 
 
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------------------------------
-// #name Item_SpeedUp.cpp
-// #description     スピードアップアイテム
+// #name Item_Spirit.cpp
+// #description		ソウル（敵が落とすアイテム）
 // #make 2024/12/28　王泳心
 // #update 2024/12/28
 // #comment 追加・修正予定
@@ -8,20 +8,23 @@
 //
 // 
 //----------------------------------------------------------------------------------------------------
-#include"Item_SpeedUp.h"
+#include "Item_Spirit.h"
+#include "texture.h"
+#include "sprite.h"
+#include "player_position.h"
 #include"world_box2d.h"
 #include"collider_type.h"
-#include"renderer.h"
-#include"sprite.h"
-#include"texture.h"
-#include"player_position.h"
+#include"player_stamina.h"
+#include"create_filter.h"
 #include"player.h"
-#include"Item_Manager.h"
+
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
 
-ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
-	:m_size(body_size), m_Alpha(Alpha)
+
+
+ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool shape_polygon, float Alpha)
+    :m_size(body_size), m_Alpha(Alpha), m_recovery(recovery)
 {
     b2BodyDef body;
     body.type = b2_dynamicBody;
@@ -31,10 +34,12 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
     body.userData.pointer = (uintptr_t)this;
 
 
+
     Box2dWorld& box2d_world = Box2dWorld::GetInstance();
     b2World* world = box2d_world.GetBox2dWorldPointer();
 
     m_body = world->CreateBody(&body);
+    m_body->SetLinearDamping(20.0f); //落下速度を制限する（値が大きいほどゆっくり）
 
     SetSize(body_size);//プレイヤー表示をするためにセットする
 
@@ -47,37 +52,45 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
     b2FixtureDef fixture;
     b2Fixture* p_fixture;
 
-
     //四角形の場合
    //-----------------------------------------------------------------------------
     if (shape_polygon)
-    {
+    {   //当たり判定
         b2PolygonShape shape;
         shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);
 
         fixture.shape = &shape;
         fixture.density = 1.0f;//密度
-        fixture.friction = 0.3f;//摩擦
+        fixture.friction = 0.0f;//摩擦
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        fixture.filter.categoryBits = GetFilter("item_filter");
+        fixture.filter.maskBits = GetFilter("ground_filter");   //床とだけ当たり判定あり
 
         p_fixture = m_body->CreateFixture(&fixture);
-
     }
     //円の場合
 //-----------------------------------------------------------------------------
     else
     {
         b2CircleShape shape;
-        shape.m_radius = size.x * 0.5f;
+        if (size.x > size.y) {
+            shape.m_radius = size.x * 0.5f;
+        }
+        else {
+            shape.m_radius = size.y * 0.5f;
+        }
 
         fixture.shape = &shape;
         fixture.density = 1.0f;//密度
-        fixture.friction = 0.3f;//摩擦
+        fixture.friction = 0.0f;//摩擦
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        fixture.filter.categoryBits = GetFilter("item_filter");
+        fixture.filter.maskBits = GetFilter("ground_filter");   //床とだけ当たり判定あり
 
         p_fixture = m_body->CreateFixture(&fixture);
+
     }
 
     // カスタムデータを作成して設定
@@ -86,8 +99,8 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
- 
-    data->Item_name = ITEM_SPEED_UP;
+
+    data->Item_name = ITEM_SPIRIT;
     int ID = data->GenerateID();
     data->id = ID;
     SetID(ID);
@@ -95,8 +108,29 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
 
 }
 
-void	ItemSpeedUp::Update()
+void	ItemSpirit::Update()
 {
+    //プレイヤーに回収されてるなら
+    if (m_collecting && m_body != nullptr)
+    {
+        b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
+        //  プレイヤーへ向かうベクトル
+        b2Vec2 vec;
+        vec.x = player_position.x - m_body->GetPosition().x;
+        vec.y = player_position.y - m_body->GetPosition().y;
+        vec.Normalize();
+
+        float speed = 0.2f;
+
+        GetBody()->ApplyLinearImpulseToCenter(b2Vec2(vec.x * speed, vec.y * speed), true);
+        
+
+        m_size.x -= 0.005f;
+        m_size.y -= 0.005f;
+        
+    }
+
+    //消される予定ならボディーを消す
     if (m_destory && m_body != nullptr)
     {
         //ボディの情報を消す
@@ -106,23 +140,57 @@ void	ItemSpeedUp::Update()
     }
 }
 
-void    ItemSpeedUp::Function()
+void ItemSpirit::SetIfCollecting(bool flag)
 {
-    Player player = Player::GetInstance();
-    player.SetSpeed(0.04f);
+    if (m_body != nullptr)
+    {
+        m_collecting = flag;
+        //  当たり判定をセンサーに変更、フィルタもなしに変更（何にも反応できる）
+        b2Fixture* fixture = m_body->GetFixtureList();
+        b2Filter filter;
+        filter.maskBits = 0xFFFF;
+        fixture->SetFilterData(filter);
+        fixture->SetSensor(true);
+
+        //  画面のサイズをアンカーがレベル３の時のサイズと想定して、プレイヤーからめっちゃ遠い場合位置を画面近くまで移動させる
+        b2Vec2 position = m_body->GetPosition();
+        b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
+        b2Vec2 sensor_size = Player::GetInstance().GetSensorSizeLev3();
+        
+
+        //  （ +/- adjust）はすでに画面近くにいるソウルを除くため
+        float adjust = 1.5f;
+        float SCREEN_LEFT = player_position.x - sensor_size.x / BOX2D_SCALE_MANAGEMENT / 2 - adjust;
+        float SCREEN_RIGHT = player_position.x + sensor_size.x / BOX2D_SCALE_MANAGEMENT / 2 + adjust;
+
+        if (position.x < SCREEN_LEFT)
+        {
+            position.x = SCREEN_LEFT;
+        }
+        else if (position.x > SCREEN_RIGHT)
+        {
+            position.x = SCREEN_RIGHT;
+        }
+        m_body->SetTransform(position,m_body->GetAngle());
+    }
+}
+
+void    ItemSpirit::Function()
+{
+    PlayerStamina::EditPlayerStaminaValue(m_recovery);
 }
 
 
-void ItemSpeedUp::Initialize()
+void ItemSpirit::Initialize()
 {
-    
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\speed_up.png");
+
+    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\tama.png");
 
 }
 
 
 
-void ItemSpeedUp::Draw()
+void ItemSpirit::Draw()
 {
     if (m_body != nullptr)
     {
@@ -162,7 +230,7 @@ void ItemSpeedUp::Draw()
 }
 
 
-void ItemSpeedUp::Finalize()
+void ItemSpirit::Finalize()
 {
 
     if (GetBody() != nullptr)
@@ -179,6 +247,6 @@ void ItemSpeedUp::Finalize()
     }
 }
 
-ItemSpeedUp::~ItemSpeedUp()
+ItemSpirit::~ItemSpirit()
 {
 }
