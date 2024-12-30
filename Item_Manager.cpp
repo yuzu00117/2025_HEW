@@ -100,6 +100,14 @@ void ItemManager::FinalizeAll() {
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
+void ItemManager::SetCollectSpirit(bool flag)
+{
+    for (auto& w : m_Spirit_List) {
+        w->SetIfCollecting(flag);
+    }
+
+}
+
 
 
 

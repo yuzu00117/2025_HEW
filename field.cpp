@@ -234,8 +234,9 @@ void Field::Draw()
 		}
 	}
 
-	itemManager.DrawAll();
 	objectManager.DrawAll();
+	itemManager.DrawAll();
+
 
 	//アンカーポイントを描画
 	AnchorPoint::Draw();

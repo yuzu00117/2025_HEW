@@ -29,3 +29,8 @@ b2Filter createFilterExclude(const std::string& category, const std::vector<std:
 
     return filter;
 }
+
+uint16_t GetFilter(const std::string& category)
+{
+    return filter_type[category];
+}

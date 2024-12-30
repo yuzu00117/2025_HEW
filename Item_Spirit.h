@@ -43,7 +43,7 @@ public:
 	//回収されているかを取得
 	bool	GetIfCollecting() { return m_collecting; }
 	//回収されているかをセット
-	void	SetIfCollecting(bool flag) { m_collecting = flag; }
+	void	SetIfCollecting(bool flag);
 
 	//これから消えるかどうかを取得
 	bool	GetDestory() { return m_destory; }
@@ -79,6 +79,7 @@ private:
 
 	//プレイヤーに回収されているかどうか
 	bool	m_collecting;
+
 
 };
 

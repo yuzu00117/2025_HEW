@@ -13,6 +13,7 @@
 #include"anchor_spirit.h"
 #include"scene.h"
 #include"create_filter.h"
+#include"Item_Manager.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
@@ -294,6 +295,15 @@ void Player::Update()
 
         //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
+
+//ソウルアイテム回収処理
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+    if (Keyboard_IsKeyDown(KK_B) || state.buttonB)
+    {
+        ItemManager& itemManager = ItemManager::GetInstance();
+        itemManager.SetCollectSpirit(true);
+    }
 
 
  //アンカーの処理

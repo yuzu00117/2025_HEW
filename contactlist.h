@@ -327,10 +327,21 @@ public:
             switch (item->Item_name)
             {
             case ITEM_SPEED_UP:
+            {
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 item_instance->Function();
                 item_instance->SetDestory(true);//削除を呼び出す
                 break;
+
+            }
+            case ITEM_SPIRIT:
+            {
+                ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                spirit_instance->Function();
+                spirit_instance->SetDestory(true);//削除を呼び出す
+                break;
+
+            }
             }
         }
     }

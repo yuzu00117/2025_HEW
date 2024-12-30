@@ -29,5 +29,7 @@ extern std::unordered_map<std::string, uint16_t> filter_type;
  */
 b2Filter createFilterExclude(const std::string& category, const std::vector<std::string>& excludeMasks);
 
+uint16_t GetFilter(const std::string& category);
+
 
 #endif // !CREATE_FILTER_H
