@@ -87,7 +87,7 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
         fixture.restitution = 0.1f;//反発係数
         fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
         fixture.filter.categoryBits = GetFilter("item_filter");
-        fixture.filter.maskBits = GetFilter("ground_filter");   //床とだけ当たり判定あり
+        fixture.filter.maskBits = GetFilter("ground_filter") | GetFilter("one-way_platform_filter");   //床と足場だけ当たり判定あり
 
         p_fixture = m_body->CreateFixture(&fixture);
 

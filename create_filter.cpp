@@ -10,7 +10,7 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"enemy_filter",            0x0004}, // 1 << 2
     {"one-way_platform_filter", 0x0008}, // 1 << 3
     {"object_filter",           0x0010}, // 1 << 4
-    {"item_filter",             0x0020}, // 1 << 4
+    {"item_filter",             0x0020}, // 1 << 5
 };
 
 b2Filter createFilterExclude(const std::string& category, const std::vector<std::string>& excludeMasks) {
