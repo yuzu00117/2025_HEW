@@ -16,6 +16,7 @@
 #include"player_position.h"
 #include"player.h"
 #include"Item_Manager.h"
+#include"Item_Coin_UI.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 
@@ -102,6 +103,9 @@ void	ItemCoin::Update()
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
+
+        Item_Coin_UI::SetDrawCount(1);//描画する時間の管理
+        Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetNowCoinCount() + 1);//コインの個数を表示
     }
 }
 

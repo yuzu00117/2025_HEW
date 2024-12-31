@@ -148,6 +148,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
+    <ClCompile Include="Item_Coin_UI.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="Item_Coin.h" />
+    <ClInclude Include="Item_Coin_UI.h" />
     <ClInclude Include="Item_Manager.h" />
     <ClInclude Include="Item_SpeedUp.h" />
     <ClInclude Include="keyboard.h" />

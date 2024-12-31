@@ -13,6 +13,7 @@
 #include "Item_SpeedUp.h"
 #include "world_box2d.h"
 #include"Item_Coin.h"
+#include"Item_Coin_UI.h"
 
 
 // シングルトンのインスタンス取得
@@ -64,6 +65,7 @@ void ItemManager::InitializeAll() {
 	for (auto& w : m_Coin_List) {
 		w->Initialize();
 	}
+	Item_Coin_UI::Initialize();
 }
 
 // 全てのアイテムを更新
@@ -84,6 +86,7 @@ void ItemManager::DrawAll() {
 	for (auto& w : m_Coin_List) {
 		w->Draw();
 	}
+	Item_Coin_UI::Draw();
 }
 
 // 全てのアイテムを破棄
@@ -94,6 +97,7 @@ void ItemManager::FinalizeAll() {
 	for (auto& w : m_Coin_List) {
 		w->Finalize();
 	}
+	Item_Coin_UI::Finalize();
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
 	m_Coin_List.clear(); // 動的配列をクリアしてメモリ解放
 }
