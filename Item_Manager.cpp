@@ -12,6 +12,8 @@
 #include "Item_Manager.h"
 #include "Item_SpeedUp.h"
 #include "world_box2d.h"
+#include"Item_Coin.h"
+#include"Item_Coin_UI.h"
 
 
 // シングルトンのインスタンス取得
@@ -28,9 +30,25 @@ void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, boo
 }
 
 
+void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+{
+	// 既存の引数コンストラクタを利用して生成
+	m_Coin_List.emplace_back(std::make_unique<ItemCoin>(position, body_size, angle, shape_polygon, Alpha));
+}
+
 ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
 {
 	for (const auto& w : m_SpeedUp_List) {
+		if (w->GetID() == ID) {
+			return w.get();
+		}
+	}
+	return nullptr; // 見つからない場合は nullptr を返す
+}
+
+ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
+{
+	for (const auto& w : m_Coin_List) {
 		if (w->GetID() == ID) {
 			return w.get();
 		}
@@ -44,6 +62,10 @@ void ItemManager::InitializeAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Initialize();
     }
+	for (auto& w : m_Coin_List) {
+		w->Initialize();
+	}
+	Item_Coin_UI::Initialize();
 }
 
 // 全てのアイテムを更新
@@ -51,6 +73,9 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_SpeedUp_List) {
 		w->Update();
     }
+	for (auto& w : m_Coin_List) {
+		w->Update();
+	}
 }
 
 // 全てのアイテムを描画
@@ -58,6 +83,10 @@ void ItemManager::DrawAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Draw();
     }
+	for (auto& w : m_Coin_List) {
+		w->Draw();
+	}
+	Item_Coin_UI::Draw();
 }
 
 // 全てのアイテムを破棄
@@ -65,7 +94,12 @@ void ItemManager::FinalizeAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Finalize();
     }
+	for (auto& w : m_Coin_List) {
+		w->Finalize();
+	}
+	Item_Coin_UI::Finalize();
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
+	m_Coin_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
 
