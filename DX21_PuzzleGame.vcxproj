@@ -110,7 +110,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;Xinput.lib;%(AdditionalDependencies);cri_ware_pcx64_le_import.lib</AdditionalDependencies>
+      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,6 +141,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="display.cpp" />
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Item_SpeedUp.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="movable_ground.cpp" />
     <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="one-way_platform.cpp" />
     <ClCompile Include="player.cpp" />
@@ -165,7 +167,10 @@
     <ClCompile Include="sloping_block.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="stage_point.cpp" />
+    <ClCompile Include="stage_point_factory.cpp" />
     <ClCompile Include="stage_select.cpp" />
+    <ClCompile Include="stage_select_player.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
@@ -187,6 +192,7 @@
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
     <ClInclude Include="directx_controller.h" />
+    <ClInclude Include="easing.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_static.h" />
@@ -199,6 +205,7 @@
     <ClInclude Include="Item_SpeedUp.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="movable_ground.h" />
     <ClInclude Include="object_manager.h" />
     <ClInclude Include="one-way_platform.h" />
     <ClInclude Include="player.h" />
@@ -211,6 +218,11 @@
     <ClInclude Include="sloping_block.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="stage_point.h" />
+    <ClInclude Include="stage_point_factory.h" />
+    <ClInclude Include="stage_select.h" />
+    <ClInclude Include="stage_select_contact_list.h" />
+    <ClInclude Include="stage_select_player.h" />
     <ClInclude Include="static_to_dynamic_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
