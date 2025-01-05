@@ -26,6 +26,7 @@
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 #include"Item_Manager.h"
+#include"geyser.h"
 
 
 
@@ -123,6 +124,26 @@ public:
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
+
+        //プレイヤーと間欠泉の水が触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_geyser_water) ||
+            (objectA->collider_type == collider_geyser_water && objectB->collider_type == collider_player_leg))
+        {
+
+          
+            if (objectA->collider_type == collider_geyser_water)
+            {
+                geyser* geyser_instance = object_manager.FindgeyserByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+            }
+            else
+            {
+                geyser* geyser_instance = object_manager.FindgeyserByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+            }
+        }
+
+
         //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
         if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
@@ -345,6 +366,8 @@ public:
                 enemy_instance->CollisionPulledObject();
             }
         }
+
+    
      
         //プレイヤーに付属しているセンサーと静的エネミーが触れた場合
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_static) ||
@@ -470,6 +493,25 @@ public:
             }
         }
 
+
+
+        //プレイヤーと間欠泉の水が触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_geyser_water) ||
+            (objectA->collider_type == collider_geyser_water && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_geyser_water)
+            {
+                geyser* geyser_instance = object_manager.FindgeyserByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(false);//木を引っ張る処理を呼び出す
+            }
+            else
+            {
+                geyser* geyser_instance = object_manager.FindgeyserByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(false);//木を引っ張る処理を呼び出す
+            }
+        }
 
 
         //プレイヤーに付属しているセンサーとアンカーポイントが触れ終わった　（センサーの範囲外にでた）
