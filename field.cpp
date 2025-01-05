@@ -72,7 +72,7 @@ void Field::Initialize()
 
 
 	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip_enemy.csv");
+	Field::LoadCSV("asset/mapchip_stage_1_1.csv");
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 
@@ -96,80 +96,40 @@ void Field::Initialize()
   {
 		for (int x = 0; x < m_field_width; ++x)
     {
-			if (field_map[y][x] == 1) {
+			if (field_map[y][x] == 1) {//動かない物
 				//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
 				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
 			}
-			if (field_map[y][x] == 2) {
-				m_p_field_array[y][x] = new AnchorPoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, anchor_point_texture);
-			}
-			if (field_map[y][x] == 3) {
-				m_p_field_array[y][x] = new AnchorPoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 5.0f), 0.0f, false, true, anchor_point_texture);
-			}
-			if (field_map[y][x] == 4) {
-				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
-			}
-			if (field_map[y][x] == 5) {
-				objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
-			}
-			if (field_map[y][x] == 6) {
-				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
-			}
-			if (field_map[y][x] == 7) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 8.0f),b2Vec2(1.0f,1.0f),1);
-			}
-			if (field_map[y][x] == 8) {
-				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 17.0f), b2Vec2(3.0f, 1.0f), 3);
-			}
-
-			if (field_map[y][x] == 9) {
-				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3.0f,2);
-			}
-
-
-			
-			if (field_map[y][x] == 10) {//足場ブロック
-				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.0f), b2Vec2(3.0f, 0.2f));
-			}
-
-
-
-			if (field_map[y][x] == 11) {//右上　傾斜
-				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), right_upper);
-			}
-
-
-			if (field_map[y][x] == 12) {//右下　傾斜
-				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 5.0f), right_down);
-			}
-
-			if (field_map[y][x] == 13) {//左上　傾斜
-				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), left_upper);
-			}
-
-			if (field_map[y][x] == 14) {//左下　傾斜
-				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(17.0f,17.0f), left_down);
-			}
-
-
-			if (field_map[y][x] == 15) {//四角の静的動的オブジェクト
-				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Box_collider,1);
-			}
-
-			if (field_map[y][x] == 16) {//四角の静的動的オブジェクト
-				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(6.0f, 6.0f), Circle_collider, 1);
-			}
-
-			if (field_map[y][x] == 17) {//四角の静的動的オブジェクト
-				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Circle_collider, 1);
-			}
-
-			if (field_map[y][x] == 18) {//四角の静的動的オブジェクト
-				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
-			}
-
-			if (field_map[y][x] == 19) {//コインを設定する
+	
+			if (field_map[y][x] == 2) {//コイン
 				itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
+
+			if (field_map[y][x] == 3) {//足場
+				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.0f),b2Vec2(1.0f,0.5f));
+			}
+			if (field_map[y][x] == 4) {//足場 少し上に寄ったもの
+				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.5f));
+			}
+			if (field_map[y][x] == 5) {//足場 少し下に寄ったもの
+				objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, 0.5f), b2Vec2(1.0f, 0.5f));
+			}
+
+
+			if (field_map[y][x] == 6) {//動的なエネミー
+				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),0.0f);
+			}
+
+
+			if(field_map[y][x] == 7) {//小さな木のオブジェクト 必要アンカーレベル１
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT),b2Vec2(2.0f,10.0f),b2Vec2(2.0f, 1.0f),1);
+			}
+
+			if (field_map[y][x] == 8) {//静的→動的のオブジェクト 必要アンカーレベル１ ブロックの高さが偶数だったためｙ軸に少しずれている
+				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT-0.5/BOX2D_SCALE_MANAGEMENT), b2Vec2(7.0f, 2.0f),Box_collider,2);
+			}
+			if (field_map[y][x] == 9) {//静的→動的のオブジェクト 必要アンカーレベル１ ブロックの幅が偶数だったためｘ軸に少しずれている
+				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT - 0.5 / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT ), b2Vec2(4.0f, 3.0f), Box_collider, 2);
 			}
 		}
 	}
