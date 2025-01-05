@@ -37,6 +37,7 @@ enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���
 
     collider_enemy_dynamic,
     collider_enemy_static,
+    collider_geyser_water,
 
     collider_stage_select_point,
     collider_stage_select_player,

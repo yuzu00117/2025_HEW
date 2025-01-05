@@ -171,6 +171,10 @@ void Field::Initialize()
 				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 20.0f), b2Vec2(1.0f, 1.0f), 3);
 			}
 
+			if (field_map[y][x] == 21) {//引っ張れる床
+				objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), b2Vec2(3.0f, 9.0f));
+			}
+
 		}
 	}
 

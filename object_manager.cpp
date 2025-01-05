@@ -66,6 +66,16 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
 }
 
 
+//間欠泉の生成
+void ObjectManager::AddGeyser(b2Vec2 position, b2Vec2 body_size, b2Vec2 water_size)
+{
+    geyserList.emplace_back(std::make_unique<geyser>(position, body_size, water_size));
+}
+
+
+
+
+
 
 // ID を使って木を検索
 wood* ObjectManager::FindWoodByID(int id) {
@@ -141,6 +151,17 @@ EnemyStatic* ObjectManager::FindEnemyStaticByID(int id)
 EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
 {
     for (auto& w : enemy_dynamicList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+//IDを使って動的エネミーを検索
+geyser* ObjectManager::FindgeyserByID(int id)
+{
+    for (auto& w : geyserList) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -231,6 +252,9 @@ void ObjectManager::InitializeAll() {
     for (auto& w : enemy_dynamicList) {
         w->Initialize();
     }
+    for (auto& w : geyserList) {
+        w->Initialize();
+    }
 }
 
 // 全ての木を更新
@@ -274,6 +298,9 @@ void ObjectManager::UpdateAll() {
             w->Update();
         }
     }
+    for (auto& w : geyserList) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -309,6 +336,9 @@ void ObjectManager::DrawAll() {
     for (auto& w : enemy_dynamicList) {
         w->Draw();
     }
+    for (auto& w : geyserList) {
+        w->Draw();
+    }
 }
 
 // 全ての木を破棄
@@ -338,7 +368,9 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : enemy_staticList) {
         w->Finalize();
     }
-
+    for (auto& w : geyserList) {
+        w->Finalize();
+    }
 
     woodList.clear(); // 動的配列をクリアしてメモリ解放
     rockList.clear();
@@ -348,6 +380,7 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
+    geyserList.clear();
 
 }
 
