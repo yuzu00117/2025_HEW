@@ -128,9 +128,8 @@ void Field::Initialize()
 			if (field_map[y][x] == 8) {//静的→動的のオブジェクト 必要アンカーレベル１ ブロックの高さが偶数だったためｙ軸に少しずれている
 				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT-0.5/BOX2D_SCALE_MANAGEMENT), b2Vec2(7.0f, 2.0f),Box_collider,2);
 			}
-			if (field_map[y][x] == 9) {//静的→動的のオブジェクト 必要アンカーレベル１ ブロックの幅が偶数だったためｘ軸に少しずれている
-				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT - 0.5 / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT ), b2Vec2(4.0f, 3.0f), Box_collider, 2);
-			}
+
+
 		}
 	}
 

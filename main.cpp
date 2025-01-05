@@ -15,6 +15,7 @@
 #include "sound.h"
 #include"game.h"
 #include"scene.h"
+#include"stage_select.h"
 
 
 

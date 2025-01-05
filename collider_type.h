@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name collider_type.h
-// #description ƒRƒ‰ƒCƒ_[‚Ìí—Ş‚ğƒZƒbƒg
-// #make 2024/11/22@‰i–ì‹`–ç
+// #description ï¿½Rï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½Ìï¿½Ş‚ï¿½ï¿½Zï¿½bï¿½g
+// #make 2024/11/22ï¿½@ï¿½iï¿½ï¿½`ï¿½ï¿½
 // #update 2024/11/22
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒRƒ‰ƒCƒ_[‚Ìí—Ş‚ğ‘‚â‚µ‚½‚¢‚Æ‚«‚É•ÏX‚µ‚Ä‚Ë
+// #comment ï¿½Ç‰ï¿½ï¿½Eï¿½Cï¿½ï¿½ï¿½\ï¿½ï¿½
+//          ï¿½Eï¿½Rï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½Ìï¿½Ş‚ğ‘‚â‚µï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½É•ÏXï¿½ï¿½ï¿½Ä‚ï¿½
 //----------------------------------------------------------------------------------------------------
 
 
@@ -16,7 +16,7 @@
 #include"object_manager.h"
 #include"Item_Manager.h"
 
-enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰Á‚µ‚½‚¢ê‡‚±‚±‚É‘«‚µ‚Ä@‰º‚ÅƒZƒbƒg‚µ‚Ä‚Ë
+enum ColliderTypeList//ï¿½tï¿½Bï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½ÌÚGï¿½ï¿½ï¿½ï¿½Ågï¿½ï¿½ï¿½@ï¿½Vï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½Ìï¿½Ş‚ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ï¿½É‘ï¿½ï¿½ï¿½ï¿½Ä@ï¿½ï¿½ï¿½ÅƒZï¿½bï¿½gï¿½ï¿½ï¿½Ä‚ï¿½
 {
     collider_player_body,
     collider_player_leg,
@@ -29,6 +29,7 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
     collider_ground,
 
     collider_object,
+    collider_object_destroyer_of_enemy,  //ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½É•tï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½Tï¿½[
 
     collider_item,
 
@@ -36,34 +37,37 @@ enum ColliderTypeList//ƒtƒBƒNƒXƒ`ƒƒ‚ÌÚG”»’è‚Åg‚¤@V‚½‚È‚ ‚½‚è”»’è‚Ìí—Ş‚ğ’Ç‰
 
     collider_enemy_dynamic,
     collider_enemy_static,
+
+    collider_stage_select_point,
+    collider_stage_select_player,
 };
 
 
-// ƒJƒXƒ^ƒ€ƒf[ƒ^ƒNƒ‰ƒX@‚±‚±‚ÅƒRƒ‰ƒCƒ_[‚Ìƒ^ƒCƒv‚ğƒZƒbƒg
+// ï¿½Jï¿½Xï¿½^ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Nï¿½ï¿½ï¿½Xï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ÅƒRï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½Ìƒ^ï¿½Cï¿½vï¿½ï¿½ï¿½Zï¿½bï¿½g
 class ObjectData {
 public:
-    ColliderTypeList collider_type; // ƒRƒ‰ƒCƒ_[‚Ìƒ^ƒCƒv‚ğƒZƒbƒg                     
-    void* extra;                    // ’Ç‰Áî•ñ‚ ‚é‚È‚çƒZƒbƒg
+    ColliderTypeList collider_type; // ï¿½Rï¿½ï¿½ï¿½Cï¿½_ï¿½[ï¿½Ìƒ^ï¿½Cï¿½vï¿½ï¿½ï¿½Zï¿½bï¿½g                     
+    void* extra;                    // ï¿½Ç‰ï¿½ï¿½ï¿½ñ‚ ‚ï¿½È‚ï¿½Zï¿½bï¿½g
 
     // Constructor
     ObjectData(const ColliderTypeList type)
         : collider_type(type), extra(nullptr) {}
 
 
-    b2Vec2 add_force = { 0.0f,0.0f };// ’Ç‰Á‚Ìb2vecƒf[ƒ^
-    ObjectType object_name;  // ’Ç‰Á‚Ì•¶š—ñƒf[ƒ^(ƒIƒuƒWƒFƒNƒg—p)
-    ItemType Item_name; //  ’Ç‰Á‚Ì•¶š—ñƒf[ƒ^iƒAƒCƒeƒ€—pj
-    int id;//ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚é‚½‚ß‚ÌID
+    b2Vec2 add_force = { 0.0f,0.0f };// ï¿½Ç‰ï¿½ï¿½ï¿½b2vecï¿½fï¿½[ï¿½^
+    ObjectType object_name;  // ï¿½Ç‰ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^(ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½p)
+    ItemType Item_name; //  ï¿½Ç‰ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½iï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½pï¿½j
+    int id;//ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½Ç—ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ß‚ï¿½ID
 
     int need_anchor_level;
 
-    // ID ‚ğ¶¬‚·‚éŠÖ”
+    // ID ï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½Öï¿½
     static int GenerateID() {
-        return current_id++;//‘S‚Ä‚ÌID‚ğŠÇ—
+        return current_id++;//ï¿½Sï¿½Ä‚ï¿½IDï¿½ï¿½ï¿½Ç—ï¿½
     }
 
 private:
-    // Ã“IƒJƒEƒ“ƒ^ ID
+    // ï¿½Ã“Iï¿½Jï¿½Eï¿½ï¿½ï¿½^ ID
     static int current_id;
 
 

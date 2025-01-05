@@ -19,6 +19,7 @@
 #include"game.h"
 #include"sound.h"
 #include"sprite.h"
+#include"include/box2d/box2d.h"
 
 //ƒV[ƒ“‚Ìí—Ş
 enum SCENE_NAME
@@ -64,17 +65,6 @@ public:
     void Finalize() override;
 };
 
-class StageSelectScene :public Scene {
-
-public:
-    void Initialize() override;
-
-    void Update() override;
-
-    void Draw()override;
-
-    void Finalize() override;
-};
 
 class ResulttScene :public Scene {
 
