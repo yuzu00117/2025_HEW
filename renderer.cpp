@@ -9,9 +9,10 @@
 //          
 //----------------------------------------------------------------------------------------------------
 #include "renderer.h"
+#include"tool.h"
 
 
-
+#pragma comment(lib, "dxgi.lib")
 //*********************************************************
 // 構造体
 //*********************************************************
@@ -148,8 +149,11 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	sd.SampleDesc.Quality = 0;
 	sd.Windowed = TRUE;
 
-	hr = D3D11CreateDeviceAndSwapChain( NULL,
-										D3D_DRIVER_TYPE_HARDWARE,
+
+	IDXGIAdapter *select_gpu=ChangeGPU();
+
+	hr = D3D11CreateDeviceAndSwapChain(	NULL,//select_gpu
+										D3D_DRIVER_TYPE_HARDWARE,//D3D_DRIVER_TYPE_UNKNOWN
 										NULL,
 										0,
 										NULL,
@@ -160,6 +164,9 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 										&g_D3DDevice,
 										&g_FeatureLevel,
 										&g_ImmediateContext );
+
+	select_gpu->Release();
+
 	if( FAILED( hr ) )
 		return hr;
 
@@ -407,5 +414,77 @@ void Clear(void)
 void Present(void)
 {
 	g_SwapChain->Present( 0, 0 );
+}
+
+
+
+//使うGPUをインテルじゃない奴にしたい
+IDXGIAdapter* ChangeGPU(void)
+{
+	IDXGIFactory* factory;
+	IDXGIAdapter* adapter;
+	IDXGIOutput* adapterOutput;
+	unsigned int numModes = 0;
+	size_t stringLength;
+	DXGI_ADAPTER_DESC adapterDesc;
+
+	// グラフィック インタフェース ファクトリを作成
+	HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+
+	int max_memory=0;
+	int select_index=0;
+
+	char video_card_description[128];
+
+	for (int i = 0; i < 20; i++)
+	{
+		IDXGIAdapter* now_adapter;
+		hr =factory->EnumAdapters(select_index, &now_adapter);
+
+		if (FAILED(hr))break;//見つけきれなかったらブレイク
+
+		now_adapter->GetDesc(&adapterDesc);
+
+		int check=wcstombs_s(&stringLength, video_card_description, 128,adapterDesc.Description,128);
+		if (check != 0)break;
+
+		int memory_size=0;
+
+		memory_size = static_cast<int>(adapterDesc.DedicatedVideoMemory/1024/1024);
+
+		hr=now_adapter->EnumOutputs(0, &adapterOutput);
+
+		if (!FAILED(hr))
+		{
+			// DXGI_FORMAT_R8G8B8A8_UNORM の表示形式数を取得する
+			hr = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+			if (FAILED(hr)) continue;
+		}
+
+
+		string gpu_name = Split(video_card_description, ' ')[0];
+		if (max_memory < memory_size)
+		{
+			max_memory = memory_size;
+			select_index = i;
+
+		}
+		else if(gpu_name == "NVIDIA" || gpu_name == "AMD")
+		{
+			max_memory = memory_size;
+			select_index = i;
+
+			now_adapter->Release();
+			adapterOutput->Release();
+			adapterOutput = nullptr;
+			break;
+		}
+		now_adapter->Release();
+		adapterOutput->Release();
+		adapterOutput = nullptr;
+	}
+
+	hr=factory->EnumAdapters(select_index, &adapter);
+	return FAILED(hr) ? nullptr : adapter;
 }
 

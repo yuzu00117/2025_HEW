@@ -88,6 +88,7 @@ void Game::Finalize(void)
 	Field::Finalize();
 
 
+	boss.Finalize();
 
 	//文字（絵）
 	FinalizeWord();
@@ -129,12 +130,28 @@ void Game::Update(void)
 	//フィールドの更新処理
 	Field::Update();
 
+	boss.Update();
+
 
 	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 	if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
 		sceneManager.ChangeScene(SCENE_RESULT);
+	}
+
+	if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
+	{
+		b2Vec2 size =player.GetSensorSize();
+
+		player.Finalize();
+
+		player.Initialize(b2Vec2(35, -20), b2Vec2(1, 2), size);
+
+		boss.Initialize(b2Vec2(40,-20),b2Vec2(12,18));
+
+
+
 	}
 
 #ifdef _DEBUG
@@ -169,7 +186,7 @@ void Game::Draw(void)
   //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
 
-
+	boss.Draw();
 
 #ifdef _DEBUG
 	//デバッグ文字
