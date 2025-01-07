@@ -28,10 +28,14 @@ public:
 	//マップの横
 	static float GetDisplayWidth();
 
+	static void AddDisplayWidth(float width);
+
 	static void SetDisplayWidth(float width);
 
 	//マップの縦
 	static float GetDisplayHeight();
+
+	static void AddDisplayHeight(float height);
 
 	static void SetDisplayHeight(float height);
 

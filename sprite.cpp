@@ -173,7 +173,7 @@ void DrawSpriteOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alph
 	//マテリアル設定（半年後に現れる）
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
+	material.Diffuse = XMFLOAT4(1.2f, 1.2f, 1.2f, 0.8);
 	SetMaterial(material);
 
 	g_Vertex[0].texcoord = XMFLOAT2(0.f, 0.f);
@@ -239,7 +239,7 @@ void DrawDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int To
 
 
 
-void DrawDividedSpriteBoss(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha)
+void DrawDividedSpriteBoss(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha,bool left)
 {
 	//頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -256,11 +256,15 @@ void DrawDividedSpriteBoss(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, in
 	view = XMMatrixIdentity();
 	SetViewMatrix(view);
 
-
+	float flag=1.0;
+	if (left == false)
+	{
+		flag = -1.0f;
+	}
 
 	//移動・回転マトリクス設定
 	XMMATRIX world, rot, trans, scale, box2d_scale, box2d_trans;
-	scale = XMMatrixScaling(Scale.x, Scale.y, 0.0f);
+	scale = XMMatrixScaling(Scale.x*flag, Scale.y, 0.0f);
 	rot = XMMatrixRotationZ(Rotation);
 	trans = XMMatrixTranslation(Position.x, Position.y, 0.0f);
 
