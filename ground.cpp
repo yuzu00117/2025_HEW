@@ -11,6 +11,7 @@
 #include"ground.h"
 #include"include/box2d/box2d.h"
 #include"world_box2d.h"
+#include"create_filter.h"
 #include"contactlist.h"
 
 
@@ -23,7 +24,7 @@
  * @param is_sensor
  * @param texture
  */
-Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
+Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture,bool object_sensor)
 {
 	//テクスチャをセット
 	SetFieldTexture(texture);
@@ -67,16 +68,22 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	fixture.restitution = 0.1f;//反発係数
 	fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
-
-
-
+	if (object_sensor) {
+		fixture.filter = createFilterExclude("one-way_platform_filter", { "object_filter" });
+	}
 	b2Fixture* ground_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
+
+	
 
 
 	// カスタムデータを作成して設定
 	// プレイヤーに値を登録
 	// プレーヤーにユーザーデータを登録
 	ObjectData* playerdata = new ObjectData{ collider_ground };
+
+
+
+
 	ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
 }
 

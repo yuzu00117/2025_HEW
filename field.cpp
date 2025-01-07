@@ -98,7 +98,7 @@ void Field::Initialize()
     {
 			if (field_map[y][x] == 1) {//動かない物
 				//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture);
+				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture,false);
 			}
 	
 			if (field_map[y][x] == 2) {//コイン
@@ -129,6 +129,25 @@ void Field::Initialize()
 				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT-0.5/BOX2D_SCALE_MANAGEMENT), b2Vec2(7.0f, 2.0f),Box_collider,2);
 			}
 
+
+			if (field_map[y][x] == 9) {//静的→動的のオブジェクト 必要アンカーレベル2 ブロックの幅が偶数だったためｘ軸に少しずれている
+				objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT - 0.5 / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT ), b2Vec2(4.0f, 3.0f), Box_collider, 2);
+			}
+			if (field_map[y][x] == 10) {//アンカーレベル３の巨大な木
+				objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT ), b2Vec2(2.0f, 12.0f), b2Vec2(2.0f,2.0f), 3);
+			}
+			if (field_map[y][x] == 11) {//アンカーレベル３地面を動かせるやつ
+				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(20.f, 9.f), b2Vec2(1.0f, 1.0f), 3);
+			}
+			if (field_map[y][x] == 12) {//アンカーレベル３地面を動かせるやつ でそれのみ貫通するやつ
+				m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, true);
+			}
+			if (field_map[y][x] == 13) {//右下斜面
+				objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_down);
+			}
+			if (field_map[y][x] == 14) {//転がすいわ
+				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3, 2);
+			}
 
 		}
 	}
@@ -197,9 +216,9 @@ void Field::Draw()
 		}
 	}
 
-
-	objectManager.DrawAll();
 	itemManager.DrawAll();
+	objectManager.DrawAll();
+	
 
 	//アンカーポイントを描画
 	AnchorPoint::Draw();

@@ -17,7 +17,7 @@
 class Ground:public Field
 {
 public:
-	Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture);
+	Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture,bool object_sensor);
 	~Ground();
 
 
