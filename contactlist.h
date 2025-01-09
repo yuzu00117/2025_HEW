@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2024/12/28
+// #update 2025/1/10
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -387,6 +387,8 @@ public:
             (objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->Item_name == ITEM_SPIRIT))
         {
+            //ソウルとオブジェのボディやfixtureやオブジェクトデータの変数を準備
+            //-------------------------------------------------------------------------
             ObjectData* object_data = objectA;
             b2Body* object = fixtureA->GetBody();
             b2Fixture* object_fixture = fixtureA;
@@ -403,35 +405,48 @@ public:
                 object_fixture = fixtureB;
             }
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit_data->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+           
+            // もし収集中の場合は衝突処理を無視
+            //-------------------------------------------------------------------------
             if (spirit_instance->GetState() == Spirit_Collecting)
             {
                 return;
             }
 
+            // オブジェからソウルまでのベクトルを計算
+            //-------------------------------------------------------------------------
             b2Vec2 object_position = object->GetPosition();
             b2Vec2 spirit_position = spirit_instance->GetBody()->GetPosition();
             b2Vec2 vec;
             vec.x = spirit_position.x - object_position.x;
             vec.y = spirit_position.y - object_position.y;
             
+            //オブジェのfixtureの半径を取得
             b2Vec2 object_half_size = GetFixtureHalfSize(object_fixture->GetShape());
 
+            //条件別で違う処理をする（上昇するかどうか、地面に着いているかどうか）
+            //-------------------------------------------------------------------------
+
+            //ベクトルがオブジェの横幅以上の場合（つまり重なってはいないけど、すぐ隣にいるせいで当たり判定取られた場合）
             if ( (vec.x > object_half_size.x * 2 || vec.x < -object_half_size.x * 2) )
             {
-                return;
+                return; //  何もしない
             }
+            //ベクトルが縦幅より小さい時かつ、ソウルは上昇中ではない場合（つまり上昇していないソウルがオブジェの上に乗っている場合）
+            //上昇中じゃないのを条件にしたのは、連続した複数のオブジェの中で上昇している時オブジェ間を入る離れる瞬間と本当に一番上のオブジェに乗る瞬間を誤認させないため
             if ((vec.y <= -object_half_size.y) && spirit_instance->GetState() != Spirit_Rising)
             {
-                spirit_instance->SetState(Spirit_OnGround);
+                spirit_instance->SetState(Spirit_OnGround); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
             }
+            //今衝突しているオブジェとさっきまで衝突していたオブジェが同じの場合
             else if (spirit_instance->GetRecentCollidedObject() == object)
             {
-                spirit_instance->SetState(Spirit_OnGround);
+                spirit_instance->SetState(Spirit_OnGround); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
             }
             else
             {
-                spirit_instance->SetRecentCollidedObject(object);
-                spirit_instance->SetState(Spirit_Rising);
+                spirit_instance->SetRecentCollidedObject(object);   //今当たっているオブジェを更新
+                spirit_instance->SetState(Spirit_Rising);   //ソウルの状態が上昇中
             }
 
         }
@@ -625,7 +640,7 @@ public:
 
         }
 
-        // プレーヤーとアイテムが衝突したかを判定
+        // プレーヤーとアイテムが離れた時
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item) ||

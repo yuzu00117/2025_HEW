@@ -2,7 +2,7 @@
 // #name Item_Spirit.cpp
 // #description		ソウル（敵が落とすアイテム）
 // #make 2024/12/28　王泳心
-// #update 2024/12/28
+// #update 2025/1/10
 // #comment 追加・修正予定
 //      
 //
@@ -99,18 +99,21 @@ void	ItemSpirit::Update()
 
             GetBody()->ApplyLinearImpulseToCenter(b2Vec2(vec.x * speed, vec.y * speed), true);
 
-
+            //ソウルのサイズが徐々に減る
             m_size.x -= 0.005f;
             m_size.y -= 0.005f;
 
+            //もし回収中にプレイヤーに当たっている場合
             if (m_collided_player) {
-                Function();
-                m_state = Spirit_Destory;
+                Function();   //ソウルの効果を発揮
+                m_state = Spirit_Destory;   //ソウルの状態が消される予定に変更
             }
 
         }
+        //状態が上昇中の場合
         if (m_state == Spirit_Rising)
         {
+            //上に上昇
             GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
         }
         //消される予定ならボディーを消す

@@ -94,6 +94,7 @@ private:
 	//直近まで重なっているオブジェクト（あるいは地面）
 	const b2Body* m_recent_collided_object = nullptr;
 
+	//プレイヤーと当たっているかどうか
 	bool	m_collided_player;
 };
 
