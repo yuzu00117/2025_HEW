@@ -104,7 +104,7 @@ void EnemyDynamic::Update()
 	{
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,1.0f }, 0.0f, GetSoulgage(), false);
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,1.0f }, 0.0f, GetSoulgage());
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();

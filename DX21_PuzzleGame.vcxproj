@@ -146,6 +146,7 @@
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
+    <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="Item_Manager.h" />

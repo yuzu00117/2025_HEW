@@ -105,7 +105,9 @@ void EnemyStatic::Update()
 	{
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage(), false);
+		auto position = GetBody()->GetPosition();
+		position.y -= GetSize().y / BOX2D_SCALE_MANAGEMENT / 2;
+		item_manager.AddSpirit(position, {1.0f,2.0f}, 0.0f, GetSoulgage());
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();

@@ -14,13 +14,22 @@
 
 #include"include/box2d/box2d.h"
 
+enum SpiritState
+{
+	Spirit_OnGround,
+	Spirit_Falling,
+	Spirit_Rising,
+	Spirit_Collecting,
+	Spirit_Destory,
+};
+
 class ItemSpirit
 {
 public:
 	//最低必要な引数：position（位置情報）、body_size（サイズ）、angle（回転角度のラジアン）
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
-	ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool shape_polygon = true, float Alpha = 1.0f);
+	ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha = 1.0f);
 	~ItemSpirit();
 
 	//ボディーを取得
@@ -39,16 +48,21 @@ public:
 	//描画サイズセット
 	void SetSize(b2Vec2 size) { m_size = size; }
 
+	//今の状態を取得
+	SpiritState GetState() { return m_state; }
+	//今の状態をセット
+	void	SetState(SpiritState state);
 
-	//回収されているかを取得
-	bool	GetIfCollecting() { return m_collecting; }
-	//回収されているかをセット
-	void	SetIfCollecting(bool flag);
+	//直近まで当たっているオブジェクトが誰かを取得
+	const b2Body*	GetRecentCollidedObject() { return m_recent_collided_object; }
+	//直近まで当たっているオブジェクトをセット
+	void	SetRecentCollidedObject(b2Body* object) { m_recent_collided_object = object; }
 
-	//これから消えるかどうかを取得
-	bool	GetDestory() { return m_destory; }
-	//これから消えるかどうかをセット
-	void	SetDestory(bool flag) { m_destory = flag; }
+	//今プレイヤーと当たっているのかを取得
+	bool	GetIfCollidedPlayer() { return m_collided_player; }
+	//今プレイヤーと当たっているのかをセット
+	void	SetIfCollidedPlayer(bool flag) { m_collided_player = flag; }
+
 	//アイテムがゲットされた時の処理
 	void	Function();
 
@@ -71,16 +85,16 @@ private:
 	//アイテムの透明度
 	float m_Alpha;
 
-	//消す予定なのかどうか
-	bool	m_destory = false;
-
 	//ソウル回復値
 	float m_recovery;
 
-	//プレイヤーに回収されているかどうか
-	bool	m_collecting;
+	//今の状態
+	SpiritState m_state = Spirit_Falling;
 
+	//直近まで重なっているオブジェクト（あるいは地面）
+	const b2Body* m_recent_collided_object = nullptr;
 
+	bool	m_collided_player;
 };
 
 #endif // !ITEM_SPIRIT_H

@@ -26,6 +26,7 @@
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 #include"Item_Manager.h"
+#include"FixtureSizeCalculate.h"
 
 
 
@@ -379,6 +380,62 @@ public:
             }
         }
 
+
+        //ソウルアイテムがオブジェクトとぶつかったとき
+        if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->Item_name == ITEM_SPIRIT)||
+            (objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->Item_name == ITEM_SPIRIT))
+        {
+            ObjectData* object_data = objectA;
+            b2Body* object = fixtureA->GetBody();
+            b2Fixture* object_fixture = fixtureA;
+
+            ObjectData* spirit_data = objectB;
+            b2Fixture* spirit_fixture = fixtureB;
+
+            if (objectA->Item_name == ITEM_SPIRIT) {
+                spirit_data = objectA;
+                spirit_fixture = fixtureA;
+
+                object_data = objectB;
+                object = fixtureB->GetBody();
+                object_fixture = fixtureB;
+            }
+            ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit_data->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+            if (spirit_instance->GetState() == Spirit_Collecting)
+            {
+                return;
+            }
+
+            b2Vec2 object_position = object->GetPosition();
+            b2Vec2 spirit_position = spirit_instance->GetBody()->GetPosition();
+            b2Vec2 vec;
+            vec.x = spirit_position.x - object_position.x;
+            vec.y = spirit_position.y - object_position.y;
+            
+            b2Vec2 object_half_size = GetFixtureHalfSize(object_fixture->GetShape());
+
+            if ( (vec.x > object_half_size.x * 2 || vec.x < -object_half_size.x * 2) )
+            {
+                return;
+            }
+            if ((vec.y <= -object_half_size.y) && spirit_instance->GetState() != Spirit_Rising)
+            {
+                spirit_instance->SetState(Spirit_OnGround);
+            }
+            else if (spirit_instance->GetRecentCollidedObject() == object)
+            {
+                spirit_instance->SetState(Spirit_OnGround);
+            }
+            else
+            {
+                spirit_instance->SetRecentCollidedObject(object);
+                spirit_instance->SetState(Spirit_Rising);
+            }
+
+        }
+
         // プレーヤーとアイテムが衝突したかを判定
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
@@ -401,17 +458,15 @@ public:
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 item_instance->Function();
                 item_instance->SetDestory(true);//削除を呼び出す
-                break;
-
             }
+            break;
             case ITEM_SPIRIT:
             {
                 ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                spirit_instance->Function();
-                spirit_instance->SetDestory(true);//削除を呼び出す
-                break;
-
+                spirit_instance->SetIfCollidedPlayer(true);
             }
+            break;
+
             }
         }
     }
@@ -420,6 +475,7 @@ public:
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     void EndContact(b2Contact* contact) override {
         ObjectManager& object_manager = ObjectManager::GetInstance();
+        ItemManager& item_manager = ItemManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -549,7 +605,55 @@ public:
                 enemy_instance->OutPlayerSensor();
             }
         }
+
+        //  ソウルアイテムがオブジェクトや床から離れた時
+        if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->Item_name == ITEM_SPIRIT) ||
+            (objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->Item_name == ITEM_SPIRIT))
+        {
+            auto spirit = objectA->Item_name == ITEM_SPIRIT ? objectA : objectB;
+            auto object = objectA->Item_name == ITEM_SPIRIT ? fixtureB : fixtureA;
+
+            ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+          
+            //ソウルが上昇中でかつ、ソウルの直近まで当たっているオブジェクトが今のオブジェクトの場合はまだ上昇終わった
+            if (spirit_instance->GetState() == Spirit_Rising && spirit_instance->GetRecentCollidedObject() == object->GetBody())
+            {
+                spirit_instance->SetState(Spirit_Falling);//ソウルの状態が落下中
+            }
+
+        }
+
+        // プレーヤーとアイテムが衝突したかを判定
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item) ||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
+
+            //最初に　objectB　が item　だと仮定する
+            auto item = objectB;
+            //どちらがアイテムか特定
+            if (objectA->collider_type == collider_item)//Aがアイテム
+            {
+                item = objectA;
+            }
+
+            //アイテム種類別に処理する
+            switch (item->Item_name)
+            {
+            case ITEM_SPIRIT:
+            {
+                ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                spirit_instance->SetIfCollidedPlayer(false);
+            }
+            break;
+            }
+        }
+
+
     }
+
 
 };
 

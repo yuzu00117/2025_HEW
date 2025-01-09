@@ -41,7 +41,7 @@ public:
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
 	void	AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 	//recovery引数はプレイヤーがアイテムを取るときのソウルの回復値
-	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool shape_polygon = true, float Alpha = 1.0f);
+	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha = 1.0f);
 
 
 

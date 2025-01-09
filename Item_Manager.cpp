@@ -27,10 +27,10 @@ void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, boo
 	m_SpeedUp_List.emplace_back(std::make_unique<ItemSpeedUp>(position, body_size, angle, shape_polygon, Alpha));
 }
 
-void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool shape_polygon, float Alpha)
+void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
 {
     // 既存の引数コンストラクタを利用して生成
-    m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, shape_polygon, Alpha));
+    m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, Alpha));
    //　新しく作ったものの初期化処理
     auto& lastSpirit = *m_Spirit_List.back();
     lastSpirit.Initialize();
@@ -103,7 +103,7 @@ void ItemManager::FinalizeAll() {
 void ItemManager::SetCollectSpirit(bool flag)
 {
     for (auto& w : m_Spirit_List) {
-        w->SetIfCollecting(flag);
+        w->SetState(Spirit_Collecting);
     }
 
 }
