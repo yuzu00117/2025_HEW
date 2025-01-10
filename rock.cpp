@@ -11,6 +11,7 @@
 #include"rock.h"
 #include"include/box2d/box2d.h"
 #include"world_box2d.h"
+#include"collider_type.h"
 #include"sprite.h"
 #include"texture.h"
 #include"player_position.h"

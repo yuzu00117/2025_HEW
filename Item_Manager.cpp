@@ -1,14 +1,3 @@
-//-----------------------------------------------------------------------------------------------------
-// #name Item_Manager.cpp
-// #description アイテムの管理(ファクトリー)
-// #make 2024/12/28　王泳心
-// #update 2024/12/28
-// #comment 追加・修正予定
-//      
-//
-// 
-//----------------------------------------------------------------------------------------------------
-
 #include "Item_Manager.h"
 #include "Item_SpeedUp.h"
 #include "world_box2d.h"
@@ -25,6 +14,7 @@ void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, boo
 {
 	// 既存の引数コンストラクタを利用して生成
 	m_SpeedUp_List.emplace_back(std::make_unique<ItemSpeedUp>(position, body_size, angle, shape_polygon, Alpha));
+    ID_SpeedUp_List++;
 }
 
 
@@ -49,7 +39,15 @@ void ItemManager::InitializeAll() {
 // 全てのアイテムを更新
 void ItemManager::UpdateAll() {
     for (auto& w : m_SpeedUp_List) {
-		w->Update();
+        bool destory = w->Update();
+        if (destory)
+        {
+            //ボディの情報を消す
+            b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+            world->DestroyBody(w->GetBody());
+            //リストの中の情報を消す
+            m_SpeedUp_List.erase(m_SpeedUp_List.begin() + ID_SpeedUp_List);
+        }
     }
 }
 
@@ -67,7 +65,6 @@ void ItemManager::FinalizeAll() {
     }
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
 }
-
 
 
 

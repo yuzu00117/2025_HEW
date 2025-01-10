@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager
-// #description ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ãŸã‚ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã®ã‚¤ãƒ¡ãƒ¼ã‚¸ã«è¿‘ã„
-// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
+// #description ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚é‚½‚ß‚Ìƒtƒ@ƒNƒgƒŠ[‚ÌƒCƒ[ƒW‚É‹ß‚¢
+// #make 2024/12/04@‰i–ì‹`–ç
 // #update 2024/12/13
-// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
-//          ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œã‚‹ã”ã¨ã«ç”Ÿæˆã™ã‚‹æ„Ÿã˜
+// #comment ’Ç‰ÁEC³—\’è
+//          EƒIƒuƒWƒFƒNƒg‚ğì‚é‚²‚Æ‚É¶¬‚·‚éŠ´‚¶
 //----------------------------------------------------------------------------------------------------
 
 
@@ -18,108 +18,96 @@
 #include"sloping_block.h"
 #include"rock.h"
 #include"static_to_dynamic_block.h"
-#include"movable_ground.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 #include"enemy_attack.h"
 
-// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç¨®é¡ã‚’å®šç¾©
+// ƒIƒuƒWƒFƒNƒg‚Ìí—Ş‚ğ’è‹`
 enum ObjectType {
     NULL_object,
-    Object_Wood, // æœ¨
-    Object_Rock, // å²©
-    Object_one_way_platform,//è¶³å ´ã€€ã—ãŸã‹ã‚‰ã—ã‹ä¹—ã‚Œãªã„
-    Object_Static_to_Dynamic,//é™çš„ã‹ã‚‰å‹•çš„ã«å¤‰æ›´ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
-    Object_Movable_Ground,  //å¼•ã£å¼µã‚Œã‚‹åºŠ 
+    Object_Wood, // –Ø
+    Object_Rock, // Šâ
+    Object_one_way_platform,//‘«ê@‚µ‚½‚©‚ç‚µ‚©æ‚ê‚È‚¢
+    Object_Static_to_Dynamic,//Ã“I‚©‚ç“®“I‚É•ÏX‚·‚éƒIƒuƒWƒFƒNƒg
     
-    Object_Enemy_Static, //é™çš„ã‚¨ãƒãƒŸãƒ¼
-    Object_Enemy_Dynamic,//å‹•çš„ã‚¨ãƒãƒŸãƒ¼
-    Object_Enemy_Attack, //ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒ
+    Object_Enemy_Static, //Ã“IƒGƒlƒ~[
+    Object_Enemy_Dynamic,//“®“IƒGƒlƒ~[
+    Object_Enemy_Attack, //ƒGƒlƒ~[‚ÌUŒ‚
 };
 
-class Object{};
 
-// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç®¡ç†ã™ã‚‹ã‚¯ãƒ©ã‚¹
+// ƒIƒuƒWƒFƒNƒg‚ğŠÇ—‚·‚éƒNƒ‰ƒX
 class ObjectManager {
 public:
-    // ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
+    // ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
     static ObjectManager& GetInstance();
 
-    // æœ¨ã‚’è¿½åŠ 
+    // –Ø‚ğ’Ç‰Á
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
-    //å²©ã‚’è¿½åŠ 
+    //Šâ‚ğ’Ç‰Á
     void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
-    //è¶³å ´ã‚’è¿½åŠ 
+    //‘«ê‚ğ’Ç‰Á
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
-    //å‚¾æ–œãƒ–ãƒ­ãƒƒã‚¯ã®è¿½åŠ 
+    //ŒXÎƒuƒƒbƒN‚Ì’Ç‰Á
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
-    //é™çš„â†’å‹•çš„ã®ãƒ–ãƒ­ãƒƒã‚¯ã®è¿½åŠ 
+    //Ã“I¨“®“I‚ÌƒuƒƒbƒN‚Ì’Ç‰Á
     void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
-    // å¼•ã£å¼µã‚Œã‚‹åºŠã‚’è¿½åŠ 
-    void AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level);
-    //é™çš„ã‚¨ãƒãƒŸãƒ¼ç”Ÿæˆ
+    //Ã“IƒGƒlƒ~[¶¬
     void AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
-    //å‹•çš„ã‚¨ãƒãƒŸãƒ¼ç”Ÿæˆ
+    //“®“IƒGƒlƒ~[¶¬
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
-    //ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã®ç”Ÿæˆ
+    //ƒGƒlƒ~[‚ÌUŒ‚‚Ì¶¬
     void AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle);
 
-    // ID ã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
+    // ID ‚ğg‚Á‚Ä–Ø‚ğŒŸõ
     wood* FindWoodByID(int id);
-    //IDã‚’ä½¿ã£ã¦ã€€å²©ã‚’æ¤œç´¢
+    //ID‚ğg‚Á‚Ä@Šâ‚ğŒŸõ
     rock* FindRockByID(int id);
-    //IDã‚’ä½¿ã£ã¦è¶³å ´ãƒ–ãƒ­ãƒƒã‚¯ã‚’æ¤œç´¢
+    //ID‚ğg‚Á‚Ä‘«êƒuƒƒbƒN‚ğŒŸõ
     one_way_platform* Findone_way_platformByID(int id);
-    //IDã‚’ä½¿ã£ã¦æ–œé¢ãƒ–ãƒ­ãƒƒã‚¯ã‚’æ¤œç´¢
+    //ID‚ğg‚Á‚ÄÎ–ÊƒuƒƒbƒN‚ğŒŸõ
     sloping_block* FindSloping_BlockByID(int id);
-    //IDã‚’ä½¿ã£ã¦é™çš„â†’å‹•çš„ãƒ–ãƒ­ãƒƒã‚¯ã‚’è¿½åŠ 
+    //ID‚ğg‚Á‚ÄÃ“I¨“®“IƒuƒƒbƒN‚ğ’Ç‰Á
     static_to_dynamic_block* FindStatic_to_Dynamic_BlcokID(int id);
-    //IDã‚’ä½¿ã£ã¦å¼•ã£å¼µã‚Œã‚‹åºŠã‚’æ¤œç´¢
-    movable_ground* FindMovable_GroundID(int id);
-    //IDã‚’ä½¿ã£ã¦é™çš„ã‚¨ãƒãƒŸãƒ¼ã‚’æ¤œç´¢
+    //ID‚ğg‚Á‚ÄÃ“IƒGƒlƒ~[‚ğŒŸõ
     EnemyStatic* FindEnemyStaticByID(int id);
-    //IDã‚’ä½¿ã£ã¦å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã‚’æ¤œç´¢
+    //ID‚ğg‚Á‚Ä“®“IƒGƒlƒ~[‚ğŒŸõ
     EnemyDynamic* FindEnemyDynamicByID(int id);
-    //IDã‚’ä½¿ã£ã¦ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã‚’æ¤œç´¢
+    //ID‚ğg‚Á‚ÄƒGƒlƒ~[‚ÌUŒ‚‚ğŒŸõ
     EnemyAttack* FindEnemyAttackByID(int id);
-    
-    //IDã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—ã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¤œç´¢
-    Object* FindObjectByID_ObjectType(int id, ObjectType type);
 
-    //æŒ‡å®šã®é™çš„ã‚¨ãƒãƒŸãƒ¼ã‚’å‰Šé™¤
+    //w’è‚ÌÃ“IƒGƒlƒ~[‚ğíœ
     void DestroyEnemyStatic(int id);
-    //æŒ‡å®šã®å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã‚’å‰Šé™¤
+    //w’è‚Ì“®“IƒGƒlƒ~[‚ğíœ
     void DestroyEnemyDynamic(int id);
-    //æŒ‡å®šã®ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã‚’å‰Šé™¤
+    //w’è‚ÌƒGƒlƒ~[‚ÌUŒ‚‚ğíœ
     void DestroyEnemyAttack(int id);
 
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’åˆæœŸåŒ–
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ‰Šú‰»
     void InitializeAll();
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğXV
     void UpdateAll();
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æç”»
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ•`‰æ
     void DrawAll();
 
-    // å…¨ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç ´æ£„
+    // ‘S‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚ğ”jŠü
     void FinalizeAll();
 
 private:
-    std::vector<std::unique_ptr<wood>> woodList;//æœ¨ã®ãƒªã‚¹ãƒˆ
-    std::vector < std::unique_ptr<rock>>rockList;//å²©ã®ãƒªã‚¹ãƒˆ
-    std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// è¶³å ´ã®ãƒªã‚¹ãƒˆ
-    std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//æ–œé¢ã®ãƒªã‚¹ãƒˆ
-    std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//é™çš„â†’å‹•çš„ãƒ–ãƒ­ãƒƒã‚¯æŒ™å‹•
-    std::vector<std::unique_ptr<movable_ground>> movable_groundList;//æœ¨ã®ãƒªã‚¹ãƒˆ
-  
-    std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//é™çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒªã‚¹ãƒˆ
-    std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒªã‚¹ãƒˆ
-    std::vector<std::unique_ptr<EnemyAttack>> enemy_attackList;  //ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã®ãƒªã‚¹ãƒˆ
+    std::vector<std::unique_ptr<wood>> woodList;//–Ø‚ÌƒŠƒXƒg
+    std::vector < std::unique_ptr<rock>>rockList;//Šâ‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// ‘«ê‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//Î–Ê‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//Ã“I¨“®“IƒuƒƒbƒN‹““®
+    std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;  //Ã“IƒGƒlƒ~[‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//Ã“IƒGƒlƒ~[‚ÌƒŠƒXƒg
+    std::vector<std::unique_ptr<EnemyAttack>> enemy_attackList;  //ƒGƒlƒ~[‚ÌUŒ‚‚ÌƒŠƒXƒg
 
-    //ã“ã“ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã”ã¨ã«ãƒªã‚¹ãƒˆã‚’è¿½åŠ ã—ã¦ã„ãæ„Ÿã˜
+    //‚±‚±‚ÉƒIƒuƒWƒFƒNƒg‚²‚Æ‚ÉƒŠƒXƒg‚ğ’Ç‰Á‚µ‚Ä‚¢‚­Š´‚¶
 
 
     ObjectManager() = default;

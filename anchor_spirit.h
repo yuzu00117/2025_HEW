@@ -23,9 +23,6 @@
 class AnchorSpirit
 {
 public:
-
-	static void	Initialize();
-
 	//今のソウルゲージの値をもらう
 	static float	GetAnchorSpiritValue();
 

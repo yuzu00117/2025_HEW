@@ -40,17 +40,6 @@ XMFLOAT4 toFloat4(const b2Vec2& f);
  * @return 絶対値
  */
 float ReturnAbsoluteValue(float value);
-
-/**
- * @brief ランダム関数
- * 最小値と最大値入れたら帰ってくるよー
- */
-int GetRandomInt(int min, int max);
 #define ZERO2f   XMFLOAT2(0.0f,0.0f)
-
-/**
- * @brief 度数からラジアンに変換する
- */
-double DegreesToRadians(double degrees);
 
 #endif // TOOL_H

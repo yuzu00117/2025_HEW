@@ -12,8 +12,6 @@
 #include"main.h"
 #include"include/box2d/box2d.h"
 #include"tool.h"
-#include <iostream>
-#include <random>
 
 
 
@@ -90,21 +88,4 @@ float ReturnAbsoluteValue(float value)
     {
         return -value;
     }
-}
-
-
-
-
-// ランダムな整数を生成する関数
-int GetRandomInt(int min, int max) {
-    static std::random_device rd;  // ランダムデバイス（シード生成）
-    static std::mt19937 gen(rd()); // メルセンヌ・ツイスタ乱数生成器
-    std::uniform_int_distribution<> dist(min, max); // 範囲指定
-
-    return dist(gen); // ランダムな整数を生成して返す
-}
-
-// 度数をラジアンに変換する関数
-double DegreesToRadians(double degrees) {
-    return degrees * M_PI / 180.0;
 }

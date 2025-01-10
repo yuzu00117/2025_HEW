@@ -1,13 +1,3 @@
-//-----------------------------------------------------------------------------------------------------
-// #name Item_SpeedUp.h
-// #description		スピードアップアイテム
-// #make 2024/12/28　王泳心
-// #update 2024/12/28
-// #comment 追加・修正予定
-//      
-//
-// 
-//----------------------------------------------------------------------------------------------------
 #pragma once
 
 #ifndef ITEM_SPEEDUP_H
@@ -40,8 +30,6 @@ public:
 	//描画サイズセット
 	void SetSize(b2Vec2 size) { m_size = size; }
 
-	//これから消えるかどうかを取得
-	bool	GetDestory() { return m_destory; }
 	//これから消えるかどうかをセット
 	void	SetDestory(bool flag) { m_destory = flag; }
 	//アイテムがゲットされた時の処理
@@ -49,9 +37,10 @@ public:
 
 
 	void Initialize();
-	void Update();
+	bool Update();
 	void Draw();
 	void Finalize();
+
 
 private:
 	// 各インスタンス固有の ID

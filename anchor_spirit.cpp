@@ -13,13 +13,10 @@
 #include"anchor_spirit.h"
 #include"player_stamina.h"
 
+// 静的メンバ変数の定義（1回だけ行う）
+float	AnchorSpirit::m_spirit = 50.0f;
 
-float AnchorSpirit::m_spirit = 50.0f;
 
-void AnchorSpirit::Initialize()
-{
-	m_spirit = 50.0f;
-}
 
 //今のソウルゲージの値をもらう
 float	AnchorSpirit::GetAnchorSpiritValue()

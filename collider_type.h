@@ -14,24 +14,22 @@
 #include <string>
 #include"include/box2d/box2d.h"
 #include"object_manager.h"
-#include"Item_Manager.h"
 
-enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���@�V���Ȃ����蔻��̎�ނ�ǉ��������ꍇ�����ɑ����ā@���ŃZ�b�g���Ă�
+enum ColliderTypeList//フィクスチャの接触判定で使う　新たなあたり判定の種類を追加したい場合ここに足して　下でセットしてね
 {
     collider_player_body,
     collider_player_leg,
+
     collider_player_sensor,
 
     collider_anchor,
     collider_anchor_chain,
-    collider_anchor_point,
 
     collider_ground,
 
     collider_object,
-    collider_object_destroyer_of_enemy,  //�I�u�W�F�N�g�ɕt���Ă���G�������Z���T�[
 
-    collider_item,
+    collider_anchor_point,
 
     collider_normal_attack_anchor,
 

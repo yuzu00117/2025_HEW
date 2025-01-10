@@ -22,8 +22,6 @@
 class PlayerStamina
 {
 public:
-	static void	Initialize();
-
 	//今のプレイヤーの体力値をもらう
 	static float	GetPlayerStaminaValue();
 

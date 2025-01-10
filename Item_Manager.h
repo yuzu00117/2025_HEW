@@ -1,14 +1,3 @@
-//-----------------------------------------------------------------------------------------------------
-// #name Item_Manager.h
-// #description アイテムの管理(ファクトリー)
-// #make 2024/12/28　王泳心
-// #update 2024/12/28
-// #comment 追加・修正予定
-//      
-//
-// 
-//----------------------------------------------------------------------------------------------------
-
 #pragma once
 
 #ifndef ITEM_MANAGER_H
@@ -67,6 +56,9 @@ private:
 	ItemManager() = default;
 	ItemManager(const ItemManager&) = delete;
 	ItemManager& operator=(const ItemManager&) = delete;
+
+	//アイテムがリストの中で何番目か
+	int ID_SpeedUp_List = -1;
 
 };
 

@@ -1,235 +1,397 @@
 //-----------------------------------------------------------------------------------------------------
 // #name sound.cpp
-// #description sound
-// #make 2024/12/03　　今村友哉
-// #update 2024/12/03
-// #comment 
+// #description 音
+// #make 2024/11/02　　永野義也
+// #update 2024/11/02
+// #comment 追加・修正予定
+//          ・CRIがどんな感じかわからんけど、れんちゃんの頑張りにきたい！　丸投げしてる
 //          
 //----------------------------------------------------------------------------------------------------
 
- /**************************************************************************
-  * インクルード
-  * Header files
-  **************************************************************************/
 #include "sound.h"
-#include "keyboard.h"
-
-  /***************************************************************************
-   * 関数定義
-   * Function definitions
-   ***************************************************************************/
-   /* アプリケーションオブジェクトの定義 */
-AppObj app_obj = { 0 };
-
-void CRIInitialize(void) {
 
 
-	/* アプリケーションの初期化 */
-	app_atomex_initialize(&app_obj);
+/*------------------------------------------------------------------------------
+   定数定義
+------------------------------------------------------------------------------*/
+#define MAX_SOUND_NUM 100
 
 
+/*------------------------------------------------------------------------------
+   プロトタイプ宣言
+------------------------------------------------------------------------------*/
+HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
+HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);
 
-}
+/*------------------------------------------------------------------------------
+   グローバル変数の定義
+------------------------------------------------------------------------------*/
+static IXAudio2 *g_pXAudio2 = NULL;									// XAudio2オブジェクトへのインターフェイス
+static IXAudio2MasteringVoice *g_pMasteringVoice = NULL;			// マスターボイス
+static IXAudio2SourceVoice *g_apSourceVoice[MAX_SOUND_NUM] = {};	// ソースボイス
+static BYTE *g_apDataAudio[MAX_SOUND_NUM] = {};						// オーディオデータ
+static DWORD g_aSizeAudio[MAX_SOUND_NUM] = {};						// オーディオデータサイズ
 
-void CRIUpdate(void)
+static char g_SoundName[MAX_SOUND_NUM][256] = {};					// サウンド名バッファ
+static DWORD g_SoundIndex = 0;										// ソースボイス配列の末尾を示すインデックス
+
+/*------------------------------------------------------------------------------
+   初期化関数
+------------------------------------------------------------------------------*/
+bool InitSound(HWND hWnd)
 {
-	if (Keyboard_IsKeyDown(KK_D1))
+	HRESULT hr;
+
+	// COMライブラリの初期化
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
+
+	// XAudio2オブジェクトの作成
+	hr = XAudio2Create(&g_pXAudio2, 0);
+	if(FAILED(hr))
 	{
-		app_atomex_start(&app_obj);
+		MessageBox(hWnd, "XAudio2オブジェクトの作成に失敗！", "警告！", MB_ICONWARNING);
+
+		// COMライブラリの終了処理
+		CoUninitialize();
+
+		return false;
+	}
+	
+	// マスターボイスの生成
+	hr = g_pXAudio2->CreateMasteringVoice(&g_pMasteringVoice);
+	if(FAILED(hr))
+	{
+		MessageBox(hWnd, "マスターボイスの生成に失敗！", "警告！", MB_ICONWARNING);
+
+		if(g_pXAudio2)
+		{
+			// XAudio2オブジェクトの開放
+			g_pXAudio2->Release();
+			g_pXAudio2 = NULL;
+		}
+
+		// COMライブラリの終了処理
+		CoUninitialize();
+
+		return false;
 	}
 
-	/* アプリケーションの更新 */
-	app_execute_main(&app_obj);
-
+	return true;
 }
 
-void CRIPlay(void)
+/*------------------------------------------------------------------------------
+   終了処理をする関数
+------------------------------------------------------------------------------*/
+void UninitSound(void)
 {
-	app_atomex_start(&app_obj);
-}
-
-void CRIFinalize(void)
-{
-	/* アプリケーションの終了 */
-	app_atomex_finalize(&app_obj);
-
-}
-
-void* user_alloc_func(void* obj, CriUint32 size)
-{
-	void* ptr;
-	ptr = malloc(size);
-	return ptr;
-}
-
-void user_free_func(void* obj, void* ptr)
-{
-	free(ptr);
-}
-
-
-CriBool app_atomex_initialize(AppObj* app_obj)
-{
-
-	/* カーソルのリセット */
-	app_obj->ui_cue_idnex = 0;
-	/* 未取得なプレイバックID(Voiceキュー再生時のみ取得) */
-	app_obj->playback_id = 0;
-
-
-	/* メモリアロケータの登録 */
-	criAtomEx_SetUserAllocator(user_alloc_func, user_free_func, NULL);
-
-	/* ライブラリの初期化（最大ボイス数変更） */
-	CriAtomExConfig_WASAPI lib_config;
-	CriFsConfig fs_config;
-	criAtomEx_SetDefaultConfig_WASAPI(&lib_config);
-	criFs_SetDefaultConfig(&fs_config);
-	lib_config.atom_ex.max_virtual_voices = MAX_VIRTUAL_VOICE;
-	lib_config.hca_mx.output_sampling_rate = SAMPLINGRATE_HCAMX;
-	fs_config.num_loaders = MAX_CRIFS_LOADER;
-	lib_config.atom_ex.fs_config = &fs_config;
-	criAtomEx_Initialize_WASAPI(&lib_config, NULL, 0);
-
-	/* D-Basの作成（最大ストリーム数はここで決まります） */
-	app_obj->dbas_id = criAtomDbas_Create(NULL, NULL, 0);
-
-#if defined(USE_INGAME_PREVIEW)
-	CriAtomExAsrBusAnalyzerConfig analyze_config;
-	CriSint32 bus_no;
-	/* インゲームプレビュー用のモニタライブラリを初期化 */
-	criAtomExMonitor_Initialize(NULL, NULL, 0);
-	/* レベル測定機能を追加 */
-	criAtomExAsr_SetDefaultConfigForBusAnalyzer(&analyze_config);
-	for (bus_no = 0; bus_no < 8; bus_no++) {
-		criAtomExAsr_AttachBusAnalyzer(bus_no, &analyze_config);
+	// 全てのサウンドを停止する
+	for(int nCntSound = 0; nCntSound < (int)g_SoundIndex; nCntSound++)
+	{
+		if(g_apSourceVoice[nCntSound])
+		{
+			// 一時停止
+			g_apSourceVoice[nCntSound]->Stop(0);
+	
+			// ソースボイスの破棄
+			g_apSourceVoice[nCntSound]->DestroyVoice();
+			g_apSourceVoice[nCntSound] = NULL;
+	
+			// オーディオデータの開放
+			free(g_apDataAudio[nCntSound]);
+			g_apDataAudio[nCntSound] = NULL;
+		}
 	}
-#endif
-
-	/* ACFファイルの読み込みと登録 */
-	criAtomEx_RegisterAcfFile(NULL, PATH ACF_FILE, NULL, 0);
-
-	/* DSP設定のアタッチ */
-	criAtomEx_AttachDspBusSetting(CRI_TEST_ACF_DSPSETTING_MIXER, NULL, 0);
-
-	/* ボイスプールの作成（最大ボイス数変更／最大ピッチ変更／ストリーム再生対応） */
-	CriAtomExStandardVoicePoolConfig standard_vpool_config;
-	criAtomExVoicePool_SetDefaultConfigForStandardVoicePool(&standard_vpool_config);
-	standard_vpool_config.num_voices = MAX_VOICE;
-	standard_vpool_config.player_config.max_sampling_rate = MAX_SAMPLING_RATE;
-	standard_vpool_config.player_config.streaming_flag = CRI_TRUE;
-	app_obj->standard_voice_pool = criAtomExVoicePool_AllocateStandardVoicePool(&standard_vpool_config, NULL, 0);
-
-	/* HCA-MX再生用：ボイスプールの作成 */
-	CriAtomExHcaMxVoicePoolConfig hcamx_vpool_config;
-	criAtomExVoicePool_SetDefaultConfigForHcaMxVoicePool(&hcamx_vpool_config);
-	hcamx_vpool_config.num_voices = MAX_VOICE;
-	hcamx_vpool_config.player_config.max_sampling_rate = MAX_SAMPLING_RATE;
-	hcamx_vpool_config.player_config.streaming_flag = CRI_TRUE;
-	app_obj->hcamx_voice_pool = criAtomExVoicePool_AllocateHcaMxVoicePool(&hcamx_vpool_config, NULL, 0);
-
-	/* ACBファイルを読み込み、ACBハンドルを作成 */
-	app_obj->acb_hn = criAtomExAcb_LoadAcbFile(NULL, PATH ACB_FILE, NULL, NULL, NULL, 0);
-
-	/* プレーヤの作成 */
-	app_obj->player = criAtomExPlayer_Create(NULL, NULL, 0);
-
-	return CRI_TRUE;
-}
-
-CriBool app_atomex_finalize(AppObj* app_obj)
-{
-	/* DSPのデタッチ */
-	criAtomEx_DetachDspBusSetting();
-
-	/* プレーヤハンドルの破棄 */
-	criAtomExPlayer_Destroy(app_obj->player);
-
-	/* ボイスプールの破棄 */
-	criAtomExVoicePool_Free(app_obj->hcamx_voice_pool);
-	criAtomExVoicePool_Free(app_obj->standard_voice_pool);
-
-	/* ACBハンドルの破棄 */
-	criAtomExAcb_Release(app_obj->acb_hn);
-
-	/* ACFの登録解除 */
-	criAtomEx_UnregisterAcf();
-
-#if defined(USE_INGAME_PREVIEW)
-	/* インゲームプレビュー関連機能の終了処理 */
-	CriSint32 bus_no;
-	for (bus_no = 0; bus_no < 8; bus_no++) {
-		criAtomExAsr_DetachBusAnalyzer(bus_no);
+	
+	// マスターボイスの破棄
+	g_pMasteringVoice->DestroyVoice();
+	g_pMasteringVoice = NULL;
+	
+	if(g_pXAudio2)
+	{
+		// XAudio2オブジェクトの開放
+		g_pXAudio2->Release();
+		g_pXAudio2 = NULL;
 	}
-	criAtomExMonitor_Finalize();
-#endif
-
-	/* D-BASの破棄 */
-	criAtomDbas_Destroy(app_obj->dbas_id);
-
-	/* ライブラリの終了 */
-	criAtomEx_Finalize_WASAPI();
-
-	return CRI_TRUE;
+	
+	// COMライブラリの終了処理
+	CoUninitialize();
 }
 
-CriBool app_execute_main(AppObj* app_obj)
+/*------------------------------------------------------------------------------
+   サウンドファイルの読み込み
+------------------------------------------------------------------------------*/
+int LoadSound(char* pFilename)
 {
-	/* サーバ処理の実行 */
-	criAtomEx_ExecuteMain();
+	HANDLE hFile;
+	DWORD dwChunkSize = 0;
+	DWORD dwChunkPosition = 0;
+	DWORD dwFiletype;
+	WAVEFORMATEXTENSIBLE wfx;
+	XAUDIO2_BUFFER buffer;
 
-#if defined(USE_INGAME_PREVIEW)
-	/* バス解析情報の取得 */
-	CriAtomExAsrBusAnalyzerInfo analyze_info;
-	CriSint32 bus_no;
-	for (bus_no = 0; bus_no < 8; bus_no++) {
-		criAtomExAsr_GetBusAnalyzerInfo(bus_no, &analyze_info);
+	//読み込まれているサウンド名を調べて、同名のものが
+	//すでに読み込まれていたらその番号を返す
+	for (unsigned int i = 0; i < g_SoundIndex; i++)
+	{
+		//サウンド名を比較
+		if (strcmp(g_SoundName[i], pFilename) == 0)
+		{
+			return i;
+		}
 	}
-#endif
 
-	return CRI_TRUE;
+	if (g_SoundIndex == MAX_SOUND_NUM)
+	{
+		MessageBox(NULL, "最大読み込み数を超過", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+
+	// バッファのクリア
+	memset(&wfx, 0, sizeof(WAVEFORMATEXTENSIBLE));
+	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
+
+	// サウンドデータファイルの生成
+	hFile = CreateFile(pFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+	{
+		MessageBox(NULL, "サウンドデータファイルの生成に失敗！(1)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+	if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	{// ファイルポインタを先頭に移動
+		MessageBox(NULL, "サウンドデータファイルの生成に失敗！(2)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+
+	HRESULT hr;
+
+	// WAVEファイルのチェック
+	hr = CheckChunk(hFile, 'FFIR', &dwChunkSize, &dwChunkPosition);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "WAVEファイルのチェックに失敗！(1)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+	hr = ReadChunkData(hFile, &dwFiletype, sizeof(DWORD), dwChunkPosition);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "WAVEファイルのチェックに失敗！(2)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+	if (dwFiletype != 'EVAW')
+	{
+		MessageBox(NULL, "WAVEファイルのチェックに失敗！(3)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+
+	// フォーマットチェック
+	hr = CheckChunk(hFile, ' tmf', &dwChunkSize, &dwChunkPosition);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "フォーマットチェックに失敗！(1)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+	hr = ReadChunkData(hFile, &wfx, dwChunkSize, dwChunkPosition);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "フォーマットチェックに失敗！(2)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+
+	// オーディオデータ読み込み
+	hr = CheckChunk(hFile, 'atad', &g_aSizeAudio[g_SoundIndex], &dwChunkPosition);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "オーディオデータ読み込みに失敗！(1)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+	g_apDataAudio[g_SoundIndex] = (BYTE*)malloc(g_aSizeAudio[g_SoundIndex]);
+	hr = ReadChunkData(hFile, g_apDataAudio[g_SoundIndex], g_aSizeAudio[g_SoundIndex], dwChunkPosition);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "オーディオデータ読み込みに失敗！(2)", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+
+	// ソースボイスの生成
+	hr = g_pXAudio2->CreateSourceVoice(&g_apSourceVoice[g_SoundIndex], &(wfx.Format));
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, "ソースボイスの生成に失敗！", "警告！", MB_ICONWARNING);
+		return -1;
+	}
+
+	//読み込んだサウンド名を保存する
+	strcpy_s(g_SoundName[g_SoundIndex], 256, pFilename);
+
+	int retIndex = g_SoundIndex;
+
+	//インデックスを一つ進める
+	g_SoundIndex++;
+
+	return retIndex;
 }
 
-//1	音楽の再生
-static CriBool app_atomex_start(AppObj* app_obj)
+void SetVolume(int index, float vol)
 {
-	CriAtomExCueId start_cue_id = g_cue_list[5].id;
-
-	/* キューIDの指定 */
-	criAtomExPlayer_SetCueId(app_obj->player, app_obj->acb_hn, start_cue_id);
-
-	/* MEMO: 特定の音だけピッチを変えて再生したい場合。      */
-	/* (1) プレーヤにピッチを設定。                          */
-	/* (2) 再生開始。                                        */
-	/* (3) プレーヤのピッチを戻す。                          */
-	/* {                                                     */
-	/*   criAtomExPlayer_SetPitch(player, pitch);          */
-	/*   criAtomExPlayer_SetCueId(player, acb, cue_id);  */
-	/*   criAtomExPlayer_Start(player, pitch);             */
-	/*   criAtomExPlayer_SetPitch(player, 0.0f);           */
-	/* {                                                     */
-	/* 補足: HCA-MXコーデックの場合はピッチ変更は無効。      */
-
-	/* 再生の開始 */
-	CriAtomExPlaybackId playback_id = criAtomExPlayer_Start(app_obj->player);
-
-	return CRI_TRUE;
+	g_apSourceVoice[index]->SetVolume(vol);
 }
 
-//2 音楽の停止
-static CriBool app_atomex_stop_player(AppObj* app_obj)
+/*------------------------------------------------------------------------------
+   音声の再生
+------------------------------------------------------------------------------*/
+void PlaySound(int index, int loopCount)
 {
-	/* プレーヤの停止 */
-	criAtomExPlayer_Stop(app_obj->player);
+	XAUDIO2_VOICE_STATE xa2state;
+	XAUDIO2_BUFFER buffer;
 
-	return CRI_TRUE;
+	// バッファの値設定
+	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
+	buffer.AudioBytes = g_aSizeAudio[index];
+	buffer.pAudioData = g_apDataAudio[index];
+	buffer.Flags      = XAUDIO2_END_OF_STREAM;
+	if (loopCount < 0)
+		loopCount = XAUDIO2_LOOP_INFINITE;
+	buffer.LoopCount  = loopCount;
+
+	// 状態取得
+	g_apSourceVoice[index]->GetState(&xa2state);
+	if(xa2state.BuffersQueued != 0)
+	{// 再生中
+		// 一時停止
+		g_apSourceVoice[index]->Stop(0);
+
+		// オーディオバッファの削除
+		g_apSourceVoice[index]->FlushSourceBuffers();
+	}
+
+	// オーディオバッファの登録
+	g_apSourceVoice[index]->SubmitSourceBuffer(&buffer);
+
+	// 再生
+	g_apSourceVoice[index]->Start(0);
 }
 
-//3 特定の音のみ停止
-static CriBool app_atomex_stop_cue(AppObj* app_obj)
+/*------------------------------------------------------------------------------
+   音声の停止
+------------------------------------------------------------------------------*/
+void StopSound(int index)
 {
-	/* 特定の再生音のみ停止 */
-	criAtomExPlayback_Stop(app_obj->playback_id);
+	XAUDIO2_VOICE_STATE xa2state;
 
-	return CRI_TRUE;
+	// 状態取得
+	g_apSourceVoice[index]->GetState(&xa2state);
+	if(xa2state.BuffersQueued != 0)
+	{// 再生中
+		// 一時停止
+		g_apSourceVoice[index]->Stop(0);
+
+		// オーディオバッファの削除
+		g_apSourceVoice[index]->FlushSourceBuffers();
+	}
 }
+
+/*------------------------------------------------------------------------------
+   読み込んでいるすべての音声を停止
+------------------------------------------------------------------------------*/
+void StopSoundAll(void)
+{
+	// 一時停止
+	for(int nCntSound = 0; nCntSound < (int)g_SoundIndex; nCntSound++)
+	{
+		if(g_apSourceVoice[nCntSound])
+		{
+			// 一時停止
+			g_apSourceVoice[nCntSound]->Stop(0);
+		}
+	}
+}
+
+/*------------------------------------------------------------------------------
+   WAVEフォーマットのチェック
+------------------------------------------------------------------------------*/
+HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition)
+{
+	HRESULT hr = S_OK;
+	DWORD dwRead;
+	DWORD dwChunkType;
+	DWORD dwChunkDataSize;
+	DWORD dwRIFFDataSize = 0;
+	DWORD dwFileType;
+	DWORD dwBytesRead = 0;
+	DWORD dwOffset = 0;
+	
+	if(SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	{// ファイルポインタを先頭に移動
+		return HRESULT_FROM_WIN32(GetLastError());
+	}
+	
+	while(hr == S_OK)
+	{
+		if(ReadFile(hFile, &dwChunkType, sizeof(DWORD), &dwRead, NULL) == 0)
+		{// チャンクの読み込み
+			hr = HRESULT_FROM_WIN32(GetLastError());
+		}
+
+		if(ReadFile(hFile, &dwChunkDataSize, sizeof(DWORD), &dwRead, NULL) == 0)
+		{// チャンクデータの読み込み
+			hr = HRESULT_FROM_WIN32(GetLastError());
+		}
+
+		switch(dwChunkType)
+		{
+		case 'FFIR':
+			dwRIFFDataSize  = dwChunkDataSize;
+			dwChunkDataSize = 4;
+			if(ReadFile(hFile, &dwFileType, sizeof(DWORD), &dwRead, NULL) == 0)
+			{// ファイルタイプの読み込み
+				hr = HRESULT_FROM_WIN32(GetLastError());
+			}
+			break;
+
+		default:
+			if(SetFilePointer(hFile, dwChunkDataSize, NULL, FILE_CURRENT) == INVALID_SET_FILE_POINTER)
+			{// ファイルポインタをチャンクデータ分移動
+				return HRESULT_FROM_WIN32(GetLastError());
+			}
+		}
+
+		dwOffset += sizeof(DWORD) * 2;
+		if(dwChunkType == format)
+		{
+			*pChunkSize         = dwChunkDataSize;
+			*pChunkDataPosition = dwOffset;
+
+			return S_OK;
+		}
+
+		dwOffset += dwChunkDataSize;
+		if(dwBytesRead >= dwRIFFDataSize)
+		{
+			return S_FALSE;
+		}
+	}
+	
+	return S_OK;
+}
+
+/*------------------------------------------------------------------------------
+   WAVEフォーマットの読み込み
+------------------------------------------------------------------------------*/
+HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset)
+{
+	DWORD dwRead;
+	
+	if(SetFilePointer(hFile, dwBufferoffset, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
+	{// ファイルポインタを指定位置まで移動
+		return HRESULT_FROM_WIN32(GetLastError());
+	}
+
+	if(ReadFile(hFile, pBuffer, dwBuffersize, &dwRead, NULL) == 0)
+	{// データの読み込み
+		return HRESULT_FROM_WIN32(GetLastError());
+	}
+	
+	return S_OK;
+}
+

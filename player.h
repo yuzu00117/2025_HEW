@@ -89,16 +89,6 @@ public:
 	{
 		return m_speed;
 	}
-	//今の速度を加算
-	void	SetSpeed(float value)
-	{
-		m_speed += value;
-		if (m_speed < 0)
-		{
-			m_speed = 0.001f;
-		}
-	}
-
 
 	//今のプレイヤーの向きを取得
 	// 右向き：1    左向き：0

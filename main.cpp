@@ -15,7 +15,6 @@
 #include "sound.h"
 #include"game.h"
 #include"scene.h"
-#include"stage_select.h"
 
 
 
@@ -227,7 +226,7 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitRenderer(hInstance, hWnd, bWindow);
 
 	//サウンドの初期化
-	CRIInitialize();
+	InitSound(hWnd);
 
 	//ポリゴン
 	InitSprite();
@@ -241,7 +240,7 @@ void FinalFinalize()
 	UninitSprite();
 
 	//サウンドの終了処理
-	CRIFinalize();
+	UninitSound();
 
 	//レンダリングの終了処理
 	UninitRenderer();
