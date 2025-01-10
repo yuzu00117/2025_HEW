@@ -167,9 +167,17 @@ void Field::Initialize()
 			if (field_map[y][x] == 18) {//スピードアップアイテム
 				itemManager.AddSpeedUp(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
+
+	
 			if (field_map[y][x] == 19) {//引っ張れる床
 				objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 20.0f), b2Vec2(1.0f, 1.0f), 3);
 			}
+      
+      		if (field_map[y][x] == 20) {//コインを設定する
+				itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
+
+
 
 		}
 	}
