@@ -65,6 +65,12 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
 
+//浮遊エネミー生成
+void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
+{
+    enemy_floatingList.emplace_back(std::make_unique<EnemyFloating>(position, body_size, angle));
+}
+
 
 
 // ID を使って木を検索
@@ -148,6 +154,17 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+//IDを使って浮遊エネミーを検索
+EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
+{
+    for (auto& w : enemy_floatingList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
 {
     switch (type)
@@ -191,6 +208,18 @@ void ObjectManager::DestroyEnemyDynamic(int id)
     for (auto& w : enemy_dynamicList) {
         if (w->GetID() == id) {
             enemy_dynamicList.erase(enemy_dynamicList.begin() + cnt);
+            break;
+        }
+        ++cnt;
+    }
+}
+
+void ObjectManager::DestroyEnemyFloating(int id)
+{
+    int cnt = 0;
+    for (auto& w : enemy_floatingList) {
+        if (w->GetID() == id) {
+            enemy_floatingList.erase(enemy_floatingList.begin() + cnt);
             break;
         }
         ++cnt;

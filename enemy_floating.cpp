@@ -1,0 +1,179 @@
+#include "enemy_floating.h"
+#include "sprite.h"
+#include "texture.h"
+#include "collider_type.h"
+#include "player_position.h"
+
+
+static ID3D11ShaderResourceView* g_EnemyFloating_Texture = NULL;	//動的エネミーのテクスチャ
+
+EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
+	:Enemy(ENEMY_FLOATING_LIFE, ENEMY_FLOATING_DAMAGE, ENEMY_FLOATING_SOULGAGE, ENEMY_FLOATING_SCORE, true, false)
+{
+	b2BodyDef body;
+	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
+	body.position.Set(position.x, position.y);			//ポジションをセット
+	body.angle = angle;									//角度の定義
+	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
+	body.fixedRotation = true;							//回転を固定する、　これをオンにすると回転しない
+	body.gravityScale = 0;								//空中に浮遊させるため
+
+
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
+	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
+
+	SetBody(world->CreateBody(&body));//Bodyをワールドに固定
+
+
+	SetSize(body_size);//表示用にサイズをセットしとく、表示のときにGetSizeを呼び出す
+
+
+
+	b2Vec2 size;
+	size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
+	size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
+
+
+
+	b2PolygonShape shape;                         //shapeには色々な型がある　サークルとかもあるよ
+	shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);//あたり判定を登録する4点　*0.5するのは
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;    //シャープをフィクスチャに登録する
+	fixture.density = 1.0f;    //密度
+	fixture.friction = 0.05f;  //摩擦
+	fixture.restitution = 0.0f;//反発係数
+	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
+
+	b2Fixture* enemy_floating_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
+
+//プレイヤーを感知するセンサー
+//--------------------------------------------
+	b2PolygonShape sensor_shape;                         //shapeには色々な型がある　サークルとかもあるよ
+	sensor_shape.SetAsBox(size.x * 0.5f + 3.5f, size.y * 0.5f + 3.5f);//あたり判定を登録する4点　+3.5fは幅が合計7が多くするため
+
+	b2FixtureDef sensor_fixture;
+	sensor_fixture.shape = &sensor_shape;    //シャープをフィクスチャに登録する
+	sensor_fixture.density = 1.0f;    //密度
+	sensor_fixture.friction = 0.0f;  //摩擦
+	sensor_fixture.restitution = 0.0f;//反発係数
+	sensor_fixture.isSensor = true;  //センサーかどうか、trueならあたり判定は消える
+
+	b2Fixture* enemy_sensor_fixture = GetBody()->CreateFixture(&sensor_fixture);//Bodyをにフィクスチャを登録する
+
+
+	// カスタムデータを作成して設定
+	// 動的エネミーに値を登録
+	// 動的エネミーにユーザーデータを登録
+	ObjectData* data = new ObjectData{ collider_enemy_floating };
+	ObjectData* sensor_data = new ObjectData{ collider_enemy_floating_sensor };
+	enemy_floating_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data);
+	data->object_name = Object_Enemy_Floating;
+	sensor_data->object_name = Object_Enemy_Floating;
+	int ID = data->GenerateID();
+	data->id = ID;
+	sensor_data->id = ID;
+	SetID(ID);
+}
+
+void EnemyFloating::Initialize()
+{
+	g_EnemyFloating_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
+}
+
+void EnemyFloating::Finalize()
+{
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	if (GetBody() != nullptr)
+	{
+		world->DestroyBody(GetBody());
+	}
+	UnInitTexture(g_EnemyFloating_Texture);
+}
+
+void EnemyFloating::Update()
+{
+	if (GetUse() && GetInScreen())
+	{
+		Move();
+	}
+	else if (!GetUse())
+	{
+		//ソウルを落とす
+		ItemManager& item_manager = ItemManager::GetInstance();
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,1.0f }, 0.0f, GetSoulgage());
+
+		//ワールドに登録したbodyの削除
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+		world->DestroyBody(GetBody());
+
+		//オブジェクトマネージャー内のエネミー削除
+		ObjectManager& object_manager = ObjectManager::GetInstance();
+		object_manager.DestroyEnemyFloating(GetID());
+	}
+}
+
+void EnemyFloating::Draw()
+{
+	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	float scale = SCREEN_SCALE;
+
+	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
+
+	b2Vec2 position = GetBody()->GetPosition();
+
+	// プレイヤー位置を考慮してスクロール補正を加える
+	//取得したbodyのポジションに対してBox2dスケールの補正を加える
+	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+	//貼るテクスチャを指定
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Texture);
+
+	//draw
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetBody()->GetAngle(),
+		{ GetSize().x * scale , GetSize().y * scale }
+	);
+}
+
+//移動
+void EnemyFloating::Move()
+{
+	//プレイヤー追従(簡易)
+	//プレイヤーのポジション取得
+	b2Vec2 player_position;
+	player_position.x = PlayerPosition::GetPlayerPosition().x;
+	player_position.y = PlayerPosition::GetPlayerPosition().y;
+
+	//移動方向
+	b2Vec2 enemy_vector;
+	enemy_vector.x = player_position.x - GetBody()->GetPosition().x;
+	enemy_vector.y = player_position.y - GetBody()->GetPosition().y;
+
+	//移動量
+	b2Vec2 enemy_move;
+	enemy_move.x = (enemy_vector.x * m_speed) / 5;
+	enemy_move.y = (enemy_vector.y * m_speed) / 5;
+
+	if (GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
+	{
+		GetBody()->ApplyLinearImpulseToCenter(b2Vec2(enemy_move.x, 0.0), true);
+	}
+	else
+	{
+		GetBody()->ApplyLinearImpulseToCenter(b2Vec2(enemy_move.x, -0.02), true);
+	}
+}

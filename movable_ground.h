@@ -137,7 +137,10 @@ public:
 	{
 		enemy_dynamic.push_back(enemy);
 	}
-
+	void	AddContactedEnemyList(EnemyFloating* enemy)
+	{
+		enemy_floating.push_back(enemy);
+	}
 private:
 	int id; // 各インスタンス固有の ID
 
@@ -145,6 +148,7 @@ private:
 	b2Vec2	add_force;	//引っ張る力
 	std::list<EnemyStatic*>enemy_static;	//今当たっている動かない敵のリスト
 	std::list<EnemyDynamic*>enemy_dynamic;	//今当たっている動く敵のリスト
+	std::list<EnemyFloating*>enemy_floating;	//今当たっている浮遊敵のリスト
 
 	b2Body* Ground_body;
 
