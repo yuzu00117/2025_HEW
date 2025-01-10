@@ -26,7 +26,7 @@
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 #include"Item_Manager.h"
-#include"Item_Coin.h"
+
 
 
 class MyContactListener : public b2ContactListener {
@@ -403,13 +403,15 @@ public:
                 item_instance->SetDestory(true);//削除を呼び出す
                 break;
             }
+
             case ITEM_COIN:
             {
                 ItemCoin* coin_instance = item_manager.FindItem_Coin_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 coin_instance->Function();
                 coin_instance->SetDestory(true);//削除を呼び出す
-            }
                 break;
+            }
+
             }
         }
     }
