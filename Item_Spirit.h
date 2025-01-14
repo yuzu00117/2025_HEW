@@ -58,11 +58,6 @@ public:
 	//直近まで当たっているオブジェクトをセット
 	void	SetRecentCollidedObject(b2Body* object) { m_recent_collided_object = object; }
 
-	//今プレイヤーと当たっているのかを取得
-	bool	GetIfCollidedPlayer() { return m_collided_player; }
-	//今プレイヤーと当たっているのかをセット
-	void	SetIfCollidedPlayer(bool flag) { m_collided_player = flag; }
-
 	//アイテムがゲットされた時の処理
 	void	Function();
 
@@ -94,8 +89,6 @@ private:
 	//直近まで重なっているオブジェクト（あるいは地面）
 	const b2Body* m_recent_collided_object = nullptr;
 
-	//プレイヤーと当たっているかどうか
-	bool	m_collided_player;
 };
 
 #endif // !ITEM_SPIRIT_H

@@ -31,3 +31,9 @@ b2Vec2 GetFixtureHalfSize(b2Shape* const shape)
 
     return b2Vec2(0,0);
 }
+
+b2Vec2 GetPolygonFixtureVertex(b2Shape* const shape, int vertex_id)
+{
+    b2PolygonShape* polygon = static_cast<b2PolygonShape*>(shape);
+    return polygon->m_vertices[vertex_id];
+}

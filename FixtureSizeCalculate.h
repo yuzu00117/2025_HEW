@@ -18,6 +18,9 @@
 //•‚Ì”¼•ª‚Ì’·‚³‚ª•Ô‚³‚ê‚é
 b2Vec2	GetFixtureHalfSize(b2Shape* const shape);
 
+//polygon fixture‚Ì’¸“_‚ğæ“¾
+b2Vec2 GetPolygonFixtureVertex(b2Shape* const shape, int vertex_id);
+
 #endif // !FIXTURESIZECALCULATE_H
 
 

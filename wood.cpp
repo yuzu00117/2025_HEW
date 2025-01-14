@@ -175,7 +175,14 @@ void wood::Initialize()
 
 void wood::Update()
 {
+	auto position = Wood_body->GetPosition();
 
+	if ((Wood_body->GetAngle() >= 1.0f || Wood_body->GetAngle() <= -1.0f))
+	{
+		auto position = Wood_body->GetPosition();
+
+		std::cout << position.x;
+	}
 
 }
 
