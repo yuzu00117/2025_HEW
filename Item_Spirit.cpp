@@ -32,6 +32,7 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
     body.angle = angle;
     body.fixedRotation = true;//回転を固定にする
     body.userData.pointer = (uintptr_t)this;
+    body.gravityScale = 0;
 
 
 
@@ -103,12 +104,6 @@ void	ItemSpirit::Update()
             m_size.x -= 0.005f;
             m_size.y -= 0.005f;
 
-            //もし回収中にプレイヤーに当たっている場合
-            if (m_collided_player) {
-                Function();   //ソウルの効果を発揮
-                m_state = Spirit_Destory;   //ソウルの状態が消される予定に変更
-            }
-
         }
         //状態が上昇中の場合
         if (m_state == Spirit_Rising)
@@ -144,7 +139,7 @@ void ItemSpirit::SetState(SpiritState state)
             break;
         case Spirit_Rising:
             m_body->SetGravityScale(0);
-            GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
+            //GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
             break;
         case Spirit_Collecting:
         {

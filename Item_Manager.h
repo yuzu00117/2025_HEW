@@ -17,6 +17,7 @@
 #include <vector>
 #include <memory>
 #include"Item_SpeedUp.h"
+#include"Item_coin.h"
 #include"Item_Spirit.h"
 
 //アイテムの種類
@@ -25,6 +26,7 @@ enum ItemType
 	ITEM_NONE,		//何もない
 	ITEM_SPIRIT,	//ソウル（敵が落とすアイテム）
 	ITEM_SPEED_UP,	//スピードアップ
+	ITEM_COIN,//コイン
 };
 
 
@@ -43,12 +45,15 @@ public:
 	//recovery引数はプレイヤーがアイテムを取るときのソウルの回復値
 	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha = 1.0f);
 
+	
+	void	AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 
 
 	// ID を使ってアイテムを検索
 	ItemSpeedUp* FindItem_SpeedUp_ByID(int ID);
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
 	
+	ItemCoin* FindItem_Coin_ByID(int ID);
 	// 全てのアイテムを初期化
 	void InitializeAll();
 
@@ -69,7 +74,7 @@ private:
 
 	std::vector<std::unique_ptr<ItemSpeedUp>> m_SpeedUp_List; // スピードアップアイテムのリスト
 	std::vector<std::unique_ptr<ItemSpirit>> m_Spirit_List; // ソウルアイテムのリスト
-	
+	std::vector<std::unique_ptr<ItemCoin>> m_Coin_List; // のリスト
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;

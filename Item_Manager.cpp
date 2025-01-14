@@ -1,9 +1,9 @@
-//-----------------------------------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------------------------------
 // #name Item_Manager.cpp
-// #description ƒAƒCƒeƒ€‚ÌŠÇ—(ƒtƒ@ƒNƒgƒŠ[)
-// #make 2024/12/28@‰¤‰jS
+// #description ã‚¢ã‚¤ãƒ†ãƒ ã®ç®¡ç†(ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼)
+// #make 2024/12/28ã€€ç‹æ³³å¿ƒ
 // #update 2024/12/28
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 //      
 //
 // 
@@ -12,9 +12,11 @@
 #include "Item_Manager.h"
 #include "Item_SpeedUp.h"
 #include "world_box2d.h"
+#include"Item_coin.h"
+#include"Item_Coin_UI.h"
 
 
-// ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 ItemManager& ItemManager::GetInstance() {
 	static ItemManager instance;
 	return instance;
@@ -23,15 +25,20 @@ ItemManager& ItemManager::GetInstance() {
 
 void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
 {
-	// Šù‘¶‚Ìˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+	// æ—¢å­˜ã®å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
 	m_SpeedUp_List.emplace_back(std::make_unique<ItemSpeedUp>(position, body_size, angle, shape_polygon, Alpha));
+}
+void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+{
+	
+	m_Coin_List.emplace_back(std::make_unique<ItemCoin>(position, body_size, angle, shape_polygon, Alpha));
 }
 
 void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
 {
-    // Šù‘¶‚Ìˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã®å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, Alpha));
-   //@V‚µ‚­ì‚Á‚½‚à‚Ì‚Ì‰Šú‰»ˆ—
+   //ã€€æ–°ã—ãä½œã£ãŸã‚‚ã®ã®åˆæœŸåŒ–å‡¦ç†
     auto& lastSpirit = *m_Spirit_List.back();
     lastSpirit.Initialize();
 }
@@ -44,8 +51,19 @@ ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
 			return w.get();
 		}
 	}
-	return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+	return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
+
+ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
+{
+	for (const auto& w : m_Coin_List) {
+		if (w->GetID() == ID) {
+			return w.get();
+		}
+	}
+	return nullptr; // ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½ nullptr ï¿½ï¿½Ô‚ï¿½
+}
+
 
 ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 {
@@ -58,7 +76,7 @@ ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 }
 
 
-// ‘S‚Ä‚ÌƒAƒCƒeƒ€‚ğ‰Šú‰»
+// å…¨ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’åˆæœŸåŒ–
 void ItemManager::InitializeAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Initialize();
@@ -66,9 +84,13 @@ void ItemManager::InitializeAll() {
     for (auto& w : m_Spirit_List) {
         w->Initialize();
     }
+	for (auto& w : m_Coin_List) {
+		w->Initialize();
+	}
+	Item_Coin_UI::Initialize();
 }
 
-// ‘S‚Ä‚ÌƒAƒCƒeƒ€‚ğXV
+// å…¨ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ›´æ–°
 void ItemManager::UpdateAll() {
     for (auto& w : m_SpeedUp_List) {
 		w->Update();
@@ -76,9 +98,12 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_Spirit_List) {
         w->Update();
     }
+    for (auto& w : m_Coin_List) {
+        w->Update();
+    }
 }
 
-// ‘S‚Ä‚ÌƒAƒCƒeƒ€‚ğ•`‰æ
+// å…¨ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’æç”»
 void ItemManager::DrawAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Draw();
@@ -86,18 +111,28 @@ void ItemManager::DrawAll() {
     for (auto& w : m_Spirit_List) {
         w->Draw();
     }
+	for (auto& w : m_Coin_List) {
+		w->Draw();
+	}
+	Item_Coin_UI::Draw();
 }
 
-// ‘S‚Ä‚ÌƒAƒCƒeƒ€‚ğ”jŠü
+// å…¨ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã‚’ç ´æ£„
 void ItemManager::FinalizeAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Finalize();
     }
+
+	for (auto& w : m_Coin_List) {
+		w->Finalize();
+	}
+	Item_Coin_UI::Finalize();
+
     for (auto& w : m_Spirit_List) {
         w->Finalize();
     }
-    m_SpeedUp_List.clear(); // “®“I”z—ñ‚ğƒNƒŠƒA‚µ‚Äƒƒ‚ƒŠ‰ğ•ú
-    m_Spirit_List.clear(); // “®“I”z—ñ‚ğƒNƒŠƒA‚µ‚Äƒƒ‚ƒŠ‰ğ•ú
+    m_SpeedUp_List.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
+    m_Spirit_List.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
 }
 
 void ItemManager::SetCollectSpirit(bool flag)
@@ -106,6 +141,7 @@ void ItemManager::SetCollectSpirit(bool flag)
         w->SetState(Spirit_Collecting);
     }
 
+	m_Coin_List.clear(); 
 }
 
 

@@ -176,7 +176,6 @@ void wood::Initialize()
 void wood::Update()
 {
 
-
 }
 
 void wood::Pulling_wood(b2Vec2 pulling_power)

@@ -359,7 +359,9 @@ public:
 
         //引っ張られている状態のオブジェクトとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static))
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static) ||
+            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point)||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static))
         {
             if ((objectA->collider_type == collider_enemy_static) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
@@ -377,7 +379,9 @@ public:
 
         //引っ張られている状態のオブジェクトと動的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic))
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic) ||
+            (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic))
         {
 
             if ((objectA->collider_type == collider_enemy_dynamic) &&
@@ -523,24 +527,21 @@ public:
             vec.y = spirit_position.y - object_position.y;
             
             //オブジェのfixtureの半径を取得
-            b2Vec2 object_half_size = GetFixtureHalfSize(object_fixture->GetShape());
+            b2Shape* const object_shape = object_fixture->GetShape();
+            b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
 
-            //条件別で違う処理をする（上昇するかどうか、地面に着いているかどうか）
-            //-------------------------------------------------------------------------
 
-            //ベクトルがオブジェの横幅以上の場合（つまり重なってはいないけど、すぐ隣にいるせいで当たり判定取られた場合）
-            if ( (vec.x > object_half_size.x * 2 || vec.x < -object_half_size.x * 2) )
-            {
-                return; //  何もしない
-            }
+          //条件別で違う処理をする（上昇するかどうか、地面に着いているかどうか）
+         //-------------------------------------------------------------------------
+            
             //ベクトルが縦幅より小さい時かつ、ソウルは上昇中ではない場合（つまり上昇していないソウルがオブジェの上に乗っている場合）
             //上昇中じゃないのを条件にしたのは、連続した複数のオブジェの中で上昇している時オブジェ間を入る離れる瞬間と本当に一番上のオブジェに乗る瞬間を誤認させないため
             if ((vec.y <= -object_half_size.y) && spirit_instance->GetState() != Spirit_Rising)
             {
                 spirit_instance->SetState(Spirit_OnGround); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
             }
-            //今衝突しているオブジェとさっきまで衝突していたオブジェが同じの場合
-            else if (spirit_instance->GetRecentCollidedObject() == object)
+            //今衝突しているオブジェとさっきまで衝突していたオブジェが同じの場合、或いは地面に着いていない空中にいるソウルは、そのまま停止
+            else if (spirit_instance->GetRecentCollidedObject() == object || spirit_instance->GetState() == Spirit_Falling)
             {
                 spirit_instance->SetState(Spirit_OnGround); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
             }
@@ -579,11 +580,22 @@ public:
             case ITEM_SPIRIT:
             {
                 ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                spirit_instance->SetIfCollidedPlayer(true);
+                //spirit_instance->SetIfCollidedPlayer(true);
+                spirit_instance->Function();
+                spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+
+            }
+            break;
+            case ITEM_COIN:
+            {
+                ItemCoin* coin_instance = item_manager.FindItem_Coin_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                coin_instance->Function();
+                coin_instance->SetDestory(true);//削除を呼び出す
             }
             break;
 
             }
+            
         }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
@@ -738,33 +750,11 @@ public:
             {
                 spirit_instance->SetState(Spirit_Falling);//ソウルの状態が落下中
             }
-
-        }
-
-        // プレーヤーとアイテムが離れた時
-        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
-            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body) ||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item) ||
-            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
-
-            //最初に　objectB　が item　だと仮定する
-            auto item = objectB;
-            //どちらがアイテムか特定
-            if (objectA->collider_type == collider_item)//Aがアイテム
+            else if (spirit_instance->GetState() != Spirit_Rising && spirit_instance->GetState() != Spirit_Collecting)
             {
-                item = objectA;
+                spirit_instance->SetState(Spirit_OnGround);//ソウルの状態が床の上
             }
 
-            //アイテム種類別に処理する
-            switch (item->Item_name)
-            {
-            case ITEM_SPIRIT:
-            {
-                ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                spirit_instance->SetIfCollidedPlayer(false);
-            }
-            break;
-            }
         }
 
 
