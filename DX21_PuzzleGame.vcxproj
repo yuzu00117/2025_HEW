@@ -147,6 +147,7 @@
     <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="geyser.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="geyser.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="Item_coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />

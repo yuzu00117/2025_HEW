@@ -17,7 +17,7 @@ class geyser
 {
 public:
 
-	geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, b2Vec2 GeyserOnRockSize, int set_rock_need_anchor_level);
+	geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize);
 	~geyser();
 
 
@@ -107,14 +107,14 @@ public:
 	}
 
 
-	bool Get_geyser_on_rock_flag()const
+	bool GetFlag()const
 	{
-		return geyser_on_rock_flag;
+		return water_flag;
 	}
 
-	void Set_geyser_on_rock_flag(bool flag)
+	void SetFlag(bool flag)
 	{
-		geyser_on_rock_flag = flag;
+		water_flag = flag;
 	}
 
 private:
@@ -132,7 +132,9 @@ private:
 	b2Vec2 geyser_on_rock_size;//間欠泉に乗ってる岩のサイズ
 
 
-	bool geyser_on_rock_flag;//岩の上に間欠泉が乗ってる
+	bool water_flag;//水がプレイヤーとふれている
+
+	float easing_rate;
 
 
 
