@@ -16,7 +16,7 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 	body.angle = angle;									//角度の定義
 	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
 	body.fixedRotation = true;							//回転を固定する、　これをオンにすると回転しない
-	body.gravityScale = 0;								//空中に浮遊させるため
+	body.gravityScale = 0.0f;
 
 
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
@@ -50,7 +50,8 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 //プレイヤーを感知するセンサー
 //--------------------------------------------
 	b2PolygonShape sensor_shape;                         //shapeには色々な型がある　サークルとかもあるよ
-	sensor_shape.SetAsBox(size.x * 0.5f + 3.5f, size.y * 0.5f + 3.5f);//あたり判定を登録する4点　+3.5fは幅が合計7が多くするため
+	float one_square = 1.0f / BOX2D_SCALE_MANAGEMENT;	//　1マスのサイズ
+	sensor_shape.SetAsBox( size.x * 0.5f + (one_square * 7), size.y * 0.5f + (one_square * 7) );//あたり判定を登録する4点　+((one_square * 7))fは幅が合計14マスが多くするため
 
 	b2FixtureDef sensor_fixture;
 	sensor_fixture.shape = &sensor_shape;    //シャープをフィクスチャに登録する
@@ -99,7 +100,7 @@ void EnemyFloating::Finalize()
 
 void EnemyFloating::Update()
 {
-	if (GetUse() && GetInScreen())
+	if (GetUse() && m_sensed_player)
 	{
 		Move();
 	}
@@ -107,7 +108,7 @@ void EnemyFloating::Update()
 	{
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,1.0f }, 0.0f, GetSoulgage());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -154,26 +155,15 @@ void EnemyFloating::Move()
 {
 	//プレイヤー追従(簡易)
 	//プレイヤーのポジション取得
-	b2Vec2 player_position;
-	player_position.x = PlayerPosition::GetPlayerPosition().x;
-	player_position.y = PlayerPosition::GetPlayerPosition().y;
+	b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
 
-	//移動方向
-	b2Vec2 enemy_vector;
-	enemy_vector.x = player_position.x - GetBody()->GetPosition().x;
-	enemy_vector.y = player_position.y - GetBody()->GetPosition().y;
+	//  プレイヤーへ向かうベクトル
+	b2Vec2 vec;
+	vec.x = player_position.x - GetBody()->GetPosition().x;
+	vec.y = player_position.y - GetBody()->GetPosition().y;
+	vec.Normalize();
 
-	//移動量
-	b2Vec2 enemy_move;
-	enemy_move.x = (enemy_vector.x * m_speed) / 5;
-	enemy_move.y = (enemy_vector.y * m_speed) / 5;
 
-	if (GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
-	{
-		GetBody()->ApplyLinearImpulseToCenter(b2Vec2(enemy_move.x, 0.0), true);
-	}
-	else
-	{
-		GetBody()->ApplyLinearImpulseToCenter(b2Vec2(enemy_move.x, -0.02), true);
-	}
+	GetBody()->SetLinearVelocity(b2Vec2(vec.x * m_speed, vec.y * m_speed));
+
 }

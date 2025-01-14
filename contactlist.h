@@ -474,12 +474,15 @@ public:
             if (objectA->collider_type == collider_enemy_floating_sensor)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
-                enemy_instance.SetIf
+                enemy_instance->InPlayerSensor();
+                enemy_instance->SetIfSensedPlayer(true);
             }
             else if (objectB->collider_type == collider_enemy_floating_sensor)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
                 enemy_instance->InPlayerSensor();
+                enemy_instance->SetIfSensedPlayer(true);
+
             }
         }
 
@@ -733,6 +736,23 @@ public:
                 enemy_instance->OutPlayerSensor();
             }
         }
+
+        //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor) ||
+            (objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body))
+        {
+            if (objectA->collider_type == collider_enemy_floating_sensor)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                enemy_instance->SetIfSensedPlayer(false);
+            }
+            else if (objectB->collider_type == collider_enemy_floating_sensor)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
+                enemy_instance->SetIfSensedPlayer(false);
+            }
+        }
+
 
         //  ソウルアイテムがオブジェクトや床から離れた時
         if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||

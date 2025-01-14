@@ -17,6 +17,7 @@
 #include"include/box2d/box2d.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"enemy_floating.h"
 
 
 class movable_ground

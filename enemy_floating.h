@@ -7,15 +7,16 @@
 //==========マクロ定義==========//
 #define ENEMY_FLOATING_LIFE (100)
 #define ENEMY_FLOATING_DAMAGE (MAX_STAMINA/2)
-#define ENEMY_FLOATING_SOULGAGE (100)
+#define ENEMY_FLOATING_SOULGAGE (50)
 #define ENEMY_FLOATING_SCORE (200)
 
 
 class EnemyFloating : public Enemy
 {
 private:
-	float m_speed = 0.005f;
-	bool	m_sensed_player;	//プレイヤーを感知したかどうか
+	b2Body*	m_body = nullptr;
+	float m_speed = 1.0f;
+	bool	m_sensed_player = false;	//プレイヤーを感知したかどうか
 public:
 	EnemyFloating() = default;
 	EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle);

@@ -260,6 +260,10 @@ void ObjectManager::InitializeAll() {
     for (auto& w : enemy_dynamicList) {
         w->Initialize();
     }
+
+    for (auto& w : enemy_floatingList) {
+        w->Initialize();
+    }
 }
 
 // 全ての木を更新
@@ -303,6 +307,13 @@ void ObjectManager::UpdateAll() {
             w->Update();
         }
     }
+
+    for (auto& w : enemy_floatingList) {
+        if (w)
+        {
+            w->Update();
+        }
+    }
 }
 
 // 全ての木を描画
@@ -338,6 +349,10 @@ void ObjectManager::DrawAll() {
     for (auto& w : enemy_dynamicList) {
         w->Draw();
     }
+
+    for (auto& w : enemy_floatingList) {
+        w->Draw();
+    }
 }
 
 // 全ての木を破棄
@@ -368,6 +383,14 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : enemy_dynamicList) {
+        w->Finalize();
+    }
+
+    for (auto& w : enemy_floatingList) {
+        w->Finalize();
+    }
+
 
     woodList.clear(); // 動的配列をクリアしてメモリ解放
     rockList.clear();
@@ -377,6 +400,7 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
+    enemy_floatingList.clear();
 
 }
 
