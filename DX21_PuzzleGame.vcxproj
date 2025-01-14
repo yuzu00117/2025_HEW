@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>cri\common\include;cri\criinclude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>cri\common\include;cri\criinclude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,6 +189,10 @@
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />
+    <ClInclude Include="cri\common\include\CriSmpFramework.h" />
+    <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
+    <ClInclude Include="cri\common\include\CriSmpTimer.h" />
+    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
