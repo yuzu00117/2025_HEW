@@ -197,3 +197,12 @@ Game::Game()
 Game::~Game()
 {
 }
+
+void Game::Teleport_player(b2Vec2 position)
+{
+	b2Vec2 size_sensor=player.GetSensorSize();
+
+	player.Finalize();
+	player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
+
+}

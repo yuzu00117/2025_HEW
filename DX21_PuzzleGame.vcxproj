@@ -148,6 +148,8 @@
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ground.cpp" />
+    <ClCompile Include="Item_Coin.cpp" />
+    <ClCompile Include="Item_Coin_UI.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -170,6 +172,7 @@
     <ClCompile Include="stage_select.cpp" />
     <ClCompile Include="stage_select_player.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
+    <ClCompile Include="teleport_block.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
@@ -201,6 +204,8 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
+    <ClInclude Include="Item_Coin.h" />
+    <ClInclude Include="Item_Coin_UI.h" />
     <ClInclude Include="Item_Manager.h" />
     <ClInclude Include="Item_SpeedUp.h" />
     <ClInclude Include="keyboard.h" />
@@ -224,6 +229,7 @@
     <ClInclude Include="stage_select_contact_list.h" />
     <ClInclude Include="stage_select_player.h" />
     <ClInclude Include="static_to_dynamic_block.h" />
+    <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
     <ClInclude Include="wood.h" />
