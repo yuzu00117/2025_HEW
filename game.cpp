@@ -60,6 +60,8 @@ void Game::Initialize()
 	//背景の初期化
 	Bg::Initialize();
 
+	CRIInitialize();
+
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	// 衝突リスナーをワールドに登録
 	MyContactListener& contactListener = MyContactListener::GetInstance();
@@ -95,7 +97,7 @@ void Game::Finalize(void)
 	//背景の終了処理
 	Bg::Finalize();
 
-
+	CRIFinalize();
 
 	//文字（絵）
 	FinalizeWord();
@@ -139,6 +141,7 @@ void Game::Update(void)
 
 	Bg::Update();
 
+	CRIUpdate();
 
 	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 	if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
