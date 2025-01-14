@@ -29,7 +29,8 @@ enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���
     collider_ground,
 
     collider_object,
-    collider_object_destroyer_of_enemy,  //�I�u�W�F�N�g�ɕt���Ă���G�������Z���T�[
+    collider_object_destroyer_of_enemy, 
+    collider_teleport_block,
 
     collider_item,
 

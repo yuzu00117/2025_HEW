@@ -48,13 +48,39 @@ public:
 		m_body = body;
 	}
 
+
+	bool GetTeleportFlag(void)
+	{
+		return teleport_flag;
+	}
+
+	void SetTeleportFlag(bool flag)
+	{
+		teleport_flag = flag;
+	}
+
+
+	void SetTeleportPoint(b2Vec2 Position)
+	{
+		teleport_point = Position;
+	}
+
+	b2Vec2 GetTeleportPoint(void)
+	{
+		return teleport_point;
+	}
+
 private:
 
 	b2Body* m_body;
 
 	b2Vec2 m_size;
 
+	b2Vec2 teleport_point;
+
 	int id;
+
+	bool teleport_flag=false;
 
 };
 

@@ -149,6 +149,14 @@ void Field::Initialize()
 				objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3, 2);
 			}
 
+			if (field_map[y][x] == 15) {//間欠泉にいくようのテレポートブロック
+				objectManager.AddTeleportBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f,1.f), b2Vec2(25.f,-5.f));
+			}
+
+			if (field_map[y][x] == 16) {//間欠泉にいくようのテレポートブロック
+				objectManager.AddTeleportBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(25.f, 1.f), b2Vec2(25.f, 4.f));
+			}
+
 		}
 	}
 

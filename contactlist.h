@@ -84,6 +84,28 @@ public:
 
         }
 
+        // プレーヤーとテレポートブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_teleport_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_teleport_block) ||
+            (objectA->collider_type == collider_teleport_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_teleport_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理（プレーヤーと地面が接触した時）
+
+                     //どちらが木のオブジェクトか特定
+            if (objectA->collider_type== collider_teleport_block)//Aが木のオブジェクト
+            {
+                teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectA->id);
+                teleport_block_instance->SetTeleportFlag(true);
+            }
+            else
+            {
+                teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectB->id);
+                teleport_block_instance->SetTeleportFlag(true);
+            }
+
+        }
+
 
 
         //プレイヤーとアンカーが触れた

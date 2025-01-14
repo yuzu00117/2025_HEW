@@ -6,6 +6,7 @@
 #include"player_position.h"
 #include"create_filter.h"
 #include"collider_type.h"
+#include"game.h"
 
 
 static ID3D11ShaderResourceView* g_Teleport_Block_Texture = NULL;//地面のテクスチャ
@@ -61,7 +62,7 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 	b2Fixture* object_teleport_fixture = m_body->CreateFixture(&teleport_block_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_teleport_data = new ObjectData{ collider_object };//一旦壁判定
+	ObjectData* object_teleport_data = new ObjectData{ collider_teleport_block };//一旦壁判定
 	object_teleport_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_teleport_data);
 
 
@@ -70,18 +71,18 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 
 	int ID = object_teleport_data->GenerateID();
 	object_teleport_data->id = ID;
+	object_teleport_data->object_name = Object_teleport_block;
 	SetID(ID);
 	
 
-	//add_force	の所にテレポート先を入れる
+	//テレポートブロックの所にテレポート先を入れる
+	SetTeleportPoint(to_position);
 
 
-
-	object_teleport_data->add_force = to_position;
 
 };
 
-rock::~rock()
+teleport_block::~teleport_block()
 {
 }
 
@@ -96,7 +97,14 @@ void teleport_block::Initialize()
 
 void teleport_block::Update()
 {
+	if (GetTeleportFlag () == true)
+	{
+		Game instance=Game::GetInstance();
 
+		instance.Teleport_player(GetTeleportPoint());
+
+		SetTeleportFlag(false);
+	}
 
 }
 
