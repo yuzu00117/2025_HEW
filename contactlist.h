@@ -487,6 +487,16 @@ public:
             break;
 
             }
+
+            case ITEM_COIN:
+            {
+                ItemCoin* coin_instance = item_manager.FindItem_Coin_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                coin_instance->Function();
+                coin_instance->SetDestory(true);//削除を呼び出す
+                break;
+            }
+
+            }
         }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
