@@ -246,6 +246,8 @@ void ItemSpirit::Finalize()
     {
         UnInitTexture(g_Texture);
     }
+
+    m_CollidedObject.clear();
 }
 
 ItemSpirit::~ItemSpirit()
