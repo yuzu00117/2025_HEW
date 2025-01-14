@@ -13,14 +13,15 @@
 #define	ITEM_SPIRIT_H
 
 #include"include/box2d/box2d.h"
+#include<string>
+#include<list>
 
 enum SpiritState
 {
-	Spirit_OnGround,
-	Spirit_Falling,
-	Spirit_Rising,
-	Spirit_Collecting,
-	Spirit_Destory,
+	Spirit_Idle,	//地面に着いている
+	Spirit_Rising,		//上昇している
+	Spirit_Collecting,	//プレイヤーに回収されいている途中
+	Spirit_Destory,		//これから消される予定
 };
 
 class ItemSpirit
@@ -53,10 +54,19 @@ public:
 	//今の状態をセット
 	void	SetState(SpiritState state);
 
+
+	//当たっているオブジェクトを追加
+	void	AddCollidedObject(const b2Body* object) { m_CollidedObject.push_back(object); }
 	//直近まで当たっているオブジェクトが誰かを取得
-	const b2Body*	GetRecentCollidedObject() { return m_recent_collided_object; }
-	//直近まで当たっているオブジェクトをセット
-	void	SetRecentCollidedObject(b2Body* object) { m_recent_collided_object = object; }
+	const b2Body* FindLeastCollidedObject() {
+		return *(--(m_CollidedObject.end()));
+	}
+	//さっきまで当たっていたオブジェクトを消す
+	void	DeleteCollidedObject(const b2Body* object) {
+		auto target = std::find(m_CollidedObject.begin(), m_CollidedObject.end(), object);
+		m_CollidedObject.erase(target);
+	}
+
 
 	//アイテムがゲットされた時の処理
 	void	Function();
@@ -84,10 +94,10 @@ private:
 	float m_recovery;
 
 	//今の状態
-	SpiritState m_state = Spirit_Falling;
+	SpiritState m_state = Spirit_Idle;
 
-	//直近まで重なっているオブジェクト（あるいは地面）
-	const b2Body* m_recent_collided_object = nullptr;
+	//ソウルが今当たっているオブジェクト（或いは地面）
+	std::list<const b2Body*>m_CollidedObject;
 
 };
 

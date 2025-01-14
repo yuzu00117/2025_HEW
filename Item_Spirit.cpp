@@ -109,7 +109,7 @@ void	ItemSpirit::Update()
         if (m_state == Spirit_Rising)
         {
             //上に上昇
-            GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
+            GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.03f), true);
         }
         //消される予定ならボディーを消す
         if (m_state == Spirit_Destory)
@@ -131,11 +131,8 @@ void ItemSpirit::SetState(SpiritState state)
         m_state = state;
         switch (m_state)
         {
-        case Spirit_OnGround:
+        case Spirit_Idle:
             m_body->SetGravityScale(0);
-            break;
-        case Spirit_Falling:
-            m_body->SetGravityScale(1);
             break;
         case Spirit_Rising:
             m_body->SetGravityScale(0);
@@ -182,6 +179,7 @@ void    ItemSpirit::Function()
 {
     PlayerStamina::EditPlayerStaminaValue(m_recovery);
 }
+
 
 
 void ItemSpirit::Initialize()
