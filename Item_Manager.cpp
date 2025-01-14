@@ -98,11 +98,9 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_Spirit_List) {
         w->Update();
     }
-}
-	for (auto& w : m_Coin_List) {
-		w->Update();
-	}
-
+    for (auto& w : m_Coin_List) {
+        w->Update();
+    }
 }
 
 // 全てのアイテムを描画
