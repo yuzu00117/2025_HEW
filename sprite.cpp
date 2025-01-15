@@ -173,7 +173,7 @@ void DrawSpriteOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alph
 	//マテリアル設定（半年後に現れる）
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.2f, 1.2f, 1.2f, 0.8);
+	material.Diffuse = XMFLOAT4(1.2f, 1.2f, 1.2f, 1.0);
 	SetMaterial(material);
 
 	g_Vertex[0].texcoord = XMFLOAT2(0.f, 0.f);

@@ -65,6 +65,12 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
 
+//ボスの部屋のゆか
+void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level)
+{
+    boss_filed_block_List.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp,level));
+}
+
 
 
 // ID を使って木を検索
@@ -147,6 +153,17 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+
+boss_field_block* ObjectManager::FindBossFieldBlock(int id)
+{
+    for (auto& w : boss_filed_block_List) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
 {
@@ -231,6 +248,10 @@ void ObjectManager::InitializeAll() {
     for (auto& w : enemy_dynamicList) {
         w->Initialize();
     }
+
+    for (auto& w : boss_filed_block_List) {
+        w->Initialize();
+    }
 }
 
 // 全ての木を更新
@@ -274,6 +295,10 @@ void ObjectManager::UpdateAll() {
             w->Update();
         }
     }
+
+    for (auto& w : boss_filed_block_List) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -309,6 +334,10 @@ void ObjectManager::DrawAll() {
     for (auto& w : enemy_dynamicList) {
         w->Draw();
     }
+
+    for (auto& w : boss_filed_block_List) {
+        w->Draw();
+    }
 }
 
 // 全ての木を破棄
@@ -340,6 +369,10 @@ void ObjectManager::FinalizeAll() {
     }
 
 
+    for (auto& w : boss_filed_block_List) {
+        w->Finalize();
+    }
+
     woodList.clear(); // 動的配列をクリアしてメモリ解放
     rockList.clear();
     one_way_platformList.clear();
@@ -348,6 +381,7 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
+    boss_filed_block_List.clear();
 
 }
 

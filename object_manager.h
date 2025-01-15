@@ -21,6 +21,7 @@
 #include"movable_ground.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"1-1_boss_field_block.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -30,6 +31,7 @@ enum ObjectType {
     Object_one_way_platform,//足場　したからしか乗れない
     Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
     Object_Movable_Ground,  //引っ張れる床 
+
     
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
@@ -61,6 +63,8 @@ public:
     //動的エネミー生成
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
 
+    void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -77,6 +81,8 @@ public:
     EnemyStatic* FindEnemyStaticByID(int id);
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
+
+    boss_field_block* FindBossFieldBlock(int id);
     
     //IDとオブジェクトタイプでオブジェクトを検索
     Object* FindObjectByID_ObjectType(int id, ObjectType type);
@@ -108,6 +114,8 @@ private:
     std::vector<std::unique_ptr<movable_ground>> movable_groundList;//木のリスト
     std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
     std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//静的エネミーのリスト
+
+    std::vector<std::unique_ptr<boss_field_block>> boss_filed_block_List;//静的エネミーのリスト
 
     //ここにオブジェクトごとにリストを追加していく感じ
 
