@@ -95,7 +95,14 @@ void Game::Finalize(void)
 	//背景の終了処理
 	Bg::Finalize();
 
+
+
+
+
+
 	CRIFinalize();
+
+
 
 	//文字（絵）
 	FinalizeWord();
@@ -137,9 +144,18 @@ void Game::Update(void)
 	//フィールドの更新処理
 	Field::Update();
 
+
 	Bg::Update();
 
 	CRIUpdate();
+
+
+
+	Bg::Update();
+
+	CRIUpdate();
+
+
 
 	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 	if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
@@ -168,14 +184,16 @@ void Game::Draw(void)
 	//2D描画なので深度無効
 	SetDepthEnable(false);
 
+
+	//アンカーの描画処理
+	Anchor::Draw();
 	//プレイヤーの描画処理
 	player.Draw();
 
 	//フィールドの描画処理
 	Field::Draw();
 
-	//アンカーの描画処理
-	Anchor::Draw();
+
 
 	//�c�@�̕`�揈��
 	PlayerLife::Draw();

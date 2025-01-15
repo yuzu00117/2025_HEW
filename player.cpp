@@ -14,8 +14,20 @@
 #include"scene.h"
 #include"create_filter.h"
 
+
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
+
+//ジャンプのシート
+ID3D11ShaderResourceView* g_player_jump_sheet = NULL;
+//錨を投げるシート
+ID3D11ShaderResourceView* g_player_throw_anchor_sheet = NULL;
+//横移動のシート
+ID3D11ShaderResourceView* g_player_walk_sheet = NULL;
+//通常攻撃
+ID3D11ShaderResourceView* g_player_normal_attack_sheet = NULL;
+//被弾モーション
+ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 
 
 //センサーの画像
@@ -56,6 +68,12 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     //テクスチャのロード
     g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
+
+    g_player_jump_sheet= InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
+
+    g_player_damaged_sheet= InitTexture(L"asset\\texture\\player_texture\\player_damaged_sheet.png");
+
+    g_player_throw_anchor_sheet= InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
 
     g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
 
@@ -184,6 +202,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     //---------------------------------------------------------------------------------------------------
 
+
+    draw_state = player_nomal_state;
 }
 
 void Player::Update()
@@ -262,9 +282,13 @@ void Player::Update()
         if (vel.y < max_velocity.y)
         {
             m_body->ApplyLinearImpulse(m_jump_force, { 0.0f,1.0f }, true);
+
+          
         }
         // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
         m_is_jumping = true;
+
+        
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 
@@ -329,6 +353,8 @@ void Player::Update()
         break;
     case Throwing_state://錨が飛んでいる状態
         Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
+
+        draw_state = player_throw_anchor_state;
 
 
         //ここはコンタクトリストないの接触判定から接触状態へと移行
@@ -437,6 +463,11 @@ void Player::Update()
     {
         stick_y = -1.0f;
     }
+
+    if (Keyboard_IsKeyDown(KK_M))
+    {
+        draw_state = player_dameged_state;
+    }
    
 
 
@@ -485,8 +516,7 @@ void Player::Draw()
         screen_center.x = SCREEN_CENTER_X;
         screen_center.y = SCREEN_CENTER_Y;
 
-        // シェーダリソースを設定
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_Texture);
+        
 
         // コライダーの位置の取得（プレイヤーの位置）
         b2Vec2 player_position;
@@ -494,15 +524,145 @@ void Player::Draw()
         player_position.y = m_body->GetPosition().y;
 
 
+        //描画との大きさのずれがあるから
+        float player_scale_x = 3.0f;
+        float player_scale_y = 1.5f;
+
+
         //プレイヤーは画面中央に固定、まあ補正値はいれるんやけど
         //ほかのplayer以外の物体はプレイヤー分Positionを引いて
-       // 描画位置を調整して、プレイヤーがスクリーン中央に表示されるようにする
-        DrawSprite(
-            { screen_center.x,
-              screen_center.y },
-            m_body->GetAngle(),
-            { GetSize().x * scale,GetSize().y * scale }
-        );
+       // 描画位置を調整して、プレイヤーがスクリーン中央に
+
+       //あたり判定の描画
+        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_Texture);
+        //DrawSprite({ screen_center.x,
+        //      screen_center.y },
+        //    m_body->GetAngle(),
+        //    { GetSize().x * scale,GetSize().y * scale } );
+
+        //ジャンプのテクスチャを呼ぶ関数
+        if (m_is_jumping&&draw_state!=player_jumping_state)
+        {
+            draw_state = player_jumping_state;
+            draw_cnt = 0;
+        }
+
+        switch (draw_state)
+        {
+        case null:
+            break;
+        case player_nomal_state:
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_jump_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 5, 1, 3.0, m_direction
+
+            );
+
+           
+            break;
+        case player_jumping_state:
+
+            draw_cnt++;
+
+            if (30 < draw_cnt)
+            {
+                if (m_is_jumping)
+                {
+                    draw_cnt = 30;
+                }
+                
+            }
+
+            if (50 < draw_cnt)
+            {
+                draw_cnt = 0;
+                draw_state = player_nomal_state;
+            }
+
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_jump_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 5, draw_cnt/2, 3.0, m_direction
+
+            );
+
+           
+
+
+            break;
+        case player_throw_anchor_state:
+
+
+            draw_cnt++;
+
+            if (64<draw_cnt)
+            {
+                draw_cnt = 0;
+                draw_state = player_nomal_state;
+            }
+            if (Anchor::GetAnchorState() != Nonexistent_state)
+            {
+                if (40<draw_cnt)
+                {
+                    draw_cnt = 40;
+                }
+            }
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_throw_anchor_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                4, 4, draw_cnt / 4, 3.0, m_direction
+
+            );
+
+            break;
+        case player_dameged_state:
+            draw_cnt++;
+            if (24 < draw_cnt)
+            {
+                draw_cnt = 0;
+                draw_state = player_nomal_state;
+            }
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_damaged_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                2, 3, draw_cnt / 4, 3.0, m_direction
+
+            );
+
+            break;
+        case player_walk_state:
+            break;
+        default:
+            break;
+        }
+
+
+      
 
         //----------------------------------------------------------------------------------------
         //センサー描画
