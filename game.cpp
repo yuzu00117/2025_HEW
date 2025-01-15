@@ -60,8 +60,6 @@ void Game::Initialize()
 	//背景の初期化
 	Bg::Initialize();
 
-	CRIInitialize();
-
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	// 衝突リスナーをワールドに登録
 	MyContactListener& contactListener = MyContactListener::GetInstance();
