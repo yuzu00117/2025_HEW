@@ -281,12 +281,14 @@ void ObjectManager::InitializeAll() {
     for (auto& w : enemy_floatingList) {
         w->Initialize();
     }
-}
 
     for (auto& w : teleport_blockList) {
         w->Initialize();
     }
+
 }
+
+
 
 // ‘S‚Ä‚Ì–Ø‚ðXV
 void ObjectManager::UpdateAll() {
@@ -336,7 +338,6 @@ void ObjectManager::UpdateAll() {
             w->Update();
         }
     }
-}
 
     for (auto& w : teleport_blockList) {
         w->Update();
@@ -380,8 +381,6 @@ void ObjectManager::DrawAll() {
     for (auto& w : enemy_floatingList) {
         w->Draw();
     }
-}
-
 
     for (auto& w : teleport_blockList) {
         w->Draw();
