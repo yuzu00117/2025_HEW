@@ -65,10 +65,17 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
 
+<<<<<<< HEAD
 //ボスの部屋のゆか
 void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level)
 {
     boss_filed_block_List.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp,level));
+=======
+//テレポートブロックの生成
+void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
+{
+    teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
+>>>>>>> main
 }
 
 
@@ -154,9 +161,16 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+<<<<<<< HEAD
 boss_field_block* ObjectManager::FindBossFieldBlock(int id)
 {
     for (auto& w : boss_filed_block_List) {
+=======
+//IDを使って使ってテレポートブロックを検索
+teleport_block* ObjectManager::FindTeleportBlock(int id)
+{
+    for (auto& w : teleport_blockList) {
+>>>>>>> main
         if (w->GetID() == id) {
             return w.get();
         }
@@ -164,7 +178,10 @@ boss_field_block* ObjectManager::FindBossFieldBlock(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
 {
     switch (type)
@@ -249,7 +266,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+<<<<<<< HEAD
     for (auto& w : boss_filed_block_List) {
+=======
+    for (auto& w : teleport_blockList) {
+>>>>>>> main
         w->Initialize();
     }
 }
@@ -296,7 +317,11 @@ void ObjectManager::UpdateAll() {
         }
     }
 
+<<<<<<< HEAD
     for (auto& w : boss_filed_block_List) {
+=======
+    for (auto& w : teleport_blockList) {
+>>>>>>> main
         w->Update();
     }
 }
@@ -335,7 +360,12 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+<<<<<<< HEAD
     for (auto& w : boss_filed_block_List) {
+=======
+
+    for (auto& w : teleport_blockList) {
+>>>>>>> main
         w->Draw();
     }
 }
@@ -368,6 +398,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : teleport_blockList) {
+        w->Finalize();
+    }
+
 
     for (auto& w : boss_filed_block_List) {
         w->Finalize();
@@ -381,7 +415,11 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
+<<<<<<< HEAD
     boss_filed_block_List.clear();
+=======
+    teleport_blockList.clear();
+>>>>>>> main
 
 }
 

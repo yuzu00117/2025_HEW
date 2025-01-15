@@ -40,6 +40,8 @@ public:
 	void Draw();
 	void Finalize();
 
+	void Teleport_player(b2Vec2 position);
+
 private:
 	
 	Player player;
