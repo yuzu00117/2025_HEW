@@ -65,6 +65,10 @@ public:
 	void	DeleteCollidedObject(const b2Body* object) {
 		auto target = std::find(m_CollidedObject.begin(), m_CollidedObject.end(), object);
 		m_CollidedObject.erase(target);
+		if (m_CollidedObject.size() == 0)
+		{
+			m_state = Spirit_Idle;
+		}
 	}
 
 

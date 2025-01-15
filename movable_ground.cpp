@@ -68,8 +68,8 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	b2Vec2 vertices[4];
 	vertices[0].Set(-ground_size.x * 0.5f, -ground_size.y * 0.45f );
 	vertices[1].Set( 0.0f , -ground_size.y * 0.45f);
-	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.4f);
-	vertices[3].Set(0.0f , ground_size.y*0.4f );
+	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.45f);
+	vertices[3].Set(0.0f , ground_size.y*0.45f );
 	sensor_shape.Set(vertices, 4);	//センサーのローカル位置を変更
 
 	b2FixtureDef sensor_fixture;

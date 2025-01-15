@@ -639,15 +639,7 @@ public:
 
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
           
-            //もし最近まで当たっているオブジェが今離れているオブジェと同じなら、上に乗る
-            if (spirit_instance->FindLeastCollidedObject() == object->GetBody())
-            {
-                spirit_instance->SetState(Spirit_Idle);//ソウルの状態が床の上
-            }
-            else
-            {
-                spirit_instance->DeleteCollidedObject(object->GetBody());
-            }
+            spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
 
