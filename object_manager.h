@@ -21,6 +21,7 @@
 #include"movable_ground.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"teleport_block.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -33,6 +34,8 @@ enum ObjectType {
     
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
+
+    Object_teleport_block,//テレポートブロック
 };
 
 class Object{};
@@ -61,6 +64,8 @@ public:
     //動的エネミー生成
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
 
+    void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -77,6 +82,8 @@ public:
     EnemyStatic* FindEnemyStaticByID(int id);
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
+
+    teleport_block* FindTeleportBlock(int id);
     
     //IDとオブジェクトタイプでオブジェクトを検索
     Object* FindObjectByID_ObjectType(int id, ObjectType type);
@@ -108,7 +115,7 @@ private:
     std::vector<std::unique_ptr<movable_ground>> movable_groundList;//木のリスト
     std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
     std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//静的エネミーのリスト
-
+    std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
     //ここにオブジェクトごとにリストを追加していく感じ
 
 

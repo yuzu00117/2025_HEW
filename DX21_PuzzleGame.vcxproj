@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>cri\common\include;cri\criinclude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>cri\common\include;cri\criinclude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,7 +149,7 @@
     <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ground.cpp" />
-    <ClCompile Include="Item_coin.cpp" />
+    <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
@@ -174,6 +174,7 @@
     <ClCompile Include="stage_select.cpp" />
     <ClCompile Include="stage_select_player.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
+    <ClCompile Include="teleport_block.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
@@ -190,6 +191,10 @@
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />
+    <ClInclude Include="cri\common\include\CriSmpFramework.h" />
+    <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
+    <ClInclude Include="cri\common\include\CriSmpTimer.h" />
+    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
@@ -202,7 +207,7 @@
     <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
-    <ClInclude Include="Item_coin.h" />
+    <ClInclude Include="Item_Coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />
     <ClInclude Include="Item_Manager.h" />
     <ClInclude Include="Item_SpeedUp.h" />
@@ -228,6 +233,7 @@
     <ClInclude Include="stage_select_contact_list.h" />
     <ClInclude Include="stage_select_player.h" />
     <ClInclude Include="static_to_dynamic_block.h" />
+    <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
     <ClInclude Include="wood.h" />
