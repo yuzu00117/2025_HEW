@@ -21,11 +21,8 @@
 #include"movable_ground.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
-<<<<<<< HEAD
-#include"1-1_boss_field_block.h"
-=======
 #include"teleport_block.h"
->>>>>>> main
+#include"1-1_boss_field_block.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -69,11 +66,9 @@ public:
     //動的エネミー生成
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
 
-<<<<<<< HEAD
-    void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
-=======
     void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
->>>>>>> main
+
+    void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -92,11 +87,9 @@ public:
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
 
-<<<<<<< HEAD
-    boss_field_block* FindBossFieldBlock(int id);
-=======
     teleport_block* FindTeleportBlock(int id);
->>>>>>> main
+
+    boss_field_block* FindBossFieldBlock(int id);
     
     //IDとオブジェクトタイプでオブジェクトを検索
     Object* FindObjectByID_ObjectType(int id, ObjectType type);
@@ -128,13 +121,9 @@ private:
     std::vector<std::unique_ptr<movable_ground>> movable_groundList;//木のリスト
     std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
     std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//静的エネミーのリスト
-<<<<<<< HEAD
+    std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
 
     std::vector<std::unique_ptr<boss_field_block>> boss_filed_block_List;//静的エネミーのリスト
-
-=======
-    std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
->>>>>>> main
     //ここにオブジェクトごとにリストを追加していく感じ
 
 
