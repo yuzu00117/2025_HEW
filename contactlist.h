@@ -85,6 +85,28 @@ public:
 
         }
 
+        // プレーヤーとテレポートブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_teleport_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_teleport_block) ||
+            (objectA->collider_type == collider_teleport_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_teleport_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理（プレーヤーと地面が接触した時）
+
+                     //どちらが木のオブジェクトか特定
+            if (objectA->collider_type== collider_teleport_block)//Aが木のオブジェクト
+            {
+                teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectA->id);
+                teleport_block_instance->SetTeleportFlag(true);
+            }
+            else
+            {
+                teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectB->id);
+                teleport_block_instance->SetTeleportFlag(true);
+            }
+
+        }
+
 
 
         //プレイヤーとアンカーが触れた
@@ -534,26 +556,21 @@ public:
             b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
 
 
-          //条件別で違う処理をする（上昇するかどうか、地面に着いているかどうか）
+          //条件別で違う処理をする（上昇するかどうか、地面に着いているかどうか）d
          //-------------------------------------------------------------------------
             
             //ベクトルが縦幅より小さい時かつ、ソウルは上昇中ではない場合（つまり上昇していないソウルがオブジェの上に乗っている場合）
             //上昇中じゃないのを条件にしたのは、連続した複数のオブジェの中で上昇している時オブジェ間を入る離れる瞬間と本当に一番上のオブジェに乗る瞬間を誤認させないため
             if ((vec.y <= -object_half_size.y) && spirit_instance->GetState() != Spirit_Rising)
             {
-                spirit_instance->SetState(Spirit_OnGround); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
-            }
-            //今衝突しているオブジェとさっきまで衝突していたオブジェが同じの場合、或いは地面に着いていない空中にいるソウルは、そのまま停止
-            else if (spirit_instance->GetRecentCollidedObject() == object || spirit_instance->GetState() == Spirit_Falling)
-            {
-                spirit_instance->SetState(Spirit_OnGround); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
+                spirit_instance->SetState(Spirit_Idle); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
             }
             else
             {
-                spirit_instance->SetRecentCollidedObject(object);   //今当たっているオブジェを更新
                 spirit_instance->SetState(Spirit_Rising);   //ソウルの状態が上昇中
             }
 
+            spirit_instance->AddCollidedObject(object); //今当たっているオブジェをlistに追加
         }
 
         // プレーヤーとアイテムが衝突したかを判定
@@ -765,16 +782,7 @@ public:
 
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
           
-            //ソウルが上昇中でかつ、ソウルの直近まで当たっているオブジェクトが今のオブジェクトの場合はまだ上昇終わった
-            if (spirit_instance->GetState() == Spirit_Rising && spirit_instance->GetRecentCollidedObject() == object->GetBody())
-            {
-                spirit_instance->SetState(Spirit_Falling);//ソウルの状態が落下中
-            }
-            else if (spirit_instance->GetState() != Spirit_Rising && spirit_instance->GetState() != Spirit_Collecting)
-            {
-                spirit_instance->SetState(Spirit_OnGround);//ソウルの状態が床の上
-            }
-
+            spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
 

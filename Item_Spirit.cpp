@@ -40,7 +40,7 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
     b2World* world = box2d_world.GetBox2dWorldPointer();
 
     m_body = world->CreateBody(&body);
-    m_body->SetLinearDamping(20.0f); //落下速度を制限する（値が大きいほどゆっくり）
+    m_body->SetLinearDamping(100.0f); //落下速度を制限する（値が大きいほどゆっくり）
 
     SetSize(body_size);//プレイヤー表示をするためにセットする
 
@@ -111,6 +111,14 @@ void	ItemSpirit::Update()
             //上に上昇
             GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
         }
+        if (m_state == Spirit_Falling)
+        {
+            //もし落下の終点に着いたら
+            if (m_body->GetPosition().y >= m_Falling_to_position.y)
+            {
+                SetState(Spirit_Idle);
+            }
+        }
         //消される予定ならボディーを消す
         if (m_state == Spirit_Destory)
         {
@@ -131,15 +139,15 @@ void ItemSpirit::SetState(SpiritState state)
         m_state = state;
         switch (m_state)
         {
-        case Spirit_OnGround:
+        case Spirit_Idle:
             m_body->SetGravityScale(0);
-            break;
-        case Spirit_Falling:
-            m_body->SetGravityScale(1);
             break;
         case Spirit_Rising:
             m_body->SetGravityScale(0);
             //GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
+            break;
+        case Spirit_Falling:
+            m_body->SetGravityScale(1);
             break;
         case Spirit_Collecting:
         {
@@ -182,6 +190,7 @@ void    ItemSpirit::Function()
 {
     PlayerStamina::EditPlayerStaminaValue(m_recovery);
 }
+
 
 
 void ItemSpirit::Initialize()
@@ -248,6 +257,8 @@ void ItemSpirit::Finalize()
     {
         UnInitTexture(g_Texture);
     }
+
+    m_CollidedObject.clear();
 }
 
 ItemSpirit::~ItemSpirit()

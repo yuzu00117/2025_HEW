@@ -70,6 +70,12 @@ void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float an
 {
     enemy_floatingList.emplace_back(std::make_unique<EnemyFloating>(position, body_size, angle));
 }
+//テレポートブロックの生成
+void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
+{
+    teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
+}
+
 
 
 
@@ -158,6 +164,17 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
 EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
 {
     for (auto& w : enemy_floatingList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+//IDを使って使ってテレポートブロックを検索
+teleport_block* ObjectManager::FindTeleportBlock(int id)
+{
+    for (auto& w : teleport_blockList) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -266,6 +283,11 @@ void ObjectManager::InitializeAll() {
     }
 }
 
+    for (auto& w : teleport_blockList) {
+        w->Initialize();
+    }
+}
+
 // 全ての木を更新
 void ObjectManager::UpdateAll() {
     for (auto& w : woodList) {
@@ -316,6 +338,11 @@ void ObjectManager::UpdateAll() {
     }
 }
 
+    for (auto& w : teleport_blockList) {
+        w->Update();
+    }
+}
+
 // 全ての木を描画
 void ObjectManager::DrawAll() {
     for (auto& w : woodList) {
@@ -355,6 +382,12 @@ void ObjectManager::DrawAll() {
     }
 }
 
+
+    for (auto& w : teleport_blockList) {
+        w->Draw();
+    }
+}
+
 // 全ての木を破棄
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
@@ -386,6 +419,10 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : enemy_dynamicList) {
         w->Finalize();
     }
+    for (auto& w : teleport_blockList) {
+        w->Finalize();
+    }
+
 
     for (auto& w : enemy_floatingList) {
         w->Finalize();
@@ -401,6 +438,7 @@ void ObjectManager::FinalizeAll() {
     enemy_staticList.clear();
     enemy_dynamicList.clear();
     enemy_floatingList.clear();
+    teleport_blockList.clear();
 
 }
 
