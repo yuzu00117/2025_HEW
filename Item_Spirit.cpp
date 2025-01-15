@@ -40,7 +40,7 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
     b2World* world = box2d_world.GetBox2dWorldPointer();
 
     m_body = world->CreateBody(&body);
-    m_body->SetLinearDamping(20.0f); //落下速度を制限する（値が大きいほどゆっくり）
+    m_body->SetLinearDamping(100.0f); //落下速度を制限する（値が大きいほどゆっくり）
 
     SetSize(body_size);//プレイヤー表示をするためにセットする
 
@@ -109,7 +109,15 @@ void	ItemSpirit::Update()
         if (m_state == Spirit_Rising)
         {
             //上に上昇
-            GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.03f), true);
+            GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
+        }
+        if (m_state == Spirit_Falling)
+        {
+            //もし落下の終点に着いたら
+            if (m_body->GetPosition().y >= m_Falling_to_position.y)
+            {
+                SetState(Spirit_Idle);
+            }
         }
         //消される予定ならボディーを消す
         if (m_state == Spirit_Destory)
@@ -137,6 +145,9 @@ void ItemSpirit::SetState(SpiritState state)
         case Spirit_Rising:
             m_body->SetGravityScale(0);
             //GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
+            break;
+        case Spirit_Falling:
+            m_body->SetGravityScale(1);
             break;
         case Spirit_Collecting:
         {

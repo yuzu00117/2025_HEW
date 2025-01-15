@@ -19,7 +19,8 @@
 enum SpiritState
 {
 	Spirit_Idle,	//地面に着いている
-	Spirit_Rising,		//上昇している
+	Spirit_Rising,	//上昇している
+	Spirit_Falling,	//上昇後の落下（オブジェクトと離れた瞬間の座標まで落下）
 	Spirit_Collecting,	//プレイヤーに回収されいている途中
 	Spirit_Destory,		//これから消される予定
 };
@@ -67,7 +68,9 @@ public:
 		m_CollidedObject.erase(target);
 		if (m_CollidedObject.size() == 0)
 		{
-			m_state = Spirit_Idle;
+			SetState(Spirit_Falling);
+			//今離れた瞬間のソウルの座標を落下の終点にする
+			m_Falling_to_position = m_body->GetPosition();
 		}
 	}
 
@@ -103,6 +106,7 @@ private:
 	//ソウルが今当たっているオブジェクト（或いは地面）
 	std::list<const b2Body*>m_CollidedObject;
 
+	b2Vec2 m_Falling_to_position;	//どの座標まで落ちるか（落下状態の時に使う）
 };
 
 #endif // !ITEM_SPIRIT_H
