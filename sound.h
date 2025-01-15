@@ -32,7 +32,7 @@
 #define PATH	"./cridata/Public/"
 
 /* サンプルで使用するファイル名 */
-#define ACF_FILE			"Test_acf.acf"
+#define ACF_FILE			"Test.acf"
 #define ACB_FILE			"CueSheet_0.acb"
 //#define AWB_FILE			"Basic.awb"
 
