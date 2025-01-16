@@ -282,7 +282,8 @@ void Player::Update()
         if (vel.y < max_velocity.y)
         {
             m_body->ApplyLinearImpulse(m_jump_force, { 0.0f,1.0f }, true);
-
+            draw_state = player_jumping_state;
+            draw_cnt = 0;
           
         }
         // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
@@ -328,7 +329,7 @@ void Player::Update()
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_state);//作成状態に移行
+        Anchor::SetAnchorState(Create_wait_state);//作成状態に移行
     }
 
 
@@ -347,14 +348,31 @@ void Player::Update()
     case Nonexistent_state://何もない状態
         //ここからの移行は上のボタンで管理
         break;
+    case Create_wait_state:
+        draw_state = player_throw_anchor_state;
+
+        if (30 < draw_cnt)
+        {
+            Anchor::SetAnchorState(Create_state);
+        }
+        
+        break;
+    
+
     case Create_state:
         Anchor::CreateAnchor(b2Vec2(2.0f, 2.0f));//ここの引数でアンカーの大きさの調整ができるよー
-        Anchor::SetAnchorState(Throwing_state);//アンカーの状態を投げるている状態に移行
+        
+
+        Anchor::SetAnchorState(Throwing_state);
+    
+   
         break;
+
     case Throwing_state://錨が飛んでいる状態
         Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
 
-        draw_state = player_throw_anchor_state;
+       
+       
 
 
         //ここはコンタクトリストないの接触判定から接触状態へと移行
@@ -505,6 +523,8 @@ void Player::Player_sensor_size_change(int anchor_level)
 }
 
 
+
+
 void Player::Draw()
 {
     if (m_body != nullptr) {
@@ -540,12 +560,10 @@ void Player::Draw()
         //    m_body->GetAngle(),
         //    { GetSize().x * scale,GetSize().y * scale } );
 
-        //ジャンプのテクスチャを呼ぶ関数
-        if (m_is_jumping&&draw_state!=player_jumping_state)
-        {
-            draw_state = player_jumping_state;
-            draw_cnt = 0;
-        }
+      
+       
+   
+
 
         switch (draw_state)
         {
@@ -636,7 +654,7 @@ void Player::Draw()
             break;
         case player_dameged_state:
             draw_cnt++;
-            if (24 < draw_cnt)
+            if (48 < draw_cnt)
             {
                 draw_cnt = 0;
                 draw_state = player_nomal_state;
@@ -650,7 +668,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                2, 3, draw_cnt / 4, 3.0, m_direction
+                2, 3, draw_cnt / 8, 3.0, m_direction
 
             );
 
