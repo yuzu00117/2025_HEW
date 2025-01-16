@@ -75,6 +75,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     g_player_throw_anchor_sheet= InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
 
+    g_player_walk_sheet= InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
+
     g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
 
 
@@ -252,12 +254,23 @@ void Player::Update()
         {
             m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
             m_direction = 1;
+
+            if (draw_state == player_nomal_state)
+            {
+                draw_state = player_walk_state;
+            }
         }
         //左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
             m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
             m_direction = 0;
+
+
+            if (draw_state == player_nomal_state)
+            {
+                draw_state = player_walk_state;
+            }
         }
 
         //playerのスピード上昇
@@ -654,7 +667,7 @@ void Player::Draw()
             break;
         case player_dameged_state:
             draw_cnt++;
-            if (48 < draw_cnt)
+            if (24 < draw_cnt)
             {
                 draw_cnt = 0;
                 draw_state = player_nomal_state;
@@ -668,12 +681,35 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                2, 3, draw_cnt / 8, 3.0, m_direction
+                2, 3, draw_cnt / 4, 3.0, m_direction
 
             );
 
             break;
         case player_walk_state:
+
+            draw_cnt++;
+
+            if (ReturnAbsoluteValue(m_body->GetLinearVelocity().x)<0.1)//横の移動量の絶対値が0.1未満の時にノーマルに戻る
+            {
+                draw_cnt = 0;
+                draw_state = player_nomal_state;
+            }
+
+
+           
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_walk_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                3, 6, draw_cnt / 4, 3.0, m_direction
+
+            );
             break;
         default:
             break;
