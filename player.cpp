@@ -407,6 +407,8 @@ void Player::Update()
         AnchorSpirit::EditAnchorSpiritValue(-25);//アンカーを使ったらゲージを払う
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
 
+       
+
         g_anchor_frame_management_number = 0;
         break;
 
@@ -437,6 +439,7 @@ void Player::Update()
         Anchor::DeleteAnchor();//アンカーを削除
 
         Anchor::SetAnchorState(Nonexistent_state);
+        AnchorPoint::OutsideSensor(AnchorPoint::GetTargetAnchorPointBody());
 
         break;
 
