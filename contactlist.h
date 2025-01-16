@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2025/1/10
+// #update 2025/1/17
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -489,25 +489,22 @@ public:
                 enemy_instance->InPlayerSensor();
             }
         }
-        //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合
-        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor) ||
-            (objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body))
+       //浮遊エネミーのセンサーがプレイヤーに触れた場合
+        if ((objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor))
         {
             if (objectA->collider_type == collider_enemy_floating_sensor)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
-                enemy_instance->InPlayerSensor();
                 enemy_instance->SetIfSensedPlayer(true);
             }
             else if (objectB->collider_type == collider_enemy_floating_sensor)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
-                enemy_instance->InPlayerSensor();
                 enemy_instance->SetIfSensedPlayer(true);
 
             }
         }
-
 
 
 
@@ -754,9 +751,9 @@ public:
             }
         }
 
-        //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合
-        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor) ||
-            (objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body))
+        //浮遊エネミーのセンサーがプレイヤーに触れた場合
+        if ((objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor))
         {
             if (objectA->collider_type == collider_enemy_floating_sensor)
             {

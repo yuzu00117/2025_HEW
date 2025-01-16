@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------------------------------
+// #name enemy_floating.cpp
+// #description •‚—V“G
+// #make 2025/1/17@‰¤‰jS
+// #update 2025/1/17 
+// #comment ’Ç‰ÁEC³—\’è
+// 
+// 
+//----------------------------------------------------------------------------------------------------
 #include "enemy_floating.h"
 #include "sprite.h"
 #include "texture.h"
@@ -43,7 +52,7 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture.density = 1.0f;    //–§“x
 	fixture.friction = 0.05f;  //–€ŽC
 	fixture.restitution = 0.0f;//”½”­ŒW”
-	fixture.isSensor = false;  //ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	fixture.isSensor = true;  //ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
 
 	b2Fixture* enemy_floating_fixture = GetBody()->CreateFixture(&fixture);//Body‚ð‚ÉƒtƒBƒNƒXƒ`ƒƒ‚ð“o˜^‚·‚é
 
@@ -161,7 +170,7 @@ void EnemyFloating::Move()
 	b2Vec2 vec;
 	vec.x = player_position.x - GetBody()->GetPosition().x;
 	vec.y = player_position.y - GetBody()->GetPosition().y;
-	vec.Normalize();
+
 
 
 	GetBody()->SetLinearVelocity(b2Vec2(vec.x * m_speed, vec.y * m_speed));
