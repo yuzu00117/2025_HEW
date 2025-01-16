@@ -14,6 +14,7 @@
 #include"scene.h"
 #include"create_filter.h"
 #include"Item_Manager.h"
+#include"hit_stop.h"
 
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
@@ -290,6 +291,10 @@ void Player::Update()
     }
 
 
+    if (Keyboard_IsKeyDown(KK_L) || (state.dpadDown))
+    {
+        HitStop::StartHitStop(60);
+    }
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -304,6 +309,8 @@ void Player::Update()
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
     }
+
+
 
 
  //アンカーの処理
