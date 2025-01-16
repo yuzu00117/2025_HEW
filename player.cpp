@@ -232,13 +232,28 @@ void Player::Update()
         //‰EˆÚ“®
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
-            m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
+
+            if (Anchor::GetAnchorState() == Nonexistent_state)
+            {
+                m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
+            }
+            if (Anchor::GetAnchorState() != Nonexistent_state)
+            {
+                m_body->ApplyLinearImpulse({ (GetSpeed() + adjust_speed)/3 , 0.0f }, player_point, true);
+            }
             m_direction = 1;
         }
         //¶ˆÚ“®
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
-            m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
+            if (Anchor::GetAnchorState() == Nonexistent_state)
+            {
+                m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
+            }
+            if (Anchor::GetAnchorState() != Nonexistent_state)
+            {
+                m_body->ApplyLinearImpulse({ ((GetSpeed()) + adjust_speed)/-3 , 0.0f }, player_point, true);
+            }
             m_direction = 0;
         }
 
