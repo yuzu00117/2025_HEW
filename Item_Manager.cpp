@@ -36,6 +36,16 @@ void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool s
 	m_Coin_List.emplace_back(std::make_unique<ItemCoin>(position, body_size, angle, shape_polygon, Alpha));
 }
 
+void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
+{
+    // 既存の引数コンストラクタを利用して生成
+    m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, Alpha));
+   //　新しく作ったものの初期化処理
+    auto& lastSpirit = *m_Spirit_List.back();
+    lastSpirit.Initialize();
+}
+
+
 ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
 {
 	for (const auto& w : m_SpeedUp_List) {
@@ -57,9 +67,23 @@ ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
 }
 
 
+ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
+{
+    for (const auto& w : m_Spirit_List) {
+        if (w->GetID() == ID) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
+
 // 全てのアイテムを初期化
 void ItemManager::InitializeAll() {
     for (auto& w : m_SpeedUp_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_Spirit_List) {
         w->Initialize();
     }
 	for (auto& w : m_Coin_List) {
@@ -73,14 +97,20 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_SpeedUp_List) {
 		w->Update();
     }
-	for (auto& w : m_Coin_List) {
-		w->Update();
-	}
+    for (auto& w : m_Spirit_List) {
+        w->Update();
+    }
+    for (auto& w : m_Coin_List) {
+        w->Update();
+    }
 }
 
 // 全てのアイテムを描画
 void ItemManager::DrawAll() {
     for (auto& w : m_SpeedUp_List) {
+        w->Draw();
+    }
+    for (auto& w : m_Spirit_List) {
         w->Draw();
     }
 	for (auto& w : m_Coin_List) {
@@ -98,8 +128,21 @@ void ItemManager::FinalizeAll() {
 		w->Finalize();
 	}
 	Item_Coin_UI::Finalize();
+
+    for (auto& w : m_Spirit_List) {
+        w->Finalize();
+    }
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
-	m_Coin_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+}
+
+void ItemManager::SetCollectSpirit(bool flag)
+{
+    for (auto& w : m_Spirit_List) {
+        w->SetState(Spirit_Collecting);
+    }
+
+	m_Coin_List.clear(); 
 }
 
 
