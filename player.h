@@ -19,6 +19,17 @@
 #include"world_box2d.h"
 
 
+enum player_draw_state
+{
+	null,
+	player_nomal_state,
+	player_jumping_state,
+	player_throw_anchor_state,
+	player_dameged_state,
+	player_walk_state,
+
+};
+
 class Player
 {
 public:
@@ -160,6 +171,10 @@ private:
 
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;
+
+	player_draw_state draw_state;
+
+	int draw_cnt;
 
 
 	//レベルに応じたセンサーの大きさを記述したもの
