@@ -27,7 +27,7 @@
 #include"enemy_dynamic.h"
 #include"Item_Manager.h"
 #include"FixtureSizeCalculate.h"
-
+#include"tool.h"
 
 
 class MyContactListener : public b2ContactListener {
@@ -103,6 +103,41 @@ public:
             {
                 teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectB->id);
                 teleport_block_instance->SetTeleportFlag(true);
+            }
+
+        }
+
+
+
+        // プレーヤーとテレポートブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg))
+        {
+
+            float object_velocity=0;
+            if (objectA->collider_type == collider_object)
+            {
+                object_velocity=ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().y);
+            }
+            else
+            {
+                object_velocity=ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().y);
+            }
+
+            if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
+            {
+                PlayerStamina::EditPlayerStaminaValue(-50);//被弾処理
+
+                if (objectA->collider_type == collider_object)
+                {
+                    player.Player_knockback(2, fixtureA->GetBody());
+                }
+                if (objectB->collider_type == collider_object)
+                {
+                    player.Player_knockback(2, fixtureB->GetBody());
+                }
             }
 
         }

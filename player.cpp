@@ -186,6 +186,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     //---------------------------------------------------------------------------------------------------
 
+    m_body->SetSleepingAllowed(true);
+
 }
 
 void Player::Update()
@@ -558,6 +560,25 @@ b2Body* Player::GetOutSidePlayerBody()
     return player_body;
 }
 
+
+void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
+{
+    b2Vec2 player_pos = GetOutSidePlayerBody()->GetPosition();
+    b2Vec2 object_pos = touch_body->GetPosition();
+
+    int minus = 1;
+
+    //¶‰E‚ÌŠm”F ¡‰ñ‚Í¶
+    if (player_pos.x < object_pos.x)
+    {
+        minus = -1;
+    }
+
+    
+
+    GetOutSidePlayerBody()  ->ApplyLinearImpulseToCenter(b2Vec2(0.5 * minus * KnockBackLevel, 0.5), true);
+
+}
 
 
     
