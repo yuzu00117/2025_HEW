@@ -46,8 +46,8 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 	//サイズの補正をする
 	b2Vec2 object_size;
-	object_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
-	object_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
+	object_size.x = size.x / BOX2D_SCALE_MANAGEMENT*0.95;
+	object_size.y = size.y / BOX2D_SCALE_MANAGEMENT*0.95;
 
 	b2BodyDef body;
 
@@ -77,7 +77,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 	}
 
 	fixture.density = 3.0f;//密度
-	fixture.friction = 0.5f;//摩擦
+	fixture.friction = 0.3f;//摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;//センサーかどうか
 	fixture.filter = createFilterExclude("object_filter", {});

@@ -33,6 +33,10 @@ void DrawSpriteOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alph
 void DrawDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha = 1.0f);
 
 
+//プレイヤーの描画用に使うよー　中身はボスと基本は同じ
+void DrawDividedSpritePlayer(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha, bool left);
+
+
 //　一枚の画像を分割して、その中の複数を同時に描画
 // （ただし、同じ行のものだけ描画できる）
 //  (Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ)
