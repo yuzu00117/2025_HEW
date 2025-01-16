@@ -8,7 +8,6 @@
 //
 // 
 //----------------------------------------------------------------------------------------------------
-
 #include"Item_SpeedUp.h"
 #include"world_box2d.h"
 #include"collider_type.h"
@@ -19,7 +18,7 @@
 #include"player.h"
 #include"Item_Manager.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
 
 ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
 	:m_size(body_size), m_Alpha(Alpha)

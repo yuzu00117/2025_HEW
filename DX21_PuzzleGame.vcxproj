@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>cri\common\include;cri\criinclude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>cri\common\include;cri\criinclude</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,12 +146,14 @@
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
+    <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
+    <ClCompile Include="Item_Spirit.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="movable_ground.cpp" />
@@ -189,6 +191,10 @@
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />
+    <ClInclude Include="cri\common\include\CriSmpFramework.h" />
+    <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
+    <ClInclude Include="cri\common\include\CriSmpTimer.h" />
+    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
@@ -198,12 +204,14 @@
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />
+    <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="Item_Coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />
     <ClInclude Include="Item_Manager.h" />
     <ClInclude Include="Item_SpeedUp.h" />
+    <ClInclude Include="Item_Spirit.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="movable_ground.h" />

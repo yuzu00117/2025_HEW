@@ -14,6 +14,7 @@
 enum AnchorState        //player.cppないのupdateで管理する際に利用している
 {
 	Nonexistent_state,	//存在しない状態
+	Create_wait_state, //作成するときのモーションまち
 	Create_state,		//作成している状態
 	Throwing_state,		//投げている状態　 Throwを呼び出す
 	Connected_state,	//くっついている状態

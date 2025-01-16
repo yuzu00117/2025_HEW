@@ -228,6 +228,7 @@ void Field::Draw()
 	objectManager.DrawAll();
 	
 
+
 	//アンカーポイントを描画
 	AnchorPoint::Draw();
 }
