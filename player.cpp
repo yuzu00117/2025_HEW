@@ -573,7 +573,17 @@ void Player::Draw()
         //    m_body->GetAngle(),
         //    { GetSize().x * scale,GetSize().y * scale } );
 
-      
+
+        //ƒAƒ“ƒJ[‚ð”ò‚Î‚µ‚Ä‚éŠÔ‚»‚Á‚¿‘¤Œ©‚Ä‚­‚ê
+        if (Anchor::GetAnchorState() != Nonexistent_state)
+        {
+            m_direction = 1;
+            if (m_body->GetPosition().x > AnchorPoint::GetTargetAnchorPointBody()->GetPosition().x)
+            {
+                m_direction = 0;
+            }
+
+        }
        
    
 
