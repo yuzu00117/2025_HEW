@@ -11,6 +11,13 @@
 
 #include <DirectXMath.h>
 #include"include/box2d/box2d.h"
+#include <iostream>
+#include<vector>
+#include <random>
+#include<sstream>
+
+using namespace std;
+
 
 using namespace DirectX;
 
@@ -52,5 +59,8 @@ int GetRandomInt(int min, int max);
  * @brief “x”‚©‚çƒ‰ƒWƒAƒ“‚É•ÏŠ·‚·‚é
  */
 double DegreesToRadians(double degrees);
+
+vector<string>
+Split(const string& str, const char& word);
 
 #endif // TOOL_H

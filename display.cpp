@@ -87,17 +87,29 @@ float display::GetDisplayWidth()
 {
 	return m_display_width;
 }
-void display::SetDisplayWidth(float width)
+void display::AddDisplayWidth(float width)
 {
 	m_display_width = m_display_width + width;
 }
+
+void display::SetDisplayWidth(float width)
+{
+	m_display_width = width;
+}
+
+
 
 //É}ÉbÉvÇÃèc
 float display::GetDisplayHeight()
 {
 	return m_display_height;
 }
-void display::SetDisplayHeight(float height)
+void display::AddDisplayHeight(float height)
 {
 	m_display_height = m_display_height + height;
+}
+
+void display::SetDisplayHeight(float height)
+{
+	m_display_height = height;
 }

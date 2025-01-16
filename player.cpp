@@ -460,6 +460,14 @@ void Player::Update()
 
     //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
+
+
+
+    //---------------------------
+
+
+
 }
 
 

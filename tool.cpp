@@ -12,8 +12,7 @@
 #include"main.h"
 #include"include/box2d/box2d.h"
 #include"tool.h"
-#include <iostream>
-#include <random>
+
 
 
 
@@ -107,4 +106,21 @@ int GetRandomInt(int min, int max) {
 // “x”‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·‚·‚éŠÖ”
 double DegreesToRadians(double degrees) {
     return degrees * M_PI / 180.0;
+}
+
+
+vector<string>
+Split(const string& str, const char& word)
+{
+    istringstream stream(str);
+
+    string field;
+    vector<string> res;
+    res.reserve(1024);
+
+
+    while (getline(stream, field, word))
+        res.push_back(field);
+
+    return res;
 }

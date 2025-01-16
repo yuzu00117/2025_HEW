@@ -129,7 +129,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	
 
 	//‰ŠúƒV[ƒ“‚Ìİ’è
-	sceneManager.ChangeScene(SCENE_TITLE);
+	sceneManager.ChangeScene(SCENE_GAME);
 	
 
 	while (1)

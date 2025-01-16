@@ -23,6 +23,7 @@
 #include"enemy_static.h"
 #include"object_manager.h"
 #include"Item_Manager.h"
+#include"keyboard.h"
 
 
 
@@ -173,6 +174,8 @@ void Field::Update()
 
 	objectManager.UpdateAll();
 	itemManager.UpdateAll();
+
+
 }
 
 

@@ -58,4 +58,6 @@ void SetProjectionMatrix(XMMATRIX ProjectionMatrix );
 
 void SetMaterial( MATERIAL Material );
 
+IDXGIAdapter* ChangeGPU(void);
+
 
