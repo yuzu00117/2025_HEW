@@ -153,7 +153,7 @@ void ItemCoin::Draw()
             { draw_x,
               draw_y },
             m_body->GetAngle(),
-            { GetSize().x * scale,GetSize().y * scale },
+            { GetSize().x * scale*1.5f,GetSize().y * scale*1.5f },
             m_Alpha
         );
 
