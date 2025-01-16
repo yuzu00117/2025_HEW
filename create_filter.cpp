@@ -6,10 +6,11 @@
 std::unordered_map<std::string, uint16_t> filter_type = {
     {"NULL_filter",             0x0000}, // –³Œø‚ÈƒJƒeƒSƒŠ
     {"Player_filter",           0x0001}, // 1 << 0
-    {"wall_filter",             0x0002}, // 1 << 1
+    {"ground_filter",           0x0002}, // 1 << 1
     {"enemy_filter",            0x0004}, // 1 << 2
     {"one-way_platform_filter", 0x0008}, // 1 << 3
     {"object_filter",           0x0010}, // 1 << 4
+    {"item_filter",             0x0020}, // 1 << 5
 };
 
 b2Filter createFilterExclude(const std::string& category, const std::vector<std::string>& excludeMasks) {
@@ -27,4 +28,9 @@ b2Filter createFilterExclude(const std::string& category, const std::vector<std:
     }
 
     return filter;
+}
+
+uint16_t GetFilter(const std::string& category)
+{
+    return filter_type[category];
 }
