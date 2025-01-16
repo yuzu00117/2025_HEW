@@ -65,10 +65,15 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
 
+
+
+
+
 //テレポートブロックの生成
 void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
 {
     teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
+
 }
 
 
@@ -154,16 +159,25 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+
 //IDを使って使ってテレポートブロックを検索
 teleport_block* ObjectManager::FindTeleportBlock(int id)
 {
     for (auto& w : teleport_blockList) {
+
         if (w->GetID() == id) {
             return w.get();
         }
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+
+
+
+
+
+
+
 
 Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
 {
@@ -249,9 +263,15 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
-    for (auto& w : teleport_blockList) {
+
+    for (auto& w : teleport_blockList)
+    {
         w->Initialize();
     }
+
+  
+
+
 }
 
 // 全ての木を更新
@@ -296,7 +316,10 @@ void ObjectManager::UpdateAll() {
         }
     }
 
+
+
     for (auto& w : teleport_blockList) {
+
         w->Update();
     }
 }
@@ -336,7 +359,12 @@ void ObjectManager::DrawAll() {
     }
 
 
+
+  
+
     for (auto& w : teleport_blockList) {
+
+
         w->Draw();
     }
 }
@@ -382,7 +410,11 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
+
+
     teleport_blockList.clear();
+
+
 
 }
 

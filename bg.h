@@ -13,7 +13,11 @@
 class Bg
 {
 public:
-	Bg(XMFLOAT2 pos) :m_bg_position(pos) {}
+	// 引数付きコンストラクタ
+	Bg(XMFLOAT2 pos) : m_bg_position(pos) {}
+
+	// 引数なしのデフォルトコンストラクタを追加
+	Bg() : m_bg_position(XMFLOAT2(0.0f, 0.0f)) {}
 
 	static void Initialize();
 	static void Update();
@@ -31,6 +35,13 @@ public:
 
 private:
 	XMFLOAT2 m_bg_position;
+
+
+	XMFLOAT2 texture_1_pos[4];
+	XMFLOAT2 texture_2_pos[4];
+	XMFLOAT2 texture_3_pos[4];
+	XMFLOAT2 texture_4_pos[4];
+	XMFLOAT2 texture_5_pos[4];
 };
 
 #endif
