@@ -707,7 +707,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                3, 6, draw_cnt / 4, 3.0, m_direction
+                3, 6, draw_cnt / 3, 3.0, m_direction
 
             );
             break;
