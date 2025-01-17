@@ -16,6 +16,7 @@
 #include"player_position.h"
 #include"player.h"
 #include"Item_Manager.h"
+#include"sound.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 
@@ -102,6 +103,8 @@ void	ItemCoin::Update()
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
+
+        app_atomex_start(Object_Get_Coin_Sound);
     }
 }
 

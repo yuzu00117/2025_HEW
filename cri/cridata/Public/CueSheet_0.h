@@ -5,15 +5,15 @@
  *  ACB  Ver.        : Ver.1.42.1
  *  File Path        : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound/Public/WorkUnit_0
  *  File Name        : CueSheet_0.h
- *  File Size        : 15056352 bytes
- *  Date Time        : 2025/01/17 11:56:58
+ *  File Size        : 14939456 bytes
+ *  Date Time        : 2025/01/17 17:58:18
  *  Target           : Public
- *  Cues             : 22
+ *  Cues             : 23
  *  CueSheet Comment : 
  *  Stream Awb Path  : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound/Public/WorkUnit_0/CueSheet_0.awb
  *===========================================================================*/
 
-#define CRI_CUESHEET_0_CUENUM (22)
+#define CRI_CUESHEET_0_CUENUM (23)
 
 /* AISAC Control List (AISAC Control ID) */
 
@@ -40,6 +40,7 @@
 #define CRI_CUESHEET_0_岩が転がる音   (19) /*  */
 #define CRI_CUESHEET_0_コインを取る音 (20) /*  */
 #define CRI_CUESHEET_0_敵を倒す音      (21) /*  */
+#define CRI_CUESHEET_0_プレイヤーの足音 (22) /*  */
 
 /* Block List (Block Index) */
 

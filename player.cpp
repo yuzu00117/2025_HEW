@@ -274,6 +274,9 @@ void Player::Update()
             {
                 draw_state = player_walk_state;
             }
+
+            //app_atomex_start(Player_Walk_Sound);
+
         }
         //左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
@@ -293,6 +296,8 @@ void Player::Update()
             {
                 draw_state = player_walk_state;
             }
+            //app_atomex_start(Player_Walk_Sound);
+
         }
 
         //playerのスピード上昇
@@ -365,6 +370,8 @@ void Player::Update()
     {
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
+
+        app_atomex_start(Player_Soul_Colect_Sound);
     }
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
 
@@ -412,7 +419,7 @@ void Player::Update()
     case Create_state:
         Anchor::CreateAnchor(b2Vec2(2.0f, 2.0f));//ここの引数でアンカーの大きさの調整ができるよー
         
-
+        app_atomex_start(Anchor_Thorw_Sound);
         Anchor::SetAnchorState(Throwing_state);
     
    
@@ -434,7 +441,7 @@ void Player::Update()
         Anchor::SetAnchorState(Pulling_state);//引っ張り状態に移行
 
        
-
+        app_atomex_start(Anchor_Pulling_Sound);
         g_anchor_frame_management_number = 0;
         break;
 
