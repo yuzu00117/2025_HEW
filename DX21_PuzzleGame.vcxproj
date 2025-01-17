@@ -110,7 +110,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies);</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,7 +128,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>;cri\libs</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>cri\libs</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cri_ware_pcx64_le_import.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -138,6 +138,10 @@
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="create_filter.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="display.cpp" />

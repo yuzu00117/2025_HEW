@@ -64,6 +64,8 @@ void Game::Initialize()
 	//背景の初期化
 	Bg::Initialize();
 
+	CRIInitialize();
+
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	// 衝突リスナーをワールドに登録
 	MyContactListener& contactListener = MyContactListener::GetInstance();
@@ -87,6 +89,8 @@ void Game::Finalize(void)
 	//�c�@�̏I������
 	PlayerLife::Initialize();
 
+	CRIFinalize();
+
 	//プレイヤーの終了処理
 	player.Finalize();
 
@@ -101,20 +105,11 @@ void Game::Finalize(void)
 
 
 
-
-
-
-	CRIFinalize();
-
-
-
 	//文字（絵）
 	FinalizeWord();
 
 	//体力ソウルゲージUIの終了処理
 	stamina_spirit_gauge.Finalize();
-
-
 
 
 #ifdef _DEBUG
@@ -152,6 +147,12 @@ void Game::Update(void)
 		Anchor::Update();
 
 
+	CRIUpdate();
+
+	Bg::Update();
+
+
+
 		//フィールドの更新処理
 		Field::Update();
 
@@ -159,6 +160,7 @@ void Game::Update(void)
 	  Bg::Update();
 
 	  CRIUpdate();
+
 
 
 
@@ -206,7 +208,6 @@ void Game::Draw(void)
 
 	//フィールドの描画処理
 	Field::Draw();
-
 
 
 	//�c�@�̕`�揈��
