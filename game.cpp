@@ -201,13 +201,15 @@ void Game::Draw(void)
 	SetDepthEnable(false);
 
 
-	//アンカーの描画処理
-	Anchor::Draw();
+
 	//プレイヤーの描画処理
 	player.Draw();
 
 	//フィールドの描画処理
 	Field::Draw();
+
+	//アンカーの描画処理
+	Anchor::Draw();
 
 
 	//�c�@�̕`�揈��
