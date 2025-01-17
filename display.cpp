@@ -15,8 +15,10 @@
 
 float display::m_display_scale = 1;//スケールの初期値の倍率
 
-float display::m_display_width = 650;//横幅
-float display::m_display_height =540;//縦
+
+
+float display::m_display_width = DEFAULT_DISPLAY_WIDTH;//横幅
+float display::m_display_height =DEFAULT_DISPLAY_HEIGHT;//縦
 
 
 display::display()
@@ -100,4 +102,11 @@ float display::GetDisplayHeight()
 void display::SetDisplayHeight(float height)
 {
 	m_display_height = m_display_height + height;
+}
+
+//初期値に戻す
+void display::SetDisplayDefault(void)
+{
+	m_display_width = DEFAULT_DISPLAY_WIDTH;
+	m_display_height = DEFAULT_DISPLAY_HEIGHT;
 }

@@ -15,6 +15,7 @@
 #include"create_filter.h"
 #include"Item_Manager.h"
 #include"hit_stop.h"
+#include"camera_shake.h"
 
 
 //テクスチャのダウンロード グローバル変数にしてる
@@ -535,6 +536,8 @@ void Player::Update()
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
+
+        CameraShake::StartCameraShake(30, 20, 120);
     }
    
 

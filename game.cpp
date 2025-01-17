@@ -29,6 +29,7 @@
 #include"anchor_spirit.h"
 #include"bg.h"
 #include"hit_stop.h"
+#include"camera_shake.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -182,6 +183,7 @@ void Game::Update(void)
 		UpdateDebug();
 #endif // _DEBUG
 	}
+	CameraShake::Update();
 
 }
 
