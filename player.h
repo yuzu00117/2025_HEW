@@ -60,6 +60,8 @@ public:
 
 	void Player_sensor_size_change(int anchor_level);
 
+	void Player_knockback(int KnockBackLevel, b2Body* touch_body);
+
 
 	static b2Body* GetOutSidePlayerBody();
 

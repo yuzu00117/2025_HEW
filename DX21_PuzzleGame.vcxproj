@@ -147,7 +147,9 @@
     <ClCompile Include="display.cpp" />
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_attack.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
+    <ClCompile Include="enemy_floating.cpp" />
     <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="FixtureSizeCalculate.cpp" />
@@ -205,12 +207,15 @@
     <ClInclude Include="directx_controller.h" />
     <ClInclude Include="easing.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_attack.h" />
     <ClInclude Include="enemy_dynamic.h" />
+    <ClInclude Include="enemy_floating.h" />
     <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="ground.h" />
+    <ClInclude Include="hit_stop.h" />
     <ClInclude Include="Item_Coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />
     <ClInclude Include="Item_Manager.h" />
