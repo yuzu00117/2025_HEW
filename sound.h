@@ -26,13 +26,13 @@
  **************************************************************************/
  /* ACF/ACBのマクロ定義ヘッダ */
 #include "../../cridata/Public/CueSheet_0.h"
-#include "../../cridata/Public/Test_acf.h"
+#include "../../cridata/Public/HEW_sound_acf.h"
 
 /* データディレクトリへのパス */
-#define PATH	"./cridata/Public/"
+#define PATH	"./cri/cridata/Public/"
 
 /* サンプルで使用するファイル名 */
-#define ACF_FILE			"Test.acf"
+#define ACF_FILE			"HEW_sound.acf"
 #define ACB_FILE			"CueSheet_0.acb"
 //#define AWB_FILE			"Basic.awb"
 
@@ -88,9 +88,9 @@ static CriBool app_atomex_initialize(AppObj* app_obj);
 static CriBool app_atomex_finalize(AppObj* app_obj);
 static CriBool app_execute_main(AppObj* app_obj);
 
-static CriBool app_atomex_start(AppObj* app_obj);
-static CriBool app_atomex_stop_player(AppObj* app_obj);
-static CriBool app_atomex_stop_cue(AppObj* app_obj);
+CriBool app_atomex_start(int cue_id);
+CriBool app_atomex_stop_player();
+CriBool app_atomex_stop_cue();
 
 /**************************************************************************
  * 変数定義
@@ -99,12 +99,28 @@ static CriBool app_atomex_stop_cue(AppObj* app_obj);
 
  /* キュー一覧 */
 static AppCueListItem g_cue_list[] = {
- CRI_CUESHEET_0_GUN1_HIGH,
- CRI_CUESHEET_0_HELI_LOOP,
- CRI_CUESHEET_0_KALIMBA_G,
- CRI_CUESHEET_0_LEVELB,
- CRI_CUESHEET_0_LEVELC,
- CRI_CUESHEET_0_なんでしょう？,
+CRI_CUESHEET_0_1_1BGM,					//1
+CRI_CUESHEET_0_タイトルBGM,				//2
+CRI_CUESHEET_0_BGM_STAGESELECT,			//3
+CRI_CUESHEET_0_リザルトBGM,				//4
+CRI_CUESHEET_0_選択音,					//5
+CRI_CUESHEET_0_決定音,					//6
+CRI_CUESHEET_0_キャンセル音,			//7
+CRI_CUESHEET_0_一時停止音_メニュー音_,	//8
+CRI_CUESHEET_0_アンカーヒットポイント,	//9
+CRI_CUESHEET_0_アンカーポイントミス,	//10
+CRI_CUESHEET_0_アンカーを引っ張る音,	//11
+CRI_CUESHEET_0_アンカー投げる音,		//12
+CRI_CUESHEET_0_ジャンプ,				//13
+CRI_CUESHEET_0_ソウル吸収,				//14
+CRI_CUESHEET_0_ダメージを受ける音,		//15
+CRI_CUESHEET_0_やられた音,				//16
+CRI_CUESHEET_0_岩が落ちる音,			//17
+CRI_CUESHEET_0_宝を取る音,				//18
+CRI_CUESHEET_0_木が倒れる音,			//19
+CRI_CUESHEET_0_岩が転がる音,			//20
+CRI_CUESHEET_0_コインを取る音,			//21
+CRI_CUESHEET_0_敵を倒す音,				//22
 };
 static CriUint32 g_num_cue_items = sizeof(g_cue_list) / sizeof(AppCueListItem);
 

@@ -18,9 +18,10 @@
    * 関数定義
    * Function definitions
    ***************************************************************************/
-   /* アプリケーションオブジェクトの定義 */
-AppObj app_obj = { 0 };
+/* アプリケーションオブジェクトの定義 */
+static AppObj app_obj = { 0 };
 
+//CRIの初期化
 void CRIInitialize(void) {
 
 
@@ -35,7 +36,7 @@ void CRIUpdate(void)
 {
 	if (Keyboard_IsKeyDown(KK_D1))
 	{
-		app_atomex_start(&app_obj);
+		app_atomex_start(1);
 	}
 
 	/* アプリケーションの更新 */
@@ -43,10 +44,10 @@ void CRIUpdate(void)
 
 }
 
-void CRIPlay(void)
-{
-	app_atomex_start(&app_obj);
-}
+//void CRIPlay(void)
+//{
+//	app_atomex_start(&app_obj);
+//}
 
 void CRIFinalize(void)
 {
@@ -110,7 +111,7 @@ CriBool app_atomex_initialize(AppObj* app_obj)
 	criAtomEx_RegisterAcfFile(NULL, PATH ACF_FILE, NULL, 0);
 
 	/* DSP設定のアタッチ */
-	criAtomEx_AttachDspBusSetting(CRI_TEST_ACF_DSPSETTING_MIXER, NULL, 0);
+	criAtomEx_AttachDspBusSetting(CRI_HEW_SOUND_ACF_DSPSETTING_MIXER, NULL, 0);
 
 	/* ボイスプールの作成（最大ボイス数変更／最大ピッチ変更／ストリーム再生対応） */
 	CriAtomExStandardVoicePoolConfig standard_vpool_config;
@@ -191,12 +192,12 @@ CriBool app_execute_main(AppObj* app_obj)
 }
 
 //1	音楽の再生
-static CriBool app_atomex_start(AppObj* app_obj)
+CriBool app_atomex_start(int cue_id)
 {
-	CriAtomExCueId start_cue_id = g_cue_list[5].id;
+	CriAtomExCueId start_cue_id = g_cue_list[cue_id].id;
 
 	/* キューIDの指定 */
-	criAtomExPlayer_SetCueId(app_obj->player, app_obj->acb_hn, start_cue_id);
+	criAtomExPlayer_SetCueId(app_obj.player, app_obj.acb_hn, start_cue_id);
 
 	/* MEMO: 特定の音だけピッチを変えて再生したい場合。      */
 	/* (1) プレーヤにピッチを設定。                          */
@@ -211,25 +212,25 @@ static CriBool app_atomex_start(AppObj* app_obj)
 	/* 補足: HCA-MXコーデックの場合はピッチ変更は無効。      */
 
 	/* 再生の開始 */
-	CriAtomExPlaybackId playback_id = criAtomExPlayer_Start(app_obj->player);
+	CriAtomExPlaybackId playback_id = criAtomExPlayer_Start(app_obj.player);
 
 	return CRI_TRUE;
 }
 
 //2 音楽の停止
-static CriBool app_atomex_stop_player(AppObj* app_obj)
+CriBool app_atomex_stop_player()
 {
 	/* プレーヤの停止 */
-	criAtomExPlayer_Stop(app_obj->player);
+	criAtomExPlayer_Stop(app_obj.player);
 
 	return CRI_TRUE;
 }
 
 //3 特定の音のみ停止
-static CriBool app_atomex_stop_cue(AppObj* app_obj)
+CriBool app_atomex_stop_cue()
 {
 	/* 特定の再生音のみ停止 */
-	criAtomExPlayback_Stop(app_obj->playback_id);
+	criAtomExPlayback_Stop(app_obj.playback_id);
 
 	return CRI_TRUE;
 }

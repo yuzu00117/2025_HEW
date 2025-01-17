@@ -14,6 +14,7 @@
 #include"scene.h"
 #include"create_filter.h"
 #include"Item_Manager.h"
+#include"sound.h"
 
 
 //テクスチャのダウンロード グローバル変数にしてる
@@ -314,7 +315,7 @@ void Player::Update()
             m_body->ApplyLinearImpulse(m_jump_force, { 0.0f,1.0f }, true);
             draw_state = player_jumping_state;
             draw_cnt = 0;
-          
+            app_atomex_start(13);
         }
         // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
         m_is_jumping = true;

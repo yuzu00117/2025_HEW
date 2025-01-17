@@ -109,8 +109,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64;C:\Users\k3821\Desktop\github用_main\2025_HEW\cri\libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies);cri_ware_pcx64_le_import.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -128,8 +128,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>;cri\libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cri_ware_pcx64_le_import.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>;cri\libs;C:\Users\k3821\Desktop\github用_main\2025_HEW\cri\libs</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cri_ware_pcx64_le_import.lib;cri_ware_pcx64_le_import.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -138,6 +138,10 @@
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="create_filter.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="display.cpp" />
