@@ -76,7 +76,38 @@ typedef struct AppTag {
 } AppObj;
 
 
+enum Sound_Manager
+{
+	NULL_SOUND,
+	GAME_BGM,
+	TITLE_BGM,
+	STAGESELECT_BGM,
+	RESULT_BGM,
 
+	Select_Sound,
+	Decision_Sound,
+	Cancel_Sound,
+	Pose_Sound,
+
+	Anchor_Hit_Sound,
+	Anchor_Hit_Miss_Sound,
+	Anchor_Pulling_Sound,
+	Anchor_Thorw_Sound,
+
+	Player_Jump_Sound,
+	Player_Soul_Colect_Sound,
+	Player_Dameged_Sound,
+	Player_Dead_Sound,
+
+	Object_Rock_Fall_Sound,
+	Object_Get_Treasure_Sound,
+	Object_Wood_Fall_Sound,
+	Object_Rock_Roll_Sound,
+	Object_Get_Coin_Sound,
+
+	Enemy_Dead_Sound,
+
+};
 /***************************************************************************
  * ä÷êîêÈåæ
  * Function declarations
@@ -88,7 +119,7 @@ static CriBool app_atomex_initialize(AppObj* app_obj);
 static CriBool app_atomex_finalize(AppObj* app_obj);
 static CriBool app_execute_main(AppObj* app_obj);
 
-CriBool app_atomex_start(int cue_id);
+CriBool app_atomex_start(Sound_Manager sound_name);
 CriBool app_atomex_stop_player();
 CriBool app_atomex_stop_cue();
 
@@ -122,6 +153,11 @@ CRI_CUESHEET_0_ä‚Ç™ì]Ç™ÇÈâπ,			//20
 CRI_CUESHEET_0_ÉRÉCÉìÇéÊÇÈâπ,			//21
 CRI_CUESHEET_0_ìGÇì|Ç∑âπ,				//22
 };
+
+
+
+
+
 static CriUint32 g_num_cue_items = sizeof(g_cue_list) / sizeof(AppCueListItem);
 
 

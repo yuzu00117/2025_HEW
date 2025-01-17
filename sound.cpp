@@ -20,6 +20,7 @@
    ***************************************************************************/
 /* アプリケーションオブジェクトの定義 */
 static AppObj app_obj = { 0 };
+Sound_Manager sound_name;
 
 //CRIの初期化
 void CRIInitialize(void) {
@@ -36,7 +37,7 @@ void CRIUpdate(void)
 {
 	if (Keyboard_IsKeyDown(KK_D1))
 	{
-		app_atomex_start(1);
+		app_atomex_start(GAME_BGM);
 	}
 
 	/* アプリケーションの更新 */
@@ -192,9 +193,9 @@ CriBool app_execute_main(AppObj* app_obj)
 }
 
 //1	音楽の再生
-CriBool app_atomex_start(int cue_id)
+CriBool app_atomex_start(Sound_Manager sound_name)
 {
-	CriAtomExCueId start_cue_id = g_cue_list[cue_id].id;
+	CriAtomExCueId start_cue_id = g_cue_list[sound_name].id;
 
 	/* キューIDの指定 */
 	criAtomExPlayer_SetCueId(app_obj.player, app_obj.acb_hn, start_cue_id);
