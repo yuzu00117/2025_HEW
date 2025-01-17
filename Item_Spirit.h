@@ -64,6 +64,10 @@ public:
 	}
 	//さっきまで当たっていたオブジェクトを消す
 	void	DeleteCollidedObject(const b2Body* object) {
+		if (m_CollidedObject.begin() == m_CollidedObject.end())
+		{
+			return;
+		}
 		auto target = std::find(m_CollidedObject.begin(), m_CollidedObject.end(), object);
 		m_CollidedObject.erase(target);
 		if (m_CollidedObject.size() == 0)
