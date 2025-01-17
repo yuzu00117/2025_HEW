@@ -147,9 +147,9 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 void AnchorPoint::Initialize()
 {
 	g_anchor_point_target_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_purple.png");
-	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev1.png");
-	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev2.png");
-	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev3.png");
+	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev1.png");
+	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev2.png");
+	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev3.png");
 }
 
 void AnchorPoint::Update()
@@ -225,14 +225,14 @@ void AnchorPoint::Draw()
 			}
 
 
-		
+			float scale_manager = objectA->need_anchor_level;
 			
 			//draw
 			DrawSprite(
 				{ draw_x,
 				  draw_y },
 				g_anchor_point_body[i]->GetAngle(),
-				{50 ,50}///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				{75* scale_manager ,75* scale_manager }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 			);
 		}
 	}
