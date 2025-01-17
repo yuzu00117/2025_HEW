@@ -28,6 +28,10 @@
 #include"player_stamina.h"
 #include"anchor_spirit.h"
 #include"bg.h"
+#include"hit_stop.h"
+
+int HitStop::hit_stop_time = 0;
+bool  HitStop::hit_stop_flag = false;
 
 void Game::Initialize()
 {
@@ -122,42 +126,64 @@ void Game::Update(void)
 
 	// Box2D ワールドのステップ更新
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
-	world->Step(1.0f / 60.0f, 6, 2);
 
-	display::Update();
+	if (HitStop::GetHitStopFlag()==true)
+	{
+		HitStop::CountHitStop();
+	}
+	else {
+		world->Step(1.0f / 60.0f, 6, 2);
 
-	//�c�@�̍X�V����
-	PlayerLife::Update();
+		display::Update();
 
-	//�v���C���[�̍X�V����
-	//プレイヤーの更新処理
-	player.Update();
+		//�c�@�̍X�V����
+		PlayerLife::Update();
 
-	//アンカーの更新処理
-	Anchor::Update();
+		//�v���C���[�̍X�V����
+		//プレイヤーの更新処理
+		player.Update();
 
-	//フィールドの更新処理
-	Field::Update();
+		//アンカーの更新処理
+		Anchor::Update();
+
 
 	CRIUpdate();
 
 	Bg::Update();
 
-	//Bg::Update();
-	//CRIUpdate();
 
 
-	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
-	if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
-	{
-		SceneManager& sceneManager = SceneManager::GetInstance();
-		sceneManager.ChangeScene(SCENE_RESULT);
-	}
+		//フィールドの更新処理
+		Field::Update();
+
+
+	  Bg::Update();
+
+	  CRIUpdate();
+
+
+
+
+
+
+
+
+		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
+		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
+		{
+			SceneManager& sceneManager = SceneManager::GetInstance();
+			sceneManager.ChangeScene(SCENE_RESULT);
+		}
+
+
+
+
 
 #ifdef _DEBUG
-	//デバッグ文字
-	UpdateDebug();
+		//デバッグ文字
+		UpdateDebug();
 #endif // _DEBUG
+	}
 
 }
 
@@ -230,3 +256,4 @@ void Game::Teleport_player(b2Vec2 position)
 	player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
 
 }
+

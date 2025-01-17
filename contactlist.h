@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2025/1/10
+// #update 2025/1/17
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -27,7 +27,7 @@
 #include"enemy_dynamic.h"
 #include"Item_Manager.h"
 #include"FixtureSizeCalculate.h"
-
+#include"tool.h"
 
 
 class MyContactListener : public b2ContactListener {
@@ -103,6 +103,41 @@ public:
             {
                 teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectB->id);
                 teleport_block_instance->SetTeleportFlag(true);
+            }
+
+        }
+
+
+
+        // プレーヤーとテレポートブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg))
+        {
+
+            float object_velocity=0;
+            if (objectA->collider_type == collider_object)
+            {
+                object_velocity=ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().y);
+            }
+            else
+            {
+                object_velocity=ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().y);
+            }
+
+            if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
+            {
+                PlayerStamina::EditPlayerStaminaValue(-50);//被弾処理
+
+                if (objectA->collider_type == collider_object)
+                {
+                    player.Player_knockback(2, fixtureA->GetBody());
+                }
+                if (objectB->collider_type == collider_object)
+                {
+                    player.Player_knockback(2, fixtureB->GetBody());
+                }
             }
 
         }
@@ -283,7 +318,25 @@ public:
             }
         }
 
-        //引っ張れれている状態の床とエネミーの衝突
+        //プレイヤーと浮遊エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating) ||
+            (objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_floating))
+        {
+            if (objectA->collider_type == collider_enemy_floating)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                enemy_instance->CollisionPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_floating)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
+                enemy_instance->CollisionPlayer();
+            }
+        }
+
+        //引っ張れれている状態の床と静的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object_destroyer_of_enemy) ||
             (objectA->collider_type == collider_object_destroyer_of_enemy && objectB->collider_type == collider_enemy_static))
         {
@@ -302,7 +355,7 @@ public:
             }
         }
 
-
+        //引っ張れれている状態の床と動的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object_destroyer_of_enemy) ||
             (objectA->collider_type == collider_object_destroyer_of_enemy && objectB->collider_type == collider_enemy_dynamic))
         {
@@ -326,6 +379,35 @@ public:
                     return;
                 }
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                ground_instance->AddContactedEnemyList(enemy_instance);
+            }
+
+        }
+        
+        //引っ張れれている状態の床と浮遊エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_object_destroyer_of_enemy) ||
+            (objectA->collider_type == collider_object_destroyer_of_enemy && objectB->collider_type == collider_enemy_floating))
+        {
+            if ((objectA->collider_type == collider_enemy_floating) &&
+                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                //床が静止状態の場合
+                if (ground_instance->GetObjectGroundBody()->GetLinearVelocity().x == 0.0f || ground_instance->GetIfPulling() == false) {
+                    return;
+                }
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                ground_instance->AddContactedEnemyList(enemy_instance);
+            }
+            else if ((objectB->collider_type == collider_enemy_floating) &&
+                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                //床が静止状態の場合
+                if (ground_instance->GetObjectGroundBody()->GetLinearVelocity().x == 0.0f || ground_instance->GetIfPulling() == false) {
+                    return;
+                }
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
                 ground_instance->AddContactedEnemyList(enemy_instance);
             }
 
@@ -372,6 +454,27 @@ public:
                 enemy_instance->CollisionPulledObject();
             }
         }
+
+        //引っ張られている状態のオブジェクトと浮遊エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_floating))
+        {
+
+            if ((objectA->collider_type == collider_enemy_floating) &&
+                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
+            }
+            else if ((objectB->collider_type == collider_enemy_floating) &&
+                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
+            }
+        }
+
+
      
         //プレイヤーに付属しているセンサーと静的エネミーが触れた場合
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_static) ||
@@ -380,13 +483,16 @@ public:
             if (objectA->collider_type == collider_enemy_static)
             {
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
-                enemy_instance->InPlayerSensor();
-
+                if (enemy_instance != nullptr) {
+                    enemy_instance->InPlayerSensor();
+                }
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                enemy_instance->InPlayerSensor();
+                if (enemy_instance != nullptr) {
+                    enemy_instance->InPlayerSensor();
+                }
             }
         }
 
@@ -397,12 +503,83 @@ public:
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                enemy_instance->InPlayerSensor();
+                if (enemy_instance != nullptr)
+                    enemy_instance->InPlayerSensor();
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                if (enemy_instance != nullptr)
+                    enemy_instance->InPlayerSensor();
+            }
+        }
+
+
+        //プレイヤーと動的エネミーに付属しているセンサーが触れた場合
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+        }
+
+        //プレイヤーが敵の攻撃に触れた場合
+        if ((objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_attack) ||
+            (objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_attack))
+        {
+            if (objectA->collider_type == collider_enemy_attack)
+            {
+                EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
+                attack_instance->CollisionPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_attack)
+            {
+                EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
+                attack_instance->CollisionPlayer();
+            }
+        }
+
+        //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合(今のところ浮遊エネミーでこのセンサー判定使う予定まだないけど、一応)
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_floating) ||
+            (objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_floating)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
                 enemy_instance->InPlayerSensor();
+            }
+            else if (objectB->collider_type == collider_enemy_floating)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
+                enemy_instance->InPlayerSensor();
+            }
+        }
+       //浮遊エネミーのセンサーがプレイヤーに触れた場合
+        if ((objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_floating_sensor)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                enemy_instance->SetIfSensedPlayer(true);
+            }
+            else if (objectB->collider_type == collider_enemy_floating_sensor)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
+                enemy_instance->SetIfSensedPlayer(true);
+
             }
         }
 
@@ -431,7 +608,9 @@ public:
                 object_fixture = fixtureB;
             }
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit_data->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-           
+            if (spirit_instance == nullptr) {
+                return;
+            }
             // もし収集中の場合は衝突処理を無視
             //-------------------------------------------------------------------------
             if (spirit_instance->GetState() == Spirit_Collecting)
@@ -489,24 +668,29 @@ public:
             case ITEM_SPEED_UP:
             {
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                item_instance->Function();
-                item_instance->SetDestory(true);//削除を呼び出す
+                if (item_instance != nullptr) {
+                    item_instance->Function();
+                    item_instance->SetDestory(true);//削除を呼び出す
+                }
             }
             break;
             case ITEM_SPIRIT:
             {
                 ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                //spirit_instance->SetIfCollidedPlayer(true);
-                spirit_instance->Function();
-                spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+                if (spirit_instance != nullptr) {
+                    spirit_instance->Function();
+                    spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+                }
 
             }
             break;
             case ITEM_COIN:
             {
                 ItemCoin* coin_instance = item_manager.FindItem_Coin_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                coin_instance->Function();
-                coin_instance->SetDestory(true);//削除を呼び出す
+                if (coin_instance != nullptr) {
+                    coin_instance->Function();
+                    coin_instance->SetDestory(true);//削除を呼び出す
+                }
             }
             break;
 
@@ -553,14 +737,18 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->SetIfPulling(false);
+                if (ground_instance != nullptr) {
+                    ground_instance->SetIfPulling(false);
+                }
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->SetIfPulling(false);
-            }
+                if (ground_instance != nullptr) {
+                    ground_instance->SetIfPulling(false);
 
+                }
+            }
         }        
         //引っ張れる床と敵が離れた場合
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object_destroyer_of_enemy) ||
@@ -571,13 +759,17 @@ public:
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
-                ground_instance->DeleteContactedEnemyList(enemy_instance);
+                if (enemy_instance != nullptr && ground_instance != nullptr) {
+                    ground_instance->DeleteContactedEnemyList(enemy_instance);
+                }
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                ground_instance->DeleteContactedEnemyList(enemy_instance);
+                if (enemy_instance != nullptr && ground_instance != nullptr) {
+                    ground_instance->DeleteContactedEnemyList(enemy_instance);
+                }
             }
         }
 
@@ -641,14 +833,35 @@ public:
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                enemy_instance->OutPlayerSensor();
+                if (enemy_instance != nullptr) {
+                    enemy_instance->OutPlayerSensor();
+                }
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                enemy_instance->OutPlayerSensor();
+                if (enemy_instance != nullptr) {
+                    enemy_instance->OutPlayerSensor();
+                }
             }
         }
+
+        //浮遊エネミーのセンサーがプレイヤーに触れた場合
+        if ((objectA->collider_type == collider_enemy_floating_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_floating_sensor)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                enemy_instance->SetIfSensedPlayer(false);
+            }
+            else if (objectB->collider_type == collider_enemy_floating_sensor)
+            {
+                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
+                enemy_instance->SetIfSensedPlayer(false);
+            }
+        }
+
 
         //  ソウルアイテムがオブジェクトや床から離れた時
         if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
@@ -660,7 +873,13 @@ public:
             auto object = objectA->Item_name == ITEM_SPIRIT ? fixtureB : fixtureA;
 
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-          
+            if (spirit_instance == nullptr) {
+                return;
+            }
+            if (spirit_instance->GetState() == Spirit_Collecting)
+            {
+                return;
+            }
             spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 

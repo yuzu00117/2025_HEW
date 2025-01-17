@@ -21,14 +21,54 @@
 #define ENEMY_DYNAMIC_SOULGAGE (100)
 #define ENEMY_DYNAMIC_SCORE (200)
 
+enum ENEMY_DYNAMIC_STATE
+{
+	ENEMY_STATE_NULL,
+	ENEMY_STATE_MOVE,
+	ENEMY_STATE_ATTACK,
+	ENEMY_STATE_DESTROYED,
+};
+
 class EnemyDynamic :public Enemy
 {
 private:
-	float m_speed = 0.005f;
+	//エネミーど状態(動作)
+	int m_state = ENEMY_STATE_NULL;
+	int m_old_state = ENEMY_STATE_NULL;
+	const float m_speed = 0.01f;
+	//左向き true : 右向き false
+	bool m_direction = true;
+	bool m_is_jumping = false;
+
+
+	int m_attack_ID = -999;
+	int m_attack_counter = 0;
+	const int m_attack_birth = 30;
+	const int m_attack_finish = 45;
+
+	b2Vec2 m_size_sensor = b2Vec2(0.0, 0.0);
 public:
 	EnemyDynamic() = default;
 	EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
 	~EnemyDynamic() = default;
+
+	int GetState()
+	{
+		return m_state;
+	}
+	void SetState(int state)
+	{
+		m_state = state;
+	}
+
+	bool GetDirection()
+	{
+		return m_direction;
+	}
+	void SetDirection(bool direction)
+	{
+		m_direction = direction;
+	}
 
 	void Initialize() override;
 	void Finalize() override;
@@ -37,6 +77,11 @@ public:
 
 	//移動
 	void Move();
+	//攻撃
+	void Attack();
+
+	//センサーとプレイヤーが触れた時の処理
+	void CollisionSensorPlayer();
 };
 
 #endif	//ENEMY_DYNAMIC_H
