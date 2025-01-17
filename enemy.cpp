@@ -23,6 +23,7 @@
 //エネミーがプレイヤーに触れた時の処理
 void Enemy::CollisionPlayer()
 {
+	//HPを減少させる
 	PlayerStamina::EditPlayerStaminaValue(-GetDamage());
 	SetUse(false);
 }
@@ -30,7 +31,8 @@ void Enemy::CollisionPlayer()
 //エネミーが動いている状態のオブジェクトに触れた時の処理
 void Enemy::CollisionPulledObject()
 {
-	AnchorSpirit::EditAnchorSpiritValue(GetSoulgage());
+	//ソウル落ちるの　ゲージもらえるのおかしくね問題のため
+	/*AnchorSpirit::EditAnchorSpiritValue(GetSoulgage());*/
 	SetUse(false);
 }
 
