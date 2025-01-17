@@ -514,6 +514,43 @@ public:
             }
         }
 
+
+        //プレイヤーと動的エネミーに付属しているセンサーが触れた場合
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+        }
+
+        //プレイヤーが敵の攻撃に触れた場合
+        if ((objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_attack) ||
+            (objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_attack))
+        {
+            if (objectA->collider_type == collider_enemy_attack)
+            {
+                EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
+                attack_instance->CollisionPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_attack)
+            {
+                EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
+                attack_instance->CollisionPlayer();
+            }
+        }
+
         //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合(今のところ浮遊エネミーでこのセンサー判定使う予定まだないけど、一応)
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_floating) ||
             (objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_sensor))
@@ -545,7 +582,6 @@ public:
 
             }
         }
-
 
 
         //ソウルアイテムがオブジェクトとぶつかったとき

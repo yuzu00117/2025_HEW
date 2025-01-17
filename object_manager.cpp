@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager.cpp
-// #description ƒIƒuƒWƒFƒNƒg‚ÌŠÇ—‚ğ‚·‚éCPP@
-// #make 2024/12/04@‰i–ì‹`–ç
+// #description ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç®¡ç†ã‚’ã™ã‚‹CPPã€€
+// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/13
-// #comment ’Ç‰ÁEC³—\’è
-//          E‰\‚Ìƒtƒ@ƒNƒgƒŠ[‚Á‚Ä‚â‚Â‚©‚à‚Ë[
-//          E‚±‚ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŠÇ—‚¢‚¢‚È[@‚ª‚¿ãY—í
-//          Eˆê‚©Œ‘O‚Éƒtƒ@ƒNƒgƒŠ[’m‚è‚½‚©‚Á‚½‚ß‚¤
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»å™‚ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ã£ã¦ã‚„ã¤ã‹ã‚‚ã­ãƒ¼
+//          ãƒ»ã“ã‚Œã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç®¡ç†ã„ã„ãªãƒ¼ã€€ãŒã¡ç¶ºéº—
+//          ãƒ»ä¸€ã‹æœˆå‰ã«ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼çŸ¥ã‚ŠãŸã‹ã£ãŸã‚ã†
 //----------------------------------------------------------------------------------------------------
 
 
@@ -14,63 +14,68 @@
 
 
 
-// ƒVƒ“ƒOƒ‹ƒgƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 ObjectManager& ObjectManager::GetInstance() {
     static ObjectManager instance;
     return instance;
 }
 
-// –Ø‚ğ’Ç‰Á
+// æœ¨ã‚’è¿½åŠ 
 void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int& need_level) {
-    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     woodList.emplace_back(std::make_unique<wood>(position, woodSize, anchorPointSize,need_level));
 }
 
-//Šâ‚ğ’Ç‰Á
+//å²©ã‚’è¿½åŠ 
 void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level)
 {
     rockList.emplace_back(std::make_unique<rock>(position, radius, need_anchor_level));
 }
 
-// ‘«ê‚ğ’Ç‰Á
+// è¶³å ´ã‚’è¿½åŠ 
 void ObjectManager::AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position,const b2Vec2 &size) {
-    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     one_way_platformList.emplace_back(std::make_unique<one_way_platform>(position, local_position, size));
 }
-// ŒXÎ‚ğ’Ç‰Á
+// å‚¾æ–œã‚’è¿½åŠ 
 void ObjectManager::AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect) {
-    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     sloping_blockList.emplace_back(std::make_unique<sloping_block>(position, size, aspect));
 }
 
-//Ã“I¨“®“IƒuƒƒbƒN
+//é™çš„â†’å‹•çš„ãƒ–ãƒ­ãƒƒã‚¯
 void ObjectManager::AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level) {
-    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     static_to_dynamic_blockList.emplace_back(std::make_unique<static_to_dynamic_block>(position,size,collider_type,need_level));
 }
 
 void ObjectManager::AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level){
-    // Šù‘¶‚Ì 3 ˆø”ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ğ—˜—p‚µ‚Ä¶¬
+    // æ—¢å­˜ã® 3 å¼•æ•°ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã‚’åˆ©ç”¨ã—ã¦ç”Ÿæˆ
     movable_groundList.emplace_back(std::make_unique<movable_ground>(position, groundSize, anchorPointSize, need_level));
 }
 
-//Ã“IƒGƒlƒ~[¶¬
+//é™çš„ã‚¨ãƒãƒŸãƒ¼ç”Ÿæˆ
 void ObjectManager::AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 {
     enemy_staticList.emplace_back(std::make_unique<EnemyStatic>(position, body_size, angle));
 }
-//“®“IƒGƒlƒ~[¶¬
+//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ç”Ÿæˆ
 void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 {
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
+//ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã®ç”Ÿæˆ
+void ObjectManager::AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
+{
+    enemy_attackList.emplace_back(std::make_unique<EnemyAttack>(position, body_size, angle, id));
+}
 
-//•‚—VƒGƒlƒ~[¶¬
+//æµ®éŠã‚¨ãƒãƒŸãƒ¼ç”Ÿæˆ
 void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 {
     enemy_floatingList.emplace_back(std::make_unique<EnemyFloating>(position, body_size, angle));
 }
-//ƒeƒŒƒ|[ƒgƒuƒƒbƒN‚Ì¶¬
+//ãƒ†ãƒ¬ãƒãƒ¼ãƒˆãƒ–ãƒ­ãƒƒã‚¯ã®ç”Ÿæˆ
 void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
 {
     teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
@@ -80,54 +85,54 @@ void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 t
 
 
 
-// ID ‚ğg‚Á‚Ä–Ø‚ğŒŸõ
+// ID ã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-// ID ‚ğg‚Á‚ÄŠâ‚ğŒŸõ
+// ID ã‚’ä½¿ã£ã¦å²©ã‚’æ¤œç´¢
 rock* ObjectManager::FindRockByID(int id) {
     for (const auto& w : rockList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-//ID‚ğg‚Á‚Ä–Ø‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦æœ¨ã‚’æ¤œç´¢
 one_way_platform* ObjectManager::Findone_way_platformByID(int id) {
     for (const auto& w : one_way_platformList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-//ID‚ğg‚Á‚ÄŒXÎƒuƒƒbƒN‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦å‚¾æ–œãƒ–ãƒ­ãƒƒã‚¯ã‚’æ¤œç´¢
 sloping_block* ObjectManager::FindSloping_BlockByID(int id) {
     for (const auto& w : sloping_blockList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-//ID‚ğg‚Á‚ÄÃ“I¨“®“IƒuƒƒbƒN‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦é™çš„â†’å‹•çš„ãƒ–ãƒ­ãƒƒã‚¯ã‚’æ¤œç´¢
 static_to_dynamic_block* ObjectManager::FindStatic_to_Dynamic_BlcokID(int id) {
     for (const auto& w : static_to_dynamic_blockList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
 movable_ground* ObjectManager::FindMovable_GroundID(int id)
@@ -140,7 +145,7 @@ movable_ground* ObjectManager::FindMovable_GroundID(int id)
     return nullptr;
 }
 
-//ID‚ğg‚Á‚ÄÃ“IƒGƒlƒ~[‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦é™çš„ã‚¨ãƒãƒŸãƒ¼ã‚’æ¤œç´¢
 EnemyStatic* ObjectManager::FindEnemyStaticByID(int id)
 {
     for (auto& w : enemy_staticList) {
@@ -148,9 +153,9 @@ EnemyStatic* ObjectManager::FindEnemyStaticByID(int id)
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
-//ID‚ğg‚Á‚Ä“®“IƒGƒlƒ~[‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã‚’æ¤œç´¢
 EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
 {
     for (auto& w : enemy_dynamicList) {
@@ -158,10 +163,20 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
+}
+//IDã‚’ä½¿ã£ã¦ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã‚’æ¤œç´¢
+EnemyAttack* ObjectManager::FindEnemyAttackByID(int id)
+{
+    for (auto& w : enemy_attackList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-//ID‚ğg‚Á‚Ä•‚—VƒGƒlƒ~[‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦æµ®éŠã‚¨ãƒãƒŸãƒ¼ã‚’æ¤œç´¢
 EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
 {
     for (auto& w : enemy_floatingList) {
@@ -169,10 +184,10 @@ EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-//ID‚ğg‚Á‚Äg‚Á‚ÄƒeƒŒƒ|[ƒgƒuƒƒbƒN‚ğŒŸõ
+//IDã‚’ä½¿ã£ã¦ä½¿ã£ã¦ãƒ†ãƒ¬ãƒãƒ¼ãƒˆãƒ–ãƒ­ãƒƒã‚¯ã‚’æ¤œç´¢
 teleport_block* ObjectManager::FindTeleportBlock(int id)
 {
     for (auto& w : teleport_blockList) {
@@ -181,7 +196,7 @@ teleport_block* ObjectManager::FindTeleportBlock(int id)
             return w.get();
         }
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
 
@@ -195,27 +210,27 @@ Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
 {
     switch (type)
     {
-    case Object_Wood: // –Ø
+    case Object_Wood: // æœ¨
         break;
-    case Object_Rock: // Šâ
+    case Object_Rock: // å²©
         break;
-    case Object_one_way_platform://‘«ê@‚µ‚½‚©‚ç‚µ‚©æ‚ê‚È‚¢
+    case Object_one_way_platform://è¶³å ´ã€€ã—ãŸã‹ã‚‰ã—ã‹ä¹—ã‚Œãªã„
         break;
-    case Object_Static_to_Dynamic://Ã“I‚©‚ç“®“I‚É•ÏX‚·‚éƒIƒuƒWƒFƒNƒg
+    case Object_Static_to_Dynamic://é™çš„ã‹ã‚‰å‹•çš„ã«å¤‰æ›´ã™ã‚‹ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         break;
-    case Object_Movable_Ground:  //ˆø‚Á’£‚ê‚é° 
+    case Object_Movable_Ground:  //å¼•ã£å¼µã‚Œã‚‹åºŠ 
         break;
-    case Object_Enemy_Static://Ã“IƒGƒlƒ~[
+    case Object_Enemy_Static://é™çš„ã‚¨ãƒãƒŸãƒ¼
         break;
-    case Object_Enemy_Dynamic://“®“IƒGƒlƒ~[
+    case Object_Enemy_Dynamic://å‹•çš„ã‚¨ãƒãƒŸãƒ¼
         break;
     default:
         break;
     }
-    return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ğ•Ô‚·
+    return nullptr; // è¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã¯ nullptr ã‚’è¿”ã™
 }
 
-//w’è‚ÌÃ“IƒGƒlƒ~[‚ğíœ
+//æŒ‡å®šã®é™çš„ã‚¨ãƒãƒŸãƒ¼ã‚’å‰Šé™¤
 void ObjectManager::DestroyEnemyStatic(int id)
 {
     int cnt = 0;
@@ -227,13 +242,25 @@ void ObjectManager::DestroyEnemyStatic(int id)
         ++cnt;
     }
 }
-//w’è‚Ì“®“IƒGƒlƒ~[‚ğíœ
+//æŒ‡å®šã®å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã‚’å‰Šé™¤
 void ObjectManager::DestroyEnemyDynamic(int id)
 {
     int cnt = 0;
     for (auto& w : enemy_dynamicList) {
         if (w->GetID() == id) {
             enemy_dynamicList.erase(enemy_dynamicList.begin() + cnt);
+            break;
+        }
+        ++cnt;
+    }
+}
+//æŒ‡å®šã®ã‚¨ãƒãƒŸãƒ¼ã®æ”»æ’ƒã‚’å‰Šé™¤
+void ObjectManager::DestroyEnemyAttack(int id)
+{
+    int cnt = 0;
+    for (auto& w : enemy_attackList) {
+        if (w->GetID() == id) {
+            enemy_attackList.erase(enemy_attackList.begin() + cnt);
             break;
         }
         ++cnt;
@@ -252,7 +279,7 @@ void ObjectManager::DestroyEnemyFloating(int id)
     }
 }
 
-// ‘S‚Ä‚Ì–Ø‚ğ‰Šú‰»
+// å…¨ã¦ã®æœ¨ã‚’åˆæœŸåŒ–
 void ObjectManager::InitializeAll() {
     for (auto& w : woodList) {
         w->Initialize();
@@ -287,6 +314,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : enemy_attackList) {
+        w->Initialize();
+    }
+
     for (auto& w : enemy_floatingList) {
         w->Initialize();
     }
@@ -299,7 +330,7 @@ void ObjectManager::InitializeAll() {
 
 
 
-// ‘S‚Ä‚Ì–Ø‚ğXV
+// å…¨ã¦ã®æœ¨ã‚’æ›´æ–°
 void ObjectManager::UpdateAll() {
     for (auto& w : woodList) {
         w->Update();
@@ -341,6 +372,13 @@ void ObjectManager::UpdateAll() {
         }
     }
 
+    for (auto& w : enemy_attackList) {
+        if (w)
+        {
+            w->Update();
+        }
+    }
+  
     for (auto& w : enemy_floatingList) {
         if (w)
         {
@@ -354,7 +392,7 @@ void ObjectManager::UpdateAll() {
     }
 }
 
-// ‘S‚Ä‚Ì–Ø‚ğ•`‰æ
+// å…¨ã¦ã®æœ¨ã‚’æç”»
 void ObjectManager::DrawAll() {
     for (auto& w : woodList) {
         w->Draw();
@@ -388,13 +426,18 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+
+    for (auto& w : enemy_attackList) {
+        w->Draw();
+    }
+
     for (auto& w : enemy_floatingList) {
         w->Draw();
     }
 
 
-  
 
+  
     for (auto& w : teleport_blockList) {
 
 
@@ -402,7 +445,7 @@ void ObjectManager::DrawAll() {
     }
 }
 
-// ‘S‚Ä‚Ì–Ø‚ğ”jŠü
+// å…¨ã¦ã®æœ¨ã‚’ç ´æ£„
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
         w->Finalize();
@@ -433,6 +476,11 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : enemy_dynamicList) {
         w->Finalize();
     }
+
+    for (auto& w : enemy_attackList) {
+        w->Finalize();
+    }
+
     for (auto& w : teleport_blockList) {
         w->Finalize();
     }
@@ -443,7 +491,7 @@ void ObjectManager::FinalizeAll() {
     }
 
 
-    woodList.clear(); // “®“I”z—ñ‚ğƒNƒŠƒA‚µ‚Äƒƒ‚ƒŠ‰ğ•ú
+    woodList.clear(); // å‹•çš„é…åˆ—ã‚’ã‚¯ãƒªã‚¢ã—ã¦ãƒ¡ãƒ¢ãƒªè§£æ”¾
     rockList.clear();
     one_way_platformList.clear();
     sloping_blockList.clear();
@@ -451,7 +499,10 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
+    enemy_attackList.clear();
+  
     enemy_floatingList.clear();
+
     teleport_blockList.clear();
 
 
