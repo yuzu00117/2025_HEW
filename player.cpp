@@ -281,7 +281,13 @@ void Player::Update()
             {
                 m_body->ApplyLinearImpulse({ (GetSpeed() + adjust_speed)/3 , 0.0f }, player_point, true);
             }
-            m_direction = 1;
+
+
+            //使用中は左右反転できないようにした
+            if (Anchor::GetAnchorState() == Nonexistent_state)
+            {
+                m_direction = 1;
+            }
 
             if (draw_state == player_nomal_state)
             {
@@ -299,8 +305,12 @@ void Player::Update()
             {
                 m_body->ApplyLinearImpulse({ ((GetSpeed()) + adjust_speed)/-3 , 0.0f }, player_point, true);
             }
-            m_direction = 0;
 
+            //使用中は左右反転できないようにした
+            if (Anchor::GetAnchorState() == Nonexistent_state)
+            {
+                m_direction = 0;
+            }
 
             if (draw_state == player_nomal_state)
             {
@@ -652,6 +662,7 @@ void Player::Draw()
       
        
    
+       
 
 
         switch (draw_state)
