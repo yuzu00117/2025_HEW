@@ -324,7 +324,7 @@ void Player::Update()
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
     //ジャンプチェック
-    if (!m_is_jumping && !m_jump_pressed && ((Keyboard_IsKeyDown(KK_UP) || (state.buttonA))))
+    if ((!m_is_jumping && !m_jump_pressed && ((Keyboard_IsKeyDown(KK_UP) || (state.buttonA))))&&Anchor::GetAnchorState()==Nonexistent_state)
     {
         if (vel.y < max_velocity.y)
         {
