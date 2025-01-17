@@ -251,14 +251,17 @@ void AnchorPoint::Draw()
 
 
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
-
+		Player& player = Player::GetInstance();//ゲットインスタンス
 		//draw
-		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			0.0f,
-			{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-		);
+		if (g_select_anchor_point_body->GetPosition() != player.GetOutSidePlayerBody()->GetPosition())
+		{
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				0.0f,
+				{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			);
+		}
 	}
 
 
