@@ -225,14 +225,14 @@ void AnchorPoint::Draw()
 			}
 
 
-			float scale_manager = objectA->need_anchor_level;
+			
 			
 			//draw
 			DrawSprite(
 				{ draw_x,
 				  draw_y },
 				g_anchor_point_body[i]->GetAngle(),
-				{75* scale_manager ,75* scale_manager }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				{75,75}///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 			);
 		}
 	}
