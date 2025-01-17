@@ -441,7 +441,8 @@ public:
             b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
 
             //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
-            if (vec.y >= object_half_size.y)
+            //+0.01fはちょっと調整
+            if (vec.y >= object_half_size.y + 0.01f)
             {
                 enemy_instance->CollisionPulledObject();
             }
@@ -475,7 +476,8 @@ public:
             b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
 
             //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
-            if (vec.y >= object_half_size.y)
+            //+0.01fはちょっと調整
+            if (vec.y >= object_half_size.y + 0.01f)
             {
                 enemy_instance->CollisionPulledObject();
             }
@@ -507,7 +509,8 @@ public:
             b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
 
             //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
-            if (vec.y >= object_half_size.y)
+            //+0.01fはちょっと調整
+            if (vec.y >= object_half_size.y + 0.01f)
             {
                 enemy_instance->CollisionPulledObject();
             }
