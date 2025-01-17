@@ -15,10 +15,7 @@
 #ifndef ANCHOR_SPIRIT_H
 #define ANCHOR_SPIRIT_H
 
-#define		ANCHOR_LEVEL_2	(100.0)
-#define		ANCHOR_LEVEL_3	(300.0)
 #define		MAX_ANCHOR_SPIRIT (400.0)
-#define		SPIRIT_USED_BY_PULLING	(-25.0)
 
 class AnchorSpirit
 {

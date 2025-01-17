@@ -30,6 +30,15 @@ float	PlayerStamina::GetPlayerStaminaValue()
 
 void	PlayerStamina::EditPlayerStaminaValue(float value)
 {
+
+	float anchor_spirit = AnchorSpirit::GetAnchorSpiritValue();
+	if (value < 0 && anchor_spirit > 0)
+	{
+		AnchorSpirit::EditAnchorSpiritValue(value);
+		return;
+	}
+
+	//スタミナを更新
 	m_stamina += value;
 
 	if (m_stamina <= 0.0f)
@@ -37,9 +46,8 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 		//ここで残機を減らす処理
 		//ここで画面遷移
 	}
-
 	//体力が最大体力を超えた時の処理
-	if (m_stamina > MAX_STAMINA)
+	else if (m_stamina > MAX_STAMINA)
 	{
 		//余った分はソウルゲージをプラス
 		AnchorSpirit::EditAnchorSpiritValue(m_stamina - MAX_STAMINA);

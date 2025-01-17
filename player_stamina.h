@@ -16,8 +16,6 @@
 #define	PLAYER_STAMINA_H
 
 #define		MAX_STAMINA		(300.0)
-#define		STAMINA_DAMAGE_BY_OBJECT_LEVEL_1	(-50.0)
-#define		STAMINA_DAMAGE_BY_OBJECT_LEVEL_2	(-100.0)
 
 class PlayerStamina
 {
