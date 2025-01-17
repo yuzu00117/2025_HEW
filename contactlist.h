@@ -318,6 +318,22 @@ public:
             }
         }
 
+        //プレイヤーの通常攻撃攻撃と動的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_normal_attack_anchor) ||
+            (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_dynamic))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
+            }
+        }
+
         //プレイヤーと浮遊エネミーの衝突
         if ((objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating) ||
