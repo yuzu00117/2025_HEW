@@ -181,6 +181,27 @@ public:
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
+
+        //引っ張れる床のオブジェクトの引っ張る処理
+        if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
+            (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
+        {
+            //どちらが床のオブジェクトか特定
+            if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                ground_instance->Pulling_ground(objectA->add_force);
+                ground_instance->SetIfPulling(true);
+            }
+            else
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                ground_instance->Pulling_ground(objectB->add_force);
+                ground_instance->SetIfPulling(true);
+            }
+
+        }
+
         //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
         if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
@@ -225,26 +246,6 @@ public:
 
             }
 
-            //引っ張れる床のオブジェクトの引っ張る処理
-            if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
-                (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
-            {
-                //どちらが床のオブジェクトか特定
-                if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectA->add_force);
-                    ground_instance->SetIfPulling(true);
-                }
-                else
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectB->add_force);
-                    ground_instance->SetIfPulling(true);
-                }
-
-            }
-
             //岩のオブジェクトの引っ張る処理
             if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
             {
@@ -281,6 +282,61 @@ public:
        
              
         }
+
+        //オブジェクトが倒れた時別のオブジェクトや床に衝突した時
+        if ((objectA->collider_type == collider_object && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_ground))
+        {
+            if (objectA->object_name == Object_Enemy_Static || objectA->object_name == Object_Enemy_Dynamic || objectA->object_name == Object_Enemy_Floating)
+            {
+                return;
+            }
+            ObjectData* object_data[2];
+            object_data[0] = objectA;
+            object_data[1] = objectB;
+
+
+            for (int i = 0; i < 2; i++)
+            {
+                switch (object_data[i]->object_name)
+                {
+                case Object_Wood:
+                {
+                    wood* object_instance = object_manager.FindWoodByID(object_data[i]->id);
+                    if (object_instance->GetIfPulling() == true)
+                    {
+                        object_instance->FalledDownSound();
+                        return;
+                    }
+                }
+                break;
+                case Object_Rock:
+                {
+                    rock* object_instance = object_manager.FindRockByID(object_data[i]->id);
+                    if (object_instance->GetIfPulling() == true)
+                    {
+                        object_instance->FalledDownSound();
+                        return;
+                    }
+                }
+                break;
+                case Object_Static_to_Dynamic:
+                {
+                    static_to_dynamic_block* object_instance = object_manager.FindStatic_to_Dynamic_BlcokID(object_data[i]->id);
+                    if (object_instance->GetIfPulling() == true)
+                    {
+                        object_instance->FalledDownSound();
+                        return;
+                    }
+                }
+                break;
+                }
+
+            }
+        }
+
 
         //プレイヤーと静的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_body) ||
@@ -884,7 +940,50 @@ public:
         }
 
 
+
+
+
+        //プレイヤーに付属しているセンサーとアンカーポイントが離れた場合
+        if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
+        {
+            ObjectData* object_data = objectB;
+            if (objectA->collider_type == collider_anchor_point) {
+                object_data = objectA;
+            }
+
+            //木のオブジェクトの引っ張る処理
+            if (object_data->object_name == Object_Wood)
+            {
+                wood* wood_instance = object_manager.FindWoodByID(objectB->id);
+                if (wood_instance != nullptr && wood_instance->GetIfPulling() == true) {
+                    wood_instance->SetIfPulling(false);
+                }
+            }
+
+            //岩のオブジェクトの引っ張る処理
+            if (object_data->object_name == Object_Rock )
+            {
+                rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                if (rock_instance != nullptr && rock_instance->GetIfPulling() == true) {
+                    rock_instance->SetIfPulling(false);
+                }
+            }
+
+
+            //静的動的のオブジェクトの
+            if (object_data->object_name == Object_Static_to_Dynamic)
+            {
+                static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                if (static_to_dynamic_block_instance != nullptr && static_to_dynamic_block_instance->GetIfPulling() == true) {
+                    static_to_dynamic_block_instance->SetIfPulling(false);
+                }
+            }
+
+
+        }
     }
+
 
 
 };

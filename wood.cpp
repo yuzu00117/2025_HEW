@@ -188,6 +188,7 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 	}
 
 	body->SetLinearVelocity(pulling_power);
+	SetIfPulling(true);
 }
 
 void wood::Draw()

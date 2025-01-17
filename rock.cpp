@@ -156,6 +156,7 @@ void rock::Pulling_rock(b2Vec2 pulling_power)
 	}
 
 	body->SetLinearVelocity(pulling_power);
+	SetIfPulling(true);
 }
 
 void rock::Draw()

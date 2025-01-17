@@ -13,7 +13,7 @@
 #define ROCK_H
 
 #include"include/box2d/box2d.h"
-
+#include"sound.h"
 
 
 
@@ -66,7 +66,11 @@ public:
 		Rock_body = body;
 	}
 
+	bool	GetIfPulling() { return m_pulling; }
+	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
+
+	void	FalledDownSound() { app_atomex_start(Player_Jump_Sound); }
 
 
 	///-----------------------------------------------------------------------------
@@ -105,5 +109,7 @@ private:
 	b2Body* AnchorPoint_body;
 
 	b2Vec2 m_AnchorPoint_size;
+
+	bool	m_pulling = false;
 };
 #endif // !WOOD_H

@@ -12,6 +12,7 @@
 #define STATIC_TO_DYNAMIC_BLOCK_H
 
 #include"include/box2d/box2d.h"
+#include"sound.h"
 
 
 enum collider_type_Box_or_Circle
@@ -92,6 +93,11 @@ public:
 	}
 
 
+	bool	GetIfPulling() { return m_pulling; }
+	void	SetIfPulling(bool flag) { m_pulling = flag; }
+
+	void	FalledDownSound() { app_atomex_start(Player_Jump_Sound); }
+
 private:
 	int id; // 各インスタンス固有の ID
 
@@ -102,6 +108,8 @@ private:
 	collider_type_Box_or_Circle box_or_circle;
 
 	bool change_dynamic_flag;
+
+	bool	m_pulling = false;
 };
 
 
