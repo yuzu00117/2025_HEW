@@ -27,6 +27,7 @@ enum player_draw_state
 	player_throw_anchor_state,
 	player_dameged_state,
 	player_walk_state,
+	player_normal_attack_state,
 
 };
 

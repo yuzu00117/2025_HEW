@@ -27,6 +27,7 @@ ID3D11ShaderResourceView* g_player_throw_anchor_sheet = NULL;
 ID3D11ShaderResourceView* g_player_walk_sheet = NULL;
 //通常攻撃
 ID3D11ShaderResourceView* g_player_normal_attack_sheet = NULL;
+ID3D11ShaderResourceView* g_player_normal_attack_anchor_sheet = NULL;
 //被弾モーション
 ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 
@@ -76,9 +77,15 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     g_player_throw_anchor_sheet= InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
 
+    g_player_normal_attack_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_anchor_sheet.png");
+
+    g_player_normal_attack_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_sheet.png");
+
     g_player_walk_sheet= InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
 
     g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
+
+
 
 
     b2BodyDef body;
@@ -477,6 +484,8 @@ void Player::Update()
         Anchor::CreateNormalAttack(b2Vec2(2.0f, 2.0f), right);//通常攻撃のボディをつくる
 
         Anchor::SetAnchorState(NowAttackngNormalAttack);
+
+        draw_state = player_normal_attack_state;
         break;
     case NowAttackngNormalAttack:
         //攻撃中
@@ -742,6 +751,44 @@ void Player::Draw()
 
             );
             break;
+
+        case player_normal_attack_state:
+            draw_cnt++;
+
+           
+
+            if (50 < draw_cnt)
+            {
+                draw_state = player_nomal_state;
+                draw_cnt = 0;
+            }
+
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_normal_attack_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 5, draw_cnt / 3, 3.0, m_direction
+
+            );
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_normal_attack_anchor_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 5, draw_cnt / 3, 3.0, m_direction
+
+            );
+            break;
+           
         default:
             break;
         }
