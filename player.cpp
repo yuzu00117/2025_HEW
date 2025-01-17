@@ -30,6 +30,7 @@ ID3D11ShaderResourceView* g_player_throw_anchor_sheet = NULL;
 ID3D11ShaderResourceView* g_player_walk_sheet = NULL;
 //通常攻撃
 ID3D11ShaderResourceView* g_player_normal_attack_sheet = NULL;
+ID3D11ShaderResourceView* g_player_normal_attack_anchor_sheet = NULL;
 //被弾モーション
 ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 
@@ -79,9 +80,15 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     g_player_throw_anchor_sheet= InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
 
+    g_player_normal_attack_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_anchor_sheet.png");
+
+    g_player_normal_attack_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_sheet.png");
+
     g_player_walk_sheet= InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
 
     g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
+
+
 
 
     b2BodyDef body;
@@ -218,9 +225,14 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 void Player::Update()
 {
     // プレイヤーの更新処理
+
+    //モーションのDrawカウントを加算
+    draw_cnt++;
     
     //センサーの画面サイズに応じた大きさの変動
     Player_sensor_size_change(AnchorSpirit::GetAnchorLevel());
+
+
 
 
 
@@ -379,14 +391,14 @@ void Player::Update()
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_wait_state);//作成状態に移行
+        Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
     }
 
 
     //通常攻撃のアンカーの呼び出し
     if ((Keyboard_IsKeyDown(KK_N) || (state.buttonX)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
-        Anchor::SetAnchorState(WaitCraateNormalAttack_state);
+        Anchor::SetAnchorState(WaitCreateNormalAttackDraw_cnt_state);
     }
 
  
@@ -398,8 +410,14 @@ void Player::Update()
     case Nonexistent_state://何もない状態
         //ここからの移行は上のボタンで管理
         break;
-    case Create_wait_state:
+    case Create_wait_draw_cnt_state:
+        draw_cnt = 0;
         draw_state = player_throw_anchor_state;
+        Anchor::SetAnchorState(Create_wait_state);
+
+        break;
+    case Create_wait_state:
+       
 
         if (30 < draw_cnt)
         {
@@ -468,6 +486,11 @@ void Player::Update()
         AnchorPoint::OutsideSensor(AnchorPoint::GetTargetAnchorPointBody());
 
         break;
+    case WaitCreateNormalAttackDraw_cnt_state:
+        draw_cnt = 0;
+        draw_state = player_normal_attack_state;
+        Anchor::SetAnchorState(WaitCraateNormalAttack_state);//通常攻撃発生
+        break;
 
     case WaitCraateNormalAttack_state:
         //通常攻撃の発生前の待ち状態
@@ -485,7 +508,13 @@ void Player::Update()
         //通常攻撃の判定をつくる
         Anchor::CreateNormalAttack(b2Vec2(2.0f, 2.0f), right);//通常攻撃のボディをつくる
 
+
+   
+
+
         Anchor::SetAnchorState(NowAttackngNormalAttack);
+
+      
         break;
     case NowAttackngNormalAttack:
         //攻撃中
@@ -551,6 +580,10 @@ void Player::Update()
 
     //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
+
+
+  
 }
 
 
@@ -640,7 +673,7 @@ void Player::Draw()
             break;
         case player_jumping_state:
 
-            draw_cnt++;
+            
 
             if (30 < draw_cnt)
             {
@@ -677,7 +710,7 @@ void Player::Draw()
         case player_throw_anchor_state:
 
 
-            draw_cnt++;
+           
 
             if (64<draw_cnt)
             {
@@ -706,7 +739,7 @@ void Player::Draw()
 
             break;
         case player_dameged_state:
-            draw_cnt++;
+           
             if (24 < draw_cnt)
             {
                 draw_cnt = 0;
@@ -728,7 +761,7 @@ void Player::Draw()
             break;
         case player_walk_state:
 
-            draw_cnt++;
+            
 
             if (ReturnAbsoluteValue(m_body->GetLinearVelocity().x)<0.1)//横の移動量の絶対値が0.1未満の時にノーマルに戻る
             {
@@ -751,6 +784,44 @@ void Player::Draw()
 
             );
             break;
+
+        case player_normal_attack_state:
+           
+
+           
+
+            if (50 < draw_cnt)
+            {
+                draw_state = player_nomal_state;
+                draw_cnt = 0;
+            }
+
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_normal_attack_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 5, draw_cnt / 3, 3.0, m_direction
+
+            );
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_normal_attack_anchor_sheet);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 5, draw_cnt / 3, 3.0, m_direction
+
+            );
+            break;
+           
         default:
             break;
         }

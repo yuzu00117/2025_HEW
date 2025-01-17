@@ -14,6 +14,7 @@
 enum AnchorState        //player.cppないのupdateで管理する際に利用している
 {
 	Nonexistent_state,	//存在しない状態
+	Create_wait_draw_cnt_state,//draw_cnt用の調整
 	Create_wait_state, //作成するときのモーションまち
 	Create_state,		//作成している状態
 	Throwing_state,		//投げている状態　 Throwを呼び出す
@@ -21,6 +22,8 @@ enum AnchorState        //player.cppないのupdateで管理する際に利用している
 	Pulling_state,		//引っ張っている状態
 	Deleting_state,
 
+
+	WaitCreateNormalAttackDraw_cnt_state,//通常攻撃のDrawstate管理用
 	WaitCraateNormalAttack_state,//通常攻撃の発生前フレーム消費のため　45フレーム
 	CreateNormalAttack_state,//通常攻撃を作成する状態
 	NowAttackngNormalAttack,//通常攻撃の攻撃中
