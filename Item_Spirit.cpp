@@ -96,13 +96,16 @@ void	ItemSpirit::Update()
             vec.y = player_position.y - m_body->GetPosition().y;
             vec.Normalize();
 
-            float speed = 0.2f;
+            float speed = 0.5f;
 
             GetBody()->ApplyLinearImpulseToCenter(b2Vec2(vec.x * speed, vec.y * speed), true);
 
             //ソウルのサイズが徐々に減る
-            m_size.x -= 0.005f;
-            m_size.y -= 0.005f;
+            if (m_size.x > 0.8f || m_size.y > m_size.x * 2)
+            {
+                m_size.x -= 0.005f;
+                m_size.y -= 0.005f;
+            }
 
         }
         //状態が上昇中の場合

@@ -40,7 +40,7 @@ bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
 
-
+bool    CollectSpirit_pressed = false;
 
 b2Body* player_body;
 
@@ -359,11 +359,12 @@ void Player::Update()
 
 //ソウルアイテム回収処理
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-    if (Keyboard_IsKeyDown(KK_B) || state.buttonB)
+    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB))
     {
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
     }
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
 
 
 
