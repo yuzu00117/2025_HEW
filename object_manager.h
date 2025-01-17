@@ -21,6 +21,7 @@
 #include"movable_ground.h"
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
+#include"enemy_attack.h"
 #include"teleport_block.h"
 
 // オブジェクトの種類を定義
@@ -34,6 +35,7 @@ enum ObjectType {
     
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
+    Object_Enemy_Attack, //エネミーの攻撃
 
     Object_teleport_block,//テレポートブロック
 };
@@ -63,6 +65,9 @@ public:
     void AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
     //動的エネミー生成
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
+    //エネミーの攻撃の生成
+    void AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id);
+
 
     void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
 
@@ -82,6 +87,8 @@ public:
     EnemyStatic* FindEnemyStaticByID(int id);
     //IDを使って動的エネミーを検索
     EnemyDynamic* FindEnemyDynamicByID(int id);
+    //IDを使ってエネミーの攻撃を検索
+    EnemyAttack* FindEnemyAttackByID(int id);
 
     teleport_block* FindTeleportBlock(int id);
     
@@ -92,6 +99,8 @@ public:
     void DestroyEnemyStatic(int id);
     //指定の動的エネミーを削除
     void DestroyEnemyDynamic(int id);
+    //指定のエネミーの攻撃を削除
+    void DestroyEnemyAttack(int id);
 
 
     // 全てのオブジェクトを初期化
@@ -114,7 +123,8 @@ private:
     std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//静的→動的ブロック挙動
     std::vector<std::unique_ptr<movable_ground>> movable_groundList;//木のリスト
     std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
-    std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//静的エネミーのリスト
+    std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//動的エネミーのリスト
+    std::vector<std::unique_ptr<EnemyAttack>> enemy_attackList;//エネミーの攻撃のリスト
     std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
     //ここにオブジェクトごとにリストを追加していく感じ
 

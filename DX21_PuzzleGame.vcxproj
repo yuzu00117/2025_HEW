@@ -143,6 +143,7 @@
     <ClCompile Include="display.cpp" />
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy_attack.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_static.cpp" />
     <ClCompile Include="field.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="directx_controller.h" />
     <ClInclude Include="easing.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy_attack.h" />
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_static.h" />
     <ClInclude Include="field.h" />

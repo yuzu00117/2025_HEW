@@ -64,6 +64,11 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
 {
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
+//エネミーの攻撃の生成
+void ObjectManager::AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
+{
+    enemy_attackList.emplace_back(std::make_unique<EnemyAttack>(position, body_size, angle, id));
+}
 
 
 
@@ -158,6 +163,16 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+//IDを使ってエネミーの攻撃を検索
+EnemyAttack* ObjectManager::FindEnemyAttackByID(int id)
+{
+    for (auto& w : enemy_attackList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
 
 
 //IDを使って使ってテレポートブロックを検索
@@ -227,6 +242,18 @@ void ObjectManager::DestroyEnemyDynamic(int id)
         ++cnt;
     }
 }
+//指定のエネミーの攻撃を削除
+void ObjectManager::DestroyEnemyAttack(int id)
+{
+    int cnt = 0;
+    for (auto& w : enemy_attackList) {
+        if (w->GetID() == id) {
+            enemy_attackList.erase(enemy_attackList.begin() + cnt);
+            break;
+        }
+        ++cnt;
+    }
+}
 
 // 全ての木を初期化
 void ObjectManager::InitializeAll() {
@@ -260,6 +287,10 @@ void ObjectManager::InitializeAll() {
     }
 
     for (auto& w : enemy_dynamicList) {
+        w->Initialize();
+    }
+
+    for (auto& w : enemy_attackList) {
         w->Initialize();
     }
 
@@ -316,7 +347,12 @@ void ObjectManager::UpdateAll() {
         }
     }
 
-
+    for (auto& w : enemy_attackList) {
+        if (w)
+        {
+            w->Update();
+        }
+    }
 
     for (auto& w : teleport_blockList) {
 
@@ -358,10 +394,11 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
-
+    for (auto& w : enemy_attackList) {
+        w->Draw();
+    }
 
   
-
     for (auto& w : teleport_blockList) {
 
 
@@ -397,6 +434,14 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : enemy_dynamicList) {
+        w->Finalize();
+    }
+
+    for (auto& w : enemy_attackList) {
+        w->Finalize();
+    }
+
     for (auto& w : teleport_blockList) {
         w->Finalize();
     }
@@ -410,7 +455,7 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
-
+    enemy_attackList.clear();
 
     teleport_blockList.clear();
 
