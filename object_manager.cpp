@@ -74,6 +74,7 @@ void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float an
 void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
 {
     teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
+
 }
 
 
@@ -175,12 +176,20 @@ EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
 teleport_block* ObjectManager::FindTeleportBlock(int id)
 {
     for (auto& w : teleport_blockList) {
+
         if (w->GetID() == id) {
             return w.get();
         }
     }
     return nullptr; // Œ©‚Â‚©‚ç‚È‚¢ê‡‚Í nullptr ‚ð•Ô‚·
 }
+
+
+
+
+
+
+
 
 Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
 {
@@ -340,6 +349,7 @@ void ObjectManager::UpdateAll() {
     }
 
     for (auto& w : teleport_blockList) {
+
         w->Update();
     }
 }
@@ -382,7 +392,12 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+
+  
+
     for (auto& w : teleport_blockList) {
+
+
         w->Draw();
     }
 }
@@ -438,6 +453,8 @@ void ObjectManager::FinalizeAll() {
     enemy_dynamicList.clear();
     enemy_floatingList.clear();
     teleport_blockList.clear();
+
+
 
 }
 
