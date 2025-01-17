@@ -78,7 +78,6 @@ typedef struct AppTag {
 
 enum Sound_Manager
 {
-	NULL_SOUND,
 	GAME_BGM,
 	TITLE_BGM,
 	STAGESELECT_BGM,
@@ -106,6 +105,7 @@ enum Sound_Manager
 	Object_Get_Coin_Sound,
 
 	Enemy_Dead_Sound,
+	Player_Walk_Sound
 
 };
 /***************************************************************************
@@ -130,28 +130,29 @@ CriBool app_atomex_stop_cue();
 
  /* キュー一覧 */
 static AppCueListItem g_cue_list[] = {
-CRI_CUESHEET_0_1_1BGM,					//1
-CRI_CUESHEET_0_タイトルBGM,				//2
-CRI_CUESHEET_0_BGM_STAGESELECT,			//3
-CRI_CUESHEET_0_リザルトBGM,				//4
-CRI_CUESHEET_0_選択音,					//5
-CRI_CUESHEET_0_決定音,					//6
-CRI_CUESHEET_0_キャンセル音,			//7
-CRI_CUESHEET_0_一時停止音_メニュー音_,	//8
-CRI_CUESHEET_0_アンカーヒットポイント,	//9
-CRI_CUESHEET_0_アンカーポイントミス,	//10
-CRI_CUESHEET_0_アンカーを引っ張る音,	//11
-CRI_CUESHEET_0_アンカー投げる音,		//12
-CRI_CUESHEET_0_ジャンプ,				//13
-CRI_CUESHEET_0_ソウル吸収,				//14
-CRI_CUESHEET_0_ダメージを受ける音,		//15
-CRI_CUESHEET_0_やられた音,				//16
-CRI_CUESHEET_0_岩が落ちる音,			//17
-CRI_CUESHEET_0_宝を取る音,				//18
-CRI_CUESHEET_0_木が倒れる音,			//19
-CRI_CUESHEET_0_岩が転がる音,			//20
-CRI_CUESHEET_0_コインを取る音,			//21
-CRI_CUESHEET_0_敵を倒す音,				//22
+CRI_CUESHEET_0_1_1BGM,					//0
+CRI_CUESHEET_0_タイトルBGM,				//1
+CRI_CUESHEET_0_BGM_STAGESELECT,			//2
+CRI_CUESHEET_0_リザルトBGM,				//3
+CRI_CUESHEET_0_選択音,					//4
+CRI_CUESHEET_0_決定音,					//5
+CRI_CUESHEET_0_キャンセル音,			//6
+CRI_CUESHEET_0_一時停止音_メニュー音_,	//7
+CRI_CUESHEET_0_アンカーヒットポイント,	//8
+CRI_CUESHEET_0_アンカーポイントミス,	//9
+CRI_CUESHEET_0_アンカーを引っ張る音,	//10
+CRI_CUESHEET_0_アンカー投げる音,		//11
+CRI_CUESHEET_0_ジャンプ,				//12
+CRI_CUESHEET_0_ソウル吸収,				//13
+CRI_CUESHEET_0_ダメージを受ける音,		//14
+CRI_CUESHEET_0_やられた音,				//15
+CRI_CUESHEET_0_岩が落ちる音,			//16
+CRI_CUESHEET_0_宝を取る音,				//17
+CRI_CUESHEET_0_木が倒れる音,			//18
+CRI_CUESHEET_0_岩が転がる音,			//19
+CRI_CUESHEET_0_コインを取る音,			//20
+CRI_CUESHEET_0_敵を倒す音,				//21
+CRI_CUESHEET_0_プレイヤーの足音			//22
 };
 
 
