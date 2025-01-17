@@ -65,16 +65,18 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
 
-
-
-
-
+//浮遊エネミー生成
+void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
+{
+    enemy_floatingList.emplace_back(std::make_unique<EnemyFloating>(position, body_size, angle));
+}
 //テレポートブロックの生成
 void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
 {
     teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
 
 }
+
 
 
 
@@ -159,6 +161,16 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+//IDを使って浮遊エネミーを検索
+EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
+{
+    for (auto& w : enemy_floatingList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
 
 //IDを使って使ってテレポートブロックを検索
 teleport_block* ObjectManager::FindTeleportBlock(int id)
@@ -228,6 +240,18 @@ void ObjectManager::DestroyEnemyDynamic(int id)
     }
 }
 
+void ObjectManager::DestroyEnemyFloating(int id)
+{
+    int cnt = 0;
+    for (auto& w : enemy_floatingList) {
+        if (w->GetID() == id) {
+            enemy_floatingList.erase(enemy_floatingList.begin() + cnt);
+            break;
+        }
+        ++cnt;
+    }
+}
+
 // 全ての木を初期化
 void ObjectManager::InitializeAll() {
     for (auto& w : woodList) {
@@ -263,16 +287,17 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
-
-    for (auto& w : teleport_blockList)
-    {
+    for (auto& w : enemy_floatingList) {
         w->Initialize();
     }
 
-  
-
+    for (auto& w : teleport_blockList) {
+        w->Initialize();
+    }
 
 }
+
+
 
 // 全ての木を更新
 void ObjectManager::UpdateAll() {
@@ -316,7 +341,12 @@ void ObjectManager::UpdateAll() {
         }
     }
 
-
+    for (auto& w : enemy_floatingList) {
+        if (w)
+        {
+            w->Update();
+        }
+    }
 
     for (auto& w : teleport_blockList) {
 
@@ -358,6 +388,9 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : enemy_floatingList) {
+        w->Draw();
+    }
 
 
   
@@ -397,7 +430,15 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : enemy_dynamicList) {
+        w->Finalize();
+    }
     for (auto& w : teleport_blockList) {
+        w->Finalize();
+    }
+
+
+    for (auto& w : enemy_floatingList) {
         w->Finalize();
     }
 
@@ -410,8 +451,7 @@ void ObjectManager::FinalizeAll() {
     movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
-
-
+    enemy_floatingList.clear();
     teleport_blockList.clear();
 
 

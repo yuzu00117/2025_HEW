@@ -21,6 +21,7 @@
 #include"anchor_point.h"
 #include"enemy_dynamic.h"
 #include"enemy_static.h"
+#include"enemy_floating.h"
 #include"object_manager.h"
 #include"Item_Manager.h"
 
@@ -157,6 +158,9 @@ void Field::Initialize()
 				objectManager.AddTeleportBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(25.f, 1.f), b2Vec2(25.f, 4.f));
 			}
 
+			if (field_map[y][x] == 21) {//浮遊敵
+				objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
 		}
 	}
 
