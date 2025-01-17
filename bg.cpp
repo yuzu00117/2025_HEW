@@ -15,115 +15,202 @@
 #include "player_position.h"
 
 
-static ID3D11ShaderResourceView* g_Bg_Texture = NULL;//背景のテクスチャ
-Bg* g_p_bg[3] = { nullptr };
+static ID3D11ShaderResourceView* g_Bg_Texture1 = NULL;//背景のテクスチャ
+static ID3D11ShaderResourceView* g_Bg_Texture2 = NULL;//背景のテクスチャ
+static ID3D11ShaderResourceView* g_Bg_Texture3 = NULL;//背景のテクスチャ
+static ID3D11ShaderResourceView* g_Bg_Texture4 = NULL;//背景のテクスチャ
+static ID3D11ShaderResourceView* g_Bg_Texture5 = NULL;//背景のテクスチャ
+
+
+
+// プレイヤーの過去の座標
 b2Vec2 g_old_player_position;
 
+// 各背景のスクロール速度
+static float g_ScrollSpeed[3] = { 0.5f, 0.8f, 1.0f };
 
 // UVスクロール用Tu座標
 static float g_UvScrollTu = 0.0f;
 
+// 背景インスタンス
+Bg bg;
+
+#define BACK_GROUND_HEIGHT (-350)
+
 void Bg::Initialize()
 {
-	g_Bg_Texture = InitTexture(L"asset\\texture\\haikei.png");
+    // 各背景テクスチャの読み込み
+    g_Bg_Texture1 = InitTexture(L"asset\\texture\\stage1_1\\background1.png");
+    g_Bg_Texture2 = InitTexture(L"asset\\texture\\stage1_1\\background5.png");
+    g_Bg_Texture3 = InitTexture(L"asset\\texture\\stage1_1\\background4.png");
+    g_Bg_Texture4 = InitTexture(L"asset\\texture\\stage1_1\\background3.png");
+    g_Bg_Texture5 = InitTexture(L"asset\\texture\\stage1_1\\background2.png");
 
-	g_p_bg[0] = new Bg(XMFLOAT2(SCREEN_WIDTH / 2 * -1, SCREEN_HEIGHT / 2));
-	g_p_bg[1] = new Bg(XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2));
-	g_p_bg[2] = new Bg(XMFLOAT2(g_p_bg[1]->GetPosition().x * 3, SCREEN_HEIGHT / 2));
+    
+   
+    
+   // 背景画像の初期配置（4枚に増やす）
+    bg.texture_1_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT);
+    bg.texture_1_pos[1] = XMFLOAT2(SCREEN_WIDTH*2, BACK_GROUND_HEIGHT);
+    bg.texture_1_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2*2, BACK_GROUND_HEIGHT);
+    bg.texture_1_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3*2, BACK_GROUND_HEIGHT);
 
-	g_old_player_position = b2Vec2(0.0, 0.0);
+
+    bg.texture_2_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT);
+    bg.texture_2_pos[1] = XMFLOAT2(SCREEN_WIDTH*2, BACK_GROUND_HEIGHT);
+    bg.texture_2_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2*2, BACK_GROUND_HEIGHT);
+    bg.texture_2_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3*2, BACK_GROUND_HEIGHT);
+
+
+    bg.texture_3_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT);
+    bg.texture_3_pos[1] = XMFLOAT2(SCREEN_WIDTH * 2, BACK_GROUND_HEIGHT);
+    bg.texture_3_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2 * 2, BACK_GROUND_HEIGHT);
+    bg.texture_3_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3 * 2, BACK_GROUND_HEIGHT);
+
+
+    bg.texture_4_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT);
+    bg.texture_4_pos[1] = XMFLOAT2(SCREEN_WIDTH * 2, BACK_GROUND_HEIGHT);
+    bg.texture_4_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2 * 2, BACK_GROUND_HEIGHT);
+    bg.texture_4_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3 * 2, BACK_GROUND_HEIGHT);
+
+
+    bg.texture_5_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT);
+    bg.texture_5_pos[1] = XMFLOAT2(SCREEN_WIDTH * 2, BACK_GROUND_HEIGHT);
+    bg.texture_5_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2 * 2, BACK_GROUND_HEIGHT);
+    bg.texture_5_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3 * 2, BACK_GROUND_HEIGHT);
 }
 
 void Bg::Update()
 {
-	b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
+    // プレイヤーの現在位置を取得
+    b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
 
-	//画面を右に
-	if (player_position.x < g_old_player_position.x)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			float x = g_p_bg[i]->GetPosition().x + (g_old_player_position.x - player_position.x) * 300;
-			g_p_bg[i]->SetPosition(XMFLOAT2(x, g_p_bg[i]->GetPosition().y));
-		}
-	}
-	//画面を左に
-	if (player_position.x > g_old_player_position.x)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			float x = g_p_bg[i]->GetPosition().x + (g_old_player_position.x - player_position.x) * 300;
-			g_p_bg[i]->SetPosition(XMFLOAT2(x, g_p_bg[i]->GetPosition().y));
-		}
-	}
-	//画面を上に
-	if (player_position.y > g_old_player_position.y)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			float y = g_p_bg[i]->GetPosition().y + (g_old_player_position.y - player_position.y) * 20;
-			g_p_bg[i]->SetPosition(XMFLOAT2(g_p_bg[i]->GetPosition().x, y));
-		}
-	}
-	//画面を下に
-	if (player_position.y < g_old_player_position.y)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			float y = g_p_bg[i]->GetPosition().y + (g_old_player_position.y - player_position.y) * 20;
-			g_p_bg[i]->SetPosition(XMFLOAT2(g_p_bg[i]->GetPosition().x, y));
-		}
-	}
+    // テクスチャごとのスクロール速度
+    float textureScrollSpeeds[] = { 0.1f, 0.3f, 0.7f,1.0 ,1.5};
 
+    // 背景1のスクロール処理
+    for (int i = 0; i < 4; i++)
+    {
+        bg.texture_1_pos[i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeeds[0] * 100.0f;
 
-	//通り過ぎたら座標を手前にずらす（ループ処理）
-	for (int i = 0; i < 3; i++)
-	{
-		//前座標より小さいとき（左側移動しているとき）
-		if (player_position.x < g_old_player_position.x)
-		{
-			if (g_p_bg[i]->GetPosition().x > SCREEN_WIDTH * 2)
-			{
-				float x = g_p_bg[i]->GetPosition().x - SCREEN_WIDTH * 3.0f;
-				g_p_bg[i]->SetPosition(XMFLOAT2(x, g_p_bg[i]->GetPosition().y));
-			}
-		}
-		//前座標より大きいとき（右側移動しているとき）
-		if (player_position.x > g_old_player_position.x)
-		{
-			if (g_p_bg[i]->GetPosition().x < -SCREEN_WIDTH)
-			{
-				float x = g_p_bg[i]->GetPosition().x + SCREEN_WIDTH * 3.0f;
-				g_p_bg[i]->SetPosition(XMFLOAT2(x, g_p_bg[i]->GetPosition().y));
-			}
+        // 左にループ処理
+        if (bg.texture_1_pos[i].x < -SCREEN_WIDTH*2)
+            bg.texture_1_pos[i].x += SCREEN_WIDTH*2 * 4.0f;
 
+        // 右にループ処理
+        if (bg.texture_1_pos[i].x > SCREEN_WIDTH*2 * 3.0f)
+            bg.texture_1_pos[i].x -= SCREEN_WIDTH *2* 4.0f;
+    }
 
-		}
+    // 背景2のスクロール処理
+    for (int i = 0; i < 4; i++)
+    {
+        bg.texture_2_pos[i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeeds[1] * 100.0f;
+
+        // 左にループ処理
+        if (bg.texture_2_pos[i].x < -SCREEN_WIDTH*2)
+            bg.texture_2_pos[i].x += SCREEN_WIDTH*2 * 4.0f;
+
+        // 右にループ処理
+        if (bg.texture_2_pos[i].x > SCREEN_WIDTH*2 * 3.0f)
+            bg.texture_2_pos[i].x -= SCREEN_WIDTH*2 * 4.0f;
+    }
+
+    // 背景2のスクロール処理
+    for (int i = 0; i < 4; i++)
+    {
+        bg.texture_3_pos[i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeeds[2] * 100.0f;
+
+        // 左にループ処理
+        if (bg.texture_3_pos[i].x < -SCREEN_WIDTH * 2)
+            bg.texture_3_pos[i].x += SCREEN_WIDTH * 2 * 4.0f;
+
+        // 右にループ処理
+        if (bg.texture_3_pos[i].x > SCREEN_WIDTH * 2 * 3.0f)
+            bg.texture_3_pos[i].x -= SCREEN_WIDTH * 2 * 4.0f;
+    }
+
+    // 背景2のスクロール処理
+    for (int i = 0; i < 4; i++)
+    {
+        bg.texture_4_pos[i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeeds[3] * 100.0f;
+
+        // 左にループ処理
+        if (bg.texture_4_pos[i].x < -SCREEN_WIDTH * 2)
+            bg.texture_4_pos[i].x += SCREEN_WIDTH * 2 * 4.0f;
+
+        // 右にループ処理
+        if (bg.texture_4_pos[i].x > SCREEN_WIDTH * 2 * 3.0f)
+            bg.texture_4_pos[i].x -= SCREEN_WIDTH * 2 * 4.0f;
+    }
 
 
-	}
+    // 背景2のスクロール処理
+    for (int i = 0; i < 4; i++)
+    {
+        bg.texture_5_pos[i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeeds[4] * 100.0f;
 
-	g_old_player_position = player_position;
+        // 左にループ処理
+        if (bg.texture_5_pos[i].x < -SCREEN_WIDTH * 2)
+            bg.texture_5_pos[i].x += SCREEN_WIDTH * 2 * 4.0f;
+
+        // 右にループ処理
+        if (bg.texture_5_pos[i].x > SCREEN_WIDTH * 2 * 3.0f)
+            bg.texture_5_pos[i].x -= SCREEN_WIDTH * 2 * 4.0f;
+    }
+
+    // プレイヤー座標の更新
+    g_old_player_position = player_position;
 }
 
 void Bg::Draw()
 {
-	// シェーダリソースを設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture);
 
-	DrawSprite(g_p_bg[0]->GetPosition(),
-		0.0f,
-		XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT));
-	DrawSprite(g_p_bg[1]->GetPosition(),
-		0.0f,
-		XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT));
-	DrawSprite(g_p_bg[2]->GetPosition(),
-		0.0f,
-		XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT));
 
+    // 背景テクスチャの描画
+    ID3D11ShaderResourceView* textures[] = { g_Bg_Texture1, g_Bg_Texture2, g_Bg_Texture3 ,g_Bg_Texture4,g_Bg_Texture5};
+
+    // 背景1の描画
+    for (int i = 0; i < 4; i++)
+    {
+        GetDeviceContext()->PSSetShaderResources(0, 1, &textures[0]);
+        DrawSprite(bg.texture_1_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH*2, SCREEN_HEIGHT*2));
+    }
+
+    // 背景2の描画
+    for (int i = 0; i < 4; i++)
+    {
+        GetDeviceContext()->PSSetShaderResources(0, 1, &textures[1]);
+        DrawSprite(bg.texture_2_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH*2, SCREEN_HEIGHT*2));
+    }
+    // 背景2の描画
+    for (int i = 0; i < 4; i++)
+    {
+        GetDeviceContext()->PSSetShaderResources(0, 1, &textures[2]);
+        DrawSprite(bg.texture_3_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2));
+    }
+
+    // 背景2の描画
+    for (int i = 0; i < 4; i++)
+    {
+        GetDeviceContext()->PSSetShaderResources(0, 1, &textures[3]);
+        DrawSprite(bg.texture_3_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2));
+    }
+
+    // 背景2の描画
+    for (int i = 0; i < 4; i++)
+    {
+        GetDeviceContext()->PSSetShaderResources(0, 1, &textures[4]);
+        DrawSprite(bg.texture_3_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2));
+    }
 }
 
 void Bg::Finalize()
 {
-	UnInitTexture(g_Bg_Texture);
+    // 各背景テクスチャの解放
+    UnInitTexture(g_Bg_Texture1);
+    UnInitTexture(g_Bg_Texture2);
+    UnInitTexture(g_Bg_Texture3);
+    UnInitTexture(g_Bg_Texture4);
+    UnInitTexture(g_Bg_Texture5);
 }

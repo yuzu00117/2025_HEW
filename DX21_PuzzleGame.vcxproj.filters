@@ -119,6 +119,15 @@
     <ClCompile Include="ground.cpp">
       <Filter>ソースファイル\field</Filter>
     </ClCompile>
+    <ClCompile Include="easing.cpp" />
+    <ClCompile Include="Item_Manager.cpp" />
+    <ClCompile Include="Item_SpeedUp.cpp" />
+    <ClCompile Include="Item_Spirit.cpp" />
+    <ClCompile Include="movable_ground.cpp" />
+    <ClCompile Include="stage_point.cpp" />
+    <ClCompile Include="stage_point_factory.cpp" />
+    <ClCompile Include="stage_select_player.cpp" />
+    <ClCompile Include="FixtureSizeCalculate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -242,6 +251,17 @@
     <ClInclude Include="ground.h">
       <Filter>ヘッダーファイル\field</Filter>
     </ClInclude>
+    <ClInclude Include="easing.h" />
+    <ClInclude Include="Item_Manager.h" />
+    <ClInclude Include="Item_SpeedUp.h" />
+    <ClInclude Include="Item_Spirit.h" />
+    <ClInclude Include="movable_ground.h" />
+    <ClInclude Include="stage_point.h" />
+    <ClInclude Include="stage_point_factory.h" />
+    <ClInclude Include="stage_select.h" />
+    <ClInclude Include="stage_select_contact_list.h" />
+    <ClInclude Include="stage_select_player.h" />
+    <ClInclude Include="FixtureSizeCalculate.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">

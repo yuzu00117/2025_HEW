@@ -2,7 +2,7 @@
 // #name contactlist.h
 // #description 衝突時の処理を管理する
 // #make 2024/11/22　永野義也
-// #update 2024/12/28
+// #update 2025/1/10
 // #comment 追加・修正予定
 //          ・衝突時や衝突終了じなどの処理を書き込む
 // 
@@ -26,7 +26,8 @@
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 #include"Item_Manager.h"
-
+#include"FixtureSizeCalculate.h"
+#include"tool.h"
 
 
 class MyContactListener : public b2ContactListener {
@@ -81,6 +82,63 @@ public:
             
             player.SetIsJumping(false);
 
+
+        }
+
+        // プレーヤーとテレポートブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_teleport_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_teleport_block) ||
+            (objectA->collider_type == collider_teleport_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_teleport_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理（プレーヤーと地面が接触した時）
+
+                     //どちらが木のオブジェクトか特定
+            if (objectA->collider_type== collider_teleport_block)//Aが木のオブジェクト
+            {
+                teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectA->id);
+                teleport_block_instance->SetTeleportFlag(true);
+            }
+            else
+            {
+                teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectB->id);
+                teleport_block_instance->SetTeleportFlag(true);
+            }
+
+        }
+
+
+
+        // プレーヤーとテレポートブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg))
+        {
+
+            float object_velocity=0;
+            if (objectA->collider_type == collider_object)
+            {
+                object_velocity=ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().y);
+            }
+            else
+            {
+                object_velocity=ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().y);
+            }
+
+            if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
+            {
+                PlayerStamina::EditPlayerStaminaValue(-50);//被弾処理
+
+                if (objectA->collider_type == collider_object)
+                {
+                    player.Player_knockback(2, fixtureA->GetBody());
+                }
+                if (objectB->collider_type == collider_object)
+                {
+                    player.Player_knockback(2, fixtureB->GetBody());
+                }
+            }
 
         }
 
@@ -311,7 +369,9 @@ public:
 
         //引っ張られている状態のオブジェクトとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static))
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static) ||
+            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point)||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static))
         {
             if ((objectA->collider_type == collider_enemy_static) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
@@ -329,7 +389,9 @@ public:
 
         //引っ張られている状態のオブジェクトと動的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic))
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_dynamic) ||
+            (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic))
         {
 
             if ((objectA->collider_type == collider_enemy_dynamic) &&
@@ -380,6 +442,7 @@ public:
         }
 
 
+
         //プレイヤーと動的エネミーに付属しているセンサーが触れた場合
         if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_sensor) ||
@@ -416,6 +479,69 @@ public:
             }
         }
    
+
+        //ソウルアイテムがオブジェクトとぶつかったとき
+        if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->Item_name == ITEM_SPIRIT)||
+            (objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->Item_name == ITEM_SPIRIT))
+        {
+            //ソウルとオブジェのボディやfixtureやオブジェクトデータの変数を準備
+            //-------------------------------------------------------------------------
+            ObjectData* object_data = objectA;
+            b2Body* object = fixtureA->GetBody();
+            b2Fixture* object_fixture = fixtureA;
+
+            ObjectData* spirit_data = objectB;
+            b2Fixture* spirit_fixture = fixtureB;
+
+            if (objectA->Item_name == ITEM_SPIRIT) {
+                spirit_data = objectA;
+                spirit_fixture = fixtureA;
+
+                object_data = objectB;
+                object = fixtureB->GetBody();
+                object_fixture = fixtureB;
+            }
+            ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit_data->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+           
+            // もし収集中の場合は衝突処理を無視
+            //-------------------------------------------------------------------------
+            if (spirit_instance->GetState() == Spirit_Collecting)
+            {
+                return;
+            }
+
+            // オブジェからソウルまでのベクトルを計算
+            //-------------------------------------------------------------------------
+            b2Vec2 object_position = object->GetPosition();
+            b2Vec2 spirit_position = spirit_instance->GetBody()->GetPosition();
+            b2Vec2 vec;
+            vec.x = spirit_position.x - object_position.x;
+            vec.y = spirit_position.y - object_position.y;
+            
+            //オブジェのfixtureの半径を取得
+            b2Shape* const object_shape = object_fixture->GetShape();
+            b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
+
+
+          //条件別で違う処理をする（上昇するかどうか、地面に着いているかどうか）d
+         //-------------------------------------------------------------------------
+            
+            //ベクトルが縦幅より小さい時かつ、ソウルは上昇中ではない場合（つまり上昇していないソウルがオブジェの上に乗っている場合）
+            //上昇中じゃないのを条件にしたのは、連続した複数のオブジェの中で上昇している時オブジェ間を入る離れる瞬間と本当に一番上のオブジェに乗る瞬間を誤認させないため
+            if ((vec.y <= -object_half_size.y) && spirit_instance->GetState() != Spirit_Rising)
+            {
+                spirit_instance->SetState(Spirit_Idle); //ソウルの状態が地面にいる（ソウルのグラビティが0になる）(ソウルが落ちなくなる)
+            }
+            else
+            {
+                spirit_instance->SetState(Spirit_Rising);   //ソウルの状態が上昇中
+            }
+
+            spirit_instance->AddCollidedObject(object); //今当たっているオブジェをlistに追加
+        }
+
         // プレーヤーとアイテムが衝突したかを判定
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
@@ -434,11 +560,31 @@ public:
             switch (item->Item_name)
             {
             case ITEM_SPEED_UP:
+            {
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 item_instance->Function();
                 item_instance->SetDestory(true);//削除を呼び出す
-                break;
             }
+            break;
+            case ITEM_SPIRIT:
+            {
+                ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                //spirit_instance->SetIfCollidedPlayer(true);
+                spirit_instance->Function();
+                spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+
+            }
+            break;
+            case ITEM_COIN:
+            {
+                ItemCoin* coin_instance = item_manager.FindItem_Coin_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                coin_instance->Function();
+                coin_instance->SetDestory(true);//削除を呼び出す
+            }
+            break;
+
+            }
+            
         }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
@@ -446,6 +592,7 @@ public:
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     void EndContact(b2Contact* contact) override {
         ObjectManager& object_manager = ObjectManager::GetInstance();
+        ItemManager& item_manager = ItemManager::GetInstance();
 
         // 衝突したフィクスチャを取得
         b2Fixture* fixtureA = contact->GetFixtureA();
@@ -575,7 +722,24 @@ public:
                 enemy_instance->OutPlayerSensor();
             }
         }
+
+        //  ソウルアイテムがオブジェクトや床から離れた時
+        if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->Item_name == ITEM_SPIRIT) ||
+            (objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->Item_name == ITEM_SPIRIT))
+        {
+            auto spirit = objectA->Item_name == ITEM_SPIRIT ? objectA : objectB;
+            auto object = objectA->Item_name == ITEM_SPIRIT ? fixtureB : fixtureA;
+
+            ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+          
+            spirit_instance->DeleteCollidedObject(object->GetBody());
+        }
+
+
     }
+
 
 };
 

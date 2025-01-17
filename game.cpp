@@ -27,7 +27,7 @@
 #include"player.h"
 #include"player_stamina.h"
 #include"anchor_spirit.h"
-
+#include"bg.h"
 
 void Game::Initialize()
 {
@@ -57,10 +57,15 @@ void Game::Initialize()
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
 
+	//背景の初期化
+	Bg::Initialize();
+
 	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 	// 衝突リスナーをワールドに登録
 	MyContactListener& contactListener = MyContactListener::GetInstance();
 	world->SetContactListener(&contactListener);
+
+
 
 
 
@@ -86,6 +91,16 @@ void Game::Finalize(void)
 
 	//フィールドの終了処理
 	Field::Finalize();
+
+	//背景の終了処理
+	Bg::Finalize();
+
+
+
+
+
+
+	CRIFinalize();
 
 
 
@@ -130,6 +145,18 @@ void Game::Update(void)
 	Field::Update();
 
 
+	Bg::Update();
+
+	CRIUpdate();
+
+
+
+	Bg::Update();
+
+	CRIUpdate();
+
+
+
 	//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 	if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
 	{
@@ -150,20 +177,28 @@ void Game::Draw(void)
 	//バッファクリア
 	Clear();
 
+
+	//背景の描画処理
+	Bg::Draw();
+
 	//2D描画なので深度無効
 	SetDepthEnable(false);
 
+
+	//アンカーの描画処理
+	Anchor::Draw();
 	//プレイヤーの描画処理
 	player.Draw();
 
 	//フィールドの描画処理
 	Field::Draw();
 
-	//アンカーの描画処理
-	Anchor::Draw();
+
 
 	//�c�@�̕`�揈��
 	PlayerLife::Draw();
+
+	
 
 	//�̗̓\�E���Q�[�WUI�̕`�揈��
   //体力ソウルゲージUIの描画処理
@@ -196,4 +231,13 @@ Game::Game()
 
 Game::~Game()
 {
+}
+
+void Game::Teleport_player(b2Vec2 position)
+{
+	b2Vec2 size_sensor=player.GetSensorSize();
+
+	player.Finalize();
+	player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
+
 }

@@ -66,10 +66,10 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//敵をけすかどうかのセンサー
 	b2PolygonShape sensor_shape;
 	b2Vec2 vertices[4];
-	vertices[0].Set(-ground_size.x * 0.5f, -ground_size.y * 0.3f );
-	vertices[1].Set( 0.0f , -ground_size.y * 0.3f);
-	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.4f);
-	vertices[3].Set(0.0f , ground_size.y*0.4f );
+	vertices[0].Set(-ground_size.x * 0.5f, -ground_size.y * 0.45f );
+	vertices[1].Set( 0.0f , -ground_size.y * 0.45f);
+	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.45f);
+	vertices[3].Set(0.0f , ground_size.y*0.45f );
 	sensor_shape.Set(vertices, 4);	//センサーのローカル位置を変更
 
 	b2FixtureDef sensor_fixture;
@@ -164,7 +164,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	jointDef.bodyA = p_Ground_body;
 	jointDef.bodyB = m_AnchorPoint_body;
 	jointDef.localAnchorA.Set(-ground_size.x * 0.5f, -ground_size.y * 0.5f); // 床の上端
-	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
+	jointDef.localAnchorB.Set(-ground_size.x * 0.5f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
 	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
 	world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加

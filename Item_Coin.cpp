@@ -1,14 +1,13 @@
 //-----------------------------------------------------------------------------------------------------
-// #name Item_SpeedUp.cpp
-// #description     スピードアップアイテム
-// #make 2024/12/28　王泳心
+// #name Item_Coin.cpp
+// #description     coinアイテム
+// #make 2024/12/28　永野義也
 // #update 2024/12/28
 // #comment 追加・修正予定
-//      
-//
-// 
+
 //----------------------------------------------------------------------------------------------------
-#include"Item_SpeedUp.h"
+
+#include"Item_Coin.h"
 #include"world_box2d.h"
 #include"collider_type.h"
 #include"renderer.h"
@@ -18,13 +17,13 @@
 #include"player.h"
 #include"Item_Manager.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
+static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 
-ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
-	:m_size(body_size), m_Alpha(Alpha)
+ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+    :m_size(body_size), m_Alpha(Alpha)
 {
     b2BodyDef body;
-    body.type = b2_dynamicBody;
+    body.type = b2_staticBody;
     body.position.Set(position.x, position.y);
     body.angle = angle;
     body.fixedRotation = true;//回転を固定にする
@@ -59,7 +58,7 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
         fixture.density = 1.0f;//密度
         fixture.friction = 0.3f;//摩擦
         fixture.restitution = 0.1f;//反発係数
-        fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 
         p_fixture = m_body->CreateFixture(&fixture);
 
@@ -86,8 +85,8 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
- 
-    data->Item_name = ITEM_SPEED_UP;
+
+    data->Item_name = ITEM_COIN;
     int ID = data->GenerateID();
     data->id = ID;
     SetID(ID);
@@ -95,7 +94,7 @@ ItemSpeedUp::ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool sh
 
 }
 
-void	ItemSpeedUp::Update()
+void	ItemCoin::Update()
 {
     if (m_destory && m_body != nullptr)
     {
@@ -106,23 +105,23 @@ void	ItemSpeedUp::Update()
     }
 }
 
-void    ItemSpeedUp::Function()
+void    ItemCoin::Function()
 {
     Player player = Player::GetInstance();
     player.SetSpeed(0.04f);
 }
 
 
-void ItemSpeedUp::Initialize()
+void ItemCoin::Initialize()
 {
-    
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\speed_up.png");
+
+    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
 
 }
 
 
 
-void ItemSpeedUp::Draw()
+void ItemCoin::Draw()
 {
     if (m_body != nullptr)
     {
@@ -154,7 +153,7 @@ void ItemSpeedUp::Draw()
             { draw_x,
               draw_y },
             m_body->GetAngle(),
-            { GetSize().x * scale,GetSize().y * scale },
+            { GetSize().x * scale*1.5f,GetSize().y * scale*1.5f },
             m_Alpha
         );
 
@@ -162,7 +161,7 @@ void ItemSpeedUp::Draw()
 }
 
 
-void ItemSpeedUp::Finalize()
+void ItemCoin::Finalize()
 {
 
     if (GetBody() != nullptr)
@@ -179,6 +178,6 @@ void ItemSpeedUp::Finalize()
     }
 }
 
-ItemSpeedUp::~ItemSpeedUp()
+ItemCoin::~ItemCoin()
 {
 }

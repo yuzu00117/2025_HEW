@@ -1,27 +1,26 @@
 //-----------------------------------------------------------------------------------------------------
-// #name Item_SpeedUp.h
-// #description		スピードアップアイテム
-// #make 2024/12/28　王泳心
+// #name Item_Coin.h
+// #description     coinアイテム
+// #make 2024/12/28　永野義也
 // #update 2024/12/28
 // #comment 追加・修正予定
-//      
-//
-// 
+
 //----------------------------------------------------------------------------------------------------
-#ifndef ITEM_SPEEDUP_H
-#define	ITEM_SPEEDUP_H
+
+#ifndef ITEM_COIN_H
+#define ITEM_COIN_H
 
 #include"include/box2d/box2d.h"
 
-class ItemSpeedUp 
+class ItemCoin
 {
 public:
 	//最低必要な引数：position（位置情報）、body_size（サイズ）、angle（回転角度のラジアン）
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
-	ItemSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
-	~ItemSpeedUp();
-	
+	ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
+	~ItemCoin();
+
 	//ボディーを取得
 	b2Body* GetBody() { return m_body; }
 	//ボディーをセット
@@ -53,7 +52,7 @@ public:
 
 private:
 	// 各インスタンス固有の ID
-	int m_ID; 
+	int m_ID;
 
 	//アイテムのボディー
 	b2Body* m_body;
@@ -70,4 +69,5 @@ private:
 };
 
 
-#endif // !ITEM_SPEEDUP_H
+#endif // !ITEM_COIN_H
+

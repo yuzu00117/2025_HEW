@@ -1,11 +1,12 @@
 //-----------------------------------------------------------------------------------------------------
 // #name collider_type.h
-// #description コライダーの種類をセット
-// #make 2024/11/22　永野義也
-// #update 2024/12/20
-// #comment 追加・修正予定
-//          ・コライダーの種類を増やしたいときに変更してね
+// #description コライダーの種類を定義するセット
+// #make 2024/11/22
+// #update 2024/11/22
+// #comment 追加・修正内容
+//          ・コライダーの種類を細分化するために修正を実施
 //----------------------------------------------------------------------------------------------------
+
 
 
 #ifndef COLLIDER_TYPE_H
@@ -16,7 +17,8 @@
 #include"object_manager.h"
 #include"Item_Manager.h"
 
-enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���@�V���Ȃ����蔻��̎�ނ�ǉ��������ꍇ�����ɑ����ā@���ŃZ�b�g���Ă�
+// コライダータイプの列挙型
+enum ColliderTypeList
 {
     collider_player_body,
     collider_player_leg,
@@ -29,7 +31,8 @@ enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���
     collider_ground,
 
     collider_object,
-    collider_object_destroyer_of_enemy,  //�I�u�W�F�N�g�ɕt���Ă���G�������Z���T�[
+    collider_object_destroyer_of_enemy, 
+    collider_teleport_block,
 
     collider_item,
 
@@ -43,38 +46,34 @@ enum ColliderTypeList//�t�B�N�X�`���̐ڐG����Ŏg���
 };
 
 
-// カスタムデータクラス　ここでコライダーのタイプをセット
+
+// カスタムデータクラス：オブジェクトのコライダータイプ設定
 class ObjectData {
 public:
-    ColliderTypeList collider_type; // コライダーのタイプをセット                     
-    void* extra;                    // 追加情報あるならセット
+    ColliderTypeList collider_type; // コライダーのタイプ設定                     
+    void* extra;                    // 拡張用途の設定
+
 
     // Constructor
     ObjectData(const ColliderTypeList type)
         : collider_type(type), extra(nullptr) {}
 
 
-    b2Vec2 add_force = { 0.0f,0.0f };// 追加のb2vecデータ
-    ObjectType object_name;  // 追加の文字列データ
-    int id;//オブジェクトを管理するためのID
+    b2Vec2 add_force = { 0.0f,0.0f }; // 追加のb2Vecデータ
+    ObjectType object_name;           // オブジェクト用の識別データ
+    ItemType Item_name;               // アイテム用の識別データ
+    int id;                           // オブジェクト管理用ID
 
-    int need_anchor_level;
+    int need_anchor_level;			  // 必要なアンカーレベル
 
-    // ID を生成する関数
+    // IDを生成する関数
     static int GenerateID() {
-        return current_id++;//全てのIDを管理
+        return current_id++; // 現在のIDを管理
     }
 
 private:
-    // 静的カウンタ ID
+    // 静的カウンタID
     static int current_id;
-
-
-
-
 };
-
-
-
 
 #endif // !COLLIDER_TYPE_H

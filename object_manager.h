@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name object_manager
-// #description オブジェクトを管理するためのファクトリーのイメージに近い
-// #make 2024/12/04　永野義也
+// #description 繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ邂｡逅�☆繧九◆繧√�繝輔ぃ繧ｯ繝医Μ繝ｼ縺ｮ繧､繝｡繝ｼ繧ｸ縺ｫ霑代＞
+// #make 2024/12/04縲豌ｸ驥守ｾｩ荵
 // #update 2024/12/13
-// #comment 追加・修正予定
-//          ・オブジェクトを作るごとに生成する感じ
+// #comment 霑ｽ蜉繝ｻ菫ｮ豁｣莠亥ｮ
+//          繝ｻ繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ菴懊ｋ縺斐→縺ｫ逕滓�縺吶ｋ諢溘§
 //----------------------------------------------------------------------------------------------------
 
 
@@ -22,89 +22,99 @@
 #include"enemy_static.h"
 #include"enemy_dynamic.h"
 #include"enemy_attack.h"
+#include"teleport_block.h"
 
-// オブジェクトの種類を定義
+// 繧ｪ繝悶ず繧ｧ繧ｯ繝医�遞ｮ鬘槭ｒ螳夂ｾｩ
 enum ObjectType {
     NULL_object,
-    Object_Wood, // 木
-    Object_Rock, // 岩
-    Object_one_way_platform,//足場　したからしか乗れない
-    Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
-    Object_Movable_Ground,  //引っ張れる床 
+    Object_Wood, // 譛ｨ
+    Object_Rock, // 蟯ｩ
+    Object_one_way_platform,//雜ｳ蝣ｴ縲縺励◆縺九ｉ縺励°荵励ｌ縺ｪ縺
+    Object_Static_to_Dynamic,//髱咏噪縺九ｉ蜍慕噪縺ｫ螟画峩縺吶ｋ繧ｪ繝悶ず繧ｧ繧ｯ繝
+    Object_Movable_Ground,  //蠑輔▲蠑ｵ繧後ｋ蠎 
     
-    Object_Enemy_Static, //静的エネミー
-    Object_Enemy_Dynamic,//動的エネミー
-    Object_Enemy_Attack, //エネミーの攻撃
+    Object_Enemy_Static, //髱咏噪繧ｨ繝阪Α繝ｼ
+    Object_Enemy_Dynamic,//蜍慕噪繧ｨ繝阪Α繝ｼ
+    Object_Enemy_Attack, //繧ｨ繝阪Α繝ｼ縺ｮ謾ｻ謦
+    Object_teleport_block,//テレポートブロック
+
 };
 
 class Object{};
 
-// オブジェクトを管理するクラス
+// 繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ邂｡逅�☆繧九け繝ｩ繧ｹ
 class ObjectManager {
 public:
-    // シングルトンのインスタンス取得
+    // 繧ｷ繝ｳ繧ｰ繝ｫ繝医Φ縺ｮ繧､繝ｳ繧ｹ繧ｿ繝ｳ繧ｹ蜿門ｾ
     static ObjectManager& GetInstance();
 
-    // 木を追加
+    // 譛ｨ繧定ｿｽ蜉
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
-    //岩を追加
+    //蟯ｩ繧定ｿｽ蜉
     void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
-    //足場を追加
+    //雜ｳ蝣ｴ繧定ｿｽ蜉
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
-    //傾斜ブロックの追加
+    //蛯ｾ譁懊ヶ繝ｭ繝�け縺ｮ霑ｽ蜉
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
-    //静的→動的のブロックの追加
+    //髱咏噪竊貞虚逧��繝悶Ο繝�け縺ｮ霑ｽ蜉
     void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
-    // 引っ張れる床を追加
+    // 蠑輔▲蠑ｵ繧後ｋ蠎翫ｒ霑ｽ蜉
     void AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level);
-    //静的エネミー生成
+    //髱咏噪繧ｨ繝阪Α繝ｼ逕滓�
     void AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle);
-    //動的エネミー生成
+    //蜍慕噪繧ｨ繝阪Α繝ｼ逕滓�
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
-    //エネミーの攻撃の生成
+    //繧ｨ繝阪Α繝ｼ縺ｮ謾ｻ謦��逕滓�
     void AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle);
 
+    // ID 繧剃ｽｿ縺｣縺ｦ譛ｨ繧呈､懃ｴ｢
+    void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
+
     // ID を使って木を検索
+
     wood* FindWoodByID(int id);
-    //IDを使って　岩を検索
+    //ID繧剃ｽｿ縺｣縺ｦ縲蟯ｩ繧呈､懃ｴ｢
     rock* FindRockByID(int id);
-    //IDを使って足場ブロックを検索
+    //ID繧剃ｽｿ縺｣縺ｦ雜ｳ蝣ｴ繝悶Ο繝�け繧呈､懃ｴ｢
     one_way_platform* Findone_way_platformByID(int id);
-    //IDを使って斜面ブロックを検索
+    //ID繧剃ｽｿ縺｣縺ｦ譁憺擇繝悶Ο繝�け繧呈､懃ｴ｢
     sloping_block* FindSloping_BlockByID(int id);
-    //IDを使って静的→動的ブロックを追加
+    //ID繧剃ｽｿ縺｣縺ｦ髱咏噪竊貞虚逧�ヶ繝ｭ繝�け繧定ｿｽ蜉
     static_to_dynamic_block* FindStatic_to_Dynamic_BlcokID(int id);
-    //IDを使って引っ張れる床を検索
+    //ID繧剃ｽｿ縺｣縺ｦ蠑輔▲蠑ｵ繧後ｋ蠎翫ｒ讀懃ｴ｢
     movable_ground* FindMovable_GroundID(int id);
-    //IDを使って静的エネミーを検索
+    //ID繧剃ｽｿ縺｣縺ｦ髱咏噪繧ｨ繝阪Α繝ｼ繧呈､懃ｴ｢
     EnemyStatic* FindEnemyStaticByID(int id);
-    //IDを使って動的エネミーを検索
+    //ID繧剃ｽｿ縺｣縺ｦ蜍慕噪繧ｨ繝阪Α繝ｼ繧呈､懃ｴ｢
     EnemyDynamic* FindEnemyDynamicByID(int id);
-    //IDを使ってエネミーの攻撃を検索
+    //ID繧剃ｽｿ縺｣縺ｦ繧ｨ繝阪Α繝ｼ縺ｮ謾ｻ謦�ｒ讀懃ｴ｢
     EnemyAttack* FindEnemyAttackByID(int id);
+
+    teleport_block* FindTeleportBlock(int id);
+
     
-    //IDとオブジェクトタイプでオブジェクトを検索
+    //ID縺ｨ繧ｪ繝悶ず繧ｧ繧ｯ繝医ち繧､繝励〒繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ讀懃ｴ｢
     Object* FindObjectByID_ObjectType(int id, ObjectType type);
 
-    //指定の静的エネミーを削除
+    //謖�ｮ壹�髱咏噪繧ｨ繝阪Α繝ｼ繧貞炎髯､
     void DestroyEnemyStatic(int id);
-    //指定の動的エネミーを削除
+    //謖�ｮ壹�蜍慕噪繧ｨ繝阪Α繝ｼ繧貞炎髯､
     void DestroyEnemyDynamic(int id);
-    //指定のエネミーの攻撃を削除
+    //謖�ｮ壹�繧ｨ繝阪Α繝ｼ縺ｮ謾ｻ謦�ｒ蜑企勁
     void DestroyEnemyAttack(int id);
 
 
-    // 全てのオブジェクトを初期化
+    // 蜈ｨ縺ｦ縺ｮ繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ蛻晄悄蛹
     void InitializeAll();
 
-    // 全てのオブジェクトを更新
+    // 蜈ｨ縺ｦ縺ｮ繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ譖ｴ譁ｰ
     void UpdateAll();
 
-    // 全てのオブジェクトを描画
+    // 蜈ｨ縺ｦ縺ｮ繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ謠冗判
     void DrawAll();
 
-    // 全てのオブジェクトを破棄
+    // 蜈ｨ縺ｦ縺ｮ繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ遐ｴ譽
     void FinalizeAll();
 
 private:
@@ -114,12 +124,12 @@ private:
     std::vector<std::unique_ptr<sloping_block>> sloping_blockList;//斜面のリスト
     std::vector<std::unique_ptr<static_to_dynamic_block>> static_to_dynamic_blockList;//静的→動的ブロック挙動
     std::vector<std::unique_ptr<movable_ground>> movable_groundList;//木のリスト
-  
     std::vector<std::unique_ptr<EnemyStatic>> enemy_staticList;//静的エネミーのリスト
     std::vector<std::unique_ptr<EnemyDynamic>> enemy_dynamicList;//動的エネミーのリスト
-    std::vector<std::unique_ptr<EnemyAttack>> enemy_attackList;  //エネミーの攻撃のリスト
-
+    std::vector<std::unique_ptr<EnemyAttack>> enemy_attackList;//エネミーの攻撃のリスト
+    std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
     //ここにオブジェクトごとにリストを追加していく感じ
+
 
 
     ObjectManager() = default;
