@@ -28,17 +28,20 @@ void CameraShake::Update()
 		float random = GetRandomInt(5, 10);
 		random = random * 0.1;
 		
-		if (camera_shake_minus)
+		if (camera_shake_frame % 4 == 0)
 		{
-			display::SetDisplayHeight(random * camera_shake_height*-1);
-			display::SetDisplayWidth(random * camera_shake_width * -1);
-			camera_shake_minus = false;
-		}
-		else
-		{
-			display::SetDisplayHeight(random * camera_shake_height);
-			display::SetDisplayWidth(random * camera_shake_width);
-			camera_shake_minus = true;
+			if (camera_shake_minus)
+			{
+				display::SetDisplayHeight(random * camera_shake_height * -1);
+				display::SetDisplayWidth(random * camera_shake_width * -1);
+				camera_shake_minus = false;
+			}
+			else
+			{
+				display::SetDisplayHeight(random * camera_shake_height);
+				display::SetDisplayWidth(random * camera_shake_width);
+				camera_shake_minus = true;
+			}
 		}
 	
 

@@ -28,6 +28,9 @@
 #include"Item_Manager.h"
 #include"FixtureSizeCalculate.h"
 #include"tool.h"
+#include"hit_stop.h"
+#include"camera_shake.h"
+#include"sound.h"
 
 
 class MyContactListener : public b2ContactListener {
@@ -306,6 +309,10 @@ public:
             (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_dynamic))
         {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
@@ -324,6 +331,9 @@ public:
             (objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_floating))
         {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
             if (objectA->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
@@ -441,6 +451,9 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic))
         {
 
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
             if ((objectA->collider_type == collider_enemy_dynamic) &&
                 (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
             {
