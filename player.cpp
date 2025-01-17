@@ -222,9 +222,14 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 void Player::Update()
 {
     // プレイヤーの更新処理
+
+    //モーションのDrawカウントを加算
+    draw_cnt++;
     
     //センサーの画面サイズに応じた大きさの変動
     Player_sensor_size_change(AnchorSpirit::GetAnchorLevel());
+
+
 
 
 
@@ -377,14 +382,14 @@ void Player::Update()
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
         if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_wait_state);//作成状態に移行
+        Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
     }
 
 
     //通常攻撃のアンカーの呼び出し
     if ((Keyboard_IsKeyDown(KK_N) || (state.buttonX)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
-        Anchor::SetAnchorState(WaitCraateNormalAttack_state);
+        Anchor::SetAnchorState(WaitCreateNormalAttackDraw_cnt_state);
     }
 
  
@@ -396,8 +401,14 @@ void Player::Update()
     case Nonexistent_state://何もない状態
         //ここからの移行は上のボタンで管理
         break;
-    case Create_wait_state:
+    case Create_wait_draw_cnt_state:
+        draw_cnt = 0;
         draw_state = player_throw_anchor_state;
+        Anchor::SetAnchorState(Create_wait_state);
+
+        break;
+    case Create_wait_state:
+       
 
         if (30 < draw_cnt)
         {
@@ -466,6 +477,11 @@ void Player::Update()
         AnchorPoint::OutsideSensor(AnchorPoint::GetTargetAnchorPointBody());
 
         break;
+    case WaitCreateNormalAttackDraw_cnt_state:
+        draw_cnt = 0;
+        draw_state = player_normal_attack_state;
+        Anchor::SetAnchorState(WaitCraateNormalAttack_state);//通常攻撃発生
+        break;
 
     case WaitCraateNormalAttack_state:
         //通常攻撃の発生前の待ち状態
@@ -483,9 +499,13 @@ void Player::Update()
         //通常攻撃の判定をつくる
         Anchor::CreateNormalAttack(b2Vec2(2.0f, 2.0f), right);//通常攻撃のボディをつくる
 
+
+   
+
+
         Anchor::SetAnchorState(NowAttackngNormalAttack);
 
-        draw_state = player_normal_attack_state;
+      
         break;
     case NowAttackngNormalAttack:
         //攻撃中
@@ -551,6 +571,10 @@ void Player::Update()
 
     //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
+
+
+
+  
 }
 
 
@@ -640,7 +664,7 @@ void Player::Draw()
             break;
         case player_jumping_state:
 
-            draw_cnt++;
+            
 
             if (30 < draw_cnt)
             {
@@ -677,7 +701,7 @@ void Player::Draw()
         case player_throw_anchor_state:
 
 
-            draw_cnt++;
+           
 
             if (64<draw_cnt)
             {
@@ -706,7 +730,7 @@ void Player::Draw()
 
             break;
         case player_dameged_state:
-            draw_cnt++;
+           
             if (24 < draw_cnt)
             {
                 draw_cnt = 0;
@@ -728,7 +752,7 @@ void Player::Draw()
             break;
         case player_walk_state:
 
-            draw_cnt++;
+            
 
             if (ReturnAbsoluteValue(m_body->GetLinearVelocity().x)<0.1)//横の移動量の絶対値が0.1未満の時にノーマルに戻る
             {
@@ -753,7 +777,7 @@ void Player::Draw()
             break;
 
         case player_normal_attack_state:
-            draw_cnt++;
+           
 
            
 

@@ -587,45 +587,45 @@ void Anchor::UpdateNormalAttack()
 
 void Anchor::DrawNormalAttack()
 {
-	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	float scale = SCREEN_SCALE;
+	//// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	//float scale = SCREEN_SCALE;
 
-	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
-
-
-	if (g_anchor_instance == nullptr)
-	{
-		return;
-	}
-
-	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
-
-	if (anchor != nullptr)
-	{
-		b2Vec2 position;
-		position.x = anchor->GetPosition().x;
-		position.y = anchor->GetPosition().y;
-
-		// プレイヤー位置を考慮してスクロール補正を加える
-		//取得したbodyのポジションに対してBox2dスケールの補正を加える
-		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	//// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	//b2Vec2 screen_center;
+	//screen_center.x = SCREEN_CENTER_X;
+	//screen_center.y = SCREEN_CENTER_Y;
 
 
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
+	//if (g_anchor_instance == nullptr)
+	//{
+	//	return;
+	//}
 
-		//draw
-		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			0.0	,
-			{ 2 * scale, 2 * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-		);
+	//b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
 
-	}
+	//if (anchor != nullptr)
+	//{
+	//	b2Vec2 position;
+	//	position.x = anchor->GetPosition().x;
+	//	position.y = anchor->GetPosition().y;
+
+	//	// プレイヤー位置を考慮してスクロール補正を加える
+	//	//取得したbodyのポジションに対してBox2dスケールの補正を加える
+	//	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	//	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+	//	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
+
+	//	//draw
+	//	DrawSprite(
+	//		{ draw_x,
+	//		  draw_y },
+	//		0.0	,
+	//		{ 2 * scale, 2 * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+	//	);
+
+	//}
 }
 
 void Anchor::DeleteNormalAttackAnchorBody()
