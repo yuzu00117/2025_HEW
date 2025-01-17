@@ -97,7 +97,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	sensor_data->id = ID;
 	SetID(ID);
 
-	m_state = ENEMY_STATE_MOVE;
+	m_state = ENEMY_STATE_NULL;
 }
 
 void EnemyDynamic::Initialize()
@@ -135,6 +135,10 @@ void EnemyDynamic::Update()
 		/*case ENEMY_STATE_DESTROYED:
 			break;*/
 		default:
+			if (GetInScreen())
+			{
+				SetState(ENEMY_STATE_MOVE);
+			}
 			m_old_state = ENEMY_STATE_NULL;
 			break;
 		}
@@ -156,7 +160,7 @@ void EnemyDynamic::Update()
 
 		if (object_manager.FindEnemyAttackByID(GetID()))
 		{
-			object_manager.DestroyEnemyAttack(GetID());
+			object_manager.FindEnemyAttackByID(GetID())->SetUse(false);
 		}
 
 		object_manager.DestroyEnemyDynamic(GetID());
@@ -244,7 +248,7 @@ void EnemyDynamic::Move()
 		m_is_jumping = false;
 	}
 
-	//if(GetInScreen())
+	if(GetInScreen())
 	{
 		if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
 		{
@@ -303,7 +307,7 @@ void EnemyDynamic::Attack()
 	{
 		m_attack_counter = 0;
 		GetBody()->SetType(b2_dynamicBody);
-		SetState(ENEMY_STATE_MOVE);
+		SetState(ENEMY_STATE_NULL);
 		return;
 	}
 

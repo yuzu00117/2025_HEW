@@ -542,12 +542,18 @@ public:
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
-                attack_instance->CollisionPlayer();
+                if (attack_instance)
+                {
+                    attack_instance->CollisionPlayer();
+                }
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
-                attack_instance->CollisionPlayer();
+                if (attack_instance)
+                {
+                    attack_instance->CollisionPlayer();
+                }
             }
         }
 

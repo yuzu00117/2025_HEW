@@ -32,6 +32,7 @@ private:
 	int m_frame = 15;
 	int m_count = 0;
 	bool m_hit = false;
+	bool m_use = true;
 public:
 	EnemyAttack() = default;
 	EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int ID);
@@ -71,6 +72,15 @@ public:
 	void SetDamage(int damage)
 	{
 		m_damage = damage;
+	}
+
+	bool GetUse()
+	{
+		return m_use;
+	}
+	void SetUse(bool use)
+	{
+		m_use = use;
 	}
 
 	void Initialize();

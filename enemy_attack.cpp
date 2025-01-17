@@ -87,8 +87,21 @@ void EnemyAttack::Finalize()
 
 void EnemyAttack::Update()
 {
+	if (!GetUse())
+	{
+		//ワールドに登録したbodyの削除
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+		world->DestroyBody(GetBody());
+		SetBody(nullptr);
+		//オブジェクトマネージャー内のエネミー削除
+		ObjectManager& object_manager = ObjectManager::GetInstance();
+		object_manager.DestroyEnemyAttack(GetID());
+		return;
+	}
+
 	m_count++;
-	if (m_count == m_frame)
+	if (m_count >= m_frame)
 	{
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
