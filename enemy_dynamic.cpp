@@ -50,6 +50,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
+<<<<<<< Updated upstream
 
 	b2PolygonShape shape;                         //shapeには色々な型がある　サークルとかもあるよ
 	shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);//あたり判定を登録する4点　*0.5するのは
@@ -60,6 +61,15 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture.friction = 0.1f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
+=======
+	b2FixtureDef fixture2;
+	fixture2.shape = &shape2;
+	fixture2.density = 1.0f;
+	fixture2.friction = 0.001f;//摩擦
+	fixture2.restitution = 0.0f;//反発係数
+	fixture2.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	fixture2.filter = createFilterExclude({ "enemy_filter" }, {});
+>>>>>>> Stashed changes
 
 	//====================================================================================================
 	//センサーの登録
@@ -222,6 +232,7 @@ void EnemyDynamic::Move()
 		SetDirection(true);
 	}
 
+<<<<<<< Updated upstream
 	enemy_vector.Normalize();
 
 	//移動量
@@ -236,6 +247,44 @@ void EnemyDynamic::Move()
 	else
 	{
 		GetBody()->ApplyLinearImpulseToCenter(b2Vec2(enemy_move.x, -0.02), true);
+=======
+
+	b2Vec2 liner_velocity = GetBody()->GetLinearVelocity();
+	if (liner_velocity.y != 0.0)
+	{
+		m_is_jumping = true;
+	}
+	else
+	{
+		m_is_jumping = false;
+	}
+
+	if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
+	{
+		GetBody()->SetLinearVelocity(b2Vec2(0.0, 0.0));
+		if (GetDirection())
+		{
+
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.075), true);
+		}
+		else
+		{
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.075), true);
+		}
+	}
+	else
+	{
+		GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
+		if (GetDirection())
+		{
+
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed, 0.0), true);
+		}
+		else
+		{
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed, 0.0), true);
+		}
+>>>>>>> Stashed changes
 	}
 }
 
@@ -275,8 +324,12 @@ void EnemyDynamic::Attack()
 //センサーとプレイヤーが触れた時の処理
 void EnemyDynamic::CollisionSensorPlayer()
 {
+<<<<<<< Updated upstream
 	//エネミーが攻撃中なら何もしない
 	if (GetState() == ENEMY_STATE_ATTACK)
+=======
+	if ((GetState() != ENEMY_STATE_ATTACK) && (!m_is_jumping))
+>>>>>>> Stashed changes
 	{
 		return;
 	}

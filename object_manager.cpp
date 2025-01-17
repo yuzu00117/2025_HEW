@@ -49,6 +49,11 @@ void ObjectManager::AddStatic_to_Dynamic_block(const b2Vec2& position, const b2V
     static_to_dynamic_blockList.emplace_back(std::make_unique<static_to_dynamic_block>(position,size,collider_type,need_level));
 }
 
+void ObjectManager::AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level){
+    // 既存の 3 引数コンストラクタを利用して生成
+    movable_groundList.emplace_back(std::make_unique<movable_ground>(position, groundSize, anchorPointSize, need_level));
+}
+
 //静的エネミー生成
 void ObjectManager::AddEnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 {
@@ -117,6 +122,16 @@ static_to_dynamic_block* ObjectManager::FindStatic_to_Dynamic_BlcokID(int id) {
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+movable_ground* ObjectManager::FindMovable_GroundID(int id)
+{
+    for (const auto& w : movable_groundList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
 //IDを使って静的エネミーを検索
 EnemyStatic* ObjectManager::FindEnemyStaticByID(int id)
 {
@@ -144,6 +159,30 @@ EnemyAttack* ObjectManager::FindEnemyAttackByID(int id)
         if (w->GetID() == id) {
             return w.get();
         }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
+{
+    switch (type)
+    {
+    case Object_Wood: // 木
+        break;
+    case Object_Rock: // 岩
+        break;
+    case Object_one_way_platform://足場　したからしか乗れない
+        break;
+    case Object_Static_to_Dynamic://静的から動的に変更するオブジェクト
+        break;
+    case Object_Movable_Ground:  //引っ張れる床 
+        break;
+    case Object_Enemy_Static://静的エネミー
+        break;
+    case Object_Enemy_Dynamic://動的エネミー
+        break;
+    default:
+        break;
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
@@ -208,6 +247,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Initialize();
+    }
+
     for (auto& w : enemy_staticList) {
         w->Initialize();
     }
@@ -243,6 +286,11 @@ void ObjectManager::UpdateAll() {
     for (auto& w : static_to_dynamic_blockList) {
         w->Update();
     }
+
+    for (auto& w : movable_groundList) {
+        w->Update();
+    }
+
 
     for (auto& w : enemy_staticList) {
         if(w)
@@ -288,6 +336,10 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Draw();
+    }
+
     for (auto& w : enemy_staticList) {
         w->Draw();
     }
@@ -321,6 +373,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : movable_groundList) {
+        w->Finalize();
+    }
+
     for (auto& w : enemy_staticList) {
         w->Finalize();
     }
@@ -334,6 +390,7 @@ void ObjectManager::FinalizeAll() {
     one_way_platformList.clear();
     sloping_blockList.clear();
     static_to_dynamic_blockList.clear();
+    movable_groundList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
 

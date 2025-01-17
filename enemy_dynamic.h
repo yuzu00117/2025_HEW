@@ -36,6 +36,7 @@ private:
 	const float m_speed = 0.01f;
 	//¶Œü‚« true : ‰EŒü‚« false
 	bool m_direction = true;
+	bool m_is_jumping = false;
 
 	int m_attack_ID = -999;
 	int m_attack_counter = 0;

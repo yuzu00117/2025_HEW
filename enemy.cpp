@@ -43,5 +43,7 @@ void Enemy::InPlayerSensor()
 //エネミーがセンサー外に出た時の処理
 void Enemy::OutPlayerSensor()
 {
-	SetInScreen(false);
+	//センサー内で呼び出されることがあるので
+	//if(GetBody()->GetPosition().x)
+	//SetInScreen(false);
 }
