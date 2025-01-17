@@ -2,7 +2,7 @@
 // #name enemyDynamic.h
 // #description 動的エネミー(プレイヤー追従)のヘッダーファイル
 // #make 2024/11/20
-// #update 2024/12/13
+// #update 2025/01/16
 // #comment 追加・修正予定
 //          ・
 //           
@@ -24,6 +24,7 @@ enum ENEMY_DYNAMIC_STATE
 {
 	ENEMY_STATE_NULL,
 	ENEMY_STATE_MOVE,
+	ENEMY_STATE_JUMP,
 	ENEMY_STATE_ATTACK,
 	ENEMY_STATE_DESTROYED,
 };
@@ -31,11 +32,13 @@ enum ENEMY_DYNAMIC_STATE
 class EnemyDynamic :public Enemy
 {
 private:
-	//エネミーど状態(動作)
+	//エネミーの状態(動作)
 	int m_state = ENEMY_STATE_NULL;
-	const float m_speed = 0.01f;
+	int m_old_state = ENEMY_STATE_NULL;
+	const float m_speed = 0.02f;
 	//左向き true : 右向き false
 	bool m_direction = true;
+
 
 	int m_attack_ID = -999;
 	int m_attack_counter = 0;

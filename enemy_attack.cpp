@@ -2,7 +2,7 @@
 // #name enemyAttack.cpp
 // #description エネミーの攻撃のcppファイル
 // #make 2024/12/20
-// #update 2024/12/20
+// #update 2025/01/16
 // #comment 追加・修正予定
 //          ・ステータス調整
 //           
@@ -23,10 +23,10 @@
 
 static ID3D11ShaderResourceView* g_EnemyAttack_Texture = NULL;	//動的エネミーのテクスチャ
 
-EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle)
+EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 {
 	b2BodyDef body;
-	body.type = b2_staticBody;							//静的なオブジェクトにするならture
+	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
 	body.position.Set(position.x, position.y);			//ポジションをセット
 	body.angle = angle;									//角度の定義
 	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
@@ -50,7 +50,7 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle)
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;    //シャープをフィクスチャに登録する
-	fixture.density = 1.0f;    //密度
+	fixture.density = 100.0f;    //密度
 	fixture.friction = 0.05f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
@@ -63,8 +63,10 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle)
 	ObjectData* data = new ObjectData{ collider_enemy_attack };
 	enemy_attack_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 	data->object_name = Object_Enemy_Attack;
-	int ID = data->GenerateID();
-	data->id = ID;
+	/*int ID = data->GenerateID();
+	data->id = ID;*/
+	int ID = id;
+	data->id = id;
 	SetID(ID);
 
 	Initialize();
@@ -79,15 +81,15 @@ void EnemyAttack::Finalize()
 {
 	UnInitTexture(g_EnemyAttack_Texture);
 
-	//オブジェクトマネージャー内のエネミー削除
-	ObjectManager& object_manager = ObjectManager::GetInstance();
-	object_manager.DestroyEnemyAttack(GetID());
-
 	//ワールドに登録したbodyの削除
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 	world->DestroyBody(GetBody());
 	SetBody(nullptr);
+
+	//オブジェクトマネージャー内のエネミー削除
+	ObjectManager& object_manager = ObjectManager::GetInstance();
+	object_manager.DestroyEnemyAttack(GetID());
 }
 
 void EnemyAttack::Update()

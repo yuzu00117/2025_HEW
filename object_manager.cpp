@@ -60,9 +60,9 @@ void ObjectManager::AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float ang
     enemy_dynamicList.emplace_back(std::make_unique<EnemyDynamic>(position, body_size, angle));
 }
 //エネミーの攻撃の生成
-void ObjectManager::AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle)
+void ObjectManager::AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 {
-    enemy_attackList.emplace_back(std::make_unique<EnemyAttack>(position, body_size, angle));
+    enemy_attackList.emplace_back(std::make_unique<EnemyAttack>(position, body_size, angle, id));
 }
 
 
@@ -324,6 +324,9 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : enemy_staticList) {
         w->Finalize();
     }
+    for (auto& w : enemy_dynamicList) {
+        w->Finalize();
+    }
     for (auto& w : enemy_attackList) {
         w->Finalize();
     }
@@ -336,7 +339,7 @@ void ObjectManager::FinalizeAll() {
     static_to_dynamic_blockList.clear();
     enemy_staticList.clear();
     enemy_dynamicList.clear();
-
+    enemy_attackList.clear();
 }
 
 
