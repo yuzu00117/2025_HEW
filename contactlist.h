@@ -415,13 +415,16 @@ public:
             if (objectA->collider_type == collider_enemy_static)
             {
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
-                enemy_instance->InPlayerSensor();
-
+                if (enemy_instance != nullptr) {
+                    enemy_instance->InPlayerSensor();
+                }
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                enemy_instance->InPlayerSensor();
+                if (enemy_instance != nullptr) {
+                    enemy_instance->InPlayerSensor();
+                }
             }
         }
 
@@ -432,12 +435,14 @@ public:
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                enemy_instance->InPlayerSensor();
+                if (enemy_instance != nullptr)
+                    enemy_instance->InPlayerSensor();
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                enemy_instance->InPlayerSensor();
+                if (enemy_instance != nullptr)
+                    enemy_instance->InPlayerSensor();
             }
         }
 
@@ -466,7 +471,9 @@ public:
                 object_fixture = fixtureB;
             }
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit_data->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-           
+            if (spirit_instance == nullptr) {
+                return;
+            }
             // もし収集中の場合は衝突処理を無視
             //-------------------------------------------------------------------------
             if (spirit_instance->GetState() == Spirit_Collecting)
@@ -524,24 +531,29 @@ public:
             case ITEM_SPEED_UP:
             {
                 ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                item_instance->Function();
-                item_instance->SetDestory(true);//削除を呼び出す
+                if (item_instance != nullptr) {
+                    item_instance->Function();
+                    item_instance->SetDestory(true);//削除を呼び出す
+                }
             }
             break;
             case ITEM_SPIRIT:
             {
                 ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                //spirit_instance->SetIfCollidedPlayer(true);
-                spirit_instance->Function();
-                spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+                if (spirit_instance != nullptr) {
+                    spirit_instance->Function();
+                    spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+                }
 
             }
             break;
             case ITEM_COIN:
             {
                 ItemCoin* coin_instance = item_manager.FindItem_Coin_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                coin_instance->Function();
-                coin_instance->SetDestory(true);//削除を呼び出す
+                if (coin_instance != nullptr) {
+                    coin_instance->Function();
+                    coin_instance->SetDestory(true);//削除を呼び出す
+                }
             }
             break;
 
@@ -588,14 +600,18 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->SetIfPulling(false);
+                if (ground_instance != nullptr) {
+                    ground_instance->SetIfPulling(false);
+                }
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->SetIfPulling(false);
-            }
+                if (ground_instance != nullptr) {
+                    ground_instance->SetIfPulling(false);
 
+                }
+            }
         }        
         //引っ張れる床と敵が離れた場合
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object_destroyer_of_enemy) ||
@@ -606,13 +622,17 @@ public:
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
-                ground_instance->DeleteContactedEnemyList(enemy_instance);
+                if (enemy_instance != nullptr && ground_instance != nullptr) {
+                    ground_instance->DeleteContactedEnemyList(enemy_instance);
+                }
             }
             else if (objectB->collider_type == collider_enemy_static)
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
                 EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                ground_instance->DeleteContactedEnemyList(enemy_instance);
+                if (enemy_instance != nullptr && ground_instance != nullptr) {
+                    ground_instance->DeleteContactedEnemyList(enemy_instance);
+                }
             }
         }
 
@@ -676,12 +696,16 @@ public:
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                enemy_instance->OutPlayerSensor();
+                if (enemy_instance != nullptr) {
+                    enemy_instance->OutPlayerSensor();
+                }
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                enemy_instance->OutPlayerSensor();
+                if (enemy_instance != nullptr) {
+                    enemy_instance->OutPlayerSensor();
+                }
             }
         }
 
@@ -695,7 +719,13 @@ public:
             auto object = objectA->Item_name == ITEM_SPIRIT ? fixtureB : fixtureA;
 
             ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(spirit->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-          
+            if (spirit_instance == nullptr) {
+                return;
+            }
+            if (spirit_instance->GetState() == Spirit_Collecting)
+            {
+                return;
+            }
             spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
