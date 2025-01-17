@@ -442,6 +442,10 @@ void Anchor::DrawChain()
 	b2Vec2 anchor_position = anchor->GetPosition();
 	b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
 
+	
+
+	
+
 	// 距離を計算
 	float distance = b2Distance(anchor_position, player_position);
 
@@ -456,7 +460,7 @@ void Anchor::DrawChain()
 	b2Vec2 chain_size(0.2f, 0.05); // Xが長いチェーン
 
 	// チェーン描画
-	for (int i = 0; i <= chain_count; ++i)
+	for (int i = 1; i <= chain_count; ++i)
 	{
 		// 線形補間で位置を計算
 		float t = static_cast<float>(i) / chain_count; // 0.0～1.0の範囲
