@@ -507,7 +507,7 @@ void Player::Update()
     case CreateNormalAttack_state:
 
         //通常攻撃の判定をつくる
-        Anchor::CreateNormalAttack(b2Vec2(4.0f, 4.0f), right);//通常攻撃のボディをつくる
+        Anchor::CreateNormalAttack(b2Vec2(3.0f, 3.0f), right);//通常攻撃のボディをつくる
 
 
    
