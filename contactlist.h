@@ -298,19 +298,12 @@ public:
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                if (enemy_instance)
-                {
-                   enemy_instance->InPlayerSensor();
-                }
-
+                enemy_instance->InPlayerSensor();
             }
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                if (enemy_instance)
-                {
-                    enemy_instance->InPlayerSensor();
-                }
+                enemy_instance->InPlayerSensor();
             }
         }
 
@@ -350,6 +343,7 @@ public:
                 attack_instance->CollisionPlayer();
             }
         }
+   
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突終了時

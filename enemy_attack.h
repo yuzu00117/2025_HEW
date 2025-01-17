@@ -2,7 +2,7 @@
 // #name enemyAttack.h
 // #description エネミーの攻撃のヘッダーファイル
 // #make 2024/12/20
-// #update 2025/01/16
+// #update 2024/12/20
 // #comment 追加・修正予定
 //          ・ステータス調整
 //           
@@ -34,7 +34,7 @@ private:
 	bool m_hit = false;
 public:
 	EnemyAttack() = default;
-	EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id);
+	EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle);
 	~EnemyAttack() = default;
 
 	int GetID()

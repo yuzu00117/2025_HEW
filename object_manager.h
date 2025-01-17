@@ -58,7 +58,7 @@ public:
     //動的エネミー生成
     void AddEnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
     //エネミーの攻撃の生成
-    void AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id);
+    void AddEnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
