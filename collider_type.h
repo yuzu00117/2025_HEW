@@ -42,6 +42,8 @@ enum ColliderTypeList
     collider_enemy_static,
     collider_enemy_attack,
     collider_enemy_sensor,
+    collider_enemy_floating,
+    collider_enemy_floating_sensor,
 
     collider_stage_select_point,
     collider_stage_select_player,
