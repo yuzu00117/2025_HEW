@@ -102,7 +102,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 void EnemyDynamic::Initialize()
 {
-	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
+	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//動的エネミーのテクスチャ
 	g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
 }
 
@@ -194,7 +194,7 @@ void EnemyDynamic::Draw()
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
-		{ GetSize().x * scale , GetSize().y * scale }
+		{ GetSize().x * scale*2.0f , GetSize().y * scale*2.0f }
 	);
 
 
@@ -256,11 +256,11 @@ void EnemyDynamic::Move()
 			if (GetDirection())
 			{
 
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.075), true);
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.10), true);
 			}
 			else
 			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.075), true);
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.10), true);
 			}
 		}
 		else

@@ -471,32 +471,28 @@ public:
             (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic))
         {
-            ObjectData* enemy_data = objectB;
-            ObjectData* object_data = objectA;
-            b2Fixture* object_fixture = fixtureA;
+            EnemyDynamic* enemy_instance;
+            b2Vec2 GetObjectVelocity;
+
             if (objectA->collider_type == collider_enemy_dynamic)
             {
-                enemy_data = objectA;
-                object_data = objectB;
-                object_fixture = fixtureB;
+                enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+
+                GetObjectVelocity = fixtureB->GetBody()->GetLinearVelocity();
             }
-            EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(enemy_data->id);
-            b2Vec2  enemy_position = enemy_instance->GetBody()->GetPosition();
-            b2Vec2  object_position = object_fixture->GetBody()->GetPosition();
-            b2Vec2 vec;
-            vec.x = enemy_position.x - object_position.x;
-            vec.y = enemy_position.y - object_position.y;
+            else
+            {
+                enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
 
-            //オブジェのfixtureの半径を取得
-            b2Shape* const object_shape = object_fixture->GetShape();
-            b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
+                GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
+            }
 
-            //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
-            //+0.01fはちょっと調整
-            if (vec.y >= object_half_size.y + 0.01f && object_fixture->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
+            if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
                 enemy_instance->CollisionPulledObject();
             }
+           
+       
         }
 
         //引っ張られている状態のオブジェクトと浮遊エネミーの衝突
