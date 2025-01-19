@@ -18,6 +18,7 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"display.h"
+#include<cmath>
 
 
 
@@ -231,6 +232,19 @@ void Player::Update()
     //モーションのDrawカウントを加算
     draw_cnt++;
     
+
+    //Sensorの変更フラグの管理
+    if (old_anchor_Lev != AnchorSpirit::GetAnchorLevel())
+    {
+        if ((old_anchor_Lev == 1 || old_anchor_Lev == 2)&& (AnchorSpirit::GetAnchorLevel()==1|| AnchorSpirit::GetAnchorLevel() == 2))
+        {
+        }
+        else
+        {
+            sensor_flag = false;
+        }  
+    }
+    old_anchor_Lev = AnchorSpirit::GetAnchorLevel();
     //センサーの画面サイズに応じた大きさの変動
     Player_sensor_size_change(AnchorSpirit::GetAnchorLevel());
 
@@ -612,19 +626,21 @@ void Player::Player_sensor_size_change(int anchor_level)
 {
     if (anchor_level < 3)//アンカーレベルの１、２の時
     {
-        if (GetSensorSize() == GetSensorSizeLev3())//センサーの大きさを取得して
+        if(sensor_flag==false)
         {
             b2Vec2 pos=GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev1_2());
+            sensor_flag = true;
         }
     }
 
     if (anchor_level == 3)//アンカーレベルが３の時
     {
-        if (GetSensorSize() == GetSensorSizeLev1_2())//大きさを取得して差分があれば
+        if(sensor_flag==false)
         {
             b2Vec2 pos = GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
+            sensor_flag = true;
         }
     }
 }
