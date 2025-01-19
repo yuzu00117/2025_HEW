@@ -17,6 +17,7 @@
 #include"sound.h"
 #include"hit_stop.h"
 #include"camera_shake.h"
+#include"display.h"
 
 
 
@@ -113,7 +114,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
 
     SetSize(body_size);//プレイヤー表示をするためにセットする
-    SetSensorSize(sensor_size);//センサー表示をするためにセット
+    SetSensorSize(b2Vec2(sensor_size.x* DISPLAY_RANGE_TO_SCALE,sensor_size.y * DISPLAY_RANGE_TO_SCALE));//センサー表示をするためにセット
 
 
 
@@ -125,8 +126,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     //センサーの設定用の
     b2Vec2 size_sensor;//命名すまん
-    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
-    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
+    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT*DISPLAY_RANGE_TO_SCALE;
+    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT*DISPLAY_RANGE_TO_SCALE;
 
 
 
@@ -854,17 +855,17 @@ void Player::Draw()
         //センサー描画
 
 
-        //// シェーダリソースを設定
-        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        //DrawSprite(
-        //    { screen_center.x,
-        //      screen_center.y },
-        //    m_body->GetAngle(),
-        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
-        //);
-        //float size_sensor = GetSensorSize().x * scale;
-        //float size = GetSize().x * scale;
+        DrawSprite(
+            { screen_center.x,
+              screen_center.y },
+            m_body->GetAngle(),
+            { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        );
+        float size_sensor = GetSensorSize().x * scale;
+        float size = GetSize().x * scale;
 
     }
 }

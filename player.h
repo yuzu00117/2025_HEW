@@ -15,7 +15,8 @@
 
 
 #include"include/box2d/box2d.h"
-
+#include"tool.h"
+#include"display.h"
 #include"world_box2d.h"
 
 
@@ -178,9 +179,9 @@ private:
 	int draw_cnt;
 
 
-	//レベルに応じたセンサーの大きさを記述したもの
-	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40, 34);
-	b2Vec2 Sensor_size_Lev3 = b2Vec2(80, 68);
+	//レベルに応じたセンサーの大きさを記述したもの	displayの変更に伴って　センサーのサイズも自動で変わるようにした
+	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40*calculateScale(DISPLAY_RANGE_TO_SCALE), 34 * calculateScale(DISPLAY_RANGE_TO_SCALE));
+	b2Vec2 Sensor_size_Lev3 = b2Vec2(80*calculateScale(DISPLAY_RANGE_TO_SCALE), 68* calculateScale(DISPLAY_RANGE_TO_SCALE));
 };
 
 #endif // !PLAYER_H

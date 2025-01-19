@@ -10,10 +10,11 @@
 #include"display.h"
 #include"keyboard.h"
 #include"anchor_spirit.h"
+#include"tool.h"
 
 // 静的メンバ変数の定義（1回だけ行う）
-
-float display::m_display_scale = 1;//スケールの初期値の倍率
+//表示範囲を渡して　その範囲を表示するための拡大率を受け取っている
+float display::m_display_scale = calculateScale(DISPLAY_RANGE_TO_SCALE);//スケールの初期値の倍率
 
 
 
@@ -58,14 +59,16 @@ void display::Update()
 
 	if (AnchorSpirit::GetAnchorLevel() == 3)
 	{
-		if (GetDisplayScale() >= 0.5)
+		//自動で倍率を調整するよ
+		if (GetDisplayScale() >= 0.5 *calculateScale(DISPLAY_RANGE_TO_SCALE))
 		{
 			SetDisplayScale(-0.01);
 		}
 	}
 	else
 	{
-		if (GetDisplayScale() <= 1)
+		//自動で倍率を調整するよ
+		if (GetDisplayScale() <= 1* calculateScale(DISPLAY_RANGE_TO_SCALE))
 		{
 			SetDisplayScale(0.01);
 		}

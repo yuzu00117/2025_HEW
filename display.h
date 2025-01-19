@@ -15,6 +15,8 @@
 #define DEFAULT_DISPLAY_WIDTH (650)
 #define DEFAULT_DISPLAY_HEIGHT (540)
 
+#define DISPLAY_RANGE_TO_SCALE (0.7)
+
 class display
 {
 public:
