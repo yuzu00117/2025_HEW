@@ -15,7 +15,8 @@
 
 
 #include"include/box2d/box2d.h"
-
+#include <unordered_map>
+#include <string>
 #include"world_box2d.h"
 
 
@@ -62,6 +63,15 @@ public:
 	void Player_sensor_size_change(int anchor_level);
 
 	void Player_knockback(int KnockBackLevel, b2Body* touch_body);
+
+
+	//フィルターを変換できる
+	void updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks);
+
+	//プレイヤーがダメージ受けた瞬間呼び出す
+	void Player_Damaged(int invincibletime);
+
+	void Invincible_time_update();
 
 
 	static b2Body* GetOutSidePlayerBody();
@@ -176,6 +186,11 @@ private:
 	player_draw_state draw_state;
 
 	int draw_cnt;
+
+	//無敵時間の管理
+	int invincible_time;
+
+	int player_alpha = 3.0f;
 
 
 	//レベルに応じたセンサーの大きさを記述したもの
