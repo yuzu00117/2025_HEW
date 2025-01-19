@@ -21,6 +21,7 @@
 #include"contactlist.h"
 #include"anchor_spirit.h"
 #include"Item_Manager.h"
+#include"create_filter.h"
 
 
 static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;//動的エネミーのテクスチャ
@@ -60,6 +61,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture2.friction = 0.001f;//摩擦
 	fixture2.restitution = 0.0f;//反発係数
 	fixture2.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	fixture2.filter=createFilterExclude("enemy_filter", {});
 
 	//====================================================================================================
 	//センサーの登録
