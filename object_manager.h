@@ -24,6 +24,7 @@
 #include"enemy_attack.h"
 #include"enemy_floating.h"
 #include"teleport_block.h"
+#include"1-1_boss_field_block.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -74,6 +75,8 @@ public:
 
     void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
 
+    void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -97,6 +100,9 @@ public:
     
 
     teleport_block* FindTeleportBlock(int id);
+
+    boss_field_block* FindBossFieldBlock(int id);
+
     
     //IDとオブジェクトタイプでオブジェクトを検索
     Object* FindObjectByID_ObjectType(int id, ObjectType type);
@@ -136,6 +142,9 @@ private:
     std::vector<std::unique_ptr<EnemyFloating>> enemy_floatingList;//浮遊エネミーのリスト
 
     std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
+
+    std::vector<std::unique_ptr<boss_field_block>> boss_field_blockList;//テレポートブロック
+
     //ここにオブジェクトごとにリストを追加していく感じ
 
 
