@@ -15,7 +15,8 @@
 
 
 #include"include/box2d/box2d.h"
-
+#include"tool.h"
+#include"display.h"
 #include"world_box2d.h"
 
 
@@ -173,14 +174,22 @@ private:
 	//アンカーを使用中よフラグ
 	bool m_is_use_anchor = false;
 
+	//描画に利用してる　プレイヤーの状態を表したもの
 	player_draw_state draw_state;
 
+	//描画用のカウント
 	int draw_cnt;
 
+	
 
-	//レベルに応じたセンサーの大きさを記述したもの
-	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40, 34);
-	b2Vec2 Sensor_size_Lev3 = b2Vec2(80, 68);
+
+	//レベルに応じたセンサーの大きさを記述したもの	displayの変更に伴って　センサーのサイズも自動で変わるようにした
+	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40*calculateScale(DISPLAY_RANGE_TO_SCALE), 34 * calculateScale(DISPLAY_RANGE_TO_SCALE));
+	b2Vec2 Sensor_size_Lev3 = b2Vec2(80*calculateScale(DISPLAY_RANGE_TO_SCALE), 68* calculateScale(DISPLAY_RANGE_TO_SCALE));
+
+	//センサーの管理に使う
+	bool sensor_flag;
+	int old_anchor_Lev;
 };
 
 #endif // !PLAYER_H

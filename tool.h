@@ -53,4 +53,11 @@ int GetRandomInt(int min, int max);
  */
 double DegreesToRadians(double degrees);
 
+// •\¦”ÍˆÍ‚©‚ç”{—¦‚ğŒvZ‚·‚éŠÖ”
+float calculateScale(float displayPercentage);
+
+
+// ”{—¦‚©‚ç•\¦”ÍˆÍ‚ğŒvZ‚·‚éŠÖ”
+float calculateDisplayPercentage(float scale);
+
 #endif // TOOL_H
