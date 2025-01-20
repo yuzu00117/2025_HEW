@@ -250,10 +250,14 @@ void Player::Update()
 
 
 
-
+    
 
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
+
+
+    //無敵時間の処理
+    Invincible_time_update();
 
     //横移動
    //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -600,8 +604,8 @@ void Player::Update()
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
+        Player_Damaged(120);
 
-        CameraShake::StartCameraShake(30, 20, 120);
     }
    
 
@@ -619,6 +623,62 @@ void Player::Update()
 
 
   
+}
+
+void Player::Player_Damaged(int invincibletime)
+{
+    invincible_time = invincibletime;
+    CameraShake::StartCameraShake(30, 20, 10);
+
+    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter" });
+
+    
+}
+
+void Player::Invincible_time_update(void)
+{
+    if (invincible_time != 0)
+    {
+        invincible_time--;
+
+        if (invincible_time % 5 == 0)
+        {
+            if (player_alpha == 3.0f)
+            {
+                player_alpha = 0.5;
+            }
+            else
+            {
+                player_alpha = 3.0f;
+            }
+        }
+
+        if (invincible_time <= 0)
+        {
+            updateFixtureFilter("Player_filter", {});
+            player_alpha = 3.0f;
+        }
+    }
+}
+
+
+void Player::updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks) {
+    // ボディの最初のフィクスチャを取得
+    b2Fixture* fixture = m_body->GetFixtureList();
+
+    // フィクスチャが存在しない場合は早期リターン
+    if (!fixture) {
+        return;
+    }
+
+    // 新しいフィルターを作成
+    b2Filter newFilter = createFilterExclude(category, includeMasks);
+
+    // すべてのフィクスチャに対してフィルターを更新
+    while (fixture) {
+        fixture->SetFilterData(newFilter);
+        fixture = fixture->GetNext(); // 次のフィクスチャに移動
+    }
 }
 
 
@@ -703,7 +763,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, 1, 3.0, m_direction
+                5, 5, 1, player_alpha, m_direction
 
             );
 
@@ -737,7 +797,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, draw_cnt/2, 3.0, m_direction
+                5, 5, draw_cnt/2, player_alpha, m_direction
 
             );
 
@@ -771,7 +831,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                4, 4, draw_cnt / 4, 3.0, m_direction
+                4, 4, draw_cnt / 4, player_alpha, m_direction
 
             );
 
@@ -792,7 +852,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                2, 3, draw_cnt / 4, 3.0, m_direction
+                2, 3, draw_cnt / 4, player_alpha, m_direction
 
             );
 
@@ -818,7 +878,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                3, 6, draw_cnt / 3, 3.0, m_direction
+                3, 6, draw_cnt / 3, player_alpha, m_direction
 
             );
             break;
@@ -855,7 +915,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, draw_cnt / 3, 3.0, m_direction
+                5, 5, draw_cnt / 3, player_alpha, m_direction
 
             );
             break;
