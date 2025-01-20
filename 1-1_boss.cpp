@@ -8,6 +8,8 @@
 #include"player_position.h"
 #include"display.h"
 
+
+
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_mini_boss_Texture = NULL;//小さなゴーレムのテクスチャ
 static ID3D11ShaderResourceView* g_boss_shock_wave_sheet1_Texture = NULL;//衝撃波のテクスチャ１
@@ -37,7 +39,7 @@ Boss_1_1::~Boss_1_1()
 {
 }
 
-void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize)
+void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 {
 	g_mini_boss_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_boss.png");//ミニゴーレムのインクルード
 	g_boss_shock_wave_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet1.png");//衝撃波攻撃のインクルードシート１
@@ -55,7 +57,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize)
 
 
 	//ボディのサイズをセット
-	SetBossSize(bodysize);
+	SetBossDrawSize(bodysize);
 
 	b2Vec2 size; //サイズのスケールを調整
 	size.x = bodysize.x / BOX2D_SCALE_MANAGEMENT;
@@ -85,11 +87,22 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize)
 
 	b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
 
-	// 反時計回りで頂点を設定
-	vertices[0].Set(-size.x / 3, size.y / 2);  // 左下
-	vertices[1].Set(size.x / 2, size.y / 2);   // 右下
-	vertices[2].Set(size.x / 2, 0.0);    // 右上
-	vertices[3].Set(-size.x / 3, 0.0);   // 左上
+	if (left = true)
+	{
+		// 反時計回りで頂点を設定
+		vertices[0].Set(-size.x / 3, size.y / 2);  // 左下
+		vertices[1].Set(size.x / 2, size.y / 2);   // 右下
+		vertices[2].Set(size.x / 2, 0.0);    // 右上
+		vertices[3].Set(-size.x / 3, 0.0);   // 左上
+	}
+	else
+	{
+		// 反時計回りで頂点を設定
+		vertices[0].Set(-size.x / 2, size.y / 2);  // 左下
+		vertices[1].Set(size.x / 3, size.y / 2);   // 右下
+		vertices[2].Set(size.x / 3, 0.0);    // 右上
+		vertices[3].Set(-size.x / 2, 0.0);   // 左上
+	}
 
 
 	body_shape.Set(vertices, 4);
@@ -113,6 +126,26 @@ void Boss_1_1::Update()
 {
 	if (m_body != nullptr)
 	{
+
+		
+
+		//左右の振り向きを作る
+		float player_x= PlayerPosition::GetPlayerPosition().x;
+		if (player_x < m_body->GetPosition().x)//左にいる
+		{
+			left_flag = true;
+		}
+		else
+		{
+			left_flag = false;
+		}
+
+		if (old_left_flag != left_flag)
+		{
+			int i = 0;
+		}
+
+		old_left_flag - left_flag;
 
 
 		switch (now_boss_state)
@@ -169,11 +202,6 @@ void Boss_1_1::Update()
 					display_shake_flag = true;
 				}
 			}
-
-
-
-
-
 			//モーションが完了した
 			if (Max_Charge_Attack_Sheet <= sheet_cnt)
 			{
@@ -187,6 +215,8 @@ void Boss_1_1::Update()
 		}
 	}
 }
+
+
 
 void Boss_1_1::Draw()
 {
@@ -210,7 +240,9 @@ void Boss_1_1::Draw()
 		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-		bool left_flag = true;
+
+
+	
 
 		switch (now_boss_state)
 		{
@@ -221,12 +253,12 @@ void Boss_1_1::Draw()
 			if (sheet_cnt < Max_Shock_Wave_Sheet / 2) {
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_sheet1_Texture);
 
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 7, 7, sheet_cnt, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 7, 7, sheet_cnt, boss_alpha, left_flag);
 			}
 			else
 			{
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_sheet2_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 7, 7, sheet_cnt - Max_Shock_Wave_Sheet / 2, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 7, 7, sheet_cnt - Max_Shock_Wave_Sheet / 2, boss_alpha, left_flag);
 			}
 
 
@@ -235,12 +267,12 @@ void Boss_1_1::Draw()
 			if (sheet_cnt < Max_Create_Mini_Golem_Sheet / 2) {
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_create_sheet1_Texture);
 
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 7, 7, sheet_cnt, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 7, 7, sheet_cnt, boss_alpha, left_flag);
 			}
 			else
 			{
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_create_sheet2_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 7, 7, sheet_cnt - Max_Create_Mini_Golem_Sheet / 2, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 7, 7, sheet_cnt - Max_Create_Mini_Golem_Sheet / 2, boss_alpha, left_flag);
 			}
 			break;
 
@@ -248,12 +280,12 @@ void Boss_1_1::Draw()
 			if (sheet_cnt < Max_Charge_Attack_Sheet / 2) {
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_charge_attack_sheet1_Texture);
 
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 10, 10, sheet_cnt, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 10, 10, sheet_cnt, boss_alpha, left_flag);
 			}
 			else
 			{
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_charge_attack_sheet2_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 10, 10, sheet_cnt - Max_Charge_Attack_Sheet / 2, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 10, 10, sheet_cnt - Max_Charge_Attack_Sheet / 2, boss_alpha, left_flag);
 			}
 			break;
 
@@ -262,12 +294,12 @@ void Boss_1_1::Draw()
 			if (sheet_cnt < Max_Walk_Sheet / 2) {
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_walk_sheet1_Texture);
 
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 6, 6, sheet_cnt, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt, boss_alpha, left_flag);
 			}
 			else
 			{
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_walk_sheet2_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale), 6, 6, sheet_cnt - Max_Walk_Sheet / 2, 1.0, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt - Max_Walk_Sheet / 2, boss_alpha, left_flag);
 			}
 			break;
 
@@ -311,7 +343,7 @@ void Boss_1_1::debugDraw()
 
 
 	float pos_y = PlayerPosition::GetPlayerPosition().y;
-	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSize().x * scale, GetBossSize().y * scale));
+	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale));
 }
 
 void Boss_1_1::Finalize()

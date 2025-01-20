@@ -26,18 +26,18 @@ public:
 
 
 
-	void Initialize(b2Vec2 position, b2Vec2 bodysize);
+	void Initialize(b2Vec2 position, b2Vec2 bodysize,bool left);
 	void Update();
 	void Draw();
 	void debugDraw();
 	void Finalize();
 
 
-	b2Vec2 GetBossSize(void)
+	b2Vec2 GetBossDrawSize(void)
 	{
 		return boss_size;
 	}
-	void SetBossSize(b2Vec2 size)
+	void SetBossDrawSize(b2Vec2 size)
 	{
 		boss_size = size;
 	}
@@ -65,6 +65,10 @@ private:
 
 	bool  display_shake_flag = true;
 
+	bool left_flag;//プレイヤーがどちらにいるかの描画用
+
+	bool old_left_flag;//振り向きを判別するため
+
 
 
 	boss_state now_boss_state;
@@ -77,6 +81,8 @@ private:
 	static constexpr int Max_Charge_Attack_Sheet = 200;		//ため攻撃の生成する最大フレーム
 
 	static constexpr int Max_Walk_Sheet = 72;
+
+	static constexpr float boss_alpha = 3.0f;
 };
 
 

@@ -189,7 +189,7 @@ void Game::Update(void)
 
 			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
 
-			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27));
+			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27),true);
 
 
 
