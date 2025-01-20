@@ -133,6 +133,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="1-1_boss.cpp" />
+    <ClCompile Include="1-1_boss_field_block.cpp" />
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
@@ -191,6 +193,8 @@
     <ClCompile Include="Xinput_controller.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="1-1_boss.h" />
+    <ClInclude Include="1-1_boss_field_block.h" />
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="anchor_spirit.h" />

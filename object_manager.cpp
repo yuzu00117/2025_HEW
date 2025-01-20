@@ -82,6 +82,10 @@ void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 t
 
 }
 
+void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level)
+{
+    boss_field_blockList.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp, level));
+}
 
 
 
@@ -192,6 +196,16 @@ teleport_block* ObjectManager::FindTeleportBlock(int id)
 {
     for (auto& w : teleport_blockList) {
 
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+boss_field_block* ObjectManager::FindBossFieldBlock(int id)
+{
+    for (auto& w : boss_field_blockList) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -326,6 +340,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : boss_field_blockList) {
+        w->Initialize();
+    }
+
 }
 
 
@@ -390,6 +408,12 @@ void ObjectManager::UpdateAll() {
 
         w->Update();
     }
+
+
+    for (auto& w : boss_field_blockList) {
+
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -443,6 +467,14 @@ void ObjectManager::DrawAll() {
 
         w->Draw();
     }
+
+
+    for (auto& w : boss_field_blockList) 
+    {
+
+        w->Draw();
+    }
+    
 }
 
 // 全ての木を破棄
@@ -484,11 +516,15 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : teleport_blockList) {
         w->Finalize();
     }
-
+    for (auto& w : boss_field_blockList) {
+        w->Finalize();
+    }
 
     for (auto& w : enemy_floatingList) {
         w->Finalize();
     }
+
+
 
 
     woodList.clear(); // 動的配列をクリアしてメモリ解放
@@ -504,6 +540,8 @@ void ObjectManager::FinalizeAll() {
     enemy_floatingList.clear();
 
     teleport_blockList.clear();
+
+    boss_field_blockList.clear();
 
 
 
