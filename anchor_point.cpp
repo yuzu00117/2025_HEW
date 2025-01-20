@@ -311,7 +311,7 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 	// スティック方向のベクトル
 	if (g_select_anchor_point_body == nullptr) return;//nullだったら返す
 
-
+	if (Anchor::GetAnchorState() != Nonexistent_state)return;
 
 	// スティック方向のベクトル
 	b2Vec2 stick = { stick_x, -stick_y }; // Box2D の Y 軸方向に対応
