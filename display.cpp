@@ -60,7 +60,7 @@ void display::Update()
 	if (AnchorSpirit::GetAnchorLevel() == 3)
 	{
 		//Ž©“®‚Å”{—¦‚ð’²®‚·‚é‚æ
-		if (GetDisplayScale() >= 0.5 *calculateScale(DISPLAY_RANGE_TO_SCALE))
+		if (GetDisplayScale() >= 0.7 *calculateScale(DISPLAY_RANGE_TO_SCALE))
 		{
 			SetDisplayScale(-0.01);
 		}

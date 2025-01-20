@@ -185,7 +185,7 @@ private:
 
 	//レベルに応じたセンサーの大きさを記述したもの	displayの変更に伴って　センサーのサイズも自動で変わるようにした
 	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40*calculateScale(DISPLAY_RANGE_TO_SCALE), 34 * calculateScale(DISPLAY_RANGE_TO_SCALE));
-	b2Vec2 Sensor_size_Lev3 = b2Vec2(80*calculateScale(DISPLAY_RANGE_TO_SCALE), 68* calculateScale(DISPLAY_RANGE_TO_SCALE));
+	b2Vec2 Sensor_size_Lev3 = b2Vec2(60*calculateScale(DISPLAY_RANGE_TO_SCALE), 51* calculateScale(DISPLAY_RANGE_TO_SCALE));
 
 	//センサーの管理に使う
 	bool sensor_flag;
