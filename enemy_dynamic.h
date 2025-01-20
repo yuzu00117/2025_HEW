@@ -35,7 +35,7 @@ private:
 	//エネミーど状態(動作)
 	int m_state = ENEMY_STATE_NULL;
 	int m_old_state = ENEMY_STATE_NULL;
-	const float m_speed = 0.01f;
+	const float m_speed = 0.006f;
 	//左向き true : 右向き false
 	bool m_direction = true;
 	bool m_is_jumping = false;
