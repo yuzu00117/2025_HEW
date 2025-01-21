@@ -13,6 +13,8 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"item_filter",             0x0020}, // 1 << 5
 };
 
+
+//これは指定した物を除外する　（ぶつかれない）
 b2Filter createFilterExclude(const std::string& category, const std::vector<std::string>& excludeMasks) {
     b2Filter filter;
 
@@ -25,6 +27,24 @@ b2Filter createFilterExclude(const std::string& category, const std::vector<std:
     // 除外するカテゴリを削除
     for (const std::string& excludeMask : excludeMasks) {
         filter.maskBits &= ~filter_type[excludeMask];
+    }
+
+    return filter;
+}
+
+//これは指定したものしかぶつかれない
+b2Filter createFilterInclude(const std::string& category, const std::vector<std::string>& includeMasks) {
+    b2Filter filter;
+
+    // カテゴリを設定
+    filter.categoryBits = filter_type[category];
+
+    // マスクを初期化（何とも衝突しないようにする）
+    filter.maskBits = 0;
+
+    // 指定されたカテゴリと衝突可能にする
+    for (const std::string& includeMask : includeMasks) {
+        filter.maskBits |= filter_type[includeMask];
     }
 
     return filter;

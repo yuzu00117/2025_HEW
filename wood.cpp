@@ -114,6 +114,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	anchorpoint_fixture.friction = 0.05f;//–€ŽC
 	anchorpoint_fixture.restitution = 0.0f;//”½”­ŒW”
 	anchorpoint_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 

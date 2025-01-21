@@ -20,6 +20,7 @@
 #include"player_position.h"
 #include"player_stamina.h"
 #include"contactlist.h"
+#include"create_filter.h"
 
 static ID3D11ShaderResourceView* g_EnemyAttack_Texture = NULL;	//動的エネミーのテクスチャ
 
@@ -54,6 +55,7 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 	fixture.friction = 0.05f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
+	fixture.filter = createFilterExclude("enemy_filter", {});
 
 	b2Fixture* enemy_attack_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 

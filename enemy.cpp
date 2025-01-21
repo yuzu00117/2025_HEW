@@ -25,7 +25,6 @@ void Enemy::CollisionPlayer()
 {
 	//HPを減少させる
 	PlayerStamina::EditPlayerStaminaValue(-GetDamage());
-	SetUse(false);
 }
 
 //エネミーが動いている状態のオブジェクトに触れた時の処理

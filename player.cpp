@@ -17,6 +17,8 @@
 #include"sound.h"
 #include"hit_stop.h"
 #include"camera_shake.h"
+#include"display.h"
+#include<cmath>
 
 
 
@@ -113,7 +115,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
 
     SetSize(body_size);//プレイヤー表示をするためにセットする
-    SetSensorSize(sensor_size);//センサー表示をするためにセット
+    SetSensorSize(b2Vec2(sensor_size.x* DISPLAY_RANGE_TO_SCALE,sensor_size.y * DISPLAY_RANGE_TO_SCALE));//センサー表示をするためにセット
 
 
 
@@ -125,8 +127,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
     //センサーの設定用の
     b2Vec2 size_sensor;//命名すまん
-    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
-    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
+    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT*DISPLAY_RANGE_TO_SCALE;
+    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT*DISPLAY_RANGE_TO_SCALE;
 
 
 
@@ -230,15 +232,32 @@ void Player::Update()
     //モーションのDrawカウントを加算
     draw_cnt++;
     
+
+    //Sensorの変更フラグの管理
+    if (old_anchor_Lev != AnchorSpirit::GetAnchorLevel())
+    {
+        if ((old_anchor_Lev == 1 || old_anchor_Lev == 2)&& (AnchorSpirit::GetAnchorLevel()==1|| AnchorSpirit::GetAnchorLevel() == 2))
+        {
+        }
+        else
+        {
+            sensor_flag = false;
+        }  
+    }
+    old_anchor_Lev = AnchorSpirit::GetAnchorLevel();
     //センサーの画面サイズに応じた大きさの変動
     Player_sensor_size_change(AnchorSpirit::GetAnchorLevel());
 
 
 
-
+    
 
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
+
+
+    //無敵時間の処理
+    Invincible_time_update();
 
     //横移動
    //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -585,8 +604,8 @@ void Player::Update()
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
+        Player_Damaged(120);
 
-        CameraShake::StartCameraShake(30, 20, 120);
     }
    
 
@@ -606,24 +625,82 @@ void Player::Update()
   
 }
 
+void Player::Player_Damaged(int invincibletime)
+{
+    invincible_time = invincibletime;
+    CameraShake::StartCameraShake(30, 20, 10);
+
+    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter" });
+
+    
+}
+
+void Player::Invincible_time_update(void)
+{
+    if (invincible_time != 0)
+    {
+        invincible_time--;
+
+        if (invincible_time % 5 == 0)
+        {
+            if (player_alpha == 3.0f)
+            {
+                player_alpha = 0.5;
+            }
+            else
+            {
+                player_alpha = 3.0f;
+            }
+        }
+
+        if (invincible_time <= 0)
+        {
+            updateFixtureFilter("Player_filter", {});
+            player_alpha = 3.0f;
+        }
+    }
+}
+
+
+void Player::updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks) {
+    // ボディの最初のフィクスチャを取得
+    b2Fixture* fixture = m_body->GetFixtureList();
+
+    // フィクスチャが存在しない場合は早期リターン
+    if (!fixture) {
+        return;
+    }
+
+    // 新しいフィルターを作成
+    b2Filter newFilter = createFilterExclude(category, includeMasks);
+
+    // すべてのフィクスチャに対してフィルターを更新
+    while (fixture) {
+        fixture->SetFilterData(newFilter);
+        fixture = fixture->GetNext(); // 次のフィクスチャに移動
+    }
+}
+
 
 void Player::Player_sensor_size_change(int anchor_level)
 {
     if (anchor_level < 3)//アンカーレベルの１、２の時
     {
-        if (GetSensorSize() == GetSensorSizeLev3())//センサーの大きさを取得して
+        if(sensor_flag==false)
         {
             b2Vec2 pos=GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev1_2());
+            sensor_flag = true;
         }
     }
 
     if (anchor_level == 3)//アンカーレベルが３の時
     {
-        if (GetSensorSize() == GetSensorSizeLev1_2())//大きさを取得して差分があれば
+        if(sensor_flag==false)
         {
             b2Vec2 pos = GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
+            sensor_flag = true;
         }
     }
 }
@@ -686,7 +763,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, 1, 3.0, m_direction
+                5, 5, 1, player_alpha, m_direction
 
             );
 
@@ -720,7 +797,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, draw_cnt/2, 3.0, m_direction
+                5, 5, draw_cnt/2, player_alpha, m_direction
 
             );
 
@@ -754,7 +831,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                4, 4, draw_cnt / 4, 3.0, m_direction
+                4, 4, draw_cnt / 4, player_alpha, m_direction
 
             );
 
@@ -775,7 +852,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                2, 3, draw_cnt / 4, 3.0, m_direction
+                2, 3, draw_cnt / 4, player_alpha, m_direction
 
             );
 
@@ -801,7 +878,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                3, 6, draw_cnt / 3, 3.0, m_direction
+                3, 6, draw_cnt / 3, player_alpha, m_direction
 
             );
             break;
@@ -838,7 +915,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, draw_cnt / 3, 3.0, m_direction
+                5, 5, draw_cnt / 3, player_alpha, m_direction
 
             );
             break;
@@ -854,17 +931,17 @@ void Player::Draw()
         //センサー描画
 
 
-        //// シェーダリソースを設定
-        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        //DrawSprite(
-        //    { screen_center.x,
-        //      screen_center.y },
-        //    m_body->GetAngle(),
-        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
-        //);
-        //float size_sensor = GetSensorSize().x * scale;
-        //float size = GetSize().x * scale;
+        DrawSprite(
+            { screen_center.x,
+              screen_center.y },
+            m_body->GetAngle(),
+            { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        );
+        float size_sensor = GetSensorSize().x * scale;
+        float size = GetSize().x * scale;
 
     }
 }
