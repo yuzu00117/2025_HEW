@@ -15,7 +15,7 @@
 #include"create_filter.h"
 #include"player_position.h"
 #include"display.h"
-
+#include"collider_type.h"
 
 
 // 使用するテクスチャファイルを格納
@@ -224,7 +224,105 @@ void Boss_1_1::Update()
 	}
 }
 
+void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
+{
+	if (GetAttackBody() == nullptr) {
 
+		//ボディのサイズをセット
+		SetAttackDrawSize(attack_size);
+
+		b2Vec2 size; //サイズのスケールを調整
+		size.x = attack_size.x / BOX2D_SCALE_MANAGEMENT;
+		size.y = attack_size.y / BOX2D_SCALE_MANAGEMENT;
+
+		b2BodyDef body;
+		body.type = b2_dynamicBody;
+
+		b2Vec2 boss_pos = m_body->GetPosition();
+		b2Vec2 boss_size = GetBossDrawSize();
+
+		if (left) {
+			body.position.Set(boss_pos.x - (boss_size.x / 3) - (attack_size.x / 2), boss_pos.y);
+		}
+		else
+		{
+			body.position.Set(boss_pos.x + (boss_size.x / 3) + (attack_size.x / 2), boss_pos.y);
+		}
+		body.angle = 0.0f;
+		body.fixedRotation = true;//回転を固定にする
+		body.userData.pointer = (uintptr_t)this;
+
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		//ワールドに登録
+		b2Body* m_attack_body = world->CreateBody(&body);
+
+		SetAttackBody(m_attack_body);
+
+		//通常攻撃のフィクスチャ
+		b2FixtureDef fixture;
+
+		// クラス内に b2Shape をメンバーとして保持する場合の例
+		b2PolygonShape shape; // クラスのメンバー変数として保持
+		shape.SetAsBox(attack_size.x * 0.5, attack_size.y * 0.5);
+
+		fixture.shape = &shape;//形を設定
+		fixture.density = 0.1f;//密度
+		fixture.friction = 0.0f;//摩擦
+		fixture.restitution = 0.0f;//反発係数
+		fixture.isSensor = false;//センサーかどうか
+
+		b2Fixture* m_fixture = m_body->CreateFixture(&fixture);
+
+
+		ObjectData* boss_attack_data = new ObjectData{ collider_enemy_dynamic };
+		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
+
+		//プレイヤーとジョイントする
+		b2WeldJointDef jointDef;
+		jointDef.bodyA = m_body;//ボスのボディ
+		jointDef.bodyB = GetAttackBody();//bossの攻撃のボディ
+
+		if (left)//右かどうか
+		{
+			//boss側
+			jointDef.localAnchorA.Set((-boss_size.x * 0.5), 0.0f);
+			//攻撃側
+			jointDef.localAnchorB.Set((attack_size.x * 0.5), 0.0f);
+		}
+		else//左側
+		{
+			//boss側
+			jointDef.localAnchorA.Set((boss_size.x * 0.5), 0.0f);
+			//攻撃側
+			jointDef.localAnchorB.Set((-attack_size.x * 0.5), 0.0f);
+		}
+		jointDef.collideConnected = true;//ジョイントした物体同士の接触を消す
+
+		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+
+	}
+
+}
+
+void Boss_1_1::DeleteAttackBody()
+{
+	if (GetAttackBody() != nullptr)
+	{
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		b2Body* m_destroy_body = GetAttackBody();
+
+		world->DestroyBody(m_destroy_body);
+
+		SetAttackBody(nullptr);
+
+	}
+}
 
 void Boss_1_1::Draw()
 {

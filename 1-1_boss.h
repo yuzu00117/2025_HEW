@@ -40,6 +40,9 @@ public:
 	void debugDraw();
 	void Finalize();
 
+	void CreateChargeAttack(b2Vec2 attack_size, bool left);
+
+	void DeleteAttackBody();
 
 	b2Vec2 GetBossDrawSize(void)
 	{
@@ -62,12 +65,35 @@ public:
 
 
 
+	b2Vec2 GetAttackDrawSize(void)
+	{
+		return attack_size;
+	}
+	void SetAttackDrawSize(b2Vec2 size)
+	{
+		attack_size = size;
+	}
+
+	b2Body* GetAttackBody(void)
+	{
+		return m_attack_body;
+	}
+
+	void SetAttackBody(b2Body* body)
+	{
+		m_attack_body = body;
+	}
+
 
 private:
 
 	b2Body* m_body;
 
+	b2Body* m_attack_body;
+
 	b2Vec2 boss_size;//描画で使うボスのサイズ
+
+	b2Vec2 attack_size;
 
 	float sheet_cnt;//シートの管理で使っている
 
