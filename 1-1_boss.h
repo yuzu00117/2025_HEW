@@ -42,6 +42,9 @@ public:
 
 	void CreateChargeAttack(b2Vec2 attack_size, bool left);
 
+	void CreateShockWave(b2Vec2 attack_size, bool left);
+	void ShockWaveUpdate(void);
+
 	void DeleteAttackBody();
 
 	b2Vec2 GetBossDrawSize(void)
@@ -97,7 +100,7 @@ private:
 
 	float sheet_cnt;//シートの管理で使っている
 
-	bool  display_shake_flag = true;
+
 
 	bool left_flag;//プレイヤーがどちらにいるかの描画用
 
@@ -107,13 +110,35 @@ private:
 
 	boss_state now_boss_state;
 
+	
 
+
+	//----------------------------------------------------------------------------------------------
+	//衝撃波攻撃
 	static constexpr int Max_Shock_Wave_Sheet = 98;			//衝撃波攻撃の最大フレーム
+	static constexpr int Shock_Wave_Start_Frame = 50;		//衝撃波の発生フレーム
+	static constexpr int Shock_Wave_End_Frame = 71;			//衝撃波の終了フレーム
+
+
+	static constexpr float Shock_Wave_Speed = 1.5f;			//衝撃波の飛んでいくスピード
+
+	bool Shock_Wave_Fly_flag=false;
+	static constexpr int Shock_Wave_time_Frame = 180;
+	int Now_Shock_Wave_time_Frame = 0;
+
+
+	//-------------------------------------------------------------------------------------------
 
 	static constexpr int Max_Create_Mini_Golem_Sheet = 98;	//ミニゴーレムの生成する最大フレーム
 
-	static constexpr int Max_Charge_Attack_Sheet = 200;		//ため攻撃の生成する最大フレーム
 
+	//-----------------------------------------------------------------------------------------------
+	//ため攻撃のフレーム達
+	static constexpr int Max_Charge_Attack_Sheet = 200;		//ため攻撃の生成する最大フレーム
+	static constexpr int Charge_Attack_Start_Frame = 67;//ため攻撃のモーションのボディの発生フレーム
+	static constexpr int Charge_Attack_End_Frame = 102;//ため攻撃のモーションのボディの発生フレーム
+
+	//-----------------------------------------------------------------------------------------
 	static constexpr int Max_Walk_Sheet = 72;
 
 	static constexpr float boss_alpha = 3.0f;
