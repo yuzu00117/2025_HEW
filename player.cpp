@@ -74,24 +74,26 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         m_body = nullptr;
     }
 
-    //テクスチャのロード
-    g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
-    g_player_jump_sheet= InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
+    if (g_player_Texture == NULL) {
+        //テクスチャのロード
+        g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
-    g_player_damaged_sheet= InitTexture(L"asset\\texture\\player_texture\\player_damaged_sheet.png");
+        g_player_jump_sheet = InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
 
-    g_player_throw_anchor_sheet= InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
+        g_player_damaged_sheet = InitTexture(L"asset\\texture\\player_texture\\player_damaged_sheet.png");
 
-    g_player_normal_attack_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_anchor_sheet.png");
+        g_player_throw_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
 
-    g_player_normal_attack_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_sheet.png");
+        g_player_normal_attack_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_anchor_sheet.png");
 
-    g_player_walk_sheet= InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
+        g_player_normal_attack_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_sheet.png");
 
-    g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
+        g_player_walk_sheet = InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
 
+        g_player_sensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
 
+    }
 
 
     b2BodyDef body;
