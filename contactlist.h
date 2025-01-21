@@ -311,7 +311,6 @@ public:
                     wood* object_instance = object_manager.FindWoodByID(object_data[i]->id);
                     if (object_instance->GetIfPulling() == true)
                     {
-                        //object_instance->FalledDownSound(object_data[1-i]->object_name);
                         object_instance->Add_CollidedObjectWhenFalling_List(object_fixture[1 - i]->GetBody()->GetPosition(), object_data[1 - i]->object_name);
                         return;
                     }

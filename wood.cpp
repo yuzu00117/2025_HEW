@@ -177,27 +177,32 @@ void wood::Initialize()
 
 void wood::Update()
 {
+	//listが空じゃない場合のみ音を出すかを判断
 	if (!object_collided_when_falling.empty())
 	{
+		//後でlistの中身を消すためにイテレータを保存するためのlist
 		std::list<std::list<ObjectCollided_WhenFalling*>::iterator> IteratorList;
 		for (auto a : object_collided_when_falling)
 		{
-			a->count_down_to_play_sound--;
+			a->count_down_to_play_sound--; //カウントダウン
+			//カウントダウンが0の場合音を鳴らす
 			if (a->count_down_to_play_sound == 0)
 			{
-				app_atomex_start(Object_Get_Coin_Sound);
-				auto id = std::find(object_collided_when_falling.begin(), object_collided_when_falling.end(), a);
-				IteratorList.push_back(id);
+				app_atomex_start(m_sound_FalledDown);	//音鳴らす
+				auto id = std::find(object_collided_when_falling.begin(), object_collided_when_falling.end(), a);	//このオブジェのイテレータを取得
+				IteratorList.push_back(id);	//後で消すためにイテレータリストに入れておく
 			}
 		}
 
+		//イテレータリストが空じゃない場合
 		if (!IteratorList.empty())
 		{
 			for (auto a : IteratorList)
 			{
-				object_collided_when_falling.erase(a);
+				object_collided_when_falling.erase(a);	//ぶつかったオブジェクトのリストに対応のイテレータを消す
 			}
 			IteratorList.clear();
+			object_collided_when_falling.clear();
 		}
 	}
 }
@@ -217,20 +222,23 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 
 void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type)
 {
+	//もしlistが空なら
 	if (object_collided_when_falling.empty())
 	{
-		goto checked;
+		goto add;	//listに追加
 	}
+	//listが空じゃない
 	for (auto a : object_collided_when_falling)
 	{
-		if ((unsigned)(position.y - a->position.y) > 0.5f && type == a->type)
+		//もし今ぶつかったオブジェクトが前にぶつかったオブジェクトのｙ座標がめっちゃ近い
+		if ((unsigned)(position.y - a->position.y) < 0.5f)
 		{
-			a->count_down_to_play_sound = 1;
+			a->count_down_to_play_sound = 1;	//音出すカウントダウンをリセット
 			return;
 		}
 	}
 	
-	checked:
+	add:
 		ObjectCollided_WhenFalling object;
 		object.position = position;
 		object.type = type;
