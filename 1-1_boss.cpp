@@ -15,7 +15,7 @@
 #include"create_filter.h"
 #include"player_position.h"
 #include"display.h"
-
+#include"collider_type.h"
 
 
 // 使用するテクスチャファイルを格納
@@ -34,6 +34,10 @@ static ID3D11ShaderResourceView* g_mini_boss_walk_sheet2_Texture = NULL;//ゴーレ
 //-------------------------------------------------------------------------------------------
 //デバック用の画像
 static ID3D11ShaderResourceView* g_debug_color = NULL;//デバック用
+
+static ID3D11ShaderResourceView* g_debug_attack_color = NULL;//デバック用
+
+
 
 
 Boss_1_1::Boss_1_1()
@@ -64,8 +68,20 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	}
 
 	//デバック用
-	g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//ミニゴーレムの生成のボス側２
+	g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensorのテクスチャ
+	g_debug_attack_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
 
+
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	//ボディがあったら消す
+	if (GetBossBody() != nullptr)
+	{
+		world->DestroyBody(GetBossBody());
+		SetBossBody(nullptr);
+	}
 
 	//ボディのサイズをセット
 	SetBossDrawSize(bodysize);
@@ -82,8 +98,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	body.userData.pointer = (uintptr_t)this;
 
 
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	
 
 	//ワールドに登録
 	b2Body* m_boss_body = world->CreateBody(&body);
@@ -98,7 +113,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
 
-	if (left = true)
+	if (left == true)
 	{
 		// 反時計回りで頂点を設定
 		vertices[0].Set(-size.x / 3, size.y / 2);  // 左下
@@ -124,6 +139,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	body_fixture.restitution = 0.1f;//反発係数
 	body_fixture.density = 0.1f;
 	body_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	body_fixture.filter = createFilterExclude("enemy_filter", {});
 
 
 	b2Fixture* m_body_fixture = m_body->CreateFixture(&body_fixture);
@@ -139,7 +155,7 @@ void Boss_1_1::Update()
 	{
 
 		
-
+		//---------------------------------------------------------------------------------------------------------------------------
 		//左右の振り向きを作る
 		float player_x= PlayerPosition::GetPlayerPosition().x;
 		if (player_x < m_body->GetPosition().x)//左にいる
@@ -153,10 +169,19 @@ void Boss_1_1::Update()
 
 		if (old_left_flag != left_flag)
 		{
-			int i = 0;
+			Initialize(GetBossBody()->GetPosition(), b2Vec2(18.f, 27.f), left_flag);
 		}
 
-		old_left_flag - left_flag;
+		old_left_flag = left_flag;
+		//-------------------------------------------------------------------------------------------------------------------------------
+
+		//衝撃波の更新処理
+		ShockWaveUpdate();
+
+
+
+
+
 
 
 		switch (now_boss_state)
@@ -176,6 +201,18 @@ void Boss_1_1::Update()
 			break;
 		case shock_wave_state:
 			sheet_cnt += 0.5;
+			
+			if (static_cast<int>(sheet_cnt) == Shock_Wave_Start_Frame)
+			{
+				CreateShockWave(b2Vec2(1.0f, 4.0f), left_flag);
+				Shock_Wave_Fly_flag = true;
+			}
+			
+
+			
+			
+
+
 			if (Max_Shock_Wave_Sheet <= sheet_cnt)
 			{
 				sheet_cnt = 0;
@@ -195,24 +232,26 @@ void Boss_1_1::Update()
 
 			break;
 		case charge_attack_state:
-			sheet_cnt += 0.75;
 
-
-
-			//叩きつけの時に画面を振動のさせる
-			if (68 < sheet_cnt && sheet_cnt < 140)
+			//シート１枚目からは進行が少し早い
+			if (sheet_cnt < 100)
 			{
-				if (display_shake_flag == true)
-				{
-				
-					display_shake_flag = false;
-				}
-				else
-				{
-			
-					display_shake_flag = true;
-				}
+				sheet_cnt += 0.75;
 			}
+			else // シート２枚目からは進行が少し遅い
+			{
+				sheet_cnt += 0.5;
+			}
+
+			if (static_cast<int>(sheet_cnt) == Charge_Attack_Start_Frame)
+			{
+				CreateChargeAttack(b2Vec2(4.0f, 4.0f), left_flag);
+			}
+			if (static_cast<int>(sheet_cnt) == Charge_Attack_End_Frame)
+			{
+				DeleteAttackBody();
+			}
+			
 			//モーションが完了した
 			if (Max_Charge_Attack_Sheet <= sheet_cnt)
 			{
@@ -227,7 +266,201 @@ void Boss_1_1::Update()
 	}
 }
 
+void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
+{
+	if (GetAttackBody() == nullptr) {
 
+		//ボディのサイズをセット
+		SetAttackDrawSize(attack_size);
+
+		b2Vec2 size; //サイズのスケールを調整
+		size.x = attack_size.x / BOX2D_SCALE_MANAGEMENT;
+		size.y = attack_size.y / BOX2D_SCALE_MANAGEMENT;
+
+		b2BodyDef body;
+		body.type = b2_dynamicBody;
+
+		b2Vec2 boss_pos = m_body->GetPosition();
+		b2Vec2 boss_size = b2Vec2(GetBossDrawSize().x/BOX2D_SCALE_MANAGEMENT, GetBossDrawSize().y / BOX2D_SCALE_MANAGEMENT);
+
+		if (left) {
+			body.position.Set(boss_pos.x - (boss_size.x / 3) - (size.x / 2), boss_pos.y+boss_size.y/2-size.y/2);
+		}
+		else
+		{
+			body.position.Set(boss_pos.x + (boss_size.x / 3 ) + (size.x / 2), boss_pos.y + boss_size.y / 2-size.y/2);
+		}
+		body.angle = 0.0f;
+		body.fixedRotation = true;//回転を固定にする
+		body.userData.pointer = (uintptr_t)this;
+
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		//ワールドに登録
+		b2Body* m_attack_body = world->CreateBody(&body);
+
+		SetAttackBody(m_attack_body);
+
+		//通常攻撃のフィクスチャ
+		b2FixtureDef fixture;
+
+		// クラス内に b2Shape をメンバーとして保持する場合の例
+		b2PolygonShape shape; // クラスのメンバー変数として保持
+		shape.SetAsBox(size.x * 0.5, size.y * 0.5);
+
+		fixture.shape = &shape;//形を設定
+		fixture.density = 0.1f;//密度
+		fixture.friction = 0.0f;//摩擦
+		fixture.restitution = 0.0f;//反発係数
+		fixture.isSensor = true;//センサーかどうか
+
+		b2Fixture* m_fixture = m_attack_body->CreateFixture(&fixture);
+
+
+		ObjectData* boss_attack_data = new ObjectData{ collider_object };
+		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
+
+		//プレイヤーとジョイントする
+		b2WeldJointDef jointDef;
+		jointDef.bodyA = m_body;//ボスのボディ
+		jointDef.bodyB = GetAttackBody();//bossの攻撃のボディ
+
+		if (left)//右かどうか
+		{
+			//boss側
+			jointDef.localAnchorA.Set((-boss_size.x /3),boss_size.y/2-size.y/2);
+			//攻撃側
+			jointDef.localAnchorB.Set((size.x * 0.5), 0.0f);
+		}
+		else//左側
+		{
+			//boss側
+			jointDef.localAnchorA.Set((boss_size.x /3), boss_size.y / 2 - size.y / 2);
+			//攻撃側
+			jointDef.localAnchorB.Set((-size.x * 0.5), 0.0f);
+		}
+		jointDef.collideConnected = true;//ジョイントした物体同士の接触を消す
+
+		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+
+	}
+
+}
+
+
+void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
+{
+	if (GetAttackBody() == nullptr) {
+
+		//ボディのサイズをセット
+		SetAttackDrawSize(attack_size);
+
+		b2Vec2 size; //サイズのスケールを調整
+		size.x = attack_size.x / BOX2D_SCALE_MANAGEMENT;
+		size.y = attack_size.y / BOX2D_SCALE_MANAGEMENT;
+
+		b2BodyDef body;
+		body.type = b2_dynamicBody;
+		body.gravityScale=(0.0f);//重力の影響をうけない
+
+		b2Vec2 boss_pos = m_body->GetPosition();
+		b2Vec2 boss_size = b2Vec2(GetBossDrawSize().x / BOX2D_SCALE_MANAGEMENT, GetBossDrawSize().y / BOX2D_SCALE_MANAGEMENT);
+
+		if (left) {
+			body.position.Set(boss_pos.x - (boss_size.x / 3) - (size.x / 2), boss_pos.y + boss_size.y / 2-size.y/2);
+		}
+		else
+		{
+			body.position.Set(boss_pos.x + (boss_size.x / 3) + (size.x / 2), boss_pos.y + boss_size.y / 2-size.y / 2);
+		}
+		body.angle = 0.0f;
+		body.fixedRotation = true;//回転を固定にする
+		body.userData.pointer = (uintptr_t)this;
+		
+
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		//ワールドに登録
+		b2Body* m_attack_body = world->CreateBody(&body);
+
+		SetAttackBody(m_attack_body);
+
+		//通常攻撃のフィクスチャ
+		b2FixtureDef fixture;
+
+		// クラス内に b2Shape をメンバーとして保持する場合の例
+		b2PolygonShape shape; // クラスのメンバー変数として保持
+		shape.SetAsBox(size.x * 0.5, size.y * 0.5);
+
+		fixture.shape = &shape;//形を設定
+		fixture.density = 0.0f;//密度
+		fixture.friction = 0.0f;//摩擦
+		fixture.restitution = 0.0f;//反発係数
+		fixture.isSensor = true;//センサーかどうか
+
+		b2Fixture* m_fixture = m_attack_body->CreateFixture(&fixture);
+
+
+	/*	ObjectData* boss_attack_data = new ObjectData{ collider_object };
+		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);*/
+
+		//プレイヤーとジョイントする
+		b2WeldJointDef jointDef;
+		jointDef.bodyA = m_body;//ボスのボディ
+		jointDef.bodyB = GetAttackBody();//bossの攻撃のボディ
+
+		
+
+	}
+}
+
+
+void Boss_1_1::ShockWaveUpdate(void)
+{
+	if (Shock_Wave_Fly_flag==true)
+	{
+		if (GetAttackBody() != nullptr)
+		{
+			float minus_flag = 1;
+			if (left_flag == true)
+			{
+				minus_flag = -1;
+			}
+
+			GetAttackBody()->SetLinearVelocity(b2Vec2(minus_flag * Shock_Wave_Speed, 0.0f));
+		}
+		Now_Shock_Wave_time_Frame++;
+
+		//衝撃波の終了
+		if (Shock_Wave_time_Frame < Now_Shock_Wave_time_Frame)
+		{
+			DeleteAttackBody();
+			Shock_Wave_Fly_flag = false;//リセット処理
+			Now_Shock_Wave_time_Frame = 0;//リセット処理
+		}
+	}
+}
+
+void Boss_1_1::DeleteAttackBody()
+{
+	if (GetAttackBody() != nullptr)
+	{
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		b2Body* m_destroy_body = GetAttackBody();
+
+		world->DestroyBody(m_destroy_body);
+
+		SetAttackBody(nullptr);
+
+	}
+}
 
 void Boss_1_1::Draw()
 {
@@ -353,11 +586,49 @@ void Boss_1_1::debugDraw()
 
 
 
-	float pos_y = PlayerPosition::GetPlayerPosition().y;
+	
 	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale));
+
+
+
+	//---------------------------------------------------------------------------
+	//攻撃判定のDraw
+
+	if (GetAttackBody() != nullptr)
+	{
+
+		//シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
+
+		// コライダーの位置の取得（プレイヤーの位置）
+		b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		DrawSprite(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale, GetAttackDrawSize().y * scale));
+	}
 }
 
 void Boss_1_1::Finalize()
 {
 
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	if (GetBossBody() != nullptr)
+	{
+		world->DestroyBody(GetBossBody());
+		SetBossBody(nullptr);
+	}
+
+
+	if (GetAttackBody() != nullptr)
+	{
+		world->DestroyBody(GetAttackBody());
+		SetAttackBody(nullptr);
+	}
 }

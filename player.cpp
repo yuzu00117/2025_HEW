@@ -95,6 +95,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         g_player_sensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
 
+
     }
 
 
