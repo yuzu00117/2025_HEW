@@ -4,23 +4,26 @@
 // #make 2024/11/20			王泳心
 // #update 2024/11/20
 // #comment 追加・修正予定
-// 
 //           ・残機と画面遷移追加されたら、体力0になった時の処理を追加
+//           ・2025/01/21 yuzu00117 体力が0になったときにリザルト画面に遷移する処理を追加
 // 
 //----------------------------------------------------------------------------------------------------
 
 
 #include	"player_stamina.h"
 #include	"anchor_spirit.h"
+#include	"scene.h"
 
 
 // 静的メンバ変数の定義（1回だけ行う）
 float	PlayerStamina::m_stamina = 300.0f;
+bool PlayerStamina::m_isdead = false;
 
 
 void PlayerStamina::Initialize()
 {
 	m_stamina = 300.0f;
+	m_isdead = false;
 }
 
 float	PlayerStamina::GetPlayerStaminaValue()
@@ -44,8 +47,11 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	if (m_stamina <= 0.0f)
 	{
 		//ここで残機を減らす処理
-		//ここで画面遷移
+
+		//画面遷移のためにプレイヤーの死亡フラグを立てる
+		m_isdead = true;
 	}
+
 	//体力が最大体力を超えた時の処理
 	else if (m_stamina > MAX_STAMINA)
 	{
@@ -55,4 +61,7 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	}
 }
 
-
+bool PlayerStamina::IsPlayerDead()
+{
+	return m_isdead;
+}
