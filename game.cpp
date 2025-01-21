@@ -30,6 +30,7 @@
 #include"bg.h"
 #include"hit_stop.h"
 #include"camera_shake.h"
+#include"player_UI.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -58,6 +59,8 @@ void Game::Initialize()
 
 	//�c�@�̏�����
 	PlayerLife::Initialize();
+
+	player_UI::Initialize();
 
 	//体力ソウルゲージUIの初期化
 	stamina_spirit_gauge.Initialize();
@@ -104,7 +107,11 @@ void Game::Finalize(void)
 	//背景の終了処理
 	Bg::Finalize();
 
+
 	boss.Finalize();
+
+	player_UI::Finalize();
+
 
 
 
@@ -145,6 +152,8 @@ void Game::Update(void)
 		//�v���C���[�̍X�V����
 		//プレイヤーの更新処理
 		player.Update();
+
+		player_UI::Update();
 
 		//アンカーの更新処理
 		Anchor::Update();
@@ -235,7 +244,11 @@ void Game::Draw(void)
 	//�c�@�̕`�揈��
 	PlayerLife::Draw();
 
+
 	boss.Draw();
+
+	player_UI::Draw();
+
 
 	
 
