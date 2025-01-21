@@ -970,7 +970,6 @@ public:
                 wood* wood_instance = object_manager.FindWoodByID(objectB->id);
                 if (wood_instance != nullptr && wood_instance->GetIfPulling() == true) {
                     wood_instance->SetIfPulling(false);
-                    wood_instance->SetPullingTime(0);
                 }
             }
 

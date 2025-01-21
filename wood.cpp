@@ -187,10 +187,6 @@ void wood::Update()
 		std::list<std::list<ObjectCollided_WhenFalling*>::iterator> IteratorList;
 		for (auto a : object_collided_when_falling)
 		{
-			if (a->type == Object_Movable_Ground)
-			{
-				int c = 1;
-			}
 			a->count_down_to_play_sound--;
 			if (a->count_down_to_play_sound == 0)
 			{
@@ -226,23 +222,19 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 
 void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type)
 {
-	if (type == Object_Movable_Ground)
+	if (object_collided_when_falling.empty())
 	{
-		int c = 1;
+		goto checked;
 	}
-		if (object_collided_when_falling.empty())
+	for (auto a : object_collided_when_falling)
+	{
+		if ((unsigned)(position.y - a->position.y) > 0.5f && type == a->type)
 		{
-			goto checked;
+			a->count_down_to_play_sound = 1;
+			return;
 		}
-		for (auto a : object_collided_when_falling)
-		{
-			if ((unsigned)(position.y - a->position.y) > 0.5f && type == a->type)
-			{
-				a->count_down_to_play_sound = 1;
-				return;
-			}
-		}
-
+	}
+	
 	checked:
 		ObjectCollided_WhenFalling object;
 		object.position = position;

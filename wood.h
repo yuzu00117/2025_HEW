@@ -70,23 +70,8 @@ public:
 	bool	GetIfPulling() { return m_pulling; }
 	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
-	int		GetPullingTime() { return m_pulling_time; }
-	void	SetPullingTime(int time) { m_pulling_time = time; }
-
 
 	void	Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type);
-
-	
-	/*	void	FalledDownSound(ObjectType object) {
-		if (object != NULL_object)
-		{
-			app_atomex_start(Player_Jump_Sound);
-		}
-		if (object == NULL_object && m_pulling_time > 60) {
-			app_atomex_start(Player_Jump_Sound);
-			m_pulling_time = 0;
-		}
-	}*/
 
 	///-----------------------------------------------------------------------------
 	//アンカーポイント
@@ -126,8 +111,6 @@ private:
 	b2Vec2 m_AnchorPoint_size;
 
 	bool	m_pulling = false;
-
-	int	m_pulling_time = 0;
 
 	class ObjectCollided_WhenFalling {
 	public:
