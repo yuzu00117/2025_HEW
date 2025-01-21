@@ -14,7 +14,6 @@
 
 #include"include/box2d/box2d.h"
 #include"sound.h"
-#include"main.h"
 #include<list>
 
 
@@ -71,7 +70,7 @@ public:
 	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
 	//倒れる時ぶつかったオブジェクトのリストにオブジェクト追加
-	void	Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type);
+	void	Add_CollidedObjectWhenFalling_List(b2Vec2 position);
 
 	///-----------------------------------------------------------------------------
 	//アンカーポイント

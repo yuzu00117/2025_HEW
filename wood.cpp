@@ -222,7 +222,7 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 	SetIfPulling(true);
 }
 
-void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type)
+void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position)
 {
 	//‚à‚µlist‚ª‹ó‚È‚ç
 	if (object_collided_when_falling.empty())
