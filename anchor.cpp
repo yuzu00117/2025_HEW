@@ -21,9 +21,12 @@
 #include"collider_type.h"
 #include"contactlist.h"
 #include"create_filter.h"
+#include"anchor_spirit.h"
 
 //グローバル変数
-static ID3D11ShaderResourceView* g_Anchor_Texture = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Anchor_Texture_Lev1 = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Anchor_Texture_Lev2 = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Anchor_Texture_Lev3 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Anchor_Chain_Texture = NULL;//アンカーの鎖のテクスチャ
 
 //アンカーの一端のプレイヤーのボディをもっとく
@@ -60,7 +63,10 @@ void Anchor::Initialize()
 	//テクスチャの初期化
 
 	//アンカーの錨の部分（日本語）
-	g_Anchor_Texture=InitTexture(L"asset\\texture\\sample_texture\\img_anchor.png");
+	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev1.png");
+	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev2.png");
+	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev3.png");
+
 
 	//アンカーの鎖
 	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
@@ -251,15 +257,34 @@ void Anchor::Draw()
 		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+		float anchor_size_scale = 0;
 
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture);
+		switch (AnchorSpirit::GetAnchorLevel())
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
+			anchor_size_scale = 1;
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
+			anchor_size_scale = 1.5;
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
+			anchor_size_scale = 2;
+			break;
+		default:
+			break;
+		}
+
+		
 
 		//draw
 		DrawSprite(
 			{ draw_x,
 			  draw_y },
 			g_anchor_instance->GetAnchorBody()->GetAngle(),
-			{ g_anchor_instance->GetSize().x*scale,g_anchor_instance->GetSize().y*scale}///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			{ g_anchor_instance->GetSize().x*scale*anchor_size_scale,g_anchor_instance->GetSize().y*scale* anchor_size_scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 		);
 
 
@@ -285,7 +310,9 @@ void Anchor::Finalize()
 	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
 
 	UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture);	  //アンカーのテクスチャの解放
+	UnInitTexture(g_Anchor_Texture_Lev1);	  //アンカーのテクスチャの解放
+	UnInitTexture(g_Anchor_Texture_Lev2);	  //アンカーのテクスチャの解放
+	UnInitTexture(g_Anchor_Texture_Lev3);	  //アンカーのテクスチャの解放
 	
 }
 

@@ -1,0 +1,135 @@
+//-----------------------------------------------------------------------------------------------------
+// #name boss_field_block.cpp
+// #description ボス戦部屋のフィールドを生成するCPP
+// #make 2025/01/14　永野義也
+// #update 2025/01/14
+// #comment 追加・修正予定
+//          
+//----------------------------------------------------------------------------------------------------
+
+#include"1-1_boss_field_block.h"
+#include"texture.h"
+#include"sprite.h"
+#include"world_box2d.h"
+#include"collider_type.h"
+#include"player_position.h"
+
+static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
+
+boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, Boss_Room_Level level)
+{
+	SetSize(size);//描画用のサイズを保存
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+	//サイズを調整する
+	b2Vec2 body_size;
+	body_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
+	body_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
+
+	//ボディを作成する
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(position.x, position.y);
+	body.fixedRotation = false;
+
+	b2Body* m_Body = world->CreateBody(&body);
+
+	SetBody(m_Body);
+
+
+	//形の定義
+	b2PolygonShape shape;
+	shape.SetAsBox(body_size.x * 0.5, body_size.y * 0.5);
+
+
+	//-----------------------------------------------------
+	//	fixtureを作る
+	b2FixtureDef fixture;
+
+	fixture.shape = &shape;
+	fixture.density = 1.0f;
+	fixture.friction = 0.01f;
+	fixture.restitution = 0.0f;
+	fixture.isSensor = false;
+
+	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
+
+	//カスタムデータを作成
+	ObjectData* object_data = new ObjectData{ collider_object };
+	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
+
+	int ID = object_data->GenerateID();
+	object_data->id = ID;
+	object_data->object_name = NULL_object;
+	SetID(ID);
+
+
+	//各種特殊な変数をセット
+	Block_Hp = block_hp;
+
+	BossRoomLevel = level;
+
+
+
+}
+
+boss_field_block::~boss_field_block()
+{
+}
+
+
+
+void boss_field_block::Initialize()
+{
+	if (g_Texture == NULL) {
+		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
+	}
+}
+
+void boss_field_block::Update()
+{
+
+}
+
+void boss_field_block::Draw()
+{
+
+
+	if (m_body != nullptr)
+	{
+		// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+		float scale = SCREEN_SCALE;
+
+		// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
+
+		b2Vec2 Pos = GetBody()->GetPosition();
+
+
+		float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+
+
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale ,GetSize().y * scale }
+		);
+	}
+
+}
+
+void boss_field_block::Finalize()
+{
+	UnInitTexture(g_Texture);
+}

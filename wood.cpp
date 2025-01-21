@@ -114,6 +114,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	anchorpoint_fixture.friction = 0.05f;//摩擦
 	anchorpoint_fixture.restitution = 0.0f;//反発係数
 	anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
@@ -168,11 +169,12 @@ wood::~wood()
 
 void wood::Initialize()
 {
-	//アンカーの錨の部分（日本語）
-	g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
-	g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
-	g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
-
+	
+	if (g_Wood_Texture == NULL) {
+		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
+		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
+		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+	}
 }
 
 void wood::Update()

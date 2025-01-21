@@ -23,6 +23,7 @@
 #include"stage_select_contact_list.h"
 #include"tool.h"
 #include"easing.h"
+#include"sound.h"
 
 
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
@@ -124,7 +125,7 @@ void StageSelectScene::Initialize()
 	m_world->SetContactListener(&listener);
 
 
-	
+	app_atomex_start(STAGESELECT_BGM);
 }
 
 void StageSelectScene::Update()
@@ -170,6 +171,8 @@ void StageSelectScene::Update()
 
 				g_tap_addition = 1;
 
+				app_atomex_start(Decision_Sound);
+
 				m_player.SetTapTextureFlag(true);
 			}
 		}
@@ -178,9 +181,11 @@ void StageSelectScene::Update()
 		//カーソルをステージポイントにあててる時
 		if (m_player.GetTouchStageSelectNum() != 0)
 		{
+			
 			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
 			{
 				fade_rate = 0.01;
+				app_atomex_start(Select_Sound);
 			}
 		}
 

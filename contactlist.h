@@ -28,6 +28,9 @@
 #include"Item_Manager.h"
 #include"FixtureSizeCalculate.h"
 #include"tool.h"
+#include"hit_stop.h"
+#include"camera_shake.h"
+#include"sound.h"
 
 
 class MyContactListener : public b2ContactListener {
@@ -128,7 +131,8 @@ public:
 
             if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
-                PlayerStamina::EditPlayerStaminaValue(-50);//被弾処理
+               
+                player.Player_Damaged(-50, 120);//被弾処理
 
                 if (objectA->collider_type == collider_object)
                 {
@@ -373,6 +377,11 @@ public:
             (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_dynamic))
         {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-50, 120);
+
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
@@ -385,12 +394,31 @@ public:
             }
         }
 
+        //プレイヤーの通常攻撃攻撃と動的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_normal_attack_anchor) ||
+            (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_dynamic))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
+            }
+        }
+
         //プレイヤーと浮遊エネミーの衝突
         if ((objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_floating) ||
             (objectA->collider_type == collider_enemy_floating && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_floating))
         {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
             if (objectA->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
@@ -484,21 +512,36 @@ public:
         //引っ張られている状態のオブジェクトとエネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_static) ||
-            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point)||
+            (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static))
         {
-            if ((objectA->collider_type == collider_enemy_static) &&
-                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+            ObjectData* enemy_data = objectB;
+            ObjectData* object_data = objectA;
+            b2Fixture* object_fixture = fixtureA;
+            if (objectA->collider_type == collider_enemy_static)
             {
-                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_data = objectA;
+                object_data = objectB;
+                object_fixture = fixtureB;
+            }
+            EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(enemy_data->id);
+            b2Vec2  enemy_position = enemy_instance->GetBody()->GetPosition();
+            b2Vec2  object_position = object_fixture->GetBody()->GetPosition();
+            b2Vec2 vec;
+            vec.x = enemy_position.x - object_position.x;
+            vec.y = enemy_position.y - object_position.y;
+
+            //オブジェのfixtureの半径を取得
+            b2Shape* const object_shape = object_fixture->GetShape();
+            b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
+
+            //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
+            //+0.01fはちょっと調整
+            if (vec.y >= object_half_size.y + 0.01f && object_fixture->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
+            {
                 enemy_instance->CollisionPulledObject();
             }
-            else if ((objectB->collider_type == collider_enemy_static) &&
-                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
-            {
-                    EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                    enemy_instance->CollisionPulledObject();
-            }
+
         }
 
         //引っ張られている状態のオブジェクトと動的エネミーの衝突
@@ -508,18 +551,36 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic))
         {
 
-            if ((objectA->collider_type == collider_enemy_dynamic) &&
-                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+ 
+
+            EnemyDynamic* enemy_instance;
+            b2Vec2 GetObjectVelocity;
+
+            if (objectA->collider_type == collider_enemy_dynamic)
+
             {
-                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+
+                GetObjectVelocity = fixtureB->GetBody()->GetLinearVelocity();
+            }
+            else
+            {
+                enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+
+                GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
+            }
+
+            if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            {
                 enemy_instance->CollisionPulledObject();
             }
-            else if ((objectB->collider_type == collider_enemy_dynamic) &&
-                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
-            {
-                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                enemy_instance->CollisionPulledObject();
-            }
+           
+       
         }
 
         //引っ張られている状態のオブジェクトと浮遊エネミーの衝突
@@ -527,18 +588,33 @@ public:
             (objectA->collider_type == collider_object && objectB->collider_type == collider_enemy_floating))
         {
 
-            if ((objectA->collider_type == collider_enemy_floating) &&
-                (fixtureB->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
+            ObjectData* enemy_data = objectB;
+            ObjectData* object_data = objectA;
+            b2Fixture* object_fixture = fixtureA;
+            if (objectA->collider_type == collider_enemy_floating)
             {
-                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
+                enemy_data = objectA;
+                object_data = objectB;
+                object_fixture = fixtureB;
+            }
+            EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(enemy_data->id);
+            b2Vec2  enemy_position = enemy_instance->GetBody()->GetPosition();
+            b2Vec2  object_position = object_fixture->GetBody()->GetPosition();
+            b2Vec2 vec;
+            vec.x = enemy_position.x - object_position.x;
+            vec.y = enemy_position.y - object_position.y;
+
+            //オブジェのfixtureの半径を取得
+            b2Shape* const object_shape = object_fixture->GetShape();
+            b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
+
+            //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
+            //+0.01fはちょっと調整
+            if (vec.y >= object_half_size.y + 0.01f && object_fixture->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
+            {
                 enemy_instance->CollisionPulledObject();
             }
-            else if ((objectB->collider_type == collider_enemy_floating) &&
-                (fixtureA->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0)))
-            {
-                EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
-                enemy_instance->CollisionPulledObject();
-            }
+
         }
 
 
@@ -609,12 +685,18 @@ public:
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
-                attack_instance->CollisionPlayer();
+                if (attack_instance)
+                {
+                    attack_instance->CollisionPlayer();
+                }
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
-                attack_instance->CollisionPlayer();
+                if (attack_instance)
+                {
+                    attack_instance->CollisionPlayer();
+                }
             }
         }
 

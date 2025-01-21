@@ -10,13 +10,16 @@
 #include"display.h"
 #include"keyboard.h"
 #include"anchor_spirit.h"
+#include"tool.h"
 
 // 静的メンバ変数の定義（1回だけ行う）
+//表示範囲を渡して　その範囲を表示するための拡大率を受け取っている
+float display::m_display_scale = calculateScale(DISPLAY_RANGE_TO_SCALE);//スケールの初期値の倍率
 
-float display::m_display_scale = 1;//スケールの初期値の倍率
 
-float display::m_display_width = 650;//横幅
-float display::m_display_height =540;//縦
+
+float display::m_display_width = DEFAULT_DISPLAY_WIDTH;//横幅
+float display::m_display_height =DEFAULT_DISPLAY_HEIGHT;//縦
 
 
 display::display()
@@ -56,14 +59,16 @@ void display::Update()
 
 	if (AnchorSpirit::GetAnchorLevel() == 3)
 	{
-		if (GetDisplayScale() >= 0.5)
+		//自動で倍率を調整するよ
+		if (GetDisplayScale() >= 0.7 *calculateScale(DISPLAY_RANGE_TO_SCALE))
 		{
 			SetDisplayScale(-0.01);
 		}
 	}
 	else
 	{
-		if (GetDisplayScale() <= 1)
+		//自動で倍率を調整するよ
+		if (GetDisplayScale() <= 1* calculateScale(DISPLAY_RANGE_TO_SCALE))
 		{
 			SetDisplayScale(0.01);
 		}
@@ -100,4 +105,11 @@ float display::GetDisplayHeight()
 void display::SetDisplayHeight(float height)
 {
 	m_display_height = m_display_height + height;
+}
+
+//初期値に戻す
+void display::SetDisplayDefault(void)
+{
+	m_display_width = DEFAULT_DISPLAY_WIDTH;
+	m_display_height = DEFAULT_DISPLAY_HEIGHT;
 }

@@ -108,3 +108,26 @@ int GetRandomInt(int min, int max) {
 double DegreesToRadians(double degrees) {
     return degrees * M_PI / 180.0;
 }
+
+
+// 表示範囲から倍率を計算する関数
+float calculateScale(float displayPercentage) {
+    if (displayPercentage <= 0 || displayPercentage > 100) {
+        throw std::invalid_argument("表示範囲は0より大きく100以下の値を指定してください。");
+    }
+
+    // 表示範囲（％）を倍率に変換
+    float scale = sqrt(1.0 / displayPercentage);
+    return scale;
+}
+
+// 倍率から表示範囲を計算する関数
+float calculateDisplayPercentage(float scale) {
+    if (scale <= 0) {
+        throw std::invalid_argument("倍率は0より大きい値を指定してください。");
+    }
+
+    // 表示範囲（％）を計算
+    float displayPercentage = 100.0 / pow(scale, 2);
+    return displayPercentage;
+}

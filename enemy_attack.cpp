@@ -20,6 +20,7 @@
 #include"player_position.h"
 #include"player_stamina.h"
 #include"contactlist.h"
+#include"create_filter.h"
 
 static ID3D11ShaderResourceView* g_EnemyAttack_Texture = NULL;	//動的エネミーのテクスチャ
 
@@ -54,6 +55,7 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 	fixture.friction = 0.05f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
+	fixture.filter = createFilterExclude("enemy_filter", {});
 
 	b2Fixture* enemy_attack_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
@@ -71,7 +73,10 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 
 void EnemyAttack::Initialize()
 {
-	g_EnemyAttack_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_attack.png");//エネミーのセンサーのテクスチャ
+	if (g_EnemyAttack_Texture == NULL)
+	{
+		g_EnemyAttack_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_attack.png");//エネミーのセンサーのテクスチャ
+	}
 }
 
 void EnemyAttack::Finalize()
@@ -87,8 +92,21 @@ void EnemyAttack::Finalize()
 
 void EnemyAttack::Update()
 {
+	if (!GetUse())
+	{
+		//ワールドに登録したbodyの削除
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+		world->DestroyBody(GetBody());
+		SetBody(nullptr);
+		//オブジェクトマネージャー内のエネミー削除
+		ObjectManager& object_manager = ObjectManager::GetInstance();
+		object_manager.DestroyEnemyAttack(GetID());
+		return;
+	}
+
 	m_count++;
-	if (m_count == m_frame)
+	if (m_count >= m_frame)
 	{
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();

@@ -147,9 +147,9 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 void AnchorPoint::Initialize()
 {
 	g_anchor_point_target_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_purple.png");
-	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev1.png");
-	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev2.png");
-	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_anchorpoint_lev3.png");
+	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev1.png");
+	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev2.png");
+	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev3.png");
 }
 
 void AnchorPoint::Update()
@@ -225,14 +225,14 @@ void AnchorPoint::Draw()
 			}
 
 
-		
+			
 			
 			//draw
 			DrawSprite(
 				{ draw_x,
 				  draw_y },
 				g_anchor_point_body[i]->GetAngle(),
-				{50 ,50}///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				{75,75}///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 			);
 		}
 	}
@@ -251,14 +251,17 @@ void AnchorPoint::Draw()
 
 
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
-
+		Player& player = Player::GetInstance();//ゲットインスタンス
 		//draw
-		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			0.0f,
-			{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-		);
+		if (g_select_anchor_point_body->GetPosition() != player.GetOutSidePlayerBody()->GetPosition())
+		{
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				0.0f,
+				{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			);
+		}
 	}
 
 
@@ -308,7 +311,7 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 	// スティック方向のベクトル
 	if (g_select_anchor_point_body == nullptr) return;//nullだったら返す
 
-
+	if (Anchor::GetAnchorState() != Nonexistent_state)return;
 
 	// スティック方向のベクトル
 	b2Vec2 stick = { stick_x, -stick_y }; // Box2D の Y 軸方向に対応

@@ -7,8 +7,15 @@
 //          ÅEì¡Ç…Ç»Çµ
 //----------------------------------------------------------------------------------------------------
 
+
+
 #ifndef DESPLAYE_H
 #define DESPLAYE_H
+
+#define DEFAULT_DISPLAY_WIDTH (650)
+#define DEFAULT_DISPLAY_HEIGHT (540)
+
+#define DISPLAY_RANGE_TO_SCALE (0.6)
 
 class display
 {
@@ -34,6 +41,8 @@ public:
 	static float GetDisplayHeight();
 
 	static void SetDisplayHeight(float height);
+
+	static void SetDisplayDefault(void);
 
 private:
 	static float m_display_scale;

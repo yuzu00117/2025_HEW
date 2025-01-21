@@ -12,6 +12,7 @@
 
 #include"anchor_spirit.h"
 #include"player_stamina.h"
+#include"sound.h"
 
 
 float AnchorSpirit::m_spirit = 50.0f;
@@ -33,6 +34,8 @@ float	AnchorSpirit::GetAnchorSpiritValue()
 //今のソウルゲージの値をマイナス、もしくはプラス（マイナスしたい場合は負数を渡してね！）
 void	AnchorSpirit::EditAnchorSpiritValue(float value)
 {
+	
+
 	//プレイヤーの体力がMAXの時だけソウル値の更新できる
 	if (PlayerStamina::GetPlayerStaminaValue() >= MAX_STAMINA)
 	{

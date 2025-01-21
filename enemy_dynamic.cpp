@@ -21,6 +21,7 @@
 #include"contactlist.h"
 #include"anchor_spirit.h"
 #include"Item_Manager.h"
+#include"create_filter.h"
 
 
 static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;//動的エネミーのテクスチャ
@@ -60,6 +61,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture2.friction = 0.001f;//摩擦
 	fixture2.restitution = 0.0f;//反発係数
 	fixture2.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	fixture2.filter=createFilterExclude("enemy_filter", {});
 
 	//====================================================================================================
 	//センサーの登録
@@ -97,13 +99,15 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	sensor_data->id = ID;
 	SetID(ID);
 
-	m_state = ENEMY_STATE_MOVE;
+	m_state = ENEMY_STATE_NULL;
 }
 
 void EnemyDynamic::Initialize()
 {
-	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
-	g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
+	if (g_EnemyDynamic_Texture == NULL) {
+		g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//動的エネミーのテクスチャ
+		g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
+	}
 }
 
 void EnemyDynamic::Finalize()
@@ -135,6 +139,10 @@ void EnemyDynamic::Update()
 		/*case ENEMY_STATE_DESTROYED:
 			break;*/
 		default:
+			if (GetInScreen())
+			{
+				SetState(ENEMY_STATE_MOVE);
+			}
 			m_old_state = ENEMY_STATE_NULL;
 			break;
 		}
@@ -156,7 +164,7 @@ void EnemyDynamic::Update()
 
 		if (object_manager.FindEnemyAttackByID(GetID()))
 		{
-			object_manager.DestroyEnemyAttack(GetID());
+			object_manager.FindEnemyAttackByID(GetID())->SetUse(false);
 		}
 
 		object_manager.DestroyEnemyDynamic(GetID());
@@ -190,7 +198,7 @@ void EnemyDynamic::Draw()
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
-		{ GetSize().x * scale , GetSize().y * scale }
+		{ GetSize().x * scale*2.0f , GetSize().y * scale*2.0f }
 	);
 
 
@@ -244,7 +252,7 @@ void EnemyDynamic::Move()
 		m_is_jumping = false;
 	}
 
-	//if(GetInScreen())
+	if(GetInScreen())
 	{
 		if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
 		{
@@ -252,11 +260,11 @@ void EnemyDynamic::Move()
 			if (GetDirection())
 			{
 
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.075), true);
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.10), true);
 			}
 			else
 			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.075), true);
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.10), true);
 			}
 		}
 		else
@@ -303,7 +311,7 @@ void EnemyDynamic::Attack()
 	{
 		m_attack_counter = 0;
 		GetBody()->SetType(b2_dynamicBody);
-		SetState(ENEMY_STATE_MOVE);
+		SetState(ENEMY_STATE_NULL);
 		return;
 	}
 
