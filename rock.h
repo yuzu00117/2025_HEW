@@ -70,8 +70,6 @@ public:
 	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
 
-	void	FalledDownSound() { app_atomex_start(Player_Jump_Sound); }
-
 
 	///-----------------------------------------------------------------------------
 	//アンカーポイント

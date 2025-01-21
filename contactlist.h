@@ -283,7 +283,8 @@ public:
              
         }
 
-        //オブジェクトが倒れた時別のオブジェクトや床に衝突した時
+        //オブジェ倒れた時の音
+        //オブジェクトが倒れた時別のオブジェクトや床に衝突した時音を出す
         if ((objectA->collider_type == collider_object && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_ground) ||
@@ -296,6 +297,9 @@ public:
             ObjectData* object_data[2];
             object_data[0] = objectA;
             object_data[1] = objectB;
+            b2Fixture* object_fixture[2];
+            object_fixture[0] = fixtureA;
+            object_fixture[1] = fixtureB;
 
 
             for (int i = 0; i < 2; i++)
@@ -307,7 +311,8 @@ public:
                     wood* object_instance = object_manager.FindWoodByID(object_data[i]->id);
                     if (object_instance->GetIfPulling() == true)
                     {
-                        object_instance->FalledDownSound();
+                        //object_instance->FalledDownSound(object_data[1-i]->object_name);
+                        object_instance->Add_CollidedObjectWhenFalling_List(object_fixture[1 - i]->GetBody()->GetPosition(), object_data[1 - i]->object_name);
                         return;
                     }
                 }
@@ -317,7 +322,6 @@ public:
                     rock* object_instance = object_manager.FindRockByID(object_data[i]->id);
                     if (object_instance->GetIfPulling() == true)
                     {
-                        object_instance->FalledDownSound();
                         return;
                     }
                 }
@@ -327,7 +331,15 @@ public:
                     static_to_dynamic_block* object_instance = object_manager.FindStatic_to_Dynamic_BlcokID(object_data[i]->id);
                     if (object_instance->GetIfPulling() == true)
                     {
-                        object_instance->FalledDownSound();
+                        return;
+                    }
+                }
+                break;
+                case Object_Movable_Ground:
+                {
+                    movable_ground* object_instance = object_manager.FindMovable_GroundID(object_data[i]->id);
+                    if (object_instance->GetIfPulling() == true)
+                    {
                         return;
                     }
                 }
@@ -958,6 +970,7 @@ public:
                 wood* wood_instance = object_manager.FindWoodByID(objectB->id);
                 if (wood_instance != nullptr && wood_instance->GetIfPulling() == true) {
                     wood_instance->SetIfPulling(false);
+                    wood_instance->SetPullingTime(0);
                 }
             }
 

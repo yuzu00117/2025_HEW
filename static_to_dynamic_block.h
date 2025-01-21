@@ -96,7 +96,6 @@ public:
 	bool	GetIfPulling() { return m_pulling; }
 	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
-	void	FalledDownSound() { app_atomex_start(Player_Jump_Sound); }
 
 private:
 	int id; // 各インスタンス固有の ID

@@ -58,6 +58,25 @@ using namespace DirectX;
 #define BLOCK_ROWS      (13)
 
 #define EFFECT_MAX      (100)
+
+
+// オブジェクトの種類を定義
+enum ObjectType {
+    NULL_object,
+    Object_Wood, // 木
+    Object_Rock, // 岩
+    Object_one_way_platform,//足場　したからしか乗れない
+    Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
+    Object_Movable_Ground,  //引っ張れる床 
+
+    Object_Enemy_Static,//静的エネミー
+    Object_Enemy_Dynamic,//動的エネミー
+    Object_Enemy_Attack, //エネミーの攻撃
+    Object_Enemy_Floating,//浮遊エネミー
+
+    Object_teleport_block,//テレポートブロック
+};
+
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************

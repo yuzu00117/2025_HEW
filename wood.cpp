@@ -121,10 +121,12 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
+	object_wood_data->object_name = Object_Wood;
 	object_anchorpoint_data->object_name = Object_Wood;
 
 
 	int ID=object_anchorpoint_data->GenerateID();
+	object_wood_data->id = ID;
 	object_anchorpoint_data->id = ID;
 	SetID(ID);
 
@@ -175,7 +177,38 @@ void wood::Initialize()
 
 void wood::Update()
 {
+	//if (m_pulling)
+	//{
+	//	m_pulling_time++;
+	//}
 
+	if (!object_collided_when_falling.empty())
+	{
+		std::list<std::list<ObjectCollided_WhenFalling*>::iterator> IteratorList;
+		for (auto a : object_collided_when_falling)
+		{
+			if (a->type == Object_Movable_Ground)
+			{
+				int c = 1;
+			}
+			a->count_down_to_play_sound--;
+			if (a->count_down_to_play_sound == 0)
+			{
+				app_atomex_start(Object_Get_Coin_Sound);
+				auto id = std::find(object_collided_when_falling.begin(), object_collided_when_falling.end(), a);
+				IteratorList.push_back(id);
+			}
+		}
+
+		if (!IteratorList.empty())
+		{
+			for (auto a : IteratorList)
+			{
+				object_collided_when_falling.erase(a);
+			}
+			IteratorList.clear();
+		}
+	}
 }
 
 void wood::Pulling_wood(b2Vec2 pulling_power)
@@ -189,6 +222,34 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 
 	body->SetLinearVelocity(pulling_power);
 	SetIfPulling(true);
+}
+
+void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type)
+{
+	if (type == Object_Movable_Ground)
+	{
+		int c = 1;
+	}
+		if (object_collided_when_falling.empty())
+		{
+			goto checked;
+		}
+		for (auto a : object_collided_when_falling)
+		{
+			if ((unsigned)(position.y - a->position.y) > 0.5f && type == a->type)
+			{
+				a->count_down_to_play_sound = 1;
+				return;
+			}
+		}
+
+	checked:
+		ObjectCollided_WhenFalling object;
+		object.position = position;
+		object.type = type;
+		object.count_down_to_play_sound = 1;
+		object_collided_when_falling.push_back(&object);
+
 }
 
 void wood::Draw()
@@ -285,6 +346,7 @@ void wood::Finalize()
 	{
 		world->DestroyBody(AnchorPoint_body);
 	}
+
 	//テクスチャの解放
 	UnInitTexture(g_Wood_Texture);
 	UnInitTexture(g_Wood_Texture1);
