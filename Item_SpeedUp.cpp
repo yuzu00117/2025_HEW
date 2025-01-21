@@ -115,8 +115,10 @@ void    ItemSpeedUp::Function()
 
 void ItemSpeedUp::Initialize()
 {
-    
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\speed_up.png");
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\speed_up.png");
+    }
 
 }
 

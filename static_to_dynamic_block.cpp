@@ -140,10 +140,10 @@ static_to_dynamic_block::~static_to_dynamic_block()
 
 void static_to_dynamic_block::Initialize()
 {
-	//アンカーの錨の部分（日本語）
-	g_coconut_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coconut.png");
-	g_BoxRock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_fall_rock.png");
-
+	if (g_coconut_Texture == NULL) {
+		g_coconut_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coconut.png");
+		g_BoxRock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_fall_rock.png");
+	}
 
 }
 
