@@ -486,9 +486,6 @@ public:
 
 
 
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
  
 
             EnemyDynamic* enemy_instance;
@@ -510,6 +507,10 @@ public:
 
             if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
+
+                app_atomex_start(Player_Dead_Sound);
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
                 enemy_instance->CollisionPulledObject();
             }
            
