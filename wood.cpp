@@ -177,11 +177,6 @@ void wood::Initialize()
 
 void wood::Update()
 {
-	//if (m_pulling)
-	//{
-	//	m_pulling_time++;
-	//}
-
 	if (!object_collided_when_falling.empty())
 	{
 		std::list<std::list<ObjectCollided_WhenFalling*>::iterator> IteratorList;
