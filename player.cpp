@@ -46,6 +46,8 @@ bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
 
+int Player::invincible_time = 0;
+
 bool    CollectSpirit_pressed = false;
 
 b2Body* player_body;
@@ -604,7 +606,7 @@ void Player::Update()
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
-        Player_Damaged(120);
+        Player_Damaged(-50,120);
 
     }
    
@@ -625,14 +627,17 @@ void Player::Update()
   
 }
 
-void Player::Player_Damaged(int invincibletime)
+void Player::Player_Damaged(int Change_to_HP,int invincibletime)
 {
-    invincible_time = invincibletime;
-    CameraShake::StartCameraShake(30, 20, 10);
+    // HPを減らす
+    PlayerStamina::EditPlayerStaminaValue(Change_to_HP);//HPに加算減算する　今回は減算
 
+    //無敵時間を付与
+    invincible_time = invincibletime;
+
+    // フィルターを変更
     updateFixtureFilter("Player_filter", { "object_filter","enemy_filter" });
 
-    
 }
 
 void Player::Invincible_time_update(void)
@@ -664,7 +669,7 @@ void Player::Invincible_time_update(void)
 
 void Player::updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks) {
     // ボディの最初のフィクスチャを取得
-    b2Fixture* fixture = m_body->GetFixtureList();
+    b2Fixture* fixture = GetOutSidePlayerBody()->GetFixtureList();
 
     // フィクスチャが存在しない場合は早期リターン
     if (!fixture) {
@@ -931,17 +936,17 @@ void Player::Draw()
         //センサー描画
 
 
-        // シェーダリソースを設定
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        //// シェーダリソースを設定
+        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        DrawSprite(
-            { screen_center.x,
-              screen_center.y },
-            m_body->GetAngle(),
-            { GetSensorSize().x * scale,GetSensorSize().y * scale }
-        );
-        float size_sensor = GetSensorSize().x * scale;
-        float size = GetSize().x * scale;
+        //DrawSprite(
+        //    { screen_center.x,
+        //      screen_center.y },
+        //    m_body->GetAngle(),
+        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        //);
+        //float size_sensor = GetSensorSize().x * scale;
+        //float size = GetSize().x * scale;
 
     }
 }
