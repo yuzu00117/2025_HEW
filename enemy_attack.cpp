@@ -73,7 +73,10 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 
 void EnemyAttack::Initialize()
 {
-	g_EnemyAttack_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_attack.png");//エネミーのセンサーのテクスチャ
+	if (g_EnemyAttack_Texture == NULL)
+	{
+		g_EnemyAttack_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_attack.png");//エネミーのセンサーのテクスチャ
+	}
 }
 
 void EnemyAttack::Finalize()

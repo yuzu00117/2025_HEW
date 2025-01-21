@@ -104,8 +104,10 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 void EnemyDynamic::Initialize()
 {
-	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//動的エネミーのテクスチャ
-	g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
+	if (g_EnemyDynamic_Texture == NULL) {
+		g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//動的エネミーのテクスチャ
+		g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
+	}
 }
 
 void EnemyDynamic::Finalize()

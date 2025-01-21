@@ -133,11 +133,11 @@ rock::~rock()
 
 void rock::Initialize()
 {
-	//アンカーの錨の部分（日本語）
-	g_Rock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_rock.png");
-	g_Rock_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
-	g_Rock_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
-
+	if (g_Rock_Texture == NULL) {
+		g_Rock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_rock.png");
+		g_Rock_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
+		g_Rock_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+	}
 }
 
 void rock::Update()

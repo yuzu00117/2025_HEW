@@ -167,11 +167,12 @@ wood::~wood()
 
 void wood::Initialize()
 {
-	//アンカーの錨の部分（日本語）
-	g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
-	g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
-	g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
-
+	
+	if (g_Wood_Texture == NULL) {
+		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
+		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
+		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+	}
 }
 
 void wood::Update()
