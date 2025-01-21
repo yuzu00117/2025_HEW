@@ -198,8 +198,10 @@ void    ItemSpirit::Function()
 
 void ItemSpirit::Initialize()
 {
-
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\tama.png");
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\tama.png");
+    }
 
 }
 

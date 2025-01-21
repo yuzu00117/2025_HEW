@@ -14,7 +14,10 @@ int Item_Coin_UI::now_get_coin__count = 0;
 
 void Item_Coin_UI::Initialize()
 {
-	g_number_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_number.png");
+	if (g_number_Texture == NULL)
+	{
+		g_number_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_number.png");
+	}
 }
 
 void Item_Coin_UI::Draw()

@@ -95,8 +95,11 @@ void one_way_platform::Initialize()
 {
 	//視覚的に今センサーなのか定義している
 	//テクスチャのインクルード
-	g_one_way_platform_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//センサーがオフ　あたり判定あり
-	g_one_way_platform1_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform1.png");//センサーがオン　あたり判定無し
+
+	if (g_one_way_platform1_Texture == NULL) {
+		g_one_way_platform_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//センサーがオフ　あたり判定あり
+		g_one_way_platform1_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform1.png");//センサーがオン　あたり判定無し
+	}
 }
 
 void one_way_platform::Update()

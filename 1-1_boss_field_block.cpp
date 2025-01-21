@@ -85,7 +85,9 @@ boss_field_block::~boss_field_block()
 
 void boss_field_block::Initialize()
 {
-	g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
+	if (g_Texture == NULL) {
+		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
+	}
 }
 
 void boss_field_block::Update()

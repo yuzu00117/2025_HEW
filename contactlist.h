@@ -131,7 +131,8 @@ public:
 
             if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
-                PlayerStamina::EditPlayerStaminaValue(-50);//被弾処理
+               
+                player.Player_Damaged(-50, 120);//被弾処理
 
                 if (objectA->collider_type == collider_object)
                 {
@@ -312,6 +313,7 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-50, 120);
 
             if (objectA->collider_type == collider_enemy_dynamic)
             {
