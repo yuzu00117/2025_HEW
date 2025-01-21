@@ -116,7 +116,6 @@ private:
 	class ObjectCollided_WhenFalling {
 	public:
 		b2Vec2	position;
-		ObjectType type;
 		int	count_down_to_play_sound;
 	};
 

@@ -243,7 +243,6 @@ void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position, ObjectType type)
 	add:
 		ObjectCollided_WhenFalling object;
 		object.position = position;
-		object.type = type;
 		object.count_down_to_play_sound = 1;
 		object_collided_when_falling.push_back(&object);
 
