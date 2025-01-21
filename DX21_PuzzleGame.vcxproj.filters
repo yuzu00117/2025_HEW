@@ -73,9 +73,6 @@
     <ClCompile Include="sloping_block.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="display.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="create_filter.cpp">
       <Filter>ソースファイル\collider</Filter>
     </ClCompile>
@@ -112,15 +109,75 @@
     <ClCompile Include="ground.cpp">
       <Filter>ソースファイル\field</Filter>
     </ClCompile>
-    <ClCompile Include="easing.cpp" />
-    <ClCompile Include="Item_Manager.cpp" />
-    <ClCompile Include="Item_SpeedUp.cpp" />
-    <ClCompile Include="Item_Spirit.cpp" />
-    <ClCompile Include="movable_ground.cpp" />
-    <ClCompile Include="stage_point.cpp" />
-    <ClCompile Include="stage_point_factory.cpp" />
-    <ClCompile Include="stage_select_player.cpp" />
-    <ClCompile Include="FixtureSizeCalculate.cpp" />
+    <ClCompile Include="1-1_boss.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="1-1_boss_field_block.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="display.cpp">
+      <Filter>ソースファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="camera_shake.cpp">
+      <Filter>ソースファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="easing.cpp">
+      <Filter>ソースファイル\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_attack.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_floating.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="FixtureSizeCalculate.cpp">
+      <Filter>ソースファイル\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Coin.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Coin_UI.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Manager.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_SpeedUp.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Spirit.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="movable_ground.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="player_UI.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_point.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_point_factory.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_select_player.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="teleport_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -204,9 +261,6 @@
     <ClInclude Include="rock.h">
       <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="display.h">
-      <Filter>ヘッダーファイル</Filter>
-    </ClInclude>
     <ClInclude Include="contactlist.h">
       <Filter>ヘッダーファイル\collider</Filter>
     </ClInclude>
@@ -240,17 +294,84 @@
     <ClInclude Include="ground.h">
       <Filter>ヘッダーファイル\field</Filter>
     </ClInclude>
-    <ClInclude Include="easing.h" />
-    <ClInclude Include="Item_Manager.h" />
-    <ClInclude Include="Item_SpeedUp.h" />
-    <ClInclude Include="Item_Spirit.h" />
-    <ClInclude Include="movable_ground.h" />
-    <ClInclude Include="stage_point.h" />
-    <ClInclude Include="stage_point_factory.h" />
-    <ClInclude Include="stage_select.h" />
-    <ClInclude Include="stage_select_contact_list.h" />
-    <ClInclude Include="stage_select_player.h" />
-    <ClInclude Include="FixtureSizeCalculate.h" />
+    <ClInclude Include="1-1_boss.h">
+      <Filter>ヘッダーファイル\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="1-1_boss_field_block.h">
+      <Filter>ヘッダーファイル\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="display.h">
+      <Filter>ヘッダーファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="camera_shake.h">
+      <Filter>ヘッダーファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpFramework.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpInputDevice.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpTimer.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="easing.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_floating.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_attack.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="FixtureSizeCalculate.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Coin.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Coin_UI.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Manager.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_SpeedUp.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Spirit.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="movable_ground.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="player_UI.h">
+      <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_point.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_point_factory.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select_contact_list.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select_player.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="teleport_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="hit_stop.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">
@@ -336,6 +457,36 @@
     </Filter>
     <Filter Include="ヘッダーファイル\field">
       <UniqueIdentifier>{f488acad-3d4e-42c5-83e1-fe9247782d38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\boss">
+      <UniqueIdentifier>{38056cd7-c038-449b-a565-34bba56eb0e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\boss">
+      <UniqueIdentifier>{87f3b229-b873-47e5-aa09-7c1517a7be56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\camera">
+      <UniqueIdentifier>{ce95ad1d-1ab8-4f40-9ad4-fc0cd24aa67c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\camera">
+      <UniqueIdentifier>{f10c67e8-210a-4f96-aedc-8ed7ab6572dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\CRI">
+      <UniqueIdentifier>{105e5911-e3b5-4368-8ffa-6e0fdfa672cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\CRI">
+      <UniqueIdentifier>{6be3077d-ddca-4d53-8dae-ee41497a3d32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\item">
+      <UniqueIdentifier>{454a73b0-e8a2-4a5b-8c05-f0a4c353ce9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\item">
+      <UniqueIdentifier>{7de10d1b-6fad-42e6-bcfd-69c04a846dc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\scene\stage_select">
+      <UniqueIdentifier>{267a482b-e373-46e5-90a9-0c6fc11c2202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\scene\stage_select">
+      <UniqueIdentifier>{f79a6462-8753-4c5b-8a9f-2675071857bb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
