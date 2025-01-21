@@ -24,7 +24,7 @@
 
 enum player_draw_state
 {
-	null,
+	null_state,
 	player_nomal_state,
 	player_jumping_state,
 	player_throw_anchor_state,

@@ -158,6 +158,18 @@ void Field::Initialize()
 				objectManager.AddTeleportBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(25.f, 1.f), b2Vec2(25.f, 4.f));
 			}
 
+			if (field_map[y][x] == 17) {//間欠泉にいくようのテレポートブロック
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f),3,boss_room_level_1);
+			}
+
+			if (field_map[y][x] == 18) {//間欠泉にいくようのテレポートブロック
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2);
+			}
+
+			if (field_map[y][x] == 19) {//間欠泉にいくようのテレポートブロック
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3);
+			}
+
 			if (field_map[y][x] == 21) {//浮遊敵
 				objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
