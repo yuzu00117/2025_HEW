@@ -71,7 +71,7 @@ public:
 	void updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks);
 
 	//プレイヤーがダメージ受けた瞬間呼び出す
-	void Player_Damaged(int invincibletime);
+	void Player_Damaged(int Change_to_HP,int invincibletime);
 
 	void Invincible_time_update();
 
@@ -192,7 +192,7 @@ private:
 	int draw_cnt;
 
 	//無敵時間の管理
-	int invincible_time;
+	static int invincible_time;
 
 	int player_alpha = 3.0f;
 
