@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------------------------------
+// #name 1-1_boss.cpp
+// #description bossをつくる　えぐい
+// #make 2025/01/07　　永野義也
+// #update 2025/01/21
+// #comment 追加・修正予定
+//          ・特になし
+//----------------------------------------------------------------------------------------------------
+
 #include"1-1_boss.h"
 #include"include/box2d/box2d.h"
 #include"texture.h"
@@ -7,6 +16,8 @@
 #include"create_filter.h"
 #include"player_position.h"
 #include"display.h"
+#include"create_filter.h"
+#include"collider_type.h"
 
 
 
@@ -41,20 +52,33 @@ Boss_1_1::~Boss_1_1()
 
 void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 {
-	g_mini_boss_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_boss.png");//ミニゴーレムのインクルード
-	g_boss_shock_wave_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet1.png");//衝撃波攻撃のインクルードシート１
-	g_boss_shock_wave_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet2.png");//衝撃波攻撃のインクルードシート２
-	g_boss_charge_attack_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet1.png");//ため攻撃のシート１
-	g_boss_charge_attack_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet2_.png");//ため攻撃のシート２
-	g_mini_boss_create_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet1.png");//ミニゴーレムの生成のボス側１
-	g_mini_boss_create_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet2_.png");//ミニゴーレムの生成のボス側２
-	g_mini_boss_walk_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet1.png");//ゴーレムの歩きモーション１
-	g_mini_boss_walk_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet2.png");//ゴーレムの歩きモーション２
+	if (g_mini_boss_Texture == nullptr)//読み込むのは一度でいい
+	{
+		g_mini_boss_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_boss.png");//ミニゴーレムのインクルード
+		g_boss_shock_wave_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet1.png");//衝撃波攻撃のインクルードシート１
+		g_boss_shock_wave_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet2.png");//衝撃波攻撃のインクルードシート２
+		g_boss_charge_attack_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet1.png");//ため攻撃のシート１
+		g_boss_charge_attack_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet2_.png");//ため攻撃のシート２
+		g_mini_boss_create_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet1.png");//ミニゴーレムの生成のボス側１
+		g_mini_boss_create_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet2_.png");//ミニゴーレムの生成のボス側２
+		g_mini_boss_walk_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet1.png");//ゴーレムの歩きモーション１
+		g_mini_boss_walk_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet2.png");//ゴーレムの歩きモーション２
 
 
-	//デバック用
-	g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//ミニゴーレムの生成のボス側２
+		//デバック用
+		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//ミニゴーレムの生成のボス側２
+	}
 
+	if (GetBossBody() != nullptr)
+	{
+		if (m_body) {
+			// ボディを削除
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+			world->DestroyBody(m_body);
+			m_body = nullptr;
+		}
+	}
 
 	//ボディのサイズをセット
 	SetBossDrawSize(bodysize);
@@ -87,7 +111,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
 
-	if (left = true)
+	if (left == true)
 	{
 		// 反時計回りで頂点を設定
 		vertices[0].Set(-size.x / 3, size.y / 2);  // 左下
@@ -113,6 +137,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	body_fixture.restitution = 0.1f;//反発係数
 	body_fixture.density = 0.1f;
 	body_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	body_fixture.filter= createFilterExclude("enemy_filter", {});
 
 
 	b2Fixture* m_body_fixture = m_body->CreateFixture(&body_fixture);
@@ -142,10 +167,10 @@ void Boss_1_1::Update()
 
 		if (old_left_flag != left_flag)
 		{
-			int i = 0;
+			Initialize(m_body->GetPosition(), GetBossDrawSize(), left_flag);
 		}
 
-		old_left_flag - left_flag;
+		old_left_flag = left_flag;
 
 
 		switch (now_boss_state)
@@ -187,21 +212,17 @@ void Boss_1_1::Update()
 			sheet_cnt += 0.75;
 
 
-
-			//叩きつけの時に画面を振動のさせる
-			if (68 < sheet_cnt && sheet_cnt < 140)
+			if (Charge_Attack_Start_Frame == static_cast<int>(sheet_cnt))
 			{
-				if (display_shake_flag == true)
-				{
-				
-					display_shake_flag = false;
-				}
-				else
-				{
-			
-					display_shake_flag = true;
-				}
+				CreateChargeAttack(b2Vec2(4.f, 4.f), left_flag);
 			}
+
+			if (Charge_Attack_End_Frame == static_cast<int>(sheet_cnt))
+			{
+				DeleteAttackBody();
+			}
+
+
 			//モーションが完了した
 			if (Max_Charge_Attack_Sheet <= sheet_cnt)
 			{
@@ -215,7 +236,105 @@ void Boss_1_1::Update()
 		}
 	}
 }
+void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size,bool left)
+{
+	if (GetAttackBody() == nullptr) {
 
+		//ボディのサイズをセット
+		SetAttackDrawSize(attack_size);
+
+		b2Vec2 size; //サイズのスケールを調整
+		size.x = attack_size.x / BOX2D_SCALE_MANAGEMENT;
+		size.y = attack_size.y / BOX2D_SCALE_MANAGEMENT;
+
+		b2BodyDef body;
+		body.type = b2_dynamicBody;
+
+		b2Vec2 boss_pos = m_body->GetPosition();
+		b2Vec2 boss_size = GetBossDrawSize();
+
+		if (left) {
+			body.position.Set(boss_pos.x - (boss_size.x / 3) - (attack_size.x / 2), boss_pos.y);
+		}
+		else
+		{
+			body.position.Set(boss_pos.x + (boss_size.x / 3) + (attack_size.x / 2), boss_pos.y);
+		}
+		body.angle = 0.0f;
+		body.fixedRotation = true;//回転を固定にする
+		body.userData.pointer = (uintptr_t)this;
+
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		//ワールドに登録
+		b2Body* m_attack_body = world->CreateBody(&body);
+
+		SetAttackBody(m_attack_body);
+
+		//通常攻撃のフィクスチャ
+		b2FixtureDef fixture;
+
+		// クラス内に b2Shape をメンバーとして保持する場合の例
+		b2PolygonShape shape; // クラスのメンバー変数として保持
+		shape.SetAsBox(attack_size.x * 0.5, attack_size.y * 0.5);
+
+		fixture.shape = &shape;//形を設定
+		fixture.density = 0.1f;//密度
+		fixture.friction = 0.0f;//摩擦
+		fixture.restitution = 0.0f;//反発係数
+		fixture.isSensor = false;//センサーかどうか
+
+		b2Fixture* m_fixture = m_body->CreateFixture(&fixture);
+
+
+		ObjectData* boss_attack_data = new ObjectData{ collider_enemy_dynamic };
+		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
+
+		//プレイヤーとジョイントする
+		b2WeldJointDef jointDef;
+		jointDef.bodyA = m_body;//ボスのボディ
+		jointDef.bodyB = GetAttackBody();//bossの攻撃のボディ
+
+		if (left)//右かどうか
+		{
+			//boss側
+			jointDef.localAnchorA.Set((-boss_size.x * 0.5), 0.0f);
+			//攻撃側
+			jointDef.localAnchorB.Set((attack_size.x * 0.5), 0.0f);
+		}
+		else//左側
+		{
+			//boss側
+			jointDef.localAnchorA.Set((boss_size.x * 0.5), 0.0f);
+			//攻撃側
+			jointDef.localAnchorB.Set((-attack_size.x * 0.5), 0.0f);
+		}
+		jointDef.collideConnected = true;//ジョイントした物体同士の接触を消す
+
+		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+
+	}
+	
+}
+
+void Boss_1_1::DeleteAttackBody()
+{
+	if (GetAttackBody() != nullptr)
+	{
+
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		b2Body* m_destroy_body=GetAttackBody();
+
+		world->DestroyBody(m_destroy_body);
+
+		SetAttackBody(nullptr);
+
+	}
+}
 
 
 void Boss_1_1::Draw()
@@ -287,6 +406,7 @@ void Boss_1_1::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_charge_attack_sheet2_Texture);
 				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 10, 10, sheet_cnt - Max_Charge_Attack_Sheet / 2, boss_alpha, left_flag);
 			}
+
 			break;
 
 		case walk_state://歩きモーション
@@ -342,8 +462,28 @@ void Boss_1_1::debugDraw()
 
 
 
-	float pos_y = PlayerPosition::GetPlayerPosition().y;
+	
 	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale));
+
+
+	if (GetAttackBody() != nullptr)
+	{
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_color);
+
+		// コライダーの位置の取得（プレイヤーの位置）
+		b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float Attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float Attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+
+	
+		DrawSprite(XMFLOAT2(Attack_draw_x, Attack_draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale));
+	}
 }
 
 void Boss_1_1::Finalize()

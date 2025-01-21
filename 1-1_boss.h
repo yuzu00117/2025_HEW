@@ -1,3 +1,11 @@
+//-----------------------------------------------------------------------------------------------------
+// #name 1-1_boss.cpp
+// #description bossをつくる　えぐい
+// #make 2025/01/07　　永野義也
+// #update 2025/01/21
+// #comment 追加・修正予定
+//          ・特になし
+//----------------------------------------------------------------------------------------------------
 #ifndef BOSS_1_1_H
 #define BOSS_1_1_H
 
@@ -33,6 +41,12 @@ public:
 	void Finalize();
 
 
+
+	void CreateChargeAttack(b2Vec2 attack_size,bool left);
+
+	void DeleteAttackBody(void);
+
+
 	b2Vec2 GetBossDrawSize(void)
 	{
 		return boss_size;
@@ -53,13 +67,36 @@ public:
 	}
 
 
+	b2Body* GetAttackBody(void)
+	{
+		return m_attack_body;
+	}
+
+	void SetAttackBody(b2Body* body)
+	{
+		m_attack_body = body;
+	}
+
+	b2Vec2 GetAttackDrawSize(void)
+	{
+		return attack_size;
+	}
+	void SetAttackDrawSize(b2Vec2 size)
+	{
+		attack_size = size;
+	}
+
 
 
 private:
 
 	b2Body* m_body;
 
+	b2Body* m_attack_body;
+
 	b2Vec2 boss_size;//描画で使うボスのサイズ
+
+	b2Vec2 attack_size;
 
 	float sheet_cnt;//シートの管理で使っている
 
@@ -76,9 +113,15 @@ private:
 
 	static constexpr int Max_Shock_Wave_Sheet = 98;			//衝撃波攻撃の最大フレーム
 
+
 	static constexpr int Max_Create_Mini_Golem_Sheet = 98;	//ミニゴーレムの生成する最大フレーム
 
 	static constexpr int Max_Charge_Attack_Sheet = 200;		//ため攻撃の生成する最大フレーム
+
+	static constexpr int Charge_Attack_Start_Frame = 67;//ため攻撃のモーションのボディの発生フレーム
+
+	static constexpr int Charge_Attack_End_Frame = 102;//ため攻撃のモーションのボディの発生フレーム
+
 
 	static constexpr int Max_Walk_Sheet = 72;
 
