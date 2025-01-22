@@ -13,8 +13,8 @@
 #define WOOD_H
 
 #include"include/box2d/box2d.h"
-
-
+#include"sound.h"
+#include<list>
 
 
 class wood
@@ -88,7 +88,11 @@ public:
 	}
 
 
+	bool	GetIfPulling() { return m_pulling; }
+	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
+	//倒れる時ぶつかったオブジェクトのリストにオブジェクト追加
+	void	Add_CollidedObjectWhenFalling_List(b2Vec2 position);
 
 	///-----------------------------------------------------------------------------
 	//アンカーポイント
@@ -131,5 +135,21 @@ private:
 	b2Body* AnchorPoint_body;
 
 	b2Vec2 m_AnchorPoint_size;
+
+	bool	m_pulling = false;
+
+	//倒れる時ぶつかったオブジェクトの情報を入れるためのクラス
+	class ObjectCollided_WhenFalling {
+	public:
+		b2Vec2	position;
+		int	count_down_to_play_sound;
+	};
+
+	//倒れる時ぶつかったオブジェクトのlist
+	std::list<ObjectCollided_WhenFalling*>object_collided_when_falling;
+
+	//音源
+	//----------------------------------------
+	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//倒れた時の音
 };
 #endif // !WOOD_H

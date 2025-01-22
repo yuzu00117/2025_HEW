@@ -125,6 +125,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
+	object_wood_data->object_name = Object_Wood;
 	object_anchorpoint_data->object_name = Object_Wood;
 
 
@@ -186,6 +187,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	//ObjecrDataの　ID設定　や　他の設定
 	//------------------------------------------------------------------------------------------------------------------------------------------
 	int ID=object_anchorpoint_data->GenerateID();
+	object_wood_data->id = ID;
 	object_anchorpoint_data->id = ID;
 	SetID(ID);
 
@@ -238,7 +240,34 @@ void wood::Initialize()
 
 void wood::Update()
 {
+	//listが空じゃない場合のみ音を出すかを判断
+	if (!object_collided_when_falling.empty())
+	{
+		//後でlistの中身を消すためにイテレータを保存するためのlist
+		std::list<std::list<ObjectCollided_WhenFalling*>::iterator> IteratorList;
+		for (auto a : object_collided_when_falling)
+		{
+			a->count_down_to_play_sound--; //カウントダウン
+			//カウントダウンが0の場合音を鳴らす
+			if (a->count_down_to_play_sound == 0)
+			{
+				app_atomex_start(m_sound_FalledDown);	//音鳴らす
+				auto id = std::find(object_collided_when_falling.begin(), object_collided_when_falling.end(), a);	//このオブジェのイテレータを取得
+				IteratorList.push_back(id);	//後で消すためにイテレータリストに入れておく
+			}
+		}
 
+		//イテレータリストが空じゃない場合
+		if (!IteratorList.empty())
+		{
+			for (auto a : IteratorList)
+			{
+				object_collided_when_falling.erase(a);	//ぶつかったオブジェクトのリストに対応のイテレータを消す
+			}
+			IteratorList.clear();
+			object_collided_when_falling.clear();
+		}
+	}
 }
 
 void wood::Pulling_wood(b2Vec2 pulling_power)
@@ -251,6 +280,33 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 	}
 
 	body->SetLinearVelocity(pulling_power);
+	SetIfPulling(true);
+}
+
+void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position)
+{
+	//もしlistが空なら
+	if (object_collided_when_falling.empty())
+	{
+		goto add;	//listに追加
+	}
+	//listが空じゃない
+	for (auto a : object_collided_when_falling)
+	{
+		//もし今ぶつかったオブジェクトが前にぶつかったオブジェクトのｙ座標がめっちゃ近い
+		if ((unsigned)(position.y - a->position.y) < 0.5f)
+		{
+			a->count_down_to_play_sound = 1;	//音出すカウントダウンをリセット
+			return;
+		}
+	}
+	
+	add:
+		ObjectCollided_WhenFalling object;
+		object.position = position;
+		object.count_down_to_play_sound = 1;
+		object_collided_when_falling.push_back(&object);
+
 }
 
 void wood::Draw()
@@ -368,6 +424,7 @@ void wood::Finalize()
 	{
 		world->DestroyBody(AnchorPoint_body);
 	}
+
 	//テクスチャの解放
 	UnInitTexture(g_Wood_Texture);
 	UnInitTexture(g_Wood_Texture1);
