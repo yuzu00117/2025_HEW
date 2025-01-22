@@ -17,13 +17,13 @@
 
 // 静的メンバ変数の定義（1回だけ行う）
 float	PlayerStamina::m_stamina = 300.0f;
-bool PlayerStamina::m_isdead = false;
+bool PlayerStamina::m_isdead = false; // プレイヤーの死亡フラグ
 
 
 void PlayerStamina::Initialize()
 {
 	m_stamina = 300.0f;
-	m_isdead = false;
+	m_isdead = false; // プレイヤーの死亡フラグを初期化
 }
 
 float	PlayerStamina::GetPlayerStaminaValue()
@@ -61,6 +61,7 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	}
 }
 
+// プレイヤーの死亡フラグを返す
 bool PlayerStamina::IsPlayerDead()
 {
 	return m_isdead;
