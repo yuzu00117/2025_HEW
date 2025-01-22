@@ -44,6 +44,9 @@ static ID3D11ShaderResourceView* g_debug_attack_color = NULL;//デバック用
 
 
 
+//そとのCPPから参照できるため
+b2Body* outside_boss_body;
+
 Boss_1_1::Boss_1_1()
 {
 
@@ -54,6 +57,8 @@ Boss_1_1::Boss_1_1()
 Boss_1_1::~Boss_1_1()
 {
 }
+
+
 
 void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 {
@@ -111,7 +116,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	b2Body* m_boss_body = world->CreateBody(&body);
 
 	SetBossBody(m_boss_body);
-
+	outside_boss_body = m_boss_body;//外部からの参照よう「
 
 	b2PolygonShape body_shape;
 
@@ -148,11 +153,13 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	body_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 	body_fixture.filter = createFilterExclude("Boss_filter",{});
 
-
+	
 	b2Fixture* m_body_fixture = m_body->CreateFixture(&body_fixture);
 
+	ObjectData* boss_body_data = new ObjectData{ collider_boss };
+	m_body_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_body_data);
 
-	now_boss_state = jump_state;
+	now_boss_state = charge_attack_state;
 
 }
 
@@ -161,7 +168,6 @@ void Boss_1_1::Update()
 	if (m_body != nullptr)
 	{
 
-		
 		//---------------------------------------------------------------------------------------------------------------------------
 		//左右の振り向きを作る
 		float player_x= PlayerPosition::GetPlayerPosition().x;
@@ -180,7 +186,7 @@ void Boss_1_1::Update()
 		}
 
 		old_left_flag = left_flag;
-		//-------------------------------------------------------------------------------------------------------------------------------
+		//-------------------------------------------------------------------------------------------
 
 		//衝撃波の更新処理
 		ShockWaveUpdate();
@@ -193,7 +199,7 @@ void Boss_1_1::Update()
 
 
 
-
+		//-------------------------------------------------------------------------------------------
 
 
 		switch (now_boss_state)
@@ -361,6 +367,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		//ワールドに登録
 		b2Body* m_attack_body = world->CreateBody(&body);
 
+		
 		SetAttackBody(m_attack_body);
 
 		//通常攻撃のフィクスチャ
@@ -604,6 +611,8 @@ void Boss_1_1::MiniGolemUpdate(void)
 }
 
 
+
+
 void Boss_1_1::DeleteAttackBody()
 {
 	if (GetAttackBody() != nullptr)
@@ -835,4 +844,9 @@ void Boss_1_1::Finalize()
 		world->DestroyBody(GetAttackBody());
 		SetAttackBody(nullptr);
 	}
+}
+
+b2Body* Boss_1_1::GetOutSideBody(void)
+{
+	return outside_boss_body;
 }

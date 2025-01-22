@@ -33,6 +33,12 @@ public:
 	~Boss_1_1();
 
 
+	// シングルトンインスタンス取得
+	static Boss_1_1& GetInstance() {
+		static Boss_1_1 instance;
+		return instance;
+	}
+
 
 
 	void Initialize(b2Vec2 position, b2Vec2 bodysize,bool left);
@@ -55,6 +61,7 @@ public:
 	void CreateMiniGolem(b2Vec2 minigolem_size, bool left);//ミニゴーレムの作成
 	void MiniGolemUpdate(void);//ミニゴーレムの更新処理
 
+	b2Body* GetOutSideBody(void);//BodyそとのCPPからとってくるよう
 
 	///-----------------------------------------------------------------------
 	//ボス本体

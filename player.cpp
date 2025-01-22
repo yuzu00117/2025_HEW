@@ -265,6 +265,8 @@ void Player::Update()
     //無敵時間の処理
     Invincible_time_update();
 
+    
+
     //横移動
    //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -993,9 +995,7 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
         minus = -1;
     }
 
-    
-
-    GetOutSidePlayerBody()  ->ApplyLinearImpulseToCenter(b2Vec2(0.5 * minus * KnockBackLevel, 0.5), true);
+    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, 1.0*KnockBackLevel));
 
 }
 

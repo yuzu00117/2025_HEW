@@ -31,11 +31,13 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"sound.h"
-
+#include"1-1_boss.h"
 
 class MyContactListener : public b2ContactListener {
 private:
     Player player = Player::GetInstance();
+    Boss_1_1 boss = Boss_1_1::GetInstance();
+
 
 public:
     b2Vec2 contactPoint;//衝突した地点
@@ -665,6 +667,7 @@ public:
             }
         }
 
+     
 
         //ソウルアイテムがオブジェクトとぶつかったとき
         if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
@@ -732,8 +735,8 @@ public:
 
         // プレーヤーとアイテムが衝突したかを判定
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
-            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item)||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item) ||
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
 
             //最初に　objectB　が item　だと仮定する
@@ -775,9 +778,86 @@ public:
                 }
             }
             break;
-
             }
+      
+        }
+        //-------------------------------------------------------------------------------------------
+          // 
+          // ここからボス戦のあたり判定を作る
+          // 
+          //プレイヤーがボスに触れた時
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-50, 120);
+
+        }
+
+        //プレイヤーがボスに触れた時
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+           /* player.Player_Damaged(-50, 120);*/
+
+        }
+
+
+        //プレイヤーがボスに触れた時
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+
+        }
+
+        //プレイヤーとショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_shock_wave) ||
+            (objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_shock_wave))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+
+        }
+
+
+        //プレイヤーとチャージ攻撃
+        if ((objectA->collider_type == collider_chage_attack && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_chage_attack) ||
+            (objectA->collider_type == collider_chage_attack && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_chage_attack))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+          
             
+            player.Player_knockback(1, boss.GetOutSideBody());
+
         }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
