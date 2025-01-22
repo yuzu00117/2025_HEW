@@ -313,7 +313,7 @@ public:
                 case Object_Wood:
                 {
                     wood* object_instance = object_manager.FindWoodByID(object_data[i]->id);
-                    if (object_instance->GetIfPulling() == true)
+                    if (object_instance != nullptr && object_instance->GetIfPulling() == true)
                     {
                         object_instance->Add_CollidedObjectWhenFalling_List(object_fixture[1 - i]->GetBody()->GetPosition());
                         return;
@@ -323,7 +323,7 @@ public:
                 case Object_Rock:
                 {
                     rock* object_instance = object_manager.FindRockByID(object_data[i]->id);
-                    if (object_instance->GetIfPulling() == true)
+                    if (object_instance != nullptr && object_instance->GetIfPulling() == true)
                     {
                         return;
                     }
@@ -332,7 +332,7 @@ public:
                 case Object_Static_to_Dynamic:
                 {
                     static_to_dynamic_block* object_instance = object_manager.FindStatic_to_Dynamic_BlcokID(object_data[i]->id);
-                    if (object_instance->GetIfPulling() == true)
+                    if (object_instance != nullptr && object_instance->GetIfPulling() == true)
                     {
                         return;
                     }
@@ -341,7 +341,7 @@ public:
                 case Object_Movable_Ground:
                 {
                     movable_ground* object_instance = object_manager.FindMovable_GroundID(object_data[i]->id);
-                    if (object_instance->GetIfPulling() == true)
+                    if (object_instance != nullptr && object_instance->GetIfPulling() == true)
                     {
                         return;
                     }

@@ -87,9 +87,26 @@ public:
 		Stump_body = body;
 	}
 
+	//木本体と切り株の間の溶接ジョイント取得
+	b2Joint* GetWoodStumpJoint() 
+	{
+		return m_wood_stump_joint; 
+	}
+
+	void	SetWoodStumpJoint(b2Joint* joint)
+	{ 
+		m_wood_stump_joint = joint; 
+	}
+
 
 	bool	GetIfPulling() { return m_pulling; }
-	void	SetIfPulling(bool flag) { m_pulling = flag; }
+	void	SetIfPulling(bool flag) {
+		m_pulling = flag;
+		if (m_pulling)
+		{
+			m_destory_joint = true;	//切り株と本体のジョイントを消すためにフラグをオンにする
+		}
+	}
 
 	//倒れる時ぶつかったオブジェクトのリストにオブジェクト追加
 	void	Add_CollidedObjectWhenFalling_List(b2Vec2 position);
@@ -131,12 +148,15 @@ private:
 
 	b2Vec2 m_Stump_size;
 
+	b2Joint*	m_wood_stump_joint;
 
 	b2Body* AnchorPoint_body;
 
 	b2Vec2 m_AnchorPoint_size;
 
 	bool	m_pulling = false;
+
+	bool	m_destory_joint = false;	//切り株と本体のジョイントを消すかどうか
 
 	//倒れる時ぶつかったオブジェクトの情報を入れるためのクラス
 	class ObjectCollided_WhenFalling {

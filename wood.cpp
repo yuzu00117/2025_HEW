@@ -32,7 +32,9 @@ int ObjectData::current_id = 0;
 
 wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
-	b2Vec2 Stump_size = Wood_size;
+	b2Vec2 Stump_size;
+	Stump_size.x = Wood_size.x;
+	Stump_size.y = Wood_size.y * 0.2f;
 
 	SetWoodSize(Wood_size);
 	SetStumpSize(Stump_size);
@@ -56,7 +58,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	b2BodyDef Wood_body;//木の幹の部分
 	Wood_body.type = b2_dynamicBody;
-	Wood_body.position.Set(Position.x, Position.y);
+	Wood_body.position.Set(Position.x, Position.y - (Stump_size.y / BOX2D_SCALE_MANAGEMENT) * 0.5f);
 	Wood_body.fixedRotation = false;
 
 	b2Body* m_Wood_body = world->CreateBody(&Wood_body);
@@ -154,7 +156,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	b2BodyDef stump_body;//木の幹の部分
 	stump_body.type = b2_dynamicBody;
-	stump_body.position.Set(Position.x, Position.y);
+	stump_body.position.Set(Position.x, Position.y + (wood_size.y * 0.5f) - (stump_size.y * 0.5f));
 	stump_body.fixedRotation = false;
 
 	auto m_stump_body = world->CreateBody(&stump_body);
@@ -166,7 +168,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	b2FixtureDef stump_fixture;
 
 	stump_fixture.shape = &stump_shape;
-	stump_fixture.density = 3.0f;
+	stump_fixture.density = 20.0f;
 	stump_fixture.friction = 0.5f;//摩擦
 	stump_fixture.restitution = 0.0f;//反発係数
 	stump_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
@@ -211,12 +213,12 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	b2WeldJointDef jointDef2;
 	jointDef2.bodyA = m_Wood_body;
 	jointDef2.bodyB = m_stump_body;
-	jointDef2.localAnchorA.Set(0.0f, wood_size.y * 0.5f); // 木の下端
-	jointDef2.localAnchorB.Set(0.0f, stump_size.y * 0.5f); // 切り株の上端
+	jointDef2.localAnchorA.Set(0.0f, wood_size.y * 0.5f + 0.15f); // 木の下端	(0.15は微調整)
+	jointDef2.localAnchorB.Set(0.0f, stump_size.y * 0.5f - 0.1f); // 切り株の上端	(0.1は微調整)
 	jointDef2.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
-	world->CreateJoint(&jointDef2);						  //ワールドにジョイントを追加
-
+	auto joint = world->CreateJoint(&jointDef2);						  //ワールドにジョイントを追加
+	SetWoodStumpJoint(joint);	//木を引っ張ったらこのjointを消せるように保存しておく
 	//-------------------------------------------------------------------------------------------
 	//木を倒す為に必要な挙動
 
@@ -240,6 +242,22 @@ void wood::Initialize()
 
 void wood::Update()
 {
+	//切り株と本体のジョイントを消すフラグがオンになってる場合
+	if (m_destory_joint)
+	{
+		b2Joint* joint = GetWoodStumpJoint();
+		if (joint != nullptr)
+		{
+			//ワールドのインスタンスを持ってくる
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+			world->DestroyJoint(joint);		//	ワールドからジョイントを消す
+			SetWoodStumpJoint(nullptr);		//	自分が保持してるジョイントの情報を消す
+		}
+		m_destory_joint = false;	//フラグをオフにする
+	}
+
+
 	//listが空じゃない場合のみ音を出すかを判断
 	if (!object_collided_when_falling.empty())
 	{
@@ -282,6 +300,8 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 	body->SetLinearVelocity(pulling_power);
 	SetIfPulling(true);
 }
+
+
 
 void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position)
 {
