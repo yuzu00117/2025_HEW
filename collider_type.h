@@ -47,6 +47,13 @@ enum ColliderTypeList
 
     collider_stage_select_point,
     collider_stage_select_player,
+
+
+
+    collider_boss,
+    collider_mini_golem,
+    collider_shock_wave,
+    collider_chage_attack,
 };
 
 

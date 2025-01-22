@@ -17,6 +17,7 @@
 enum boss_state
 {
 	wait_state,//待ち状態
+	panic_state,//怯み状態
 	walk_state,//歩き状態
 	jump_state,//ジャンプ状態
 	charge_attack_state,//チャージ攻撃中
@@ -40,13 +41,23 @@ public:
 	void debugDraw();
 	void Finalize();
 
-	void CreateChargeAttack(b2Vec2 attack_size, bool left);
+	void CreateChargeAttack(b2Vec2 attack_size, bool left);//ため攻撃の生成処理
 
-	void CreateShockWave(b2Vec2 attack_size, bool left);
-	void ShockWaveUpdate(void);
+	void CreateShockWave(b2Vec2 attack_size, bool left);//衝撃波攻撃の生成処理
+	void ShockWaveUpdate(void);//衝撃波攻撃の更新処理
 
-	void DeleteAttackBody();
+	void JumpUpdate(void);
 
+	void DeleteAttackBody();//攻撃の判定を削除する処理　現在のところ　衝撃波攻撃とため攻撃の攻撃判定の削除
+	
+
+
+	void CreateMiniGolem(b2Vec2 minigolem_size, bool left);//ミニゴーレムの作成
+	void MiniGolemUpdate(void);//ミニゴーレムの更新処理
+
+
+	///-----------------------------------------------------------------------
+	//ボス本体
 	b2Vec2 GetBossDrawSize(void)
 	{
 		return boss_size;
@@ -66,8 +77,8 @@ public:
 		m_body = body;
 	}
 
-
-
+	//-------------------------------------------------------------------------------------------
+	//攻撃の判定
 	b2Vec2 GetAttackDrawSize(void)
 	{
 		return attack_size;
@@ -86,17 +97,44 @@ public:
 	{
 		m_attack_body = body;
 	}
+	//-------------------------------------------------------------------------------------------
+	//ミニゴーレムの
+	b2Body* GetMiniGolemBody(int index)
+	{
+		return m_mini_golem_body[index];
+	}
+
+	void SetMiniGolemBody(b2Body* body,int index)
+	{
+		m_mini_golem_body[index] = body;
+	}
 
 
+	b2Vec2 GetMiniGolemDrawSize(void)
+	{
+		return mini_golem_size;
+	}
+	void SetMiniGolemDrawSize(b2Vec2 size)
+	{
+		mini_golem_size = size;
+	}
+
+	//-------------------------------------------------------------------------------------------
 private:
 
-	b2Body* m_body;
-
-	b2Body* m_attack_body;
-
+	b2Body* m_body;//ボスのボディ
 	b2Vec2 boss_size;//描画で使うボスのサイズ
 
-	b2Vec2 attack_size;
+	b2Body* m_attack_body;//攻撃の判定
+	b2Vec2 attack_size;//攻撃の判定のサイズ
+
+
+	b2Body* m_mini_golem_body[2];//ボディ
+	b2Vec2 mini_golem_size;
+
+	
+
+
 
 	float sheet_cnt;//シートの管理で使っている
 
@@ -129,8 +167,13 @@ private:
 
 	//-------------------------------------------------------------------------------------------
 
-	static constexpr int Max_Create_Mini_Golem_Sheet = 98;	//ミニゴーレムの生成する最大フレーム
 
+	//-------------------------------------------------------------------------------------------
+	//ミニゴーレムの生成
+	static constexpr int Max_Create_Mini_Golem_Sheet = 98;	//ミニゴーレムの生成する最大フレーム
+	static constexpr int Create_Mini_Golem_Start_Frame = 46;
+
+	bool Mini_golem_Create_flag=true;
 
 	//-----------------------------------------------------------------------------------------------
 	//ため攻撃のフレーム達
@@ -139,9 +182,31 @@ private:
 	static constexpr int Charge_Attack_End_Frame = 102;//ため攻撃のモーションのボディの発生フレーム
 
 	//-----------------------------------------------------------------------------------------
-	static constexpr int Max_Walk_Sheet = 72;
+	
+	//-------------------------------------------------------------------------------------------
+	//ジャンプモーションの最大フレーム
+	static constexpr int Max_Jump_Sheet = 72;
+	static constexpr int Jump_Attack_Start_Frame = 52;//ジャンプによって発生する攻撃の発生フレーム
+	static constexpr int Jump_Attack_End_Frame = 56;//ジャンプによって発生する攻撃の終了フレーム
 
-	static constexpr float boss_alpha = 3.0f;
+	static constexpr int Jump_Start_Frame = 15;//ジャンプの発生フレーム
+	static constexpr int Jump_End_Frame = 20;///ジャンプの上昇終了フレーム
+
+	bool Jump_flag = false;
+	//-------------------------------------------------------------------------------------------
+
+	//-------------------------------------------------------------------------------------------
+	//怯みのモーションの最大フレーム
+	static constexpr int Max_Panic_Sheet = 49;
+	//-------------------------------------------------------------------------------------------
+
+	//-------------------------------------------------------------------------------------------
+	//歩きモーション
+	static constexpr int Max_Walk_Sheet = 72;
+	//-------------------------------------------------------------------------------------------
+
+
+	static constexpr float boss_alpha = 3.0f;//ボスのアルファ値
 };
 
 

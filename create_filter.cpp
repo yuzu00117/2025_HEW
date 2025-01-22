@@ -11,6 +11,9 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"one-way_platform_filter", 0x0008}, // 1 << 3
     {"object_filter",           0x0010}, // 1 << 4
     {"item_filter",             0x0020}, // 1 << 5
+    {"Boss_filter",             0x0040}, // 1 << 6
+    {"MiniGolem_filter",        0x0080}, // 1 << 7
+    {"Shockwave_filter",        0x0100}  // 1 << 8
 };
 
 
