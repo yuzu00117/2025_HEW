@@ -66,6 +66,16 @@ public:
 	}	
 	
 	
+
+	//描画用にサイズを持たせておく
+	b2Vec2 GetStumpSize() const
+	{
+		return m_Stump_size;
+	}
+
+	void SetStumpSize(b2Vec2 size) {
+		m_Stump_size = size;
+	}
 	//bodyの習得
 	b2Body* GetObjectStumpBody()
 	{
@@ -114,6 +124,8 @@ private:
 
 
 	b2Body* Stump_body;
+
+	b2Vec2 m_Stump_size;
 
 
 	b2Body* AnchorPoint_body;

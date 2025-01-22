@@ -25,15 +25,17 @@
 static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
 static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//木のテクスチャ２
 static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチャ３
-static ID3D11ShaderResourceView* g_Wood_Stump_Texture = NULL;//木の切り株のテクスチャ
+static ID3D11ShaderResourceView* g_Stump_Texture = NULL;//木の切り株のテクスチャ
 
 
 int ObjectData::current_id = 0;
 
 wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
+	b2Vec2 Stump_size = Wood_size;
 
 	SetWoodSize(Wood_size);
+	SetStumpSize(Stump_size);
 	SetAnchorPointSize(AnchorPoint_size);
 
 
@@ -144,8 +146,8 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	//サイズの補正をいれる
 	b2Vec2 stump_size;
-	stump_size.x = Wood_size.x / BOX2D_SCALE_MANAGEMENT;
-	stump_size.y = Wood_size.y / BOX2D_SCALE_MANAGEMENT;
+	stump_size.x = Stump_size.x / BOX2D_SCALE_MANAGEMENT;
+	stump_size.y = Stump_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -230,7 +232,7 @@ void wood::Initialize()
 		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood2.png");
 		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
-		g_Wood_Stump_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_stump.png");
+		g_Stump_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_stump.png");
 	}
 }
 
@@ -269,7 +271,6 @@ void wood::Draw()
 
 
 	b2Vec2 Wood_pos = GetObjectWoodBody()->GetPosition();
-	b2Vec2 Stump_pos = GetObjectStumpBody()->GetPosition();
 	b2Vec2 AnchorPoint_pos = GetObjectAnchorPointBody()->GetPosition();
 
 
@@ -321,6 +322,27 @@ void wood::Draw()
 		  draw_y },
 		GetObjectAnchorPointBody()->GetAngle(),
 		{ GetWoodSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+	);
+
+	//切り株を描く
+	//--------------------------------------------------------------------------------------------------
+	// プレイヤー位置を考慮してスクロール補正を加える
+	//取得したbodyのポジションに対してBox2dスケールの補正を加える
+
+	b2Vec2 Stump_pos = GetObjectStumpBody()->GetPosition();
+
+	draw_x = ((Stump_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	draw_y = ((Stump_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture);
+
+	//描画
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetObjectStumpBody()->GetAngle(),
+		{ GetStumpSize().x * scale,GetStumpSize().y * scale }
 	);
 
 
