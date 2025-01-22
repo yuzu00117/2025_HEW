@@ -13,6 +13,9 @@
 #include"world_box2d.h"
 #include"collider_type.h"
 #include"player_position.h"
+#include"1-1_boss.h"
+#include"create_filter.h"
+#include"tool.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
@@ -55,11 +58,15 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 	fixture.friction = 0.01f;
 	fixture.restitution = 0.0f;
 	fixture.isSensor = false;
+	fixture.filter = createFilterExclude("ground_filter",{});
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 
+	// 新しいフィルターを作成
+
+
 	//カスタムデータを作成
-	ObjectData* object_data = new ObjectData{ collider_object };
+	ObjectData* object_data = new ObjectData{ collider_ground};
 	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
 	int ID = object_data->GenerateID();
@@ -92,6 +99,63 @@ void boss_field_block::Initialize()
 
 void boss_field_block::Update()
 {
+	Boss_1_1& boss = Boss_1_1::GetInstance();
+	if (boss.GetBossFieldLevel() > BossRoomLevel&& break_flag==false)
+	{
+		m_body->SetType(b2_dynamicBody);
+
+		// フィルターを変更
+		b2Fixture* fixture = m_body->GetFixtureList();
+	
+		// フィクスチャが存在しない場合は早期リターン
+		if (!fixture) {
+			return;
+		}
+
+		// 新しいフィルターを作成
+		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter" });
+		fixture->SetFilterData(newFilter);
+
+		break_flag = true;
+
+		int x=GetRandomInt(1, 10);
+	
+
+		int minus = GetRandomInt(0, 1);
+
+		if (minus==1)
+		{
+			minus = -1;
+		}
+		else
+		{
+			minus = 1;
+		}
+
+		m_body->ApplyLinearImpulseToCenter(b2Vec2(x/5*minus, 0.0f), true);
+		
+	}
+
+	if (break_flag == true)
+	{
+		body_delete_cnt++;
+	}
+
+	//３秒間たったらボディをけす
+	if (body_delete_cnt > 180)
+	{
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		if (m_body == nullptr)
+		{
+			world->DestroyBody(m_body);
+		}
+
+	}
+
+
+
 
 }
 

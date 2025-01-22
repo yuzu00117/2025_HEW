@@ -60,6 +60,7 @@ public:
 
 	void CreateMiniGolem(b2Vec2 minigolem_size, bool left);//ミニゴーレムの作成
 	void MiniGolemUpdate(void);//ミニゴーレムの更新処理
+	void DestroyMiniGolemBody(void);
 
 	b2Body* GetOutSideBody(void);//BodyそとのCPPからとってくるよう
 
@@ -126,8 +127,23 @@ public:
 		mini_golem_size = size;
 	}
 
+
+	void SetDestroyMiniGolemBody(bool flag, b2Body* body)
+	{
+		destroy_mini_golem_flag = flag;
+		destroy_mini_golem_body = body;
+	}
+
+	int GetBossFieldLevel(void)
+	{
+		return boss_field_level;
+	}
+
 	//-------------------------------------------------------------------------------------------
 private:
+
+	int boss_field_level=1;//ボスの床の崩壊を管理する関数
+
 
 	b2Body* m_body;//ボスのボディ
 	b2Vec2 boss_size;//描画で使うボスのサイズ
@@ -138,6 +154,8 @@ private:
 
 	b2Body* m_mini_golem_body[2];//ボディ
 	b2Vec2 mini_golem_size;
+	b2Body* destroy_mini_golem_body;
+	bool destroy_mini_golem_flag=false;
 
 	
 

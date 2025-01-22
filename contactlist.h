@@ -35,8 +35,8 @@
 
 class MyContactListener : public b2ContactListener {
 private:
-    Player player = Player::GetInstance();
-    Boss_1_1 boss = Boss_1_1::GetInstance();
+    Player &player = Player::GetInstance();
+    Boss_1_1& boss = Boss_1_1::GetInstance();
 
 
 public:
@@ -82,7 +82,9 @@ public:
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg)) {
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)){
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -858,6 +860,45 @@ public:
             
             player.Player_knockback(1, boss.GetOutSideBody());
 
+        }
+
+        //プレイヤーとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_mini_golem) ||
+            (objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_mini_golem))
+        {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
+        }
+
+        //プレイヤーとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_normal_attack_anchor) ||
+            (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_mini_golem) )
+        {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
         }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 

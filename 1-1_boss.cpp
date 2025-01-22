@@ -145,6 +145,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	body_shape.Set(vertices, 4);
 
+
 	b2FixtureDef body_fixture;
 	body_fixture.shape = &body_shape;
 	body_fixture.friction = 0.0f;//摩擦
@@ -159,7 +160,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	ObjectData* boss_body_data = new ObjectData{ collider_boss };
 	m_body_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_body_data);
 
-	now_boss_state = charge_attack_state;
+	now_boss_state = create_mini_golem_state;
 
 }
 
@@ -193,7 +194,8 @@ void Boss_1_1::Update()
 
 		//ミニゴーレムの更新処理
 		MiniGolemUpdate();
-
+		//ミニゴーレム
+		DestroyMiniGolemBody();
 		//ジャンプの更新処理
 		JumpUpdate();
 
@@ -207,7 +209,7 @@ void Boss_1_1::Update()
 		case wait_state:
 			break;
 		case panic_state:
-			sheet_cnt += 0.5;
+			sheet_cnt += 0.3;
 			if (Max_Panic_Sheet <= sheet_cnt)
 			{
 				sheet_cnt = 0;
@@ -412,6 +414,8 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 
 		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
 
+		boss_field_level++;
+
 	}
 
 }
@@ -610,7 +614,27 @@ void Boss_1_1::MiniGolemUpdate(void)
 	}
 }
 
+void Boss_1_1::DestroyMiniGolemBody(void)
+{
+	if (destroy_mini_golem_flag == true)
+	{
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
 
+		b2Body* m_mini_golem_body = destroy_mini_golem_body;
+
+		world->DestroyBody(m_mini_golem_body);
+
+		for (int i = 0; i < 2; i++)
+		{
+			if (GetMiniGolemBody(i) == destroy_mini_golem_body)
+			{
+				SetMiniGolemBody(nullptr, i);
+				destroy_mini_golem_flag = false;
+			}
+		}
+	}
+}
 
 
 void Boss_1_1::DeleteAttackBody()

@@ -82,6 +82,10 @@ private:
 
 	Boss_Room_Level BossRoomLevel;
 
+	int body_delete_cnt = 0;
+
+	bool break_flag=false;
+
 
 };
 
