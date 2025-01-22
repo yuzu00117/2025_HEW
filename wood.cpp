@@ -33,7 +33,7 @@ int ObjectData::current_id = 0;
 wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
 	b2Vec2 Stump_size;
-	Stump_size.x = Wood_size.x;
+	Stump_size.x = Wood_size.x * 1.5f;
 	Stump_size.y = Wood_size.y * 0.2f;
 
 	SetWoodSize(Wood_size);
@@ -163,7 +163,13 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	SetObjectStumpBody(m_stump_body);
 
 	b2PolygonShape stump_shape;
-	stump_shape.SetAsBox(stump_size.x * 0.5, stump_size.y * 0.5);
+	b2Vec2 vertices[4];
+	vertices[0].Set(-stump_size.x * 0.25f, -stump_size.y * 0.5f);
+	vertices[1].Set(stump_size.x * 0.25f, -stump_size.y * 0.5f);
+	vertices[2].Set(-stump_size.x * 0.25f, stump_size.y * 0.2f);
+	vertices[3].Set(stump_size.x * 0.25f, stump_size.y * 0.2f);
+	stump_shape.Set(vertices, 4);	//センサーのローカル位置を変更
+
 
 	b2FixtureDef stump_fixture;
 
@@ -172,7 +178,6 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	stump_fixture.friction = 0.5f;//摩擦
 	stump_fixture.restitution = 0.0f;//反発係数
 	stump_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	stump_fixture.filter = createFilterExclude("object_filter", {});
 
 
 	b2Fixture* object_stump_fixture = GetObjectStumpBody()->CreateFixture(&stump_fixture);
@@ -233,10 +238,10 @@ void wood::Initialize()
 {
 	
 	if (g_Wood_Texture == NULL) {
-		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood2.png");
+		g_Wood_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood.png");
 		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
-		g_Stump_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_stump.png");
+		g_Stump_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood_stump.png");
 	}
 }
 
@@ -344,8 +349,31 @@ void wood::Draw()
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
+	
+	//切り株を描く
+//--------------------------------------------------------------------------------------------------
+// プレイヤー位置を考慮してスクロール補正を加える
+//取得したbodyのポジションに対してBox2dスケールの補正を加える
+
+	b2Vec2 Stump_pos = GetObjectStumpBody()->GetPosition();
+
+	float draw_x = ((Stump_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((Stump_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture);
+
+	//描画
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetObjectStumpBody()->GetAngle(),
+		{ GetStumpSize().x * scale,GetStumpSize().y * scale }
+	);
+
+
+	//本体を描く
+//--------------------------------------------------------------------------------------------------
 	b2Vec2 Wood_pos = GetObjectWoodBody()->GetPosition();
 	b2Vec2 AnchorPoint_pos = GetObjectAnchorPointBody()->GetPosition();
 
@@ -386,8 +414,8 @@ void wood::Draw()
 
 	// プレイヤー位置を考慮してスクロール補正を加える
 	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture);
@@ -399,30 +427,6 @@ void wood::Draw()
 		GetObjectAnchorPointBody()->GetAngle(),
 		{ GetWoodSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
-
-	//切り株を描く
-	//--------------------------------------------------------------------------------------------------
-	// プレイヤー位置を考慮してスクロール補正を加える
-	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-
-	b2Vec2 Stump_pos = GetObjectStumpBody()->GetPosition();
-
-	draw_x = ((Stump_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	draw_y = ((Stump_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture);
-
-	//描画
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetObjectStumpBody()->GetAngle(),
-		{ GetStumpSize().x * scale,GetStumpSize().y * scale }
-	);
-
-
-
 
 }
 
