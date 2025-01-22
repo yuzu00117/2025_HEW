@@ -33,7 +33,7 @@ int ObjectData::current_id = 0;
 wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
 	b2Vec2 Stump_size;
-	Stump_size.x = Wood_size.x * 1.5f;
+	Stump_size.x = Wood_size.x * 1.8f;
 	Stump_size.y = Wood_size.y * 0.2f;
 
 	SetWoodSize(Wood_size);
@@ -218,8 +218,8 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	b2WeldJointDef jointDef2;
 	jointDef2.bodyA = m_Wood_body;
 	jointDef2.bodyB = m_stump_body;
-	jointDef2.localAnchorA.Set(0.0f, wood_size.y * 0.5f + 0.15f); // 木の下端	(0.15は微調整)
-	jointDef2.localAnchorB.Set(0.0f, stump_size.y * 0.5f - 0.1f); // 切り株の上端	(0.1は微調整)
+	jointDef2.localAnchorA.Set(0.0f, wood_size.y * 0.61f ); // 木の下端	(0.61は微調整して出た値)
+	jointDef2.localAnchorB.Set(0.0f, stump_size.y * 0.3f); // 切り株の上端	(0.3は微調整して出た値)
 	jointDef2.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
 	auto joint = world->CreateJoint(&jointDef2);						  //ワールドにジョイントを追加
