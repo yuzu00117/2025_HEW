@@ -25,6 +25,7 @@
 static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
 static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//木のテクスチャ２
 static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチャ３
+static ID3D11ShaderResourceView* g_Wood_Stump_Texture = NULL;//木の切り株のテクスチャ
 
 
 int ObjectData::current_id = 0;
@@ -125,6 +126,63 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	object_anchorpoint_data->object_name = Object_Wood;
 
 
+	//-----------------------------------------------------------------------------------------------------------------------------------------
+	//ジョイントする
+
+	b2WeldJointDef jointDef;
+	jointDef.bodyA = m_Wood_body;
+	jointDef.bodyB = m_AnchorPoint_body;
+	jointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // 木の上端
+	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
+	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
+
+	world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加
+
+	//-------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------//
+	//3つめのボディ　木の下に切り株をつくる
+
+	//サイズの補正をいれる
+	b2Vec2 stump_size;
+	stump_size.x = Wood_size.x / BOX2D_SCALE_MANAGEMENT;
+	stump_size.y = Wood_size.y / BOX2D_SCALE_MANAGEMENT;
+
+
+
+	b2BodyDef stump_body;//木の幹の部分
+	stump_body.type = b2_dynamicBody;
+	stump_body.position.Set(Position.x, Position.y);
+	stump_body.fixedRotation = false;
+
+	auto m_stump_body = world->CreateBody(&stump_body);
+	SetObjectStumpBody(m_stump_body);
+
+	b2PolygonShape stump_shape;
+	stump_shape.SetAsBox(stump_size.x * 0.5, stump_size.y * 0.5);
+
+	b2FixtureDef stump_fixture;
+
+	stump_fixture.shape = &stump_shape;
+	stump_fixture.density = 3.0f;
+	stump_fixture.friction = 0.5f;//摩擦
+	stump_fixture.restitution = 0.0f;//反発係数
+	stump_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	stump_fixture.filter = createFilterExclude("object_filter", {});
+
+
+	b2Fixture* object_stump_fixture = GetObjectStumpBody()->CreateFixture(&stump_fixture);
+
+	// カスタムデータを作成して設定
+	ObjectData* object_stump_data = new ObjectData{ collider_object };//一旦壁判定
+	object_stump_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_stump_data);
+
+	object_stump_data->object_name = Object_Wood;
+
+
+
+
+	//ObjecrDataの　ID設定　や　他の設定
+	//------------------------------------------------------------------------------------------------------------------------------------------
 	int ID=object_anchorpoint_data->GenerateID();
 	object_anchorpoint_data->id = ID;
 	SetID(ID);
@@ -146,14 +204,14 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 	//ジョイントする
 
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = m_Wood_body;
-	jointDef.bodyB = m_AnchorPoint_body;
-	jointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // 木の上端
-	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
-	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
+	b2WeldJointDef jointDef2;
+	jointDef2.bodyA = m_Wood_body;
+	jointDef2.bodyB = m_stump_body;
+	jointDef2.localAnchorA.Set(0.0f, wood_size.y * 0.5f); // 木の下端
+	jointDef2.localAnchorB.Set(0.0f, stump_size.y * 0.5f); // 切り株の上端
+	jointDef2.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
-	world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加
+	world->CreateJoint(&jointDef2);						  //ワールドにジョイントを追加
 
 	//-------------------------------------------------------------------------------------------
 	//木を倒す為に必要な挙動
@@ -169,9 +227,10 @@ void wood::Initialize()
 {
 	
 	if (g_Wood_Texture == NULL) {
-		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
+		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood2.png");
 		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+		g_Wood_Stump_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_stump.png");
 	}
 }
 
@@ -210,6 +269,7 @@ void wood::Draw()
 
 
 	b2Vec2 Wood_pos = GetObjectWoodBody()->GetPosition();
+	b2Vec2 Stump_pos = GetObjectStumpBody()->GetPosition();
 	b2Vec2 AnchorPoint_pos = GetObjectAnchorPointBody()->GetPosition();
 
 

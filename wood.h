@@ -63,6 +63,18 @@ public:
 	void SetObjectWoodBody(b2Body* body)
 	{
 		Wood_body = body;
+	}	
+	
+	
+	//bodyÇÃèKìæ
+	b2Body* GetObjectStumpBody()
+	{
+		return Stump_body;
+	}
+
+	void SetObjectStumpBody(b2Body* body)
+	{
+		Stump_body = body;
 	}
 
 
@@ -99,6 +111,9 @@ private:
 	b2Body* Wood_body;
 
 	b2Vec2 m_Wood_size;
+
+
+	b2Body* Stump_body;
 
 
 	b2Body* AnchorPoint_body;
