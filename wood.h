@@ -16,6 +16,14 @@
 #include"sound.h"
 #include<list>
 
+enum Wood_State
+{
+	Wood_Idle,
+	Wood_Pulling,
+	Wood_Falling,
+	Wood_HitObject,
+};
+
 
 class wood
 {
@@ -66,11 +74,21 @@ public:
 	}
 
 
-	bool	GetIfPulling() { return m_pulling; }
-	void	SetIfPulling(bool flag) { m_pulling = flag; }
+	bool	GetIfPulling() {
+		if (m_state == Wood_Pulling)return true;
+		else return false;
+	}
+	void	SetIfPulling(bool flag) {
+		if (flag)
+		{
+			SetState(Wood_Pulling);
+			angle_when_pulling_start = Wood_body->GetAngle();
+		}
+		else SetState(Wood_Idle);
+	}
 
-	//倒れる時ぶつかったオブジェクトのリストにオブジェクト追加
-	void	Add_CollidedObjectWhenFalling_List(b2Vec2 position);
+	//	木の状態をセット
+	void	SetState(Wood_State state);
 
 	///-----------------------------------------------------------------------------
 	//アンカーポイント
@@ -109,17 +127,11 @@ private:
 
 	b2Vec2 m_AnchorPoint_size;
 
-	bool	m_pulling = false;
+	Wood_State	m_state = Wood_Idle;
 
-	//倒れる時ぶつかったオブジェクトの情報を入れるためのクラス
-	class ObjectCollided_WhenFalling {
-	public:
-		b2Vec2	position;
-		int	count_down_to_play_sound;
-	};
+	int		start_stop_sound_count = 120;	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
 
-	//倒れる時ぶつかったオブジェクトのlist
-	std::list<ObjectCollided_WhenFalling*>object_collided_when_falling;
+	float	angle_when_pulling_start = 0;	//引っ張り始める時や音鳴らされた直後の木の回転角度を保持
 
 	//音源
 	//----------------------------------------

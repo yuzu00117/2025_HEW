@@ -19,7 +19,6 @@
 #include"player_position.h"
 #include"create_filter.h"
 
-
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
@@ -179,34 +178,37 @@ void wood::Initialize()
 
 void wood::Update()
 {
-	//listが空じゃない場合のみ音を出すかを判断
-	if (!object_collided_when_falling.empty())
-	{
-		//後でlistの中身を消すためにイテレータを保存するためのlist
-		std::list<std::list<ObjectCollided_WhenFalling*>::iterator> IteratorList;
-		for (auto a : object_collided_when_falling)
-		{
-			a->count_down_to_play_sound--; //カウントダウン
-			//カウントダウンが0の場合音を鳴らす
-			if (a->count_down_to_play_sound == 0)
-			{
-				app_atomex_start(m_sound_FalledDown);	//音鳴らす
-				auto id = std::find(object_collided_when_falling.begin(), object_collided_when_falling.end(), a);	//このオブジェのイテレータを取得
-				IteratorList.push_back(id);	//後で消すためにイテレータリストに入れておく
-			}
-		}
+	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
+	if (start_stop_sound_count > 0) {
+		start_stop_sound_count--;
+		return;
+	}
 
-		//イテレータリストが空じゃない場合
-		if (!IteratorList.empty())
+	b2Vec2 velocity = Wood_body->GetLinearVelocity();
+	velocity.Normalize();
+
+	//落ちている状態、かつ、ぶつかって跳ね上がった時
+	if ((m_state == Wood_Pulling || m_state == Wood_Falling) && (velocity.y > -0.1f && velocity.y < 0.1f))
+	{
+		float	angle = Wood_body->GetAngle();
+		float	rotated = angle - angle_when_pulling_start;
+		//引っ張り始めた時や前回音鳴らした直後の回転角度と今の回転角度の差が0.5から-0.5の間なら（ある一定回転した）
+		if (rotated > 0.5f || rotated < -0.5f)
 		{
-			for (auto a : IteratorList)
-			{
-				object_collided_when_falling.erase(a);	//ぶつかったオブジェクトのリストに対応のイテレータを消す
-			}
-			IteratorList.clear();
-			object_collided_when_falling.clear();
+			SetState(Wood_HitObject);	//音鳴らす
 		}
 	}
+	//さっきまで落ちていて、今は静止している
+	if (m_state == Wood_Falling && velocity == b2Vec2{0.0f,0.0f})
+	{
+		SetState(Wood_Idle);	//通常状態にセット
+	}
+	//通常状態で、今静止していない
+	if (m_state == Wood_Idle && (velocity.y < -0.999f || velocity.y > 0.999f) )
+	{
+		SetState(Wood_Falling);	//落ちている状態にセット
+	}
+
 }
 
 void wood::Pulling_wood(b2Vec2 pulling_power)
@@ -222,30 +224,24 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 	SetIfPulling(true);
 }
 
-void wood::Add_CollidedObjectWhenFalling_List(b2Vec2 position)
-{
-	//もしlistが空なら
-	if (object_collided_when_falling.empty())
-	{
-		goto add;	//listに追加
-	}
-	//listが空じゃない
-	for (auto a : object_collided_when_falling)
-	{
-		//もし今ぶつかったオブジェクトが前にぶつかったオブジェクトのｙ座標がめっちゃ近い
-		if ((unsigned)(position.y - a->position.y) < 0.5f)
-		{
-			a->count_down_to_play_sound = 1;	//音出すカウントダウンをリセット
-			return;
-		}
-	}
-	
-	add:
-		ObjectCollided_WhenFalling object;
-		object.position = position;
-		object.count_down_to_play_sound = 1;
-		object_collided_when_falling.push_back(&object);
 
+void wood::SetState(Wood_State state)
+{
+	m_state = state;
+	switch (m_state)
+	{
+	case Wood_Idle:
+		break;
+	case Wood_Pulling:
+		break; 
+	case Wood_Falling:
+		break;
+	case Wood_HitObject:
+		app_atomex_start(m_sound_FalledDown);	//音鳴らす
+		SetState(Wood_Idle);
+		angle_when_pulling_start = Wood_body->GetAngle();
+		break;
+	}
 }
 
 void wood::Draw()
