@@ -46,7 +46,7 @@ private:
 	
 	Player player;
 	StaminaSpiritGauge stamina_spirit_gauge;
-	Boss_1_1 boss;
+	Boss_1_1 &boss =Boss_1_1::GetInstance();
 };
 
 

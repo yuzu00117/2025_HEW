@@ -35,6 +35,7 @@
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
 
+
 void Game::Initialize()
 {
 
