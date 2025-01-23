@@ -36,26 +36,24 @@ void Item_Coin_UI::Draw()
 		// ç∂ë§ÇÃï\é¶ åªç›ÇÃó 
 		for (int i = 0; i < 2; i++)
 		{
-			DrawDividedSprite(XMFLOAT2(100 - (i * 20), 700), 0.0f, XMFLOAT2(20, 20), 10, 1, cnt, 1.0);
+			DrawDividedSprite(XMFLOAT2(100 - (i * 20), 100), 0.0f, XMFLOAT2(20, 20), 10, 1, cnt, 1.0);
 			cnt /= 10;
 		}
 
 		int max_cnt = max_coin_count;
 		for (int i = 0; i < 2; i++)
 		{
-			DrawDividedSprite(XMFLOAT2(150 - (i * 20), 700), 0.0f, XMFLOAT2(20, 20), 10, 1, max_cnt, 1.0);
+			DrawDividedSprite(XMFLOAT2(150 - (i * 20), 100), 0.0f, XMFLOAT2(20, 20), 10, 1, max_cnt, 1.0);
 			max_cnt /= 10;
 		}
 
-		DrawCount++;
-		if (180 < DrawCount)
-		{
-			Item_Coin_UI::SetDrawCount(0);
-		}
+	
+		Item_Coin_UI::SetDrawCount(GetDrawCount()-1);
+		
 	}
 }
 
 void Item_Coin_UI::Finalize()
 {
-
+	UnInitTexture(g_number_Texture);
 }

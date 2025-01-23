@@ -25,6 +25,7 @@
 #include"enemy_floating.h"
 #include"teleport_block.h"
 #include"1-1_boss_field_block.h"
+#include"Item_Coin_UI.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
