@@ -35,6 +35,7 @@
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
 
+
 void Game::Initialize()
 {
 
@@ -173,12 +174,12 @@ void Game::Update(void)
 
 	  boss.Update();
 
-
-
-
-
-
-
+	  //プレイヤーが死亡したらリザルト画面に遷移
+	  if (PlayerStamina::IsPlayerDead())
+	  {
+		  SceneManager& sceneManager = SceneManager::GetInstance();
+		  sceneManager.ChangeScene(SCENE_RESULT);
+	  }
 
 		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)

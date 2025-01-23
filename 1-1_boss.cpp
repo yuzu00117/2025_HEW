@@ -24,11 +24,15 @@ static ID3D11ShaderResourceView* g_boss_shock_wave_sheet1_Texture = NULL;//ÕŒ‚”
 static ID3D11ShaderResourceView* g_boss_shock_wave_sheet2_Texture = NULL;//ÕŒ‚”g‚ÌƒeƒNƒXƒ`ƒƒ‚Q
 static ID3D11ShaderResourceView* g_boss_charge_attack_sheet1_Texture = NULL;//—­‚ßUŒ‚‚ÌƒeƒNƒXƒ`ƒƒ‚P
 static ID3D11ShaderResourceView* g_boss_charge_attack_sheet2_Texture = NULL;//‚½‚ßUŒ‚‚ÌƒeƒNƒXƒ`ƒƒ‚Q
+
+static ID3D11ShaderResourceView* g_boss_walk_sheet1_Texture = NULL;//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚P
+static ID3D11ShaderResourceView* g_boss_walk_sheet2_Texture = NULL;//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚Q
+static ID3D11ShaderResourceView* g_boss_jump_sheet1_Texture = NULL;//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚P
+static ID3D11ShaderResourceView* g_boss_jump_sheet2_Texture = NULL;//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“2
+static ID3D11ShaderResourceView* g_boss_panic_sheet_Texture = NULL;//ƒS[ƒŒƒ€‚Ì¬—”í’eƒ‚[ƒVƒ‡ƒ“
+
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet1_Texture = NULL;//¬‚³‚ÈƒS[ƒŒƒ€‚ğ¶¬‚·‚éÛ‚Ìƒ{ƒX‘¤‚P
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Texture = NULL;//¬‚³‚ÈƒS[ƒŒƒ€‚ğ¶¬‚·‚éÛ‚Ìƒ{ƒX‘¤‚Q
-static ID3D11ShaderResourceView* g_mini_boss_walk_sheet1_Texture = NULL;//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚P
-static ID3D11ShaderResourceView* g_mini_boss_walk_sheet2_Texture = NULL;//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚Q
-
 
 
 //-------------------------------------------------------------------------------------------
@@ -39,6 +43,9 @@ static ID3D11ShaderResourceView* g_debug_attack_color = NULL;//ƒfƒoƒbƒN—p
 
 
 
+
+//‚»‚Æ‚ÌCPP‚©‚çQÆ‚Å‚«‚é‚½‚ß
+b2Body* outside_boss_body;
 
 Boss_1_1::Boss_1_1()
 {
@@ -51,10 +58,12 @@ Boss_1_1::~Boss_1_1()
 {
 }
 
+
+
 void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 {
 
-	if (g_mini_boss_create_sheet1_Texture==NULL)
+	if (g_mini_boss_create_sheet1_Texture == NULL)
 	{
 		g_mini_boss_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_boss.png");//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒCƒ“ƒNƒ‹[ƒh
 		g_boss_shock_wave_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet1.png");//ÕŒ‚”gUŒ‚‚ÌƒCƒ“ƒNƒ‹[ƒhƒV[ƒg‚P
@@ -63,15 +72,18 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 		g_boss_charge_attack_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet2_.png");//‚½‚ßUŒ‚‚ÌƒV[ƒg‚Q
 		g_mini_boss_create_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet1.png");//ƒ~ƒjƒS[ƒŒƒ€‚Ì¶¬‚Ìƒ{ƒX‘¤‚P
 		g_mini_boss_create_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet2_.png");//ƒ~ƒjƒS[ƒŒƒ€‚Ì¶¬‚Ìƒ{ƒX‘¤‚Q
-		g_mini_boss_walk_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet1.png");//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚P
-		g_mini_boss_walk_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet2.png");//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚Q
+		g_boss_walk_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet1.png");//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚P
+		g_boss_walk_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet2.png");//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚Q
+		g_boss_jump_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet1.png");//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚P
+		g_boss_jump_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet2.png");//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚Q
+		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");//ƒS[ƒŒƒ€‚Ì‹¯‚İƒ‚[ƒVƒ‡ƒ“‚P
+
+
+		//ƒfƒoƒbƒN—p
+		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensor‚ÌƒeƒNƒXƒ`ƒƒ
+		g_debug_attack_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
+
 	}
-
-	//ƒfƒoƒbƒN—p
-	g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensor‚ÌƒeƒNƒXƒ`ƒƒ
-	g_debug_attack_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
-
-
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
@@ -104,7 +116,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	b2Body* m_boss_body = world->CreateBody(&body);
 
 	SetBossBody(m_boss_body);
-
+	outside_boss_body = m_boss_body;//ŠO•”‚©‚ç‚ÌQÆ‚æ‚¤u
 
 	b2PolygonShape body_shape;
 
@@ -133,19 +145,22 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	body_shape.Set(vertices, 4);
 
+
 	b2FixtureDef body_fixture;
 	body_fixture.shape = &body_shape;
 	body_fixture.friction = 0.0f;//–€C
 	body_fixture.restitution = 0.1f;//”½”­ŒW”
 	body_fixture.density = 0.1f;
 	body_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
-	body_fixture.filter = createFilterExclude("enemy_filter", {});
+	body_fixture.filter = createFilterExclude("Boss_filter",{});
 
-
+	
 	b2Fixture* m_body_fixture = m_body->CreateFixture(&body_fixture);
 
+	ObjectData* boss_body_data = new ObjectData{ collider_boss };
+	m_body_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_body_data);
 
-	now_boss_state = charge_attack_state;
+	now_boss_state = create_mini_golem_state;
 
 }
 
@@ -154,7 +169,6 @@ void Boss_1_1::Update()
 	if (m_body != nullptr)
 	{
 
-		
 		//---------------------------------------------------------------------------------------------------------------------------
 		//¶‰E‚ÌU‚èŒü‚«‚ğì‚é
 		float player_x= PlayerPosition::GetPlayerPosition().x;
@@ -173,20 +187,35 @@ void Boss_1_1::Update()
 		}
 
 		old_left_flag = left_flag;
-		//-------------------------------------------------------------------------------------------------------------------------------
+		//-------------------------------------------------------------------------------------------
 
 		//ÕŒ‚”g‚ÌXVˆ—
 		ShockWaveUpdate();
 
+		//ƒ~ƒjƒS[ƒŒƒ€‚ÌXVˆ—
+		MiniGolemUpdate();
+		//ƒ~ƒjƒS[ƒŒƒ€
+		DestroyMiniGolemBody();
+		//ƒWƒƒƒ“ƒv‚ÌXVˆ—
+		JumpUpdate();
 
 
 
-
+		//-------------------------------------------------------------------------------------------
 
 
 		switch (now_boss_state)
 		{
 		case wait_state:
+			break;
+		case panic_state:
+			sheet_cnt += 0.3;
+			if (Max_Panic_Sheet <= sheet_cnt)
+			{
+				sheet_cnt = 0;
+				now_boss_state = panic_state;
+			}
+
 			break;
 		case walk_state:
 			sheet_cnt += 0.5;
@@ -197,6 +226,17 @@ void Boss_1_1::Update()
 
 			m_body->SetLinearVelocity(b2Vec2(-0.5f, 0.0f));
 
+
+			break;
+
+		case jump_state:
+			sheet_cnt += 0.5;
+
+			if (Max_Jump_Sheet <= sheet_cnt)
+			{
+				sheet_cnt = 0;
+				now_boss_state = jump_state;
+			}
 
 			break;
 		case shock_wave_state:
@@ -223,8 +263,14 @@ void Boss_1_1::Update()
 			break;
 		case create_mini_golem_state:
 			sheet_cnt += 0.5;
+
+			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
+			{
+				CreateMiniGolem(b2Vec2(3.0f,2.0f),left_flag);//‰æ‘œ‚ª‰¡‚É‹ó”’‚ª‚ ‚é‚½‚ß@‚˜‚ğˆø‚«L‚Î‚µ@ÀÛ‚Ì”¼Œa‚ÅQÆ‚µ‚Ä‚¢‚é‚Ì‚Í‚™²
+			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
+				Mini_golem_Create_flag = true;//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒNƒŠƒGƒCƒgƒtƒ‰ƒO‚ÌŠÇ—
 				sheet_cnt = 0;
 				now_boss_state = charge_attack_state;
 			}
@@ -259,12 +305,34 @@ void Boss_1_1::Update()
 				now_boss_state = shock_wave_state;
 			}
 			break;
+			
 		default:
 			break;
 
 		}
 	}
 }
+void Boss_1_1::JumpUpdate()
+{
+	if (now_boss_state == jump_state)
+	{
+		if (Jump_Start_Frame <= sheet_cnt && sheet_cnt <= Jump_End_Frame)
+		{
+			b2Body* boss_body =GetBossBody();
+
+			int minus_flag=1;
+
+			if (left_flag)
+			{
+				minus_flag = -1;
+			}
+
+			boss_body->SetLinearVelocity(b2Vec2(minus_flag, -6.0f));
+		}
+
+	}
+}
+
 
 void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 {
@@ -301,6 +369,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		//ƒ[ƒ‹ƒh‚É“o˜^
 		b2Body* m_attack_body = world->CreateBody(&body);
 
+		
 		SetAttackBody(m_attack_body);
 
 		//’ÊíUŒ‚‚ÌƒtƒBƒNƒXƒ`ƒƒ
@@ -319,7 +388,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		b2Fixture* m_fixture = m_attack_body->CreateFixture(&fixture);
 
 
-		ObjectData* boss_attack_data = new ObjectData{ collider_object };
+		ObjectData* boss_attack_data = new ObjectData{ collider_chage_attack };
 		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
 
 		//ƒvƒŒƒCƒ„[‚ÆƒWƒ‡ƒCƒ“ƒg‚·‚é
@@ -344,6 +413,8 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		jointDef.collideConnected = true;//ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
 
 		world->CreateJoint(&jointDef); //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
+
+		boss_field_level++;
 
 	}
 
@@ -405,13 +476,9 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 		b2Fixture* m_fixture = m_attack_body->CreateFixture(&fixture);
 
 
-	/*	ObjectData* boss_attack_data = new ObjectData{ collider_object };
-		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);*/
+		ObjectData* boss_attack_data = new ObjectData{ collider_shock_wave };
+		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
 
-		//ƒvƒŒƒCƒ„[‚ÆƒWƒ‡ƒCƒ“ƒg‚·‚é
-		b2WeldJointDef jointDef;
-		jointDef.bodyA = m_body;//ƒ{ƒX‚Ìƒ{ƒfƒB
-		jointDef.bodyB = GetAttackBody();//boss‚ÌUŒ‚‚Ìƒ{ƒfƒB
 
 		
 
@@ -444,6 +511,131 @@ void Boss_1_1::ShockWaveUpdate(void)
 		}
 	}
 }
+
+
+
+void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
+{
+	for(int i=0;i<2;i++)
+	{
+		if (GetMiniGolemBody(i) == nullptr&&Mini_golem_Create_flag==true) {
+
+			//ƒ{ƒfƒB‚ÌƒTƒCƒY‚ğƒZƒbƒg
+			SetMiniGolemDrawSize(mini_golem_size);
+
+			b2Vec2 size; //ƒTƒCƒY‚ÌƒXƒP[ƒ‹‚ğ’²®
+			size.x = mini_golem_size.x / BOX2D_SCALE_MANAGEMENT;
+			size.y = mini_golem_size.y / BOX2D_SCALE_MANAGEMENT;
+
+			b2BodyDef body;
+			body.type = b2_dynamicBody;
+			b2Vec2 boss_pos = m_body->GetPosition();
+			b2Vec2 boss_size = b2Vec2(GetBossDrawSize().x / BOX2D_SCALE_MANAGEMENT, GetBossDrawSize().y / BOX2D_SCALE_MANAGEMENT);
+
+			if (left) {
+				body.position.Set(boss_pos.x, boss_pos.y );
+			}
+			else
+			{
+				body.position.Set(boss_pos.x, boss_pos.y );
+			}
+			body.angle = 0.0f;
+			body.fixedRotation = false;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+			body.userData.pointer = (uintptr_t)this;
+
+
+
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+			//ƒ[ƒ‹ƒh‚É“o˜^
+			b2Body* m_mini_golem_body = world->CreateBody(&body);
+
+			SetMiniGolemBody(m_mini_golem_body,i);
+
+			//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒtƒBƒNƒXƒ`ƒƒ
+			b2FixtureDef fixture;
+
+			// ƒNƒ‰ƒX“à‚É b2Shape ‚ğƒƒ“ƒo[‚Æ‚µ‚Ä•Û‚·‚éê‡‚Ì—á
+			b2CircleShape shape; // ƒNƒ‰ƒX‚Ìƒƒ“ƒo[•Ï”‚Æ‚µ‚Ä•Û
+			shape.m_radius = size.y / 2;//‰æ‘œ‚ª‰¡‚É‹ó”’‚ª‚ ‚é‚½‚ß@‚™‚ğQÆ
+
+			fixture.shape = &shape;//Œ`‚ğİ’è
+			fixture.density = 1.0f;//–§“x
+			fixture.friction = 0.5f;//–€C
+			fixture.restitution = 0.3f;//”½”­ŒW”
+			fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©
+			fixture.filter= createFilterExclude("MiniGolem_filter", {"Boss_filter"});
+
+			b2Fixture* m_fixture = m_mini_golem_body->CreateFixture(&fixture);
+
+
+			ObjectData* mini_golem_data = new ObjectData{ collider_mini_golem };
+			m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(mini_golem_data);
+
+			Mini_golem_Create_flag = false;
+
+			return;
+		}
+
+	}
+}
+
+void Boss_1_1::MiniGolemUpdate(void)
+{
+	for (int i = 0; i < 2; i++)
+	{
+		if (GetMiniGolemBody(i) != nullptr)
+		{
+			//ƒ{ƒfƒB‚ğ‚Á‚Ä‚­‚é
+			b2Body* mini_golem_body = GetMiniGolemBody(i);
+
+			//ƒvƒŒƒCƒ„[‚ÌˆÊ’uî•ñ‚Ì’è‹`
+			b2Vec2 player_pos = PlayerPosition::GetPlayerPosition();
+			
+			
+			//ƒvƒŒƒCƒ„[‚Æ¶‰E‚Ç‚¿‚ç‚És‚­‚©‚Ì’²®
+			if (player_pos.x < mini_golem_body->GetPosition().x)//ƒvƒŒƒCƒ„[‚Ì•û‚ª¶
+			{
+				if (mini_golem_body->GetAngularVelocity() > -3)//Å‘å‰ñ“]—Ê‚ğ§ŒÀ
+				{
+					mini_golem_body->ApplyTorque(-0.1, true);
+				}
+			
+			}
+			else
+			{
+				if (mini_golem_body->GetAngularVelocity() < 3)//Å‘å‰ñ“]—Ê‚ğ§ŒÀ
+				{
+					mini_golem_body->ApplyTorque(0.1, true);
+				}
+			}
+		}
+	}
+}
+
+void Boss_1_1::DestroyMiniGolemBody(void)
+{
+	if (destroy_mini_golem_flag == true)
+	{
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		b2Body* m_mini_golem_body = destroy_mini_golem_body;
+
+		world->DestroyBody(m_mini_golem_body);
+
+		for (int i = 0; i < 2; i++)
+		{
+			if (GetMiniGolemBody(i) == destroy_mini_golem_body)
+			{
+				SetMiniGolemBody(nullptr, i);
+				destroy_mini_golem_flag = false;
+			}
+		}
+	}
+}
+
 
 void Boss_1_1::DeleteAttackBody()
 {
@@ -491,6 +683,29 @@ void Boss_1_1::Draw()
 		switch (now_boss_state)
 		{
 		case wait_state:
+
+			break;
+
+		case panic_state:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
+
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 7, 7, sheet_cnt, boss_alpha, left_flag);
+
+			break;
+		case jump_state:
+			// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+			if (sheet_cnt < Max_Jump_Sheet / 2) {
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_jump_sheet1_Texture);
+
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt, boss_alpha, left_flag);
+			}
+			else
+			{
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_jump_sheet2_Texture);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt - Max_Jump_Sheet / 2, boss_alpha, left_flag);
+			}
+
+
 			break;
 		case shock_wave_state:
 			// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
@@ -536,13 +751,13 @@ void Boss_1_1::Draw()
 		case walk_state://•à‚«ƒ‚[ƒVƒ‡ƒ“
 
 			if (sheet_cnt < Max_Walk_Sheet / 2) {
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_walk_sheet1_Texture);
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_walk_sheet1_Texture);
 
 				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt, boss_alpha, left_flag);
 			}
 			else
 			{
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_walk_sheet2_Texture);
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_walk_sheet2_Texture);
 				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt - Max_Walk_Sheet / 2, boss_alpha, left_flag);
 			}
 			break;
@@ -610,6 +825,28 @@ void Boss_1_1::debugDraw()
 
 		DrawSprite(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale, GetAttackDrawSize().y * scale));
 	}
+
+	//----------------------------------------------------------------------------------------
+	//ƒ~ƒjƒS[ƒŒƒ€‚ÌDraw
+	for (int i = 0; i < 2; i++)
+	{
+		if (GetMiniGolemBody(i) != nullptr)
+		{
+
+			//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_Texture);
+
+			// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+			b2Vec2 mini_golem_pos = GetMiniGolemBody(i)->GetPosition();
+
+			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
+			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+			float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale, GetMiniGolemDrawSize().y * scale));
+		}
+	}
 }
 
 void Boss_1_1::Finalize()
@@ -631,4 +868,9 @@ void Boss_1_1::Finalize()
 		world->DestroyBody(GetAttackBody());
 		SetAttackBody(nullptr);
 	}
+}
+
+b2Body* Boss_1_1::GetOutSideBody(void)
+{
+	return outside_boss_body;
 }

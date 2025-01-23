@@ -27,12 +27,19 @@ public:
 
 	//今のプレイヤーの体力値をマイナス、もしくはプラス（マイナスしたい場合は負数を渡してね！）
 	static void	EditPlayerStaminaValue(float value);
+
+	// プレイヤーの死亡フラグを取得
+	static bool IsPlayerDead();
+
 private:
 	PlayerStamina(){}
 	~PlayerStamina(){}
 
 	//プレイヤーの体力
 	static  float	m_stamina;
+
+	//プレイヤーの死亡フラグ
+	static bool m_isdead;
 };
 
 #endif // !PLAYER_STAMINA_H

@@ -344,6 +344,7 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    Item_Coin_UI::Initialize();
 }
 
 
@@ -475,6 +476,7 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
     
+    Item_Coin_UI::Draw();
 }
 
 // 全ての木を破棄
@@ -524,6 +526,7 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    Item_Coin_UI::Finalize();
 
 
 
