@@ -246,17 +246,6 @@ void wood::Initialize()
 
 void wood::Update()
 {
-	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
-	if (start_stop_sound_count > 0) {
-		start_stop_sound_count--;
-		return;
-	}
-
-	b2Vec2 velocity = Wood_body->GetLinearVelocity();
-	velocity.Normalize();
-
-	//落ちている状態、かつ、ぶつかって跳ね上がった時
-	if ((m_state == Wood_Pulling || m_state == Wood_Falling) && (velocity.y > -0.1f && velocity.y < 0.1f))
 	//切り株と本体のジョイントを消すフラグがオンになってる場合
 	if (m_destory_joint)
 	{
@@ -272,6 +261,19 @@ void wood::Update()
 		m_destory_joint = false;	//フラグをオフにする
 	}
 
+
+	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
+	if (start_stop_sound_count > 0) {
+		start_stop_sound_count--;
+		return;
+	}
+
+	b2Vec2 velocity = Wood_body->GetLinearVelocity();
+	velocity.Normalize();
+
+	//落ちている状態、かつ、ぶつかって跳ね上がった時
+	if ((m_state == Wood_Pulling || m_state == Wood_Falling) && (velocity.y > -0.1f && velocity.y < 0.1f))
+	{
 
 		float	angle = Wood_body->GetAngle();
 		float	rotated = angle - angle_when_pulling_start;
@@ -316,6 +318,8 @@ void wood::SetState(Wood_State state)
 	case Wood_Idle:
 		break;
 	case Wood_Pulling:
+		m_destory_joint = true;	//切り株と本体のジョイントを消すためにフラグをオンにする
+		angle_when_pulling_start = Wood_body->GetAngle();
 		break; 
 	case Wood_Falling:
 		break;

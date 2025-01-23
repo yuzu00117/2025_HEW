@@ -107,7 +107,6 @@ public:
 	}
 
 
-
 	bool	GetIfPulling() {
 		if (m_state == Wood_Pulling)return true;
 		else return false;
@@ -116,8 +115,6 @@ public:
 		if (flag)
 		{
 			SetState(Wood_Pulling);
-			m_destory_joint = true;	//切り株と本体のジョイントを消すためにフラグをオンにする
-			angle_when_pulling_start = Wood_body->GetAngle();
 		}
 		else SetState(Wood_Idle);
 	}
