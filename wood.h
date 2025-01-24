@@ -13,8 +13,16 @@
 #define WOOD_H
 
 #include"include/box2d/box2d.h"
+#include"sound.h"
+#include<list>
 
-
+enum Wood_State
+{
+	Wood_Idle,
+	Wood_Pulling,
+	Wood_Falling,
+	Wood_HitObject,
+};
 
 
 class wood
@@ -66,7 +74,21 @@ public:
 	}
 
 
+	bool	GetIfPulling() {
+		if (m_state == Wood_Pulling)return true;
+		else return false;
+	}
+	void	SetIfPulling(bool flag) {
+		if (flag)
+		{
+			SetState(Wood_Pulling);
+			angle_when_pulling_start = Wood_body->GetAngle();
+		}
+		else SetState(Wood_Idle);
+	}
 
+	//	木の状態をセット
+	void	SetState(Wood_State state);
 
 	///-----------------------------------------------------------------------------
 	//アンカーポイント
@@ -104,5 +126,15 @@ private:
 	b2Body* AnchorPoint_body;
 
 	b2Vec2 m_AnchorPoint_size;
+
+	Wood_State	m_state = Wood_Idle;
+
+	int		start_stop_sound_count = 120;	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
+
+	float	angle_when_pulling_start = 0;	//引っ張り始める時や音鳴らされた直後の木の回転角度を保持
+
+	//音源
+	//----------------------------------------
+	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//倒れた時の音
 };
 #endif // !WOOD_H

@@ -19,7 +19,6 @@
 #include"player_position.h"
 #include"create_filter.h"
 
-
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
@@ -122,10 +121,12 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
+	object_wood_data->object_name = Object_Wood;
 	object_anchorpoint_data->object_name = Object_Wood;
 
 
 	int ID=object_anchorpoint_data->GenerateID();
+	object_wood_data->id = ID;
 	object_anchorpoint_data->id = ID;
 	SetID(ID);
 
@@ -177,6 +178,36 @@ void wood::Initialize()
 
 void wood::Update()
 {
+	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
+	if (start_stop_sound_count > 0) {
+		start_stop_sound_count--;
+		return;
+	}
+
+	b2Vec2 velocity = Wood_body->GetLinearVelocity();
+	velocity.Normalize();
+
+	//落ちている状態、かつ、ぶつかって跳ね上がった時
+	if ((m_state == Wood_Pulling || m_state == Wood_Falling) && (velocity.y > -0.1f && velocity.y < 0.1f))
+	{
+		float	angle = Wood_body->GetAngle();
+		float	rotated = angle - angle_when_pulling_start;
+		//引っ張り始めた時や前回音鳴らした直後の回転角度と今の回転角度の差が0.5から-0.5の間なら（ある一定回転した）
+		if (rotated > 0.5f || rotated < -0.5f)
+		{
+			SetState(Wood_HitObject);	//音鳴らす
+		}
+	}
+	//さっきまで落ちていて、今は静止している
+	if (m_state == Wood_Falling && velocity == b2Vec2{0.0f,0.0f})
+	{
+		SetState(Wood_Idle);	//通常状態にセット
+	}
+	//通常状態で、今静止していない
+	if (m_state == Wood_Idle && (velocity.y < -0.999f || velocity.y > 0.999f) )
+	{
+		SetState(Wood_Falling);	//落ちている状態にセット
+	}
 
 }
 
@@ -190,6 +221,27 @@ void wood::Pulling_wood(b2Vec2 pulling_power)
 	}
 
 	body->SetLinearVelocity(pulling_power);
+	SetIfPulling(true);
+}
+
+
+void wood::SetState(Wood_State state)
+{
+	m_state = state;
+	switch (m_state)
+	{
+	case Wood_Idle:
+		break;
+	case Wood_Pulling:
+		break; 
+	case Wood_Falling:
+		break;
+	case Wood_HitObject:
+		app_atomex_start(m_sound_FalledDown);	//音鳴らす
+		SetState(Wood_Idle);
+		angle_when_pulling_start = Wood_body->GetAngle();
+		break;
+	}
 }
 
 void wood::Draw()
@@ -286,6 +338,7 @@ void wood::Finalize()
 	{
 		world->DestroyBody(AnchorPoint_body);
 	}
+
 	//テクスチャの解放
 	UnInitTexture(g_Wood_Texture);
 	UnInitTexture(g_Wood_Texture1);
