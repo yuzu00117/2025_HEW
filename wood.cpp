@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------------------------------------
 // #name wood.cpp
-// #description –Ø‚ÌƒIƒuƒWƒFƒNƒg‚ÌCPP
-// #make 2024/12/04@‰i–ì‹`–ç
+// #description æœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®CPP
+// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/04
-// #comment ’Ç‰ÁEC³—\’è
-//          E‚È‚¢‚Æ‚¨‚à‚¤[
-//			E‚ ‚é‚È‚ç‰E‚¾‚¯‚É“|‚ê‚½‚¢‚Æ‚©‚ ‚Á‚½‚ç‚â‚é‚©‚à‚Ë[
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ãªã„ã¨ãŠã‚‚ã†ãƒ¼
+//			ãƒ»ã‚ã‚‹ãªã‚‰å³ã ã‘ã«å€’ã‚ŒãŸã„ã¨ã‹ã‚ã£ãŸã‚‰ã‚„ã‚‹ã‹ã‚‚ã­ãƒ¼
 //----------------------------------------------------------------------------------------------------
 
 #include"wood.h"
@@ -19,40 +19,45 @@
 #include"player_position.h"
 #include"create_filter.h"
 
-//ƒeƒNƒXƒ`ƒƒ‚Ì“ü‚ê•¨
-//ƒOƒ[ƒoƒ‹•Ï”
-static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//–Ø‚ÌƒeƒNƒXƒ`ƒƒ‚P
-static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//–Ø‚ÌƒeƒNƒXƒ`ƒƒ‚Q
-static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//–Ø‚Ì‚ÌƒeƒNƒXƒ`ƒƒ‚R
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å…¥ã‚Œç‰©
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
+static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//æœ¨ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼‘
+static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//æœ¨ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼’
+static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//æœ¨ã®ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼“
+static ID3D11ShaderResourceView* g_Stump_Texture = NULL;//æœ¨ã®åˆ‡ã‚Šæ ªã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 
 int ObjectData::current_id = 0;
 
 wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
 {
+	b2Vec2 Stump_size;
+	Stump_size.x = Wood_size.x * 1.8f;
+	Stump_size.y = Wood_size.y * 0.2f;
 
 	SetWoodSize(Wood_size);
+	SetStumpSize(Stump_size);
 	SetAnchorPointSize(AnchorPoint_size);
 
 
 
-	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
 	//----------------------------------------------------------------------------//
-	//ˆê‚Â–Ú‚Ìƒ{ƒfƒB‚ğ‚Â‚­‚é
+	//ä¸€ã¤ç›®ã®ãƒœãƒ‡ã‚£ã‚’ã¤ãã‚‹
 
-	//ƒTƒCƒY‚ğİ’è‚·‚é
+	//ã‚µã‚¤ã‚ºã‚’è¨­å®šã™ã‚‹
 	b2Vec2 wood_size;
 	wood_size.x = Wood_size.x / BOX2D_SCALE_MANAGEMENT;
 	wood_size.y = Wood_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-	b2BodyDef Wood_body;//–Ø‚ÌŠ²‚Ì•”•ª
+	b2BodyDef Wood_body;//æœ¨ã®å¹¹ã®éƒ¨åˆ†
 	Wood_body.type = b2_dynamicBody;
-	Wood_body.position.Set(Position.x, Position.y);
+	Wood_body.position.Set(Position.x, Position.y - (Stump_size.y / BOX2D_SCALE_MANAGEMENT) * 0.5f);
 	Wood_body.fixedRotation = false;
 
 	b2Body* m_Wood_body = world->CreateBody(&Wood_body);
@@ -68,29 +73,29 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	wood_fixture.shape = &Wood_shape;
 	wood_fixture.density = 3.0f;
-	wood_fixture.friction = 0.5f;//–€C
-	wood_fixture.restitution = 0.0f;//”½”­ŒW”
-	wood_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	wood_fixture.friction = 0.5f;//æ‘©æ“¦
+	wood_fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+	wood_fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	wood_fixture.filter = createFilterExclude("object_filter",{});
 
 
 	b2Fixture* object_wood_fixture = m_Wood_body->CreateFixture(&wood_fixture);
 
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-	ObjectData* object_wood_data = new ObjectData{ collider_object };//ˆê’U•Ç”»’è
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+	ObjectData* object_wood_data = new ObjectData{ collider_object };//ä¸€æ—¦å£åˆ¤å®š
 	object_wood_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_wood_data);
 
 	//---------------------------------------------------------------------------//
-	//2‚Â‚ß‚Ìƒ{ƒfƒB@–Ø‚Ìã‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ‚Â‚­‚é
+	//2ã¤ã‚ã®ãƒœãƒ‡ã‚£ã€€æœ¨ã®ä¸Šã®ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ã¤ãã‚‹
 
-	//ƒTƒCƒY‚Ì•â³‚ğ‚¢‚ê‚é
+	//ã‚µã‚¤ã‚ºã®è£œæ­£ã‚’ã„ã‚Œã‚‹
 	b2Vec2 anchorpoint_size;
 	anchorpoint_size.x = AnchorPoint_size.x / BOX2D_SCALE_MANAGEMENT;
 	anchorpoint_size.y = AnchorPoint_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
-	b2BodyDef anchorpoint_body;//–Ø‚ÌŠ²‚Ì•”•ª
+	b2BodyDef anchorpoint_body;//æœ¨ã®å¹¹ã®éƒ¨åˆ†
 	anchorpoint_body.type = b2_dynamicBody;
 	anchorpoint_body.position.Set(
 		Position.x,
@@ -110,14 +115,14 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	anchorpoint_fixture.shape = &anchorpoint_shape;
 	anchorpoint_fixture.density = 1.0f;
-	anchorpoint_fixture.friction = 0.05f;//–€C
-	anchorpoint_fixture.restitution = 0.0f;//”½”­ŒW”
-	anchorpoint_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	anchorpoint_fixture.friction = 0.05f;//æ‘©æ“¦
+	anchorpoint_fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+	anchorpoint_fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
@@ -125,39 +130,101 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	object_anchorpoint_data->object_name = Object_Wood;
 
 
+	//-----------------------------------------------------------------------------------------------------------------------------------------
+	//ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã™ã‚‹
+
+	b2WeldJointDef jointDef;
+	jointDef.bodyA = m_Wood_body;
+	jointDef.bodyB = m_AnchorPoint_body;
+	jointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // æœ¨ã®ä¸Šç«¯
+	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ä¸‹ç«¯
+	jointDef.collideConnected = false;					  //ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸç‰©ä½“åŒå£«ã®æ¥è§¦ã‚’æ¶ˆã™
+
+	world->CreateJoint(&jointDef);						  //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
+
+	//-------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------//
+	//3ã¤ã‚ã®ãƒœãƒ‡ã‚£ã€€æœ¨ã®ä¸‹ã«åˆ‡ã‚Šæ ªã‚’ã¤ãã‚‹
+
+	//ã‚µã‚¤ã‚ºã®è£œæ­£ã‚’ã„ã‚Œã‚‹
+	b2Vec2 stump_size;
+	stump_size.x = Stump_size.x / BOX2D_SCALE_MANAGEMENT;
+	stump_size.y = Stump_size.y / BOX2D_SCALE_MANAGEMENT;
+
+
+
+	b2BodyDef stump_body;//æœ¨ã®å¹¹ã®éƒ¨åˆ†
+	stump_body.type = b2_dynamicBody;
+	stump_body.position.Set(Position.x, Position.y + (wood_size.y * 0.5f) - (stump_size.y * 0.5f));
+	stump_body.fixedRotation = false;
+
+	auto m_stump_body = world->CreateBody(&stump_body);
+	SetObjectStumpBody(m_stump_body);
+
+	b2PolygonShape stump_shape;
+	b2Vec2 vertices[4];
+	vertices[0].Set(-stump_size.x * 0.25f, -stump_size.y * 0.5f);
+	vertices[1].Set(stump_size.x * 0.25f, -stump_size.y * 0.5f);
+	vertices[2].Set(-stump_size.x * 0.25f, stump_size.y * 0.2f);
+	vertices[3].Set(stump_size.x * 0.25f, stump_size.y * 0.2f);
+	stump_shape.Set(vertices, 4);	//ã‚»ãƒ³ã‚µãƒ¼ã®ãƒ­ãƒ¼ã‚«ãƒ«ä½ç½®ã‚’å¤‰æ›´
+
+
+	b2FixtureDef stump_fixture;
+
+	stump_fixture.shape = &stump_shape;
+	stump_fixture.density = 20.0f;
+	stump_fixture.friction = 0.5f;//æ‘©æ“¦
+	stump_fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+	stump_fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
+
+
+	b2Fixture* object_stump_fixture = GetObjectStumpBody()->CreateFixture(&stump_fixture);
+
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+	ObjectData* object_stump_data = new ObjectData{ collider_object };//ä¸€æ—¦å£åˆ¤å®š
+	object_stump_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_stump_data);
+
+	object_stump_data->object_name = Object_Wood;
+
+
+
+
+	//ObjecrDataã®ã€€IDè¨­å®šã€€ã‚„ã€€ä»–ã®è¨­å®š
+	//------------------------------------------------------------------------------------------------------------------------------------------
 	int ID=object_anchorpoint_data->GenerateID();
 	object_wood_data->id = ID;
 	object_anchorpoint_data->id = ID;
 	SetID(ID);
 
-	//–Ø‚ğ“|‚µ‚·‚É•K—v‚É‚È‚éForce ‚Æ‚è‚ ‚¦‚¸ƒTƒCƒY‚ÉˆË‘¶‚Å‚Â‚­‚é
+	//æœ¨ã‚’å€’ã—ã™æ™‚ã«å¿…è¦ã«ãªã‚‹Force ã¨ã‚Šã‚ãˆãšã‚µã‚¤ã‚ºã«ä¾å­˜ã§ã¤ãã‚‹
 	b2Vec2 need_power;
 
-	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//‚P‚Í•K—v‚É‰‚¶‚Ä•ÏX‚µ‚Ä
-	need_power.y = 10.0f;//c‚É•K—v‚È—Í‚Í‚È‚¢
+	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//ï¼‘ã¯å¿…è¦ã«å¿œã˜ã¦å¤‰æ›´ã—ã¦
+	need_power.y = 10.0f;//ç¸¦ã«å¿…è¦ãªåŠ›ã¯ãªã„
 	
 
 	object_anchorpoint_data->add_force = need_power;
 
 
-	//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚Ìİ’è
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒ¬ãƒ™ãƒ«ã®è¨­å®š
 	object_anchorpoint_data->need_anchor_level = need_level;
 
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------
-	//ƒWƒ‡ƒCƒ“ƒg‚·‚é
+	//ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã™ã‚‹
 
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = m_Wood_body;
-	jointDef.bodyB = m_AnchorPoint_body;
-	jointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // –Ø‚Ìã’[
-	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ì‰º’[
-	jointDef.collideConnected = false;					  //ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
+	b2WeldJointDef jointDef2;
+	jointDef2.bodyA = m_Wood_body;
+	jointDef2.bodyB = m_stump_body;
+	jointDef2.localAnchorA.Set(0.0f, wood_size.y * 0.61f ); // æœ¨ã®ä¸‹ç«¯	(0.61ã¯å¾®èª¿æ•´ã—ã¦å‡ºãŸå€¤)
+	jointDef2.localAnchorB.Set(0.0f, stump_size.y * 0.3f); // åˆ‡ã‚Šæ ªã®ä¸Šç«¯	(0.3ã¯å¾®èª¿æ•´ã—ã¦å‡ºãŸå€¤)
+	jointDef2.collideConnected = false;					  //ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸç‰©ä½“åŒå£«ã®æ¥è§¦ã‚’æ¶ˆã™
 
-	world->CreateJoint(&jointDef);						  //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
-
+	auto joint = world->CreateJoint(&jointDef2);						  //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
+	SetWoodStumpJoint(joint);	//æœ¨ã‚’å¼•ã£å¼µã£ãŸã‚‰ã“ã®jointã‚’æ¶ˆã›ã‚‹ã‚ˆã†ã«ä¿å­˜ã—ã¦ãŠã
 	//-------------------------------------------------------------------------------------------
-	//–Ø‚ğ“|‚·ˆ×‚É•K—v‚È‹““®
+	//æœ¨ã‚’å€’ã™ç‚ºã«å¿…è¦ãªæŒ™å‹•
 
 };
 
@@ -170,15 +237,31 @@ void wood::Initialize()
 {
 	
 	if (g_Wood_Texture == NULL) {
-		g_Wood_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_wood.png");
+		g_Wood_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood.png");
 		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+		g_Stump_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood_stump.png");
 	}
 }
 
 void wood::Update()
 {
-	//ƒQ[ƒ€ŠJn’¼Œã–Ø‚ª’n–Ê‚Ü‚Å—‚¿‚é‰¹–Â‚ç‚³‚È‚¢‚½‚ß‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
+	//åˆ‡ã‚Šæ ªã¨æœ¬ä½“ã®ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’æ¶ˆã™ãƒ•ãƒ©ã‚°ãŒã‚ªãƒ³ã«ãªã£ã¦ã‚‹å ´åˆ
+	if (m_destory_joint)
+	{
+		b2Joint* joint = GetWoodStumpJoint();
+		if (joint != nullptr)
+		{
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+			world->DestroyJoint(joint);		//	ãƒ¯ãƒ¼ãƒ«ãƒ‰ã‹ã‚‰ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’æ¶ˆã™
+			SetWoodStumpJoint(nullptr);		//	è‡ªåˆ†ãŒä¿æŒã—ã¦ã‚‹ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã®æƒ…å ±ã‚’æ¶ˆã™
+		}
+		m_destory_joint = false;	//ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ•ã«ã™ã‚‹
+	}
+
+	//ã‚²ãƒ¼ãƒ é–‹å§‹ç›´å¾Œæœ¨ãŒåœ°é¢ã¾ã§è½ã¡ã‚‹æ™‚éŸ³é³´ã‚‰ã•ãªã„ãŸã‚ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
 	if (start_stop_sound_count > 0) {
 		start_stop_sound_count--;
 		return;
@@ -187,26 +270,26 @@ void wood::Update()
 	b2Vec2 velocity = Wood_body->GetLinearVelocity();
 	velocity.Normalize();
 
-	//—‚¿‚Ä‚¢‚éó‘ÔA‚©‚ÂA‚Ô‚Â‚©‚Á‚Ä’µ‚Ëã‚ª‚Á‚½
+	//è½ã¡ã¦ã„ã‚‹çŠ¶æ…‹ã€ã‹ã¤ã€ã¶ã¤ã‹ã£ã¦è·³ã­ä¸ŠãŒã£ãŸæ™‚
 	if ((m_state == Wood_Pulling || m_state == Wood_Falling) && (velocity.y > -0.1f && velocity.y < 0.1f))
 	{
 		float	angle = Wood_body->GetAngle();
 		float	rotated = angle - angle_when_pulling_start;
-		//ˆø‚Á’£‚èn‚ß‚½‚â‘O‰ñ‰¹–Â‚ç‚µ‚½’¼Œã‚Ì‰ñ“]Šp“x‚Æ¡‚Ì‰ñ“]Šp“x‚Ì·‚ª0.5‚©‚ç-0.5‚ÌŠÔ‚È‚çi‚ ‚éˆê’è‰ñ“]‚µ‚½j
+		//å¼•ã£å¼µã‚Šå§‹ã‚ãŸæ™‚ã‚„å‰å›éŸ³é³´ã‚‰ã—ãŸç›´å¾Œã®å›è»¢è§’åº¦ã¨ä»Šã®å›è»¢è§’åº¦ã®å·®ãŒ0.5ã‹ã‚‰-0.5ã®é–“ãªã‚‰ï¼ˆã‚ã‚‹ä¸€å®šå›è»¢ã—ãŸï¼‰
 		if (rotated > 0.5f || rotated < -0.5f)
 		{
-			SetState(Wood_HitObject);	//‰¹–Â‚ç‚·
+			SetState(Wood_HitObject);	//éŸ³é³´ã‚‰ã™
 		}
 	}
-	//‚³‚Á‚«‚Ü‚Å—‚¿‚Ä‚¢‚ÄA¡‚ÍÃ~‚µ‚Ä‚¢‚é
+	//ã•ã£ãã¾ã§è½ã¡ã¦ã„ã¦ã€ä»Šã¯é™æ­¢ã—ã¦ã„ã‚‹
 	if (m_state == Wood_Falling && velocity == b2Vec2{0.0f,0.0f})
 	{
-		SetState(Wood_Idle);	//’Êíó‘Ô‚ÉƒZƒbƒg
+		SetState(Wood_Idle);	//é€šå¸¸çŠ¶æ…‹ã«ã‚»ãƒƒãƒˆ
 	}
-	//’Êíó‘Ô‚ÅA¡Ã~‚µ‚Ä‚¢‚È‚¢
+	//é€šå¸¸çŠ¶æ…‹ã§ã€ä»Šé™æ­¢ã—ã¦ã„ãªã„
 	if (m_state == Wood_Idle && (velocity.y < -0.999f || velocity.y > 0.999f) )
 	{
-		SetState(Wood_Falling);	//—‚¿‚Ä‚¢‚éó‘Ô‚ÉƒZƒbƒg
+		SetState(Wood_Falling);	//è½ã¡ã¦ã„ã‚‹çŠ¶æ…‹ã«ã‚»ãƒƒãƒˆ
 	}
 
 }
@@ -214,8 +297,8 @@ void wood::Update()
 void wood::Pulling_wood(b2Vec2 pulling_power)
 {
 	b2Body*body=GetObjectAnchorPointBody();
-	//ƒvƒŒƒCƒ„[‘¤‚É“|‚·
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//ƒvƒŒƒCƒ„[‚ª¶‘¤
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å´ã«å€’ã™
+	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå·¦å´
 	{
 		pulling_power.x = pulling_power.x * -1;
 	}
@@ -233,11 +316,13 @@ void wood::SetState(Wood_State state)
 	case Wood_Idle:
 		break;
 	case Wood_Pulling:
+		m_destory_joint = true;	//åˆ‡ã‚Šæ ªã¨æœ¬ä½“ã®ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’æ¶ˆã™ãŸã‚ã«ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ³ã«ã™ã‚‹
+		angle_when_pulling_start = Wood_body->GetAngle();
 		break; 
 	case Wood_Falling:
 		break;
 	case Wood_HitObject:
-		app_atomex_start(m_sound_FalledDown);	//‰¹–Â‚ç‚·
+		app_atomex_start(m_sound_FalledDown);	//éŸ³é³´ã‚‰ã™
 		SetState(Wood_Idle);
 		angle_when_pulling_start = Wood_body->GetAngle();
 		break;
@@ -247,38 +332,61 @@ void wood::SetState(Wood_State state)
 void wood::Draw()
 {
 
-	///‚±‚±‚©‚ç’²®‚µ‚Ä‚Ë
+	///ã“ã“ã‹ã‚‰èª¿æ•´ã—ã¦ã­
 
 
 
 
-	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+	// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
+	
+	//åˆ‡ã‚Šæ ªã‚’æã
+//--------------------------------------------------------------------------------------------------
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
+
+	b2Vec2 Stump_pos = GetObjectStumpBody()->GetPosition();
+
+	float draw_x = ((Stump_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	float draw_y = ((Stump_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture);
+
+	//æç”»
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetObjectStumpBody()->GetAngle(),
+		{ GetStumpSize().x * scale,GetStumpSize().y * scale }
+	);
+
+
+	//æœ¬ä½“ã‚’æã
+//--------------------------------------------------------------------------------------------------
 	b2Vec2 Wood_pos = GetObjectWoodBody()->GetPosition();
 	b2Vec2 AnchorPoint_pos = GetObjectAnchorPointBody()->GetPosition();
 
 
 	b2Vec2 Wood_size = GetWoodSize();
 	b2Vec2 AnchorPoint_size = GetAnchorPointSize();
-	// –Ø‚Ì’†S‚ğƒ[ƒJƒ‹À•W‚©‚çŒvZ
+	// æœ¨ã®ä¸­å¿ƒã‚’ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‹ã‚‰è¨ˆç®—
 	float woodLocalCenterX =0.0f;
 	float woodLocalCenterY = 0.0f;
 
-	// ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ì’†S‚ğƒ[ƒJƒ‹À•W‚©‚çŒvZ
+	// ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ä¸­å¿ƒã‚’ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‹ã‚‰è¨ˆç®—
 	float anchorLocalCenterX = 0.0f;
 	float anchorLocalCenterY = 0.0f;
 
-	// ‰ñ“]Šp“xiƒ‰ƒWƒAƒ“j
+	// å›è»¢è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰
 	float angle = GetObjectWoodBody()->GetAngle();
 
-	// ‰ñ“]s—ñ‚ğ“K—p‚µ‚Äƒ[ƒ‹ƒhÀ•W‚ğŒvZ
+	// å›è»¢è¡Œåˆ—ã‚’é©ç”¨ã—ã¦ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’è¨ˆç®—
 	b2Vec2 woodWorldCenter(
 		Wood_pos.x + woodLocalCenterX * cos(angle) - woodLocalCenterY * sin(angle),
 		Wood_pos.y + woodLocalCenterX * sin(angle) + woodLocalCenterY * cos(angle)
@@ -289,20 +397,20 @@ void wood::Draw()
 		AnchorPoint_pos.y + anchorLocalCenterX * sin(angle) + anchorLocalCenterY * cos(angle)
 	);
 
-	// –Ø‚ÆƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ì’†SˆÊ’u‚ğ‰Ád•½‹Ï‚ÅŒvZ
+	// æœ¨ã¨ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ä¸­å¿ƒä½ç½®ã‚’åŠ é‡å¹³å‡ã§è¨ˆç®—
 	float totalHeight = Wood_size.y + AnchorPoint_size.y;
 	float centerX = (woodWorldCenter.x * Wood_size.y + anchorWorldCenter.x * AnchorPoint_size.y) / totalHeight;
 	float centerY = (woodWorldCenter.y * Wood_size.y + anchorWorldCenter.y * AnchorPoint_size.y) / totalHeight;
 
-	// ’†S“_
+	// ä¸­å¿ƒç‚¹
 	b2Vec2 textureCenter(centerX, centerY);
 
 
 
-	// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-	//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
-	float draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+	//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
+	draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture);
@@ -312,25 +420,22 @@ void wood::Draw()
 		{ draw_x,
 		  draw_y },
 		GetObjectAnchorPointBody()->GetAngle(),
-		{ GetWoodSize().x * scale,totalHeight * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+		{ GetWoodSize().x * scale,totalHeight * scale }///ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹ã™ã¹ãŒãªã„ã€€ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã«è¿½åŠ ã—ã‚ˆã†ã‹ãªï¼Ÿã£ã¦ãƒ¬ãƒ™ãƒ«
 	);
-
-
-
 
 }
 
 void wood::Finalize()
 {
 
-	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
 	if (GetObjectWoodBody() != nullptr)
 	{
-		//ƒ{ƒfƒB‚Ìíœ
+		//ãƒœãƒ‡ã‚£ã®å‰Šé™¤
 		world->DestroyBody(Wood_body);
 	}
 
@@ -339,7 +444,7 @@ void wood::Finalize()
 		world->DestroyBody(AnchorPoint_body);
 	}
 
-	//ƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
 	UnInitTexture(g_Wood_Texture);
 	UnInitTexture(g_Wood_Texture1);
 	UnInitTexture(g_Wood_Texture2);

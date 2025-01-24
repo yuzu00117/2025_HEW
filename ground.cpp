@@ -72,6 +72,10 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	if (object_sensor) {
 		fixture.filter = createFilterExclude("one-way_platform_filter", { "object_filter" });
 	}
+	else
+	{
+		fixture.filter = createFilterExclude("ground_filter", {});
+	}
 	b2Fixture* ground_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
 	
