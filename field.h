@@ -35,6 +35,13 @@ enum FieldTexture
 	enemy_static_texture,
 };
 
+enum class MapType {
+    Stage1,
+    Stage2,
+    Stage3,
+    // 他のステージを追加
+};
+
 class Field 
 {
 public:
@@ -48,6 +55,9 @@ public:
 
 	//csvファイルを読み込み、二次元配列として格納
 	static bool LoadCSV(const std::string& filename);
+
+	// マップの切り替え
+    void LoadMap(MapType mapType);
 
 	// サイズの取得と設定
 	b2Vec2 GetSize() const { return m_size; }
@@ -88,4 +98,3 @@ private:
 
 
 #endif // !FIELD_H
-
