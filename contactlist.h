@@ -623,18 +623,45 @@ public:
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
-                if (attack_instance)
-                {
-                    attack_instance->CollisionPlayer();
-                }
+                attack_instance->CollisionPlayer();
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
-                if (attack_instance)
-                {
-                    attack_instance->CollisionPlayer();
-                }
+                attack_instance->CollisionPlayer();
+            }
+        }
+
+        //動的エネミーに付属しているセンサーと地面が触れた場合
+        if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
+        {
+            if (objectA->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->SetIsGround(true);
+            }
+            else if (objectB->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->SetIsGround(true);
+            }
+        }
+
+        //動的エネミー同士が触れた場合
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_enemy_dynamic))
+        {
+            EnemyDynamic* enemy_instanceA= object_manager.FindEnemyDynamicByID(objectA->id);
+            EnemyDynamic* enemy_instanceB = object_manager.FindEnemyDynamicByID(objectB->id);
+            if (enemy_instanceA->GetBody()->GetPosition().x < enemy_instanceB->GetBody()->GetPosition().x)
+            {
+                enemy_instanceA->SetDirection(true);
+                enemy_instanceB->SetDirection(false);
+            }
+            else if (enemy_instanceA->GetBody()->GetPosition().x > enemy_instanceB->GetBody()->GetPosition().x)
+            {
+                enemy_instanceA->SetDirection(false);
+                enemy_instanceB->SetDirection(true);
             }
         }
 
@@ -1087,6 +1114,21 @@ public:
             spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
+         //動的エネミーに付属しているセンサーと地面が離れた時
+        if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
+        {
+            if (objectA->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->SetIsGround(false);
+            }
+            else if (objectB->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->SetIsGround(false);
+            }
+        }
 
 
 
