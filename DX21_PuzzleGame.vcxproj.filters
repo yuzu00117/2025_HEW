@@ -121,6 +121,19 @@
     <ClCompile Include="stage_point_factory.cpp" />
     <ClCompile Include="stage_select_player.cpp" />
     <ClCompile Include="FixtureSizeCalculate.cpp" />
+    <ClCompile Include="camera_shake.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp" />
+    <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp" />
+    <ClCompile Include="enemy_floating.cpp" />
+    <ClCompile Include="Item_Coin.cpp" />
+    <ClCompile Include="Item_Coin_UI.cpp" />
+    <ClCompile Include="player_UI.cpp" />
+    <ClCompile Include="teleport_block.cpp" />
+    <ClCompile Include="enemy_attack.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -251,6 +264,20 @@
     <ClInclude Include="stage_select_contact_list.h" />
     <ClInclude Include="stage_select_player.h" />
     <ClInclude Include="FixtureSizeCalculate.h" />
+    <ClInclude Include="camera_shake.h" />
+    <ClInclude Include="cri\common\include\CriSmpFramework.h" />
+    <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
+    <ClInclude Include="cri\common\include\CriSmpTimer.h" />
+    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h" />
+    <ClInclude Include="enemy_floating.h" />
+    <ClInclude Include="hit_stop.h" />
+    <ClInclude Include="Item_Coin.h" />
+    <ClInclude Include="Item_Coin_UI.h" />
+    <ClInclude Include="player_UI.h" />
+    <ClInclude Include="teleport_block.h" />
+    <ClInclude Include="enemy_attack.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">

@@ -26,6 +26,7 @@
 
 static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;//動的エネミーのテクスチャ
 static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	//エネミーのセンサーのテクスチャ
+static ID3D11ShaderResourceView* g_EnemySensor2_Texture = NULL;	//エネミーのセンサーのテクスチャ
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true, false)
@@ -65,6 +66,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 	//====================================================================================================
 	//センサーの登録
+	//====================================================================================================
 	b2Vec2 size_sensor;
 	size_sensor.x = body_size.x / BOX2D_SCALE_MANAGEMENT * 2;
 	size_sensor.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
@@ -79,10 +81,27 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture_sensor.friction = 0.0f;//摩擦
 	fixture_sensor.restitution = 0.0f;//反発係数
 	fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+	//----------------------------------------------------------------------------------------------------
+	b2Vec2 size_sensor2;
+	size_sensor2.x = body_size.x / BOX2D_SCALE_MANAGEMENT * (2);
+	size_sensor2.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
+
+	b2PolygonShape shape_sensor2;
+	shape_sensor2.SetAsBox(size_sensor2.x * 0.5, size_sensor2.y * 0.5);
+	m_size_sensor_2 = b2Vec2(body_size.x * 2, body_size.y);
+
+	b2FixtureDef fixture_sensor2;
+	fixture_sensor2.shape = &shape_sensor2;
+	fixture_sensor2.density = 0.0f;//密度
+	fixture_sensor2.friction = 0.0f;//摩擦
+	fixture_sensor2.restitution = 0.0f;//反発係数
+	fixture_sensor2.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 	//====================================================================================================
 
-	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture2);//Bodyにフィクスチャを登録する
+	//Bodyにフィクスチャを登録する
+	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture2);
 	b2Fixture* enemy_sensor_fixture = GetBody()->CreateFixture(&fixture_sensor);
+	b2Fixture* enemy_sensor_fixture2 = GetBody()->CreateFixture(&fixture_sensor2);
 
 	// カスタムデータを作成して設定
 	// 動的エネミーに値を登録
@@ -91,27 +110,34 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 	ObjectData* sensor_data = new ObjectData{ collider_enemy_sensor };
 	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data);
+	ObjectData* sensor_data2 = new ObjectData{ collider_enemy_sensor_move };
+	enemy_sensor_fixture2->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data2);
 
 	//ID登録(センサーのデータにもエネミーと同じIDを入れる)
 	data->object_name = Object_Enemy_Dynamic;
 	int ID = data->GenerateID();
 	data->id = ID;
 	sensor_data->id = ID;
+	sensor_data2->id = ID;
 	SetID(ID);
 
 	m_state = ENEMY_STATE_NULL;
+	m_move_force = body_size.x * body_size.y;
+	m_sensor_move_size = (2 * body_size.x);
 }
 
 void EnemyDynamic::Initialize()
 {
 	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//動的エネミーのテクスチャ
 	g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
+	g_EnemySensor2_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor_left.png");//エネミーのセンサーのテクスチャ
 }
 
 void EnemyDynamic::Finalize()
 {
 	UnInitTexture(g_EnemyDynamic_Texture);
 	UnInitTexture(g_EnemySensor_Texture);
+	UnInitTexture(g_EnemySensor2_Texture);
 
 	//ワールドに登録したbodyの削除
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -134,12 +160,12 @@ void EnemyDynamic::Update()
 			Attack();
 			m_old_state = ENEMY_STATE_ATTACK;
 			break;
-		/*case ENEMY_STATE_DESTROYED:
-			break;*/
 		default:
 			if (GetInScreen())
 			{
 				SetState(ENEMY_STATE_MOVE);
+
+				SetDirectionBasedOnPlayer();
 			}
 			m_old_state = ENEMY_STATE_NULL;
 			break;
@@ -189,8 +215,6 @@ void EnemyDynamic::Draw()
 	//貼るテクスチャを指定
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
 
-
-
 	//draw
 	DrawSprite(
 		{ draw_x,
@@ -203,82 +227,75 @@ void EnemyDynamic::Draw()
 	//============================================================
 	//テスト:センサー描画
 	//============================================================
-
 	//貼るテクスチャを指定
-	//GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor2_Texture);
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetBody()->GetAngle(),
+		{ m_size_sensor_2.x * scale , m_size_sensor_2.y * scale }
+	);
 
-	////draw
-	//DrawSprite(
-	//	{ draw_x,
-	//	  draw_y },
-	//	GetBody()->GetAngle(),
-	//	{ m_size_sensor.x * scale , m_size_sensor.y * scale }
-	//);
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	DrawSprite(
+		{ draw_x,
+		  draw_y },
+		GetBody()->GetAngle(),
+		{ m_size_sensor.x * scale , m_size_sensor.y * scale }
+	);
 }
 
 //移動
 void EnemyDynamic::Move()
 {
-	//プレイヤー追従(簡易)
-	//プレイヤーのポジション取得
-	b2Vec2 player_position;
-	player_position.x = PlayerPosition::GetPlayerPosition().x;
-	player_position.y = PlayerPosition::GetPlayerPosition().y;
-
-	//移動方向
-	b2Vec2 enemy_vector;
-	enemy_vector.x = player_position.x - GetBody()->GetPosition().x;
-	enemy_vector.y = player_position.y - GetBody()->GetPosition().y;
-
-	//プレイヤーの方向を向く
-	if (enemy_vector.x > 0)
-	{
-		SetDirection(false);
-	}
-	else
-	{
-		SetDirection(true);
-	}
-
+	//移動量取得
 	b2Vec2 liner_velocity = GetBody()->GetLinearVelocity();
+
+	//着地判定(y軸移動が無ければ着地中)
 	if (liner_velocity.y != 0.0)
 	{
-		m_is_jumping = true;
+		m_is_ground = false;
 	}
 	else
 	{
-		m_is_jumping = false;
+		m_is_ground = true;
 	}
 
+	//崖で反転
+	if (m_ground_cnt == m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground && (GetBody()->GetLinearVelocity() != b2Vec2(0.0,0.0)))
+	{
+		SetDirection(!GetDirection());
+	}
+
+	//画面内なら移動
 	if(GetInScreen())
 	{
+		//移動していないかつ、前回移動中だった場合ジャンプ
 		if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
 		{
-			GetBody()->SetLinearVelocity(b2Vec2(0.0, 0.0));
-			if (GetDirection())
-			{
-
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.10), true);
-			}
-			else
-			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, -0.10), true);
-			}
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, m_jump_force * m_move_force), true);
 		}
 		else
 		{
 			GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
 			if (GetDirection())
 			{
-
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed, 0.0), true);
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, 0.0), true);
 			}
-			else
+			else if(!GetDirection())
 			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed, 0.0), true);
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed* m_move_force, 0.0), true);
 			}
 		}
 	}
+	else
+	{
+		//画面外に出ていた場合、ステータスを変え移動用関数を呼び出さない
+		SetState(ENEMY_STATE_NULL);
+	}
+
+	//接触中の地面の数を記憶
+	m_old_ground_cnt = m_ground_cnt;
 }
 
 //攻撃
@@ -319,9 +336,37 @@ void EnemyDynamic::Attack()
 void EnemyDynamic::CollisionSensorPlayer()
 {
 	//エネミーが攻撃中なら何もしない
-	if ((GetState() != ENEMY_STATE_ATTACK) && (!m_is_jumping))
+	if ((GetState() != ENEMY_STATE_ATTACK) && (m_is_ground))
 	{
+		SetDirectionBasedOnPlayer();
+
 		//攻撃状態に移行
 		SetState(ENEMY_STATE_ATTACK);
+	}
+}
+
+void EnemyDynamic::SetDirectionBasedOnPlayer()
+{
+	//プレイヤー追従(簡易)
+		//プレイヤーのポジション取得
+	b2Vec2 player_position;
+	player_position.x = PlayerPosition::GetPlayerPosition().x;
+	player_position.y = PlayerPosition::GetPlayerPosition().y;
+
+	//移動方向
+	b2Vec2 enemy_vector;
+	enemy_vector.x = player_position.x - GetBody()->GetPosition().x;
+	enemy_vector.y = player_position.y - GetBody()->GetPosition().y;
+
+	bool old_direction = GetDirection();
+
+	//プレイヤーの方向を向く
+	if (enemy_vector.x > 0)
+	{
+		SetDirection(false);
+	}
+	else
+	{
+		SetDirection(true);
 	}
 }
