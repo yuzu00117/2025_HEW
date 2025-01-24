@@ -178,6 +178,7 @@
     <ClCompile Include="teleport_block.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
+    <ClCompile Include="Item_Jewel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -372,6 +373,7 @@
     <ClInclude Include="hit_stop.h">
       <Filter>ヘッダーファイル\tool</Filter>
     </ClInclude>
+    <ClInclude Include="Item_Jewel.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">

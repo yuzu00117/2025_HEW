@@ -36,6 +36,12 @@ void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool s
 	m_Coin_List.emplace_back(std::make_unique<ItemCoin>(position, body_size, angle, shape_polygon, Alpha));
 }
 
+void ItemManager::AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon, float Alpha)
+{
+    // 既存の引数コンストラクタを利用して生成
+    m_Jewel_List.emplace_back(std::make_unique<ItemJewel>(position, body_size, angle, type, shape_polygon, Alpha));
+}
+
 void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
 {
     // 既存の引数コンストラクタを利用して生成
@@ -66,6 +72,16 @@ ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
 	return nullptr; // 見つからない場合は nullptr を返す
 }
 
+ItemJewel* ItemManager::FindItem_Jewel_ByID(int ID)
+{
+    for (const auto& w : m_Jewel_List) {
+        if (w->GetID() == ID) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 {
@@ -90,6 +106,9 @@ void ItemManager::InitializeAll() {
 		w->Initialize();
 	}
 	Item_Coin_UI::Initialize();
+    for (auto& w : m_Jewel_List) {
+        w->Initialize();
+    }
 }
 
 // 全てのアイテムを更新
@@ -101,6 +120,9 @@ void ItemManager::UpdateAll() {
         w->Update();
     }
     for (auto& w : m_Coin_List) {
+        w->Update();
+    }
+    for (auto& w : m_Jewel_List) {
         w->Update();
     }
 }
@@ -117,6 +139,9 @@ void ItemManager::DrawAll() {
 		w->Draw();
 	}
 	Item_Coin_UI::Draw();
+    for (auto& w : m_Jewel_List) {
+        w->Draw();
+    }
 }
 
 // 全てのアイテムを破棄
@@ -132,8 +157,13 @@ void ItemManager::FinalizeAll() {
     for (auto& w : m_Spirit_List) {
         w->Finalize();
     }
+    for (auto& w : m_Jewel_List) {
+        w->Finalize();
+    }
+
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_Jewel_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
 void ItemManager::SetCollectSpirit(bool flag)

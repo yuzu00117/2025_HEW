@@ -780,6 +780,15 @@ public:
                 }
             }
             break;
+            case ITEM_JEWEL:
+            {
+                ItemJewel* jewel_instance = item_manager.FindItem_Jewel_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                if (jewel_instance != nullptr) {
+                    jewel_instance->Function();
+                    jewel_instance->SetDestory(true);//削除を呼び出す
+                }
+            }
+            break;
             }
       
         }

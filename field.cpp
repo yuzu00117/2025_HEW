@@ -173,6 +173,11 @@ void Field::Initialize()
 			if (field_map[y][x] == 21) {//浮遊敵
 				objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
+
+			if (field_map[y][x] == 22) {//宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE);
+			}
+
 		}
 	}
 
