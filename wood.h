@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------------------------------------
 // #name wood.h
-// #description –Ø‚ÌƒIƒuƒWƒFƒNƒg‚Ìƒwƒbƒ_[
-// #make 2024/12/04@‰i–ì‹`–ç
+// #description æœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ˜ãƒƒãƒ€ãƒ¼
+// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/04
-// #comment ’Ç‰ÁEC³—\’è
-//          E‚È‚¢‚Æ‚¨‚à‚¤[
-//			E‚ ‚é‚È‚ç‰E‚¾‚¯‚É“|‚ê‚½‚¢‚Æ‚©‚ ‚Á‚½‚ç‚â‚é‚©‚à‚Ë[
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ãªã„ã¨ãŠã‚‚ã†ãƒ¼
+//			ãƒ»ã‚ã‚‹ãªã‚‰å³ã ã‘ã«å€’ã‚ŒãŸã„ã¨ã‹ã‚ã£ãŸã‚‰ã‚„ã‚‹ã‹ã‚‚ã­ãƒ¼
 //----------------------------------------------------------------------------------------------------
 
 
@@ -41,7 +41,7 @@ public:
 	void Pulling_wood(b2Vec2 pullingpower);
 
 
-	// ID ‚ğæ“¾‚·‚é
+	// ID ã‚’å–å¾—ã™ã‚‹
 	int GetID() const {
 		return id;
 	}
@@ -51,7 +51,7 @@ public:
 		id = ID;
 	}
 
-	//•`‰æ—p‚ÉƒTƒCƒY‚ğ‚½‚¹‚Ä‚¨‚­
+	//æç”»ç”¨ã«ã‚µã‚¤ã‚ºã‚’æŒãŸã›ã¦ãŠã
 	b2Vec2 GetWoodSize() const
 	{
 		return m_Wood_size;
@@ -62,7 +62,7 @@ public:
 	}
 
 
-	//body‚ÌK“¾
+	//bodyã®ç¿’å¾—
 	b2Body* GetObjectWoodBody()
 	{
 		return Wood_body;
@@ -75,7 +75,7 @@ public:
 	
 	
 
-	//•`‰æ—p‚ÉƒTƒCƒY‚ğ‚½‚¹‚Ä‚¨‚­
+	//æç”»ç”¨ã«ã‚µã‚¤ã‚ºã‚’æŒãŸã›ã¦ãŠã
 	b2Vec2 GetStumpSize() const
 	{
 		return m_Stump_size;
@@ -84,7 +84,7 @@ public:
 	void SetStumpSize(b2Vec2 size) {
 		m_Stump_size = size;
 	}
-	//body‚ÌK“¾
+	//bodyã®ç¿’å¾—
 	b2Body* GetObjectStumpBody()
 	{
 		return Stump_body;
@@ -95,7 +95,7 @@ public:
 		Stump_body = body;
 	}
 
-	//–Ø–{‘Ì‚ÆØ‚èŠ”‚ÌŠÔ‚Ì—nÚƒWƒ‡ƒCƒ“ƒgæ“¾
+	//æœ¨æœ¬ä½“ã¨åˆ‡ã‚Šæ ªã®é–“ã®æº¶æ¥ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆå–å¾—
 	b2Joint* GetWoodStumpJoint() 
 	{
 		return m_wood_stump_joint; 
@@ -115,18 +115,19 @@ public:
 		if (flag)
 		{
 			SetState(Wood_Pulling);
+			angle_when_pulling_start = Wood_body->GetAngle();
 		}
 		else SetState(Wood_Idle);
 	}
 
-	//	–Ø‚Ìó‘Ô‚ğƒZƒbƒg
+	//	æœ¨ã®çŠ¶æ…‹ã‚’ã‚»ãƒƒãƒˆ
 	void	SetState(Wood_State state);
 
 	///-----------------------------------------------------------------------------
-	//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆ
 
 
-	//•`‰æ—p‚ÉƒTƒCƒY‚ğ‚½‚¹‚Ä‚¨‚­
+	//æç”»ç”¨ã«ã‚µã‚¤ã‚ºã‚’æŒãŸã›ã¦ãŠã
 	b2Vec2 GetAnchorPointSize() const
 	{
 		return m_AnchorPoint_size;
@@ -136,7 +137,7 @@ public:
 		m_AnchorPoint_size = size;
 	}
 
-	//body‚ÌK“¾
+	//bodyã®ç¿’å¾—
 	b2Body* GetObjectAnchorPointBody()
 	{
 		return AnchorPoint_body;
@@ -148,7 +149,7 @@ public:
 	}
 
 private:
-	int id; // ŠeƒCƒ“ƒXƒ^ƒ“ƒXŒÅ—L‚Ì ID
+	int id; // å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å›ºæœ‰ã® ID
 
 	b2Body* Wood_body;
 
@@ -161,7 +162,7 @@ private:
 
 	b2Joint*	m_wood_stump_joint;
 
-	bool	m_destory_joint = false;	//Ø‚èŠ”‚Æ–{‘Ì‚ÌƒWƒ‡ƒCƒ“ƒg‚ğÁ‚·‚©‚Ç‚¤‚©
+	bool	m_destory_joint = false;	//åˆ‡ã‚Šæ ªã¨æœ¬ä½“ã®ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’æ¶ˆã™ã‹ã©ã†ã‹
 
 	b2Body* AnchorPoint_body;
 
@@ -169,11 +170,12 @@ private:
 
 	Wood_State	m_state = Wood_Idle;
 
-	int		start_stop_sound_count = 120;	//ƒQ[ƒ€ŠJn’¼Œã–Ø‚ª’n–Ê‚Ü‚Å—‚¿‚é‰¹–Â‚ç‚³‚È‚¢‚½‚ß‚ÌƒJƒEƒ“ƒgƒ_ƒEƒ“
-	float	angle_when_pulling_start = 0;	//ˆø‚Á’£‚èn‚ß‚é‚â‰¹–Â‚ç‚³‚ê‚½’¼Œã‚Ì–Ø‚Ì‰ñ“]Šp“x‚ğ•Û
+	int		start_stop_sound_count = 120;	//ã‚²ãƒ¼ãƒ é–‹å§‹ç›´å¾Œæœ¨ãŒåœ°é¢ã¾ã§è½ã¡ã‚‹æ™‚éŸ³é³´ã‚‰ã•ãªã„ãŸã‚ã®ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³
+  
+	float	angle_when_pulling_start = 0;	//å¼•ã£å¼µã‚Šå§‹ã‚ã‚‹æ™‚ã‚„éŸ³é³´ã‚‰ã•ã‚ŒãŸç›´å¾Œã®æœ¨ã®å›è»¢è§’åº¦ã‚’ä¿æŒ
 
-	//‰¹Œ¹
+	//éŸ³æº
 	//----------------------------------------
-	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//“|‚ê‚½‚Ì‰¹
+	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//å€’ã‚ŒãŸæ™‚ã®éŸ³
 };
 #endif // !WOOD_H
