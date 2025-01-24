@@ -35,7 +35,7 @@ enum FieldTexture
 	enemy_static_texture,
 };
 
-enum class MapType {
+enum class StageType {
     Stage1,
     Stage2,
     Stage3,
@@ -57,7 +57,7 @@ public:
 	static bool LoadCSV(const std::string& filename);
 
 	// マップの切り替え
-    void LoadMap(MapType mapType);
+    void LoadMap(StageType stage_type);
 
 	// サイズの取得と設定
 	b2Vec2 GetSize() const { return m_size; }

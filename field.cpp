@@ -346,14 +346,14 @@ void Field::DeleteFieldObject(b2Body* delete_object)
 }
 
 //マップ切り替え
-void Field::LoadMap(MapType mapType)
+void Field::LoadMap(StageType stage_type)
 {
     // 現在のマップをクリア
     Field::Finalize();
 
     // マップタイプに応じて対応する CSV ファイルを読み込む
-    switch (mapType) {
-        case MapType::Stage1:
+    switch (stage_type) {
+        case StageType::Stage1:
             LoadCSV("asset/mapchip_stage_1_1.csv");
             break;
         // 他のステージを追加
