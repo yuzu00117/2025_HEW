@@ -16,6 +16,7 @@
 #include"player_position.h"
 #include"player.h"
 #include"Item_Manager.h"
+#include"Item_Coin_UI.h"
 #include"sound.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
@@ -104,6 +105,8 @@ void	ItemCoin::Update()
         world->DestroyBody(m_body);
         m_body = nullptr;
 
+        Item_Coin_UI::SetDrawCount(180);
+        Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetNowCoinCount()+1);
         app_atomex_start(Object_Get_Coin_Sound);
     }
 }

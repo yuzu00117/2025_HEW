@@ -15,6 +15,7 @@
 #include"field.h"
 #include"directx_controller.h"
 #include"UI_StaminaSpirit_Gauge.h"
+#include"1-1_boss.h"
 
 
 class Game
@@ -45,7 +46,7 @@ private:
 	
 	Player player;
 	StaminaSpiritGauge stamina_spirit_gauge;
-	
+	Boss_1_1 &boss =Boss_1_1::GetInstance();
 };
 
 

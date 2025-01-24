@@ -31,11 +31,13 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"sound.h"
-
+#include"1-1_boss.h"
 
 class MyContactListener : public b2ContactListener {
 private:
-    Player player = Player::GetInstance();
+    Player &player = Player::GetInstance();
+    Boss_1_1& boss = Boss_1_1::GetInstance();
+
 
 public:
     b2Vec2 contactPoint;//衝突した地点
@@ -80,7 +82,9 @@ public:
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg)) {
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)){
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -131,7 +135,8 @@ public:
 
             if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
-                PlayerStamina::EditPlayerStaminaValue(-50);//被弾処理
+               
+                player.Player_Damaged(-50, 120);//被弾処理
 
                 if (objectA->collider_type == collider_object)
                 {
@@ -184,6 +189,27 @@ public:
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
+
+        //引っ張れる床のオブジェクトの引っ張る処理
+        if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
+            (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
+        {
+            //どちらが床のオブジェクトか特定
+            if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                ground_instance->Pulling_ground(objectA->add_force);
+                ground_instance->SetIfPulling(true);
+            }
+            else
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                ground_instance->Pulling_ground(objectB->add_force);
+                ground_instance->SetIfPulling(true);
+            }
+
+        }
+
         //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
         if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
@@ -224,26 +250,6 @@ public:
                 {
                     wood* wood_instance = object_manager.FindWoodByID(objectB->id);
                     wood_instance->Pulling_wood(objectB->add_force);
-                }
-
-            }
-
-            //引っ張れる床のオブジェクトの引っ張る処理
-            if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
-                (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
-            {
-                //どちらが床のオブジェクトか特定
-                if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectA->add_force);
-                    ground_instance->SetIfPulling(true);
-                }
-                else
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectB->add_force);
-                    ground_instance->SetIfPulling(true);
                 }
 
             }
@@ -312,6 +318,7 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-50, 120);
 
             if (objectA->collider_type == collider_enemy_dynamic)
             {
@@ -690,6 +697,7 @@ public:
             }
         }
 
+     
 
         //ソウルアイテムがオブジェクトとぶつかったとき
         if ((objectA->Item_name == ITEM_SPIRIT && objectB->collider_type == collider_object) ||
@@ -757,8 +765,8 @@ public:
 
         // プレーヤーとアイテムが衝突したかを判定
         if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_item) ||
-            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body)||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item)||
+            (objectA->collider_type == collider_item && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_item) ||
             (objectA->collider_type == collider_item && objectB->collider_type == collider_player_leg)) {
 
             //最初に　objectB　が item　だと仮定する
@@ -800,9 +808,125 @@ public:
                 }
             }
             break;
-
             }
+      
+        }
+        //-------------------------------------------------------------------------------------------
+          // 
+          // ここからボス戦のあたり判定を作る
+          // 
+          //プレイヤーがボスに触れた時
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-50, 120);
+
+        }
+
+        //プレイヤーがボスに触れた時
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+           /* player.Player_Damaged(-50, 120);*/
+
+        }
+
+
+        //プレイヤーがボスに触れた時
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+
+        }
+
+        //プレイヤーとショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_shock_wave) ||
+            (objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_shock_wave))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+
+        }
+
+
+        //プレイヤーとチャージ攻撃
+        if ((objectA->collider_type == collider_chage_attack && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_chage_attack) ||
+            (objectA->collider_type == collider_chage_attack && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_chage_attack))
+        {
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+          
             
+            player.Player_knockback(1, boss.GetOutSideBody());
+
+        }
+
+        //プレイヤーとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_mini_golem) ||
+            (objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_mini_golem))
+        {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
+        }
+
+        //プレイヤーとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_normal_attack_anchor) ||
+            (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_mini_golem) )
+        {
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            /* player.Player_Damaged(-50, 120);*/
+
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
         }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
@@ -1006,7 +1130,50 @@ public:
             }
         }
 
+
+
+
+        //プレイヤーに付属しているセンサーとアンカーポイントが離れた場合
+        if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
+        {
+            ObjectData* object_data = objectB;
+            if (objectA->collider_type == collider_anchor_point) {
+                object_data = objectA;
+            }
+
+            //木のオブジェクトの引っ張る処理
+            if (object_data->object_name == Object_Wood)
+            {
+                wood* wood_instance = object_manager.FindWoodByID(objectB->id);
+                if (wood_instance != nullptr && wood_instance->GetIfPulling() == true) {
+                    wood_instance->SetIfPulling(false);
+                }
+            }
+
+            //岩のオブジェクトの引っ張る処理
+            if (object_data->object_name == Object_Rock )
+            {
+                rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                if (rock_instance != nullptr && rock_instance->GetIfPulling() == true) {
+                    rock_instance->SetIfPulling(false);
+                }
+            }
+
+
+            //静的動的のオブジェクトの
+            if (object_data->object_name == Object_Static_to_Dynamic)
+            {
+                static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                if (static_to_dynamic_block_instance != nullptr && static_to_dynamic_block_instance->GetIfPulling() == true) {
+                    static_to_dynamic_block_instance->SetIfPulling(false);
+                }
+            }
+
+
+        }
     }
+
 
 
 };

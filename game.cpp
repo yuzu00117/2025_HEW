@@ -35,6 +35,7 @@
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
 
+
 void Game::Initialize()
 {
 
@@ -106,7 +107,9 @@ void Game::Finalize(void)
 
 	//背景の終了処理
 	Bg::Finalize();
-
+  
+	boss.Finalize();
+  
 	player_UI::Finalize();
 
 
@@ -169,12 +172,14 @@ void Game::Update(void)
 
 	  CRIUpdate();
 
+	  boss.Update();
 
-
-
-
-
-
+	  //プレイヤーが死亡したらリザルト画面に遷移
+	  if (PlayerStamina::IsPlayerDead())
+	  {
+		  SceneManager& sceneManager = SceneManager::GetInstance();
+		  sceneManager.ChangeScene(SCENE_RESULT);
+	  }
 
 		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
@@ -183,6 +188,20 @@ void Game::Update(void)
 			sceneManager.ChangeScene(SCENE_RESULT);
 		}
 
+
+		if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
+		{
+			b2Vec2 size = player.GetSensorSize();
+
+			player.Finalize();
+
+			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
+
+			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27),true);
+
+
+
+		}
 
 
 
@@ -224,11 +243,10 @@ void Game::Draw(void)
 	//�c�@�̕`�揈��
 	PlayerLife::Draw();
 
+	boss.Draw();
+
 	player_UI::Draw();
 
-	
-
-	//�̗̓\�E���Q�[�WUI�̕`�揈��
   //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
 

@@ -46,6 +46,8 @@ bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
 
+int Player::invincible_time = 0;
+
 bool    CollectSpirit_pressed = false;
 
 b2Body* player_body;
@@ -74,155 +76,159 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         m_body = nullptr;
     }
 
-    //テクスチャのロード
-    g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
-    g_player_jump_sheet= InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
+    if (g_player_Texture == NULL) {
+        //テクスチャのロード
+        g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
-    g_player_damaged_sheet= InitTexture(L"asset\\texture\\player_texture\\player_damaged_sheet.png");
+        g_player_jump_sheet = InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
 
-    g_player_throw_anchor_sheet= InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
+        g_player_damaged_sheet = InitTexture(L"asset\\texture\\player_texture\\player_damaged_sheet.png");
 
-    g_player_normal_attack_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_anchor_sheet.png");
+        g_player_throw_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_throw_anchor_sheet.png");
 
-    g_player_normal_attack_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_sheet.png");
+        g_player_normal_attack_anchor_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_anchor_sheet.png");
 
-    g_player_walk_sheet= InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
+        g_player_normal_attack_sheet = InitTexture(L"asset\\texture\\player_texture\\player_normal_attack_sheet.png");
 
-    g_player_sensor_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
+        g_player_walk_sheet = InitTexture(L"asset\\texture\\player_texture\\player_walk_sheet.png");
 
-
-
-
-    b2BodyDef body;
-    body.type = b2_dynamicBody;
-    body.position.Set(position.x, position.y);
-    body.angle = 0.0f;
-    body.fixedRotation = true;//回転を固定にする
-    body.userData.pointer = (uintptr_t)this;
+        g_player_sensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
 
 
 
-
-    Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-    b2World* world = box2d_world.GetBox2dWorldPointer();
+    }
 
 
-
-    m_body = world->CreateBody(&body);
-
-    player_body = m_body;//プレイヤーのボディをセット
-
-
-    SetSize(body_size);//プレイヤー表示をするためにセットする
-    SetSensorSize(b2Vec2(sensor_size.x* DISPLAY_RANGE_TO_SCALE,sensor_size.y * DISPLAY_RANGE_TO_SCALE));//センサー表示をするためにセット
+        b2BodyDef body;
+        body.type = b2_dynamicBody;
+        body.position.Set(position.x, position.y);
+        body.angle = 0.0f;
+        body.fixedRotation = true;//回転を固定にする
+        body.userData.pointer = (uintptr_t)this;
 
 
 
 
-    b2Vec2 size;
-    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
-    size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
-
-
-    //センサーの設定用の
-    b2Vec2 size_sensor;//命名すまん
-    size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT*DISPLAY_RANGE_TO_SCALE;
-    size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT*DISPLAY_RANGE_TO_SCALE;
+        Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+        b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
 
-    //プレイヤーの真ん中の長方形ボディ
-   //-------------------------------------------
-    b2PolygonShape rectangle_body;
-    rectangle_body.SetAsBox(size.x * 0.5, size.y * 0.5f);
+        m_body = world->CreateBody(&body);
 
-    b2FixtureDef fixture_rectangle_body;
-    fixture_rectangle_body.shape = &rectangle_body;
-    fixture_rectangle_body.density = 1.0f;//密度
-    fixture_rectangle_body.friction = 0.001f;//摩擦
-    fixture_rectangle_body.restitution = 0.1f;//反発係数
-    fixture_rectangle_body.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-    fixture_rectangle_body.filter = createFilterExclude("Player_filter", {});
+        player_body = m_body;//プレイヤーのボディをセット
 
 
-    //プレイヤーの下の円のコライダー
-    //-------------------------------------------
-    b2CircleShape circle_bottom;
-    circle_bottom.m_p.Set(0.0f, size.y / 2);//下の方の円
-    circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
-
-    b2FixtureDef fixture_circle_bottom;
-    fixture_circle_bottom.shape = &circle_bottom;
-    fixture_circle_bottom.density = 1.3f;
-    fixture_circle_bottom.friction = 1.0f;//摩擦
-    fixture_circle_bottom.restitution = 0.0f;//反発係数
-    fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-    fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
+        SetSize(body_size);//プレイヤー表示をするためにセットする
+        SetSensorSize(b2Vec2(sensor_size.x * DISPLAY_RANGE_TO_SCALE, sensor_size.y * DISPLAY_RANGE_TO_SCALE));//センサー表示をするためにセット
 
 
 
-    //----------------------------------------------------
 
-    //fixtureをbodyに登録
-    //b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
-    b2Fixture* body_rectangle_fixture = m_body->CreateFixture(&fixture_rectangle_body);
-    b2Fixture* bottom_circle_fixture = m_body->CreateFixture(&fixture_circle_bottom);
-
-    // カスタムデータを作成して設定
-    // プレイヤーに値を登録
-    // プレーヤーにユーザーデータを登録
-    ObjectData* playerdata_body = new ObjectData{ collider_player_body };
-    ObjectData* playerdata_leg = new ObjectData{ collider_player_leg };
-
-    body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_body);
-    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_leg);
+        b2Vec2 size;
+        size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//サイズを１にすると　1m*1mになるため　サイズをさげて、物理演算の挙動を操作しやすくする
+        size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-    //--------------------------------------------------------------------------------------------------
-
-    //プレイヤーのセンサーを新しくつくる
-
-    b2PolygonShape shape_sensor;
-
-
-    b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
-
-    // 反時計回りで頂点を設定
-    vertices[0].Set(-size_sensor.x / 2, size_sensor.y / 2 / 3);  // 左下
-    vertices[1].Set(size_sensor.x / 2, size_sensor.y / 2 / 3);   // 右下
-    vertices[2].Set(size_sensor.x / 2, -size_sensor.y / 2);    // 右上
-    vertices[3].Set(-size_sensor.x / 2, -size_sensor.y / 2);   // 左上
-
-
-    shape_sensor.Set(vertices, 4);
+        //センサーの設定用の
+        b2Vec2 size_sensor;//命名すまん
+        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
+        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
 
 
 
-    b2FixtureDef fixture_sensor;
-    fixture_sensor.shape = &shape_sensor;
-    fixture_sensor.density = 0.0f;//密度
-    fixture_sensor.friction = 0.0f;//摩擦
-    fixture_sensor.restitution = 0.0f;//反発係数
-    fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+        //プレイヤーの真ん中の長方形ボディ
+       //-------------------------------------------
+        b2PolygonShape rectangle_body;
+        rectangle_body.SetAsBox(size.x * 0.5, size.y * 0.5f);
+
+        b2FixtureDef fixture_rectangle_body;
+        fixture_rectangle_body.shape = &rectangle_body;
+        fixture_rectangle_body.density = 1.0f;//密度
+        fixture_rectangle_body.friction = 0.001f;//摩擦
+        fixture_rectangle_body.restitution = 0.1f;//反発係数
+        fixture_rectangle_body.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        fixture_rectangle_body.filter = createFilterExclude("Player_filter", {});
+
+
+        //プレイヤーの下の円のコライダー
+        //-------------------------------------------
+        b2CircleShape circle_bottom;
+        circle_bottom.m_p.Set(0.0f, size.y / 2);//下の方の円
+        circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
+
+        b2FixtureDef fixture_circle_bottom;
+        fixture_circle_bottom.shape = &circle_bottom;
+        fixture_circle_bottom.density = 1.3f;
+        fixture_circle_bottom.friction = 1.0f;//摩擦
+        fixture_circle_bottom.restitution = 0.0f;//反発係数
+        fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
+
+
+
+        //----------------------------------------------------
+
+        //fixtureをbodyに登録
+        //b2Fixture* upper_circle_fixture = m_body->CreateFixture(&fixture_circle_upper);
+        b2Fixture* body_rectangle_fixture = m_body->CreateFixture(&fixture_rectangle_body);
+        b2Fixture* bottom_circle_fixture = m_body->CreateFixture(&fixture_circle_bottom);
+
+        // カスタムデータを作成して設定
+        // プレイヤーに値を登録
+        // プレーヤーにユーザーデータを登録
+        ObjectData* playerdata_body = new ObjectData{ collider_player_body };
+        ObjectData* playerdata_leg = new ObjectData{ collider_player_leg };
+
+        body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_body);
+        bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_leg);
+
+
+        //--------------------------------------------------------------------------------------------------
+
+        //プレイヤーのセンサーを新しくつくる
+
+        b2PolygonShape shape_sensor;
+
+
+        b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
+
+        // 反時計回りで頂点を設定
+        vertices[0].Set(-size_sensor.x / 2, size_sensor.y / 2 / 3);  // 左下
+        vertices[1].Set(size_sensor.x / 2, size_sensor.y / 2 / 3);   // 右下
+        vertices[2].Set(size_sensor.x / 2, -size_sensor.y / 2);    // 右上
+        vertices[3].Set(-size_sensor.x / 2, -size_sensor.y / 2);   // 左上
+
+
+        shape_sensor.Set(vertices, 4);
+
+
+
+        b2FixtureDef fixture_sensor;
+        fixture_sensor.shape = &shape_sensor;
+        fixture_sensor.density = 0.0f;//密度
+        fixture_sensor.friction = 0.0f;//摩擦
+        fixture_sensor.restitution = 0.0f;//反発係数
+        fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+
+
+
+        b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
+
+
+        // カスタムデータを作成して設定
+       // プレイヤーに値を登録
+       // プレーヤーにユーザーデータを登録
+        ObjectData* player_sensor_data = new ObjectData{ collider_player_sensor };
+        player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
+
+        //---------------------------------------------------------------------------------------------------
+
+
+
+        draw_state = player_nomal_state;
     
-
-
-    b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
-
-
-    // カスタムデータを作成して設定
-   // プレイヤーに値を登録
-   // プレーヤーにユーザーデータを登録
-    ObjectData* player_sensor_data = new ObjectData{ collider_player_sensor };
-    player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
-
-    //---------------------------------------------------------------------------------------------------
-
-
-
-    draw_state = player_nomal_state;
-
 }
 
 void Player::Update()
@@ -258,6 +264,8 @@ void Player::Update()
 
     //無敵時間の処理
     Invincible_time_update();
+
+    
 
     //横移動
    //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -604,7 +612,7 @@ void Player::Update()
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
-        Player_Damaged(120);
+        Player_Damaged(-50,120);
 
     }
    
@@ -625,14 +633,17 @@ void Player::Update()
   
 }
 
-void Player::Player_Damaged(int invincibletime)
+void Player::Player_Damaged(int Change_to_HP,int invincibletime)
 {
+    // HPを減らす
+    PlayerStamina::EditPlayerStaminaValue(Change_to_HP);//HPに加算減算する　今回は減算
+
+    //無敵時間を付与
     invincible_time = invincibletime;
-    CameraShake::StartCameraShake(30, 20, 10);
 
-    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter" });
+    // フィルターを変更
+    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
 
-    
 }
 
 void Player::Invincible_time_update(void)
@@ -664,7 +675,7 @@ void Player::Invincible_time_update(void)
 
 void Player::updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks) {
     // ボディの最初のフィクスチャを取得
-    b2Fixture* fixture = m_body->GetFixtureList();
+    b2Fixture* fixture = GetOutSidePlayerBody()->GetFixtureList();
 
     // フィクスチャが存在しない場合は早期リターン
     if (!fixture) {
@@ -931,17 +942,17 @@ void Player::Draw()
         //センサー描画
 
 
-        // シェーダリソースを設定
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        //// シェーダリソースを設定
+        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        DrawSprite(
-            { screen_center.x,
-              screen_center.y },
-            m_body->GetAngle(),
-            { GetSensorSize().x * scale,GetSensorSize().y * scale }
-        );
-        float size_sensor = GetSensorSize().x * scale;
-        float size = GetSize().x * scale;
+        //DrawSprite(
+        //    { screen_center.x,
+        //      screen_center.y },
+        //    m_body->GetAngle(),
+        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        //);
+        //float size_sensor = GetSensorSize().x * scale;
+        //float size = GetSize().x * scale;
 
     }
 }
@@ -984,9 +995,7 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
         minus = -1;
     }
 
-    
-
-    GetOutSidePlayerBody()  ->ApplyLinearImpulseToCenter(b2Vec2(0.5 * minus * KnockBackLevel, 0.5), true);
+    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, 1.0*KnockBackLevel));
 
 }
 

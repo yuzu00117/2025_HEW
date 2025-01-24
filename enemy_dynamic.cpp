@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name enemyDynamic.h
-// #description “®“IƒGƒlƒ~[(ƒvƒŒƒCƒ„[’Ç])‚Ìcppƒtƒ@ƒCƒ‹
+// #description å‹•çš„ã‚¨ãƒãƒŸãƒ¼(ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½å¾“)ã®cppãƒ•ã‚¡ã‚¤ãƒ«
 // #make 2024/11/20
 // #update 2024/12/20
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒXƒe[ƒ^ƒX’²®
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹èª¿æ•´
 //           
 //----------------------------------------------------------------------------------------------------
 
@@ -24,33 +24,33 @@
 #include"create_filter.h"
 
 
-static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;//“®“IƒGƒlƒ~[‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	//ƒGƒlƒ~[‚ÌƒZƒ“ƒT[‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_EnemySensor2_Texture = NULL;	//ƒGƒlƒ~[‚ÌƒZƒ“ƒT[‚ÌƒeƒNƒXƒ`ƒƒ
+static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	//ã‚¨ãƒãƒŸãƒ¼ã®ã‚»ãƒ³ã‚µãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_EnemySensor2_Texture = NULL;	//ã‚¨ãƒãƒŸãƒ¼ã®ã‚»ãƒ³ã‚µãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true, false)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;							//Ã“I‚ÈƒIƒuƒWƒFƒNƒg‚É‚·‚é‚È‚çture
-	body.position.Set(position.x, position.y);			//ƒ|ƒWƒVƒ‡ƒ“‚ðƒZƒbƒg
-	body.angle = angle;									//Šp“x‚Ì’è‹`
-	body.userData.pointer = (uintptr_t)this;			//userData‚Ìƒ|ƒCƒ“ƒ^‚ð’è‹` 
-	body.fixedRotation = true;							//‰ñ“]‚ðŒÅ’è‚·‚éA@‚±‚ê‚ðƒIƒ“‚É‚·‚é‚Æ‰ñ“]‚µ‚È‚¢
+	body.type = b2_dynamicBody;							//é™çš„ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã™ã‚‹ãªã‚‰ture
+	body.position.Set(position.x, position.y);			//ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚’ã‚»ãƒƒãƒˆ
+	body.angle = angle;									//è§’åº¦ã®å®šç¾©
+	body.userData.pointer = (uintptr_t)this;			//userDataã®ãƒã‚¤ãƒ³ã‚¿ã‚’å®šç¾© 
+	body.fixedRotation = true;							//å›žè»¢ã‚’å›ºå®šã™ã‚‹ã€ã€€ã“ã‚Œã‚’ã‚ªãƒ³ã«ã™ã‚‹ã¨å›žè»¢ã—ãªã„
 
 
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ðŽæ“¾‚·‚é
-	b2World* world = box2d_world.GetBox2dWorldPointer();//ƒ[ƒ‹ƒh‚Ìƒ|ƒCƒ“ƒ^‚ðŽ‚Á‚Ä‚­‚é
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
+	b2World* world = box2d_world.GetBox2dWorldPointer();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒã£ã¦ãã‚‹
 
-	SetBody(world->CreateBody(&body));//Body‚ðƒ[ƒ‹ƒh‚ÉŒÅ’è
+	SetBody(world->CreateBody(&body));//Bodyã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«å›ºå®š
 
 
-	SetSize(body_size);//•\Ž¦—p‚ÉƒTƒCƒY‚ðƒZƒbƒg‚µ‚Æ‚­A•\Ž¦‚Ì‚Æ‚«‚ÉGetSize‚ðŒÄ‚Ño‚·
+	SetSize(body_size);//è¡¨ç¤ºç”¨ã«ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆã—ã¨ãã€è¡¨ç¤ºã®ã¨ãã«GetSizeã‚’å‘¼ã³å‡ºã™
 
 
 
 	b2Vec2 size;
-	size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ð‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ð‚³‚°‚ÄA•¨—‰‰ŽZ‚Ì‹““®‚ð‘€ì‚µ‚â‚·‚­‚·‚é
+	size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
 	size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 	b2CircleShape shape2;
@@ -59,13 +59,13 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	b2FixtureDef fixture2;
 	fixture2.shape = &shape2;
 	fixture2.density = 1.0f;
-	fixture2.friction = 0.001f;//–€ŽC
-	fixture2.restitution = 0.0f;//”½”­ŒW”
-	fixture2.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	fixture2.friction = 0.001f;//æ‘©æ“¦
+	fixture2.restitution = 0.0f;//åç™ºä¿‚æ•°
+	fixture2.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	fixture2.filter=createFilterExclude("enemy_filter", {});
 
 	//====================================================================================================
-	//ƒZƒ“ƒT[‚Ì“o˜^
+	//ã‚»ãƒ³ã‚µãƒ¼ã®ç™»éŒ²
 	//====================================================================================================
 	b2Vec2 size_sensor;
 	size_sensor.x = body_size.x / BOX2D_SCALE_MANAGEMENT * 2;
@@ -77,10 +77,10 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 	b2FixtureDef fixture_sensor;
 	fixture_sensor.shape = &shape_sensor;
-	fixture_sensor.density = 0.0f;//–§“x
-	fixture_sensor.friction = 0.0f;//–€ŽC
-	fixture_sensor.restitution = 0.0f;//”½”­ŒW”
-	fixture_sensor.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	fixture_sensor.density = 0.0f;//å¯†åº¦
+	fixture_sensor.friction = 0.0f;//æ‘©æ“¦
+	fixture_sensor.restitution = 0.0f;//åç™ºä¿‚æ•°
+	fixture_sensor.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	//----------------------------------------------------------------------------------------------------
 	b2Vec2 size_sensor2;
 	size_sensor2.x = body_size.x / BOX2D_SCALE_MANAGEMENT * (2);
@@ -92,20 +92,20 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 	b2FixtureDef fixture_sensor2;
 	fixture_sensor2.shape = &shape_sensor2;
-	fixture_sensor2.density = 0.0f;//–§“x
-	fixture_sensor2.friction = 0.0f;//–€ŽC
-	fixture_sensor2.restitution = 0.0f;//”½”­ŒW”
-	fixture_sensor2.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	fixture_sensor2.density = 0.0f;//å¯†åº¦
+	fixture_sensor2.friction = 0.0f;//æ‘©æ“¦
+	fixture_sensor2.restitution = 0.0f;//åç™ºä¿‚æ•°
+	fixture_sensor2.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	//====================================================================================================
 
-	//Body‚ÉƒtƒBƒNƒXƒ`ƒƒ‚ð“o˜^‚·‚é
+	//Bodyã«ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’ç™»éŒ²ã™ã‚‹
 	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture2);
 	b2Fixture* enemy_sensor_fixture = GetBody()->CreateFixture(&fixture_sensor);
 	b2Fixture* enemy_sensor_fixture2 = GetBody()->CreateFixture(&fixture_sensor2);
 
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ðì¬‚µ‚ÄÝ’è
-	// “®“IƒGƒlƒ~[‚É’l‚ð“o˜^
-	// “®“IƒGƒlƒ~[‚Éƒ†[ƒU[ƒf[ƒ^‚ð“o˜^
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+	// å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã«å€¤ã‚’ç™»éŒ²
+	// å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
 	ObjectData* data = new ObjectData{ collider_enemy_dynamic };
 	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 	ObjectData* sensor_data = new ObjectData{ collider_enemy_sensor };
@@ -113,7 +113,7 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	ObjectData* sensor_data2 = new ObjectData{ collider_enemy_sensor_move };
 	enemy_sensor_fixture2->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data2);
 
-	//ID“o˜^(ƒZƒ“ƒT[‚Ìƒf[ƒ^‚É‚àƒGƒlƒ~[‚Æ“¯‚¶ID‚ð“ü‚ê‚é)
+	//IDç™»éŒ²(ã‚»ãƒ³ã‚µãƒ¼ã®ãƒ‡ãƒ¼ã‚¿ã«ã‚‚ã‚¨ãƒãƒŸãƒ¼ã¨åŒã˜IDã‚’å…¥ã‚Œã‚‹)
 	data->object_name = Object_Enemy_Dynamic;
 	int ID = data->GenerateID();
 	data->id = ID;
@@ -128,9 +128,11 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 void EnemyDynamic::Initialize()
 {
-	g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//“®“IƒGƒlƒ~[‚ÌƒeƒNƒXƒ`ƒƒ
-	g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//ƒGƒlƒ~[‚ÌƒZƒ“ƒT[‚ÌƒeƒNƒXƒ`ƒƒ
-	g_EnemySensor2_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor_left.png");//ƒGƒlƒ~[‚ÌƒZƒ“ƒT[‚ÌƒeƒNƒXƒ`ƒƒ
+	if (g_EnemyDynamic_Texture == NULL) {
+		g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//å‹•çš„ã‚¨ãƒãƒŸãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+		g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//ã‚¨ãƒãƒŸãƒ¼ã®ã‚»ãƒ³ã‚µãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+    g_EnemySensor2_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor_left.png");//ã‚¨ãƒãƒŸãƒ¼ã®ç§»å‹•ç”¨ã‚»ãƒ³ã‚µãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+	}
 }
 
 void EnemyDynamic::Finalize()
@@ -139,7 +141,7 @@ void EnemyDynamic::Finalize()
 	UnInitTexture(g_EnemySensor_Texture);
 	UnInitTexture(g_EnemySensor2_Texture);
 
-	//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²ã—ãŸbodyã®å‰Šé™¤
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 	world->DestroyBody(GetBody());
@@ -173,17 +175,17 @@ void EnemyDynamic::Update()
 	}
 	else if (!GetUse())
 	{
-		//ƒ\ƒEƒ‹‚ð—Ž‚Æ‚·
+		//ã‚½ã‚¦ãƒ«ã‚’è½ã¨ã™
 		ItemManager& item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
 
-		//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²ã—ãŸbodyã®å‰Šé™¤
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 		world->DestroyBody(GetBody());
 		SetBody(nullptr);
 
-		//ƒIƒuƒWƒFƒNƒgƒ}ƒl[ƒWƒƒ[“à‚ÌƒGƒlƒ~[íœ
+		//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒžãƒãƒ¼ã‚¸ãƒ£ãƒ¼å†…ã®ã‚¨ãƒãƒŸãƒ¼å‰Šé™¤
 		ObjectManager& object_manager = ObjectManager::GetInstance();
 
 		if (object_manager.FindEnemyAttackByID(GetID()))
@@ -197,22 +199,22 @@ void EnemyDynamic::Update()
 
 void EnemyDynamic::Draw()
 {
-	// ƒXƒP[ƒ‹‚ð‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\Ž¦‚ª¬‚³‚¢‚©‚çŽg‚¤
+	// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæŽZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁŽZ‚É‚µ‚Äj
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›žã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
 	b2Vec2 position = GetBody()->GetPosition();
 
-	// ƒvƒŒƒCƒ„[ˆÊ’u‚ðl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ð‰Á‚¦‚é
-	//Žæ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ð‰Á‚¦‚é
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+	//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	//“\‚éƒeƒNƒXƒ`ƒƒ‚ðŽw’è
+	//è²¼ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æŒ‡å®š
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
 
 	//draw
@@ -225,9 +227,9 @@ void EnemyDynamic::Draw()
 
 
 	//============================================================
-	//ƒeƒXƒg:ƒZƒ“ƒT[•`‰æ
+	//ãƒ†ã‚¹ãƒˆ:ã‚»ãƒ³ã‚µãƒ¼æç”»
 	//============================================================
-	//“\‚éƒeƒNƒXƒ`ƒƒ‚ðŽw’è
+	//è²¼ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æŒ‡å®š
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor2_Texture);
 	DrawSprite(
 		{ draw_x,
@@ -245,13 +247,13 @@ void EnemyDynamic::Draw()
 	);
 }
 
-//ˆÚ“®
+//ç§»å‹•
 void EnemyDynamic::Move()
 {
-	//ˆÚ“®—ÊŽæ“¾
+	//ç§»å‹•é‡å–å¾—
 	b2Vec2 liner_velocity = GetBody()->GetLinearVelocity();
 
-	//’…’n”»’è(yŽ²ˆÚ“®‚ª–³‚¯‚ê‚Î’…’n’†)
+	//ç€åœ°åˆ¤å®š(yè»¸ç§»å‹•ãŒç„¡ã‘ã‚Œã°ç€åœ°ä¸­)
 	if (liner_velocity.y != 0.0)
 	{
 		m_is_ground = false;
@@ -261,16 +263,16 @@ void EnemyDynamic::Move()
 		m_is_ground = true;
 	}
 
-	//ŠR‚Å”½“]
+	//å´–ã§åè»¢
 	if (m_ground_cnt == m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground && (GetBody()->GetLinearVelocity() != b2Vec2(0.0,0.0)))
 	{
 		SetDirection(!GetDirection());
 	}
 
-	//‰æ–Ê“à‚È‚çˆÚ“®
+	//ç”»é¢å†…ãªã‚‰ç§»å‹•
 	if(GetInScreen())
 	{
-		//ˆÚ“®‚µ‚Ä‚¢‚È‚¢‚©‚ÂA‘O‰ñˆÚ“®’†‚¾‚Á‚½ê‡ƒWƒƒƒ“ƒv
+		//ç§»å‹•ã—ã¦ã„ãªã„ã‹ã¤ã€å‰å›žç§»å‹•ä¸­ã ã£ãŸå ´åˆã‚¸ãƒ£ãƒ³ãƒ—
 		if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
 		{
 			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, m_jump_force * m_move_force), true);
@@ -290,23 +292,23 @@ void EnemyDynamic::Move()
 	}
 	else
 	{
-		//‰æ–ÊŠO‚Éo‚Ä‚¢‚½ê‡AƒXƒe[ƒ^ƒX‚ð•Ï‚¦ˆÚ“®—pŠÖ”‚ðŒÄ‚Ño‚³‚È‚¢
+		//ç”»é¢å¤–ã«å‡ºã¦ã„ãŸå ´åˆã€ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’å¤‰ãˆç§»å‹•ç”¨é–¢æ•°ã‚’å‘¼ã³å‡ºã•ãªã„
 		SetState(ENEMY_STATE_NULL);
 	}
 
-	//ÚG’†‚Ì’n–Ê‚Ì”‚ð‹L‰¯
+	//æŽ¥è§¦ä¸­ã®åœ°é¢ã®æ•°ã‚’è¨˜æ†¶
 	m_old_ground_cnt = m_ground_cnt;
 }
 
-//UŒ‚
+//æ”»æ’ƒ
 void EnemyDynamic::Attack()
 {
-	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg
+	//ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆ
 	m_attack_counter++;
-	//UŒ‚’†‚Í’âŽ~
+	//æ”»æ’ƒä¸­ã¯åœæ­¢
 	GetBody()->SetType(b2_staticBody);
 
-	//UŒ‚”­¶ƒtƒŒ[ƒ€‚É‚È‚Á‚½‚çUŒ‚‚ð¶¬
+	//æ”»æ’ƒç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ ã«ãªã£ãŸã‚‰æ”»æ’ƒã‚’ç”Ÿæˆ
 	if (m_attack_counter == m_attack_birth)
 	{
 		ObjectManager& object_manager = ObjectManager::GetInstance();
@@ -321,7 +323,7 @@ void EnemyDynamic::Attack()
 		}
 	}
 
-	//UŒ‚“®ì‚ª‘S‚ÄI—¹‚µ‚½‚çA“®‚­‚æ‚¤‚É–ß‚µ‚ÄˆÚ“®ó‘Ô‚É‚·‚é
+	//æ”»æ’ƒå‹•ä½œãŒå…¨ã¦çµ‚äº†ã—ãŸã‚‰ã€å‹•ãã‚ˆã†ã«æˆ»ã—ã¦ç§»å‹•çŠ¶æ…‹ã«ã™ã‚‹
 	if (m_attack_counter > m_attack_finish)
 	{
 		m_attack_counter = 0;
@@ -332,35 +334,35 @@ void EnemyDynamic::Attack()
 
 }
 
-//ƒZƒ“ƒT[‚ÆƒvƒŒƒCƒ„[‚ªG‚ê‚½Žž‚Ìˆ—
+//ã‚»ãƒ³ã‚µãƒ¼ã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè§¦ã‚ŒãŸæ™‚ã®å‡¦ç†
 void EnemyDynamic::CollisionSensorPlayer()
 {
-	//ƒGƒlƒ~[‚ªUŒ‚’†‚È‚ç‰½‚à‚µ‚È‚¢
+	//ã‚¨ãƒãƒŸãƒ¼ãŒæ”»æ’ƒä¸­ãªã‚‰ä½•ã‚‚ã—ãªã„
 	if ((GetState() != ENEMY_STATE_ATTACK) && (m_is_ground))
 	{
 		SetDirectionBasedOnPlayer();
 
-		//UŒ‚ó‘Ô‚ÉˆÚs
+		//æ”»æ’ƒçŠ¶æ…‹ã«ç§»è¡Œ
 		SetState(ENEMY_STATE_ATTACK);
 	}
 }
 
 void EnemyDynamic::SetDirectionBasedOnPlayer()
 {
-	//ƒvƒŒƒCƒ„[’Ç](ŠÈˆÕ)
-		//ƒvƒŒƒCƒ„[‚Ìƒ|ƒWƒVƒ‡ƒ“Žæ“¾
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½å¾“(ç°¡æ˜“)
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¸ã‚·ãƒ§ãƒ³å–å¾—
 	b2Vec2 player_position;
 	player_position.x = PlayerPosition::GetPlayerPosition().x;
 	player_position.y = PlayerPosition::GetPlayerPosition().y;
 
-	//ˆÚ“®•ûŒü
+	//ç§»å‹•æ–¹å‘
 	b2Vec2 enemy_vector;
 	enemy_vector.x = player_position.x - GetBody()->GetPosition().x;
 	enemy_vector.y = player_position.y - GetBody()->GetPosition().y;
 
 	bool old_direction = GetDirection();
 
-	//ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ðŒü‚­
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹å‘ã‚’å‘ã
 	if (enemy_vector.x > 0)
 	{
 		SetDirection(false);
