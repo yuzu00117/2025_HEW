@@ -39,229 +39,202 @@ bool  HitStop::hit_stop_flag = false;
 void Game::Initialize()
 {
 
-	//文字（絵）
-	InitializeWord();
+    //文字（絵）
+    InitializeWord();
 
 
-	//�v���C���[�̏�����
-	player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
+    //プレイヤーの初期化
+    player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
+	//プレイヤーライフの初期化
+    PlayerLife::Initialize();
+	//プレイヤーUIの初期化
+    player_UI::Initialize();
+    //プレイヤーの体力の初期化
+    PlayerStamina::Initialize();
 
-	//プレイヤーの体力の初期化
-	PlayerStamina::Initialize();
+    //ソウルゲージの初期化
+    AnchorSpirit::Initialize();
 
-	//ソウルゲージの初期化
-	AnchorSpirit::Initialize();
+    //アンカーの初期化
+    Anchor::Initialize();
 
-	//アンカーの初期化
-	Anchor::Initialize();
+    //フィールドの初期化
+    Field::Initialize();
 
-	//フィールドの初期化
-	Field::Initialize();
+    //体力ソウルゲージUIの初期化
+    stamina_spirit_gauge.Initialize();
 
-	//�c�@�̏�����
-	PlayerLife::Initialize();
+    //背景の初期化
+    Bg::Initialize();
 
-	player_UI::Initialize();
+	//criの初期化
+    CRIInitialize();
 
-	//体力ソウルゲージUIの初期化
-	stamina_spirit_gauge.Initialize();
-
-	//背景の初期化
-	Bg::Initialize();
-
-	CRIInitialize();
-
-	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
-	// 衝突リスナーをワールドに登録
-	MyContactListener& contactListener = MyContactListener::GetInstance();
-	world->SetContactListener(&contactListener);
-
-
-
-
+    b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+    // 衝突リスナーをワールドに登録
+    MyContactListener& contactListener = MyContactListener::GetInstance();
+    world->SetContactListener(&contactListener);
 
 #ifndef _DEBUG
-	//デバッグ文字
-	InitializeDebug();
+    //デバッグ文字
+    InitializeDebug();
 #endif // !_DEBUG
-
 
 }
 
 void Game::Finalize(void)
 {
 
-	//�c�@�̏I������
-	PlayerLife::Initialize();
-
-	CRIFinalize();
-
+    //プレイヤーライフの終了処理
+    PlayerLife::Finalize();
+	//プレイヤーUIの終了処理
+    player_UI::Finalize();
 	//プレイヤーの終了処理
-	player.Finalize();
+    player.Finalize();
 
-	//アンカー終了処理
-	Anchor::Finalize();
+	//criの終了処理
+    CRIFinalize();
 
-	//フィールドの終了処理
-	Field::Finalize();
+    //アンカー終了処理
+    Anchor::Finalize();
 
-	//背景の終了処理
-	Bg::Finalize();
-  
-	boss.Finalize();
-  
-	player_UI::Finalize();
+    //フィールドの終了処理
+    Field::Finalize();
 
+    //背景の終了処理
+    Bg::Finalize();
 
+	//ボスの終了処理
+    boss.Finalize();
 
-	//文字（絵）
-	FinalizeWord();
+    //文字（絵）
+    FinalizeWord();
 
-	//体力ソウルゲージUIの終了処理
-	stamina_spirit_gauge.Finalize();
-
+    //体力ソウルゲージUIの終了処理
+    stamina_spirit_gauge.Finalize();
 
 #ifdef _DEBUG
-	//デバッグ文字
-	FinalizeDebug();
+    //デバッグ文字
+    FinalizeDebug();
 #endif // _DEBUG
 
 }
-
-
 
 void Game::Update(void)
 {
 
-	// Box2D ワールドのステップ更新
-	b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+    // Box2D ワールドのステップ更新
+    b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 
-	if (HitStop::GetHitStopFlag()==true)
-	{
-		HitStop::CountHitStop();
-	}
-	else {
-		world->Step(1.0f / 60.0f, 6, 2);
+    if (HitStop::GetHitStopFlag()==true)
+    {
+        HitStop::CountHitStop();
+    }
+    else {
+        world->Step(1.0f / 60.0f, 6, 2);
 
-		display::Update();
+		//ディスプレイの更新処理
+        display::Update();
 
-		//�c�@�̍X�V����
-		PlayerLife::Update();
+        //プレイヤーライフの更新処理
+        PlayerLife::Update();
+		//プレイヤーUIの更新処理
+        player_UI::Update();
+        //プレイヤーの更新処理
+        player.Update();
 
-		//�v���C���[�̍X�V����
-		//プレイヤーの更新処理
-		player.Update();
+        //アンカーの更新処理
+        Anchor::Update();
 
-		player_UI::Update();
+		//criの更新処理
+        CRIUpdate();
 
-		//アンカーの更新処理
-		Anchor::Update();
+		//背景の更新処理
+        Bg::Update();
 
+        //フィールドの更新処理
+        Field::Update();
 
-	CRIUpdate();
+		//ボスの更新処理
+        boss.Update();
 
-	Bg::Update();
+        //プレイヤーが死亡したらリザルト画面に遷移
+        if (PlayerStamina::IsPlayerDead())
+        {
+            SceneManager& sceneManager = SceneManager::GetInstance();
+            sceneManager.ChangeScene(SCENE_RESULT);
+        }
 
+        //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
+        if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
+        {
+            SceneManager& sceneManager = SceneManager::GetInstance();
+            sceneManager.ChangeScene(SCENE_RESULT);
+        }
 
+        if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
+        {
+            b2Vec2 size = player.GetSensorSize();
 
-		//フィールドの更新処理
-		Field::Update();
+            player.Finalize();
 
+            player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
 
-	  Bg::Update();
+            boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27),true);
 
-	  CRIUpdate();
-
-	  boss.Update();
-
-	  //プレイヤーが死亡したらリザルト画面に遷移
-	  if (PlayerStamina::IsPlayerDead())
-	  {
-		  SceneManager& sceneManager = SceneManager::GetInstance();
-		  sceneManager.ChangeScene(SCENE_RESULT);
-	  }
-
-		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
-		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
-		{
-			SceneManager& sceneManager = SceneManager::GetInstance();
-			sceneManager.ChangeScene(SCENE_RESULT);
-		}
-
-
-		if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
-		{
-			b2Vec2 size = player.GetSensorSize();
-
-			player.Finalize();
-
-			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
-
-			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27),true);
-
-
-
-		}
-
-
-
+        }
 
 #ifdef _DEBUG
-		//デバッグ文字
-		UpdateDebug();
+        //デバッグ文字
+        UpdateDebug();
 #endif // _DEBUG
-	}
-	CameraShake::Update();
+    }
+
+	//カメラシェイクの更新処理
+    CameraShake::Update();
 
 }
-
 
 void Game::Draw(void)
 {
-	//バッファクリア
-	Clear();
+    //バッファクリア
+    Clear();
 
+    //背景の描画処理
+    Bg::Draw();
 
-	//背景の描画処理
-	Bg::Draw();
+    //2D描画なので深度無効
+    SetDepthEnable(false);
 
-	//2D描画なので深度無効
-	SetDepthEnable(false);
+    //プレイヤーの描画処理
+    player.Draw();
 
+    //フィールドの描画処理
+    Field::Draw();
 
+    //アンカーの描画処理
+    Anchor::Draw();
 
-	//プレイヤーの描画処理
-	player.Draw();
+    //プレイヤーライフの描画処理
+    PlayerLife::Draw();
 
-	//フィールドの描画処理
-	Field::Draw();
+	//ボスの描画処理
+    boss.Draw();
 
-	//アンカーの描画処理
-	Anchor::Draw();
+	//プレイヤーUIの描画処理
+    player_UI::Draw();
 
-
-	//�c�@�̕`�揈��
-	PlayerLife::Draw();
-
-	boss.Draw();
-
-	player_UI::Draw();
-
-  //体力ソウルゲージUIの描画処理
-	stamina_spirit_gauge.Draw();
-
-
+    //体力ソウルゲージUIの描画処理
+    stamina_spirit_gauge.Draw();
 
 #ifdef _DEBUG
-	//デバッグ文字
-	DrawDebug();
+    //デバッグ文字
+    DrawDebug();
 #endif // _DEBUG
 
-	//バックバッファ、フロントバッファ入れ替え
-	Present();
+    //バックバッファ、フロントバッファ入れ替え
+    Present();
 }
-
-
 
 /**
  * @fn  Gameクラスのコンストラクタ
@@ -269,9 +242,8 @@ void Game::Draw(void)
  */
 Game::Game()
 {
-	//プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
-	player = Player::GetInstance();//シングルトン
-
+    //プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
+    player = Player::GetInstance();//シングルトン
 
 }
 
@@ -281,10 +253,9 @@ Game::~Game()
 
 void Game::Teleport_player(b2Vec2 position)
 {
-	b2Vec2 size_sensor=player.GetSensorSize();
+    b2Vec2 size_sensor=player.GetSensorSize();
 
-	player.Finalize();
-	player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
+    player.Finalize();
+    player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
 
 }
-
