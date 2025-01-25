@@ -18,6 +18,24 @@ enum Boss_Room_Level
 	boss_room_level_1,
 	boss_room_level_2,
 	boss_room_level_3,
+	boss_room_level_4,
+	boss_room_level_5,
+	boss_room_level_6,
+	boss_room_level_7,
+	boss_room_level_8,
+	boss_room_level_9,
+	boss_room_level_10,
+	boss_room_level_11,
+	boss_room_level_12,
+	boss_room_level_13,
+	boss_room_level_14,
+	boss_room_level_15,
+	boss_room_level_16,
+	boss_room_level_17,
+	boss_room_level_18,
+	boss_room_level_19,
+	boss_room_level_20,
+
 };
 
 class boss_field_block

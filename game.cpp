@@ -172,17 +172,50 @@ void Game::Update(void)
             sceneManager.ChangeScene(SCENE_RESULT);
         }
 
-        if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
+   
+
+
+		//フィールドの更新処理
+		Field::Update();
+
+
+        Bg::Update();
+
+        CRIUpdate();
+
+        boss.Update();
+
+        //プレイヤーが死亡したらリザルト画面に遷移
+        if (PlayerStamina::IsPlayerDead())
         {
-            b2Vec2 size = player.GetSensorSize();
-
-            player.Finalize();
-
-            player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
-
-            boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27),true);
-
+            SceneManager& sceneManager = SceneManager::GetInstance();
+            sceneManager.ChangeScene(SCENE_RESULT);
         }
+
+		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
+		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
+		{
+			SceneManager& sceneManager = SceneManager::GetInstance();
+			sceneManager.ChangeScene(SCENE_RESULT);
+		}
+
+
+
+		if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
+		{
+			b2Vec2 size = player.GetSensorSize();
+
+			player.Finalize();
+
+			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
+
+			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 24),true);
+
+		}
+
+
+
+        
 
 #ifdef _DEBUG
         //デバッグ文字
@@ -209,17 +242,43 @@ void Game::Draw(void)
     //プレイヤーの描画処理
     player.Draw();
 
+    //ボスの描画処理
+    boss.Draw();
+
     //フィールドの描画処理
     Field::Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
+
+
+
+   
+
+
+
+	
+
+
+
+	//�c�@�̕`�揈��
+	PlayerLife::Draw();
+
+
+
+	player_UI::Draw();
+
+  //体力ソウルゲージUIの描画処理
+	stamina_spirit_gauge.Draw();
+
+
     //プレイヤーライフの描画処理
     PlayerLife::Draw();
 
-	//ボスの描画処理
-    boss.Draw();
+
+
+
 
 	//プレイヤーUIの描画処理
     player_UI::Draw();
