@@ -43,9 +43,17 @@ public:
 
 	void Initialize(b2Vec2 position, b2Vec2 bodysize,bool left);
 	void Update();
+	void UpdateCoolTime();
 	void Draw();
-	void debugDraw();
+	void debugDraw();//攻撃範囲を表示したりする
 	void Finalize();
+
+	void CreateBossCore(b2Vec2 size);//ボスの弱点を露出させた時
+	void DestroyBossCore(void);//ボスのアンカーポイントのボディを壊す
+
+
+	void BossDamaged(void);//ボスの被弾した処理
+	void BossDead(void);   //ボスの死亡判定
 
 	void CreateChargeAttack(b2Vec2 attack_size, bool left);//ため攻撃の生成処理
 
@@ -83,6 +91,36 @@ public:
 	void SetBossBody(b2Body* body)
 	{
 		m_body = body;
+	}
+
+	void SetBossSensorSize(b2Vec2 size)
+	{
+		boss_sensor_size = size;
+	}
+	b2Vec2 GetBossSensorSize(void)
+	{
+		return boss_sensor_size;
+	}
+
+
+	void SetAnchorPointBody(b2Body* body)
+	{
+		anchorpoint_body = body;
+	}
+
+	b2Body* GetAnchorPointBody(void)
+	{
+		return anchorpoint_body;
+	}
+
+	void SetAnchorPointSize(b2Vec2 size)
+	{
+		anchorpoint_size = size;
+	}
+
+	b2Vec2 GetAnchorPointSize(void)
+	{
+		return anchorpoint_size;
 	}
 
 	//-------------------------------------------------------------------------------------------
@@ -134,13 +172,58 @@ public:
 		destroy_mini_golem_body = body;
 	}
 
-	int GetBossFieldLevel(void)
+
+	//--------------------------------------------------------------------------------------
+	//
+
+	int GetBossFieldLevel(void)//ボスのフィールドの管理
 	{
 		return boss_field_level;
 	}
 
+	//プレイヤーが近くにいるかの管理
+	bool GetPlayerisNearbyFlag(void)
+	{
+		return Player_is_Nearby;
+	}
+	//プレイヤーが近くにいるかの管理
+	void SetPlayerisNearbyFlag(bool flag)
+	{
+		Player_is_Nearby = flag;
+	}
+	//
+	int GetPlayerNearbylocked(void)
+	{
+		return Player_is_Nearby_locked;
+	}
+	void SetPlayerNearbylocked(int cnt)
+	{
+		Player_is_Nearby_locked = cnt;
+	}
+
+
+	int GetBossHP(void)
+	{
+		return boss_hp;
+	}
+
+	void SetBossHP(int hp)
+	{
+		boss_hp = hp;
+	}
+
+	boss_state GetNowBossState(void)
+	{
+		return now_boss_state;
+	}
+	
+
 	//-------------------------------------------------------------------------------------------
 private:
+
+	b2Vec2 Boss_size = b2Vec2(18, 24);
+
+	int boss_hp=3;		   //bossのHP
 
 	int boss_field_level=1;//ボスの床の崩壊を管理する関数
 
@@ -148,8 +231,16 @@ private:
 	b2Body* m_body;//ボスのボディ
 	b2Vec2 boss_size;//描画で使うボスのサイズ
 
+	b2Vec2 boss_sensor_size;//ボスのセンサーサイズ
+
 	b2Body* m_attack_body;//攻撃の判定
 	b2Vec2 attack_size;//攻撃の判定のサイズ
+
+
+	b2Body* anchorpoint_body;
+	b2Vec2 anchorpoint_size;
+
+
 
 
 	b2Body* m_mini_golem_body[2];//ボディ
@@ -171,9 +262,39 @@ private:
 
 
 
-	boss_state now_boss_state;
+	boss_state now_boss_state;//ボスのステート管理
 
-	
+	//-------------------------------------------------------------------------------------------
+	//クールタイムの管理
+
+	//衝撃波攻撃
+	static constexpr int Max_Shock_Wave_CoolTime = 600;//衝撃波攻撃最大クールタイム　
+	int					 Now_Shock_Wave_CoolTime = 0;  //現在のクールタイム
+
+	//ジャンプ
+	static constexpr int Max_Jump_CoolTime = 600;//ジャンプの最大クールタイム　
+	int					 Now_Jump_CoolTime = 200;  //現在のクールタイム
+
+	//小岩生成
+	static constexpr int Max_Create_MiniGolem_CoolTime = 1800;//小岩の最大クールタイム　
+	int					 Now_Create_MiniGolem_CoolTime = 1500;  //現在のクールタイム
+
+	//チャージ攻撃
+	static constexpr int Max_Charge_Attack_CoolTime = 1500;//チャージ攻撃の最大クールタイム　
+	int					 Now_Charge_Attack_CoolTime = 1500; //現在のクールタイム
+
+	//歩きモーション
+	static constexpr int Max_Max_Walk_CoolTime = 120;//歩きモーションの最大クールタイム　
+	int					 Now_Max_Walk_CoolTime = 0; //現在のクールタイム
+
+
+
+
+
+	//--------------------------------------------------------------------------------------------
+	//ボスの管理をする　変数
+	bool Player_is_Nearby = false;//プレイヤーが近くにいるかの管理
+	int Player_is_Nearby_locked;//ボディを消す関係で一時センサーの判定を無効にしたい
 
 
 	//----------------------------------------------------------------------------------------------
@@ -223,6 +344,8 @@ private:
 	//-------------------------------------------------------------------------------------------
 	//怯みのモーションの最大フレーム
 	static constexpr int Max_Panic_Sheet = 49;
+
+	static constexpr int Max_Panic_Stun_Frame = 600;//今は１０秒
 	//-------------------------------------------------------------------------------------------
 
 	//-------------------------------------------------------------------------------------------

@@ -197,7 +197,7 @@ void Game::Update(void)
 
 			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
 
-			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 27),true);
+			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 24),true);
 
 
 
@@ -233,8 +233,12 @@ void Game::Draw(void)
 	//プレイヤーの描画処理
 	player.Draw();
 
+	boss.Draw();
+
 	//フィールドの描画処理
 	Field::Draw();
+
+	
 
 	//アンカーの描画処理
 	Anchor::Draw();
@@ -243,7 +247,7 @@ void Game::Draw(void)
 	//�c�@�̕`�揈��
 	PlayerLife::Draw();
 
-	boss.Draw();
+
 
 	player_UI::Draw();
 

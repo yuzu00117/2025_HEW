@@ -178,6 +178,8 @@ public:
                 //objectAがアンカーポイントだった
                 //のでfixtureAがフィクスチャだよね
                 anchor_point_body=fixtureA->GetBody();
+
+                
             }
             else
             {
@@ -284,6 +286,20 @@ public:
                 {
                     static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                }
+            }
+
+            //ボスのコア
+            if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
+            {
+                //どちらが岩のオブジェクトか特定
+                if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
+                {
+                    boss.BossDamaged();
+                }
+                else
+                {
+                    boss.BossDamaged();
                 }
             }
        
@@ -900,6 +916,14 @@ public:
                 boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
             }
         }
+
+
+        //ボスのセンサーとプレイヤー
+        if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss_senosr))
+        {
+            boss.SetPlayerisNearbyFlag(true);
+        }
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突終了時
@@ -1084,6 +1108,16 @@ public:
                 return;
             }
             spirit_instance->DeleteCollidedObject(object->GetBody());
+        }
+
+        //ボスのセンサーとプレイヤー
+        if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss_senosr))
+        {
+            if (boss.GetPlayerNearbylocked() == 0)
+            {
+                boss.SetPlayerisNearbyFlag(false);
+            }
         }
 
 

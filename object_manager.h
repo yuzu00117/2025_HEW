@@ -41,6 +41,8 @@ enum ObjectType {
     Object_Enemy_Floating,//浮遊エネミー
 
     Object_teleport_block,//テレポートブロック
+
+    Boss_core,
 };
 
 class Object{};

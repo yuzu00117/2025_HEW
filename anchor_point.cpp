@@ -106,6 +106,15 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 	{
 		if (g_anchor_point_body[i] == nullptr)//配列をチェックしてNULLだったらそこに代入
 		{
+			for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
+			{
+				if (g_anchor_point_body[i] == new_anchor_point_body)
+				{
+					return;
+				}
+			}
+
+
 			g_anchor_point_body[i] = new_anchor_point_body;//nullの配列に代入
 			return;//入れ終わったら関数終了
 		}

@@ -51,6 +51,7 @@ enum ColliderTypeList
     collider_boss_field,
 
     collider_boss,
+    collider_boss_senosr,
     collider_mini_golem,
     collider_shock_wave,
     collider_chage_attack,

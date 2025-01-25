@@ -9,6 +9,9 @@
 // 			・ アンカーのレベル
 //          ・ アンカーの状態
 //----------------------------------------------------------------------------------------------------
+#define	MAX_WORD	(100)
+#define NUMBER_PARAMETER	(5)
+
 void	InitializeDebug();
 void	FinalizeDebug();
 void	UpdateDebug();

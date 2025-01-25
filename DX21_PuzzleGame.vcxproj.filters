@@ -178,6 +178,9 @@
     <ClCompile Include="teleport_block.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
+    <ClCompile Include="1_1boss_state_debug.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -371,6 +374,9 @@
     </ClInclude>
     <ClInclude Include="hit_stop.h">
       <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="1_1boss_state_debug.h">
+      <Filter>ヘッダーファイル\boss</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
