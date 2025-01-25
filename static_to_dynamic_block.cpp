@@ -160,7 +160,9 @@ void static_to_dynamic_block::Update()
 void static_to_dynamic_block::Change_dynamic()
 {
 	Set_Change_Dynamic_flag(true);
+	SetIfPulling(true);
 }
+
 
 void static_to_dynamic_block::Draw()
 {

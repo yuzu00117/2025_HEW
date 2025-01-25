@@ -25,9 +25,6 @@
 #include"object_manager.h"
 #include"Item_Manager.h"
 
-
-
-
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
 
@@ -363,4 +360,25 @@ void Field::DeleteFieldObject(b2Body* delete_object)
 			}
 		}
 	}
+}
+
+//マップ切り替え
+void Field::LoadMap(StageType stage_type)
+{
+    // 現在のマップをクリア
+    Field::Finalize();
+
+    // マップタイプに応じて対応する CSV ファイルを読み込む
+    switch (stage_type) {
+        case StageType::Stage1:
+            LoadCSV("asset/mapchip_stage_1_1.csv");
+            break;
+        // 他のステージを追加
+        default:
+            std::cerr << "Unknown map type" << std::endl;
+            return;
+    }
+
+    // 新しいマップを初期化
+    Initialize();
 }
