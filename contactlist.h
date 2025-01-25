@@ -1139,7 +1139,7 @@ public:
         }
 
 
-   
+
 
 
          //動的エネミーに付属しているセンサーと地面が離れた時
@@ -1198,6 +1198,7 @@ public:
                     static_to_dynamic_block_instance->SetIfPulling(false);
                 }
             }
+
 
 
         }

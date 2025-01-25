@@ -172,9 +172,7 @@ void Game::Update(void)
             sceneManager.ChangeScene(SCENE_RESULT);
         }
 
-        if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
-        {
-            b2Vec2 size = player.GetSensorSize();
+   
 
 
 		//フィールドの更新処理
@@ -202,6 +200,7 @@ void Game::Update(void)
 		}
 
 
+
 		if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
 		{
 			b2Vec2 size = player.GetSensorSize();
@@ -212,12 +211,11 @@ void Game::Update(void)
 
 			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 24),true);
 
-
-
 		}
 
 
-        }
+
+        
 
 #ifdef _DEBUG
         //デバッグ文字
@@ -244,26 +242,24 @@ void Game::Draw(void)
     //プレイヤーの描画処理
     player.Draw();
 
+    //ボスの描画処理
+    boss.Draw();
+
     //フィールドの描画処理
     Field::Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
-    //プレイヤーライフの描画処理
-    PlayerLife::Draw();
 
 
-    //ボスの描画処理
-	boss.Draw();
 
-	//フィールドの描画処理
-	Field::Draw();
+   
+
+
 
 	
 
-	//アンカーの描画処理
-	Anchor::Draw();
 
 
 	//�c�@�̕`�揈��
@@ -277,7 +273,11 @@ void Game::Draw(void)
 	stamina_spirit_gauge.Draw();
 
 
-    
+    //プレイヤーライフの描画処理
+    PlayerLife::Draw();
+
+
+
 
 
 	//プレイヤーUIの描画処理
