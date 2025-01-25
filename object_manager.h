@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <memory>
+#include "main.h"
 #include "wood.h"
 #include"one-way_platform.h"
 #include"sloping_block.h"
@@ -25,6 +26,7 @@
 #include"enemy_floating.h"
 #include"teleport_block.h"
 #include"1-1_boss_field_block.h"
+#include"Item_Coin_UI.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -34,7 +36,7 @@ enum ObjectType {
     Object_one_way_platform,//足場　したからしか乗れない
     Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
     Object_Movable_Ground,  //引っ張れる床 
-    
+
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
     Object_Enemy_Attack, //エネミーの攻撃

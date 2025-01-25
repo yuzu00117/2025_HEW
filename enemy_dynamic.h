@@ -32,21 +32,28 @@ enum ENEMY_DYNAMIC_STATE
 class EnemyDynamic :public Enemy
 {
 private:
-	//エネミーど状態(動作)
+	//エネミーの状態(動作)
 	int m_state = ENEMY_STATE_NULL;
 	int m_old_state = ENEMY_STATE_NULL;
 	const float m_speed = 0.006f;
+	const float m_jump_force = -0.1;
+	float m_move_force;
 	//左向き true : 右向き false
 	bool m_direction = true;
-	bool m_is_jumping = false;
+	bool m_is_ground = false;
+	int m_ground_cnt = 0;
+	int m_old_ground_cnt = 0;
+	int m_sensor_move_size = 0;
 
-
+	//攻撃関連
 	int m_attack_ID = -999;
 	int m_attack_counter = 0;
 	const int m_attack_birth = 30;
 	const int m_attack_finish = 45;
 
+	//テスト用
 	b2Vec2 m_size_sensor = b2Vec2(0.0, 0.0);
+	b2Vec2 m_size_sensor_2 = b2Vec2(0.0, 0.0);
 public:
 	EnemyDynamic() = default;
 	EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
@@ -69,6 +76,8 @@ public:
 	{
 		m_direction = direction;
 	}
+	//プレイヤーの位置を基に向きを決める
+	void SetDirectionBasedOnPlayer();
 
 	void Initialize() override;
 	void Finalize() override;
@@ -82,6 +91,17 @@ public:
 
 	//センサーとプレイヤーが触れた時の処理
 	void CollisionSensorPlayer();
+	void SetIsGround(bool is_ground)
+	{
+		if (is_ground)
+		{
+			m_ground_cnt++;
+		}
+		else
+		{
+			m_ground_cnt--;
+		}
+	}
 };
 
 #endif	//ENEMY_DYNAMIC_H

@@ -191,6 +191,27 @@ public:
             AnchorPoint::InsideSensor(anchor_point_body);
            
         }
+
+        //引っ張れる床のオブジェクトの引っ張る処理
+        if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
+            (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
+        {
+            //どちらが床のオブジェクトか特定
+            if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                ground_instance->Pulling_ground(objectA->add_force);
+                ground_instance->SetIfPulling(true);
+            }
+            else
+            {
+                movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                ground_instance->Pulling_ground(objectB->add_force);
+                ground_instance->SetIfPulling(true);
+            }
+
+        }
+
         //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
         if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
@@ -231,26 +252,6 @@ public:
                 {
                     wood* wood_instance = object_manager.FindWoodByID(objectB->id);
                     wood_instance->Pulling_wood(objectB->add_force);
-                }
-
-            }
-
-            //引っ張れる床のオブジェクトの引っ張る処理
-            if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
-                (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
-            {
-                //どちらが床のオブジェクトか特定
-                if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectA->add_force);
-                    ground_instance->SetIfPulling(true);
-                }
-                else
-                {
-                    movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectB->add_force);
-                    ground_instance->SetIfPulling(true);
                 }
 
             }
@@ -638,18 +639,45 @@ public:
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
-                if (attack_instance)
-                {
-                    attack_instance->CollisionPlayer();
-                }
+                attack_instance->CollisionPlayer();
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
-                if (attack_instance)
-                {
-                    attack_instance->CollisionPlayer();
-                }
+                attack_instance->CollisionPlayer();
+            }
+        }
+
+        //動的エネミーに付属しているセンサーと地面が触れた場合
+        if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
+        {
+            if (objectA->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->SetIsGround(true);
+            }
+            else if (objectB->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->SetIsGround(true);
+            }
+        }
+
+        //動的エネミー同士が触れた場合
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_enemy_dynamic))
+        {
+            EnemyDynamic* enemy_instanceA= object_manager.FindEnemyDynamicByID(objectA->id);
+            EnemyDynamic* enemy_instanceB = object_manager.FindEnemyDynamicByID(objectB->id);
+            if (enemy_instanceA->GetBody()->GetPosition().x < enemy_instanceB->GetBody()->GetPosition().x)
+            {
+                enemy_instanceA->SetDirection(true);
+                enemy_instanceB->SetDirection(false);
+            }
+            else if (enemy_instanceA->GetBody()->GetPosition().x > enemy_instanceB->GetBody()->GetPosition().x)
+            {
+                enemy_instanceA->SetDirection(false);
+                enemy_instanceB->SetDirection(true);
             }
         }
 
@@ -1110,6 +1138,7 @@ public:
             spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
+
         //ボスのセンサーとプレイヤー
         if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss_senosr))
@@ -1121,7 +1150,67 @@ public:
         }
 
 
+         //動的エネミーに付属しているセンサーと地面が離れた時
+        if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
+        {
+            if (objectA->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->SetIsGround(false);
+            }
+            else if (objectB->collider_type == collider_enemy_sensor_move)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->SetIsGround(false);
+            }
+        }
+
+
+
+
+        //プレイヤーに付属しているセンサーとアンカーポイントが離れた場合
+        if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_anchor))
+        {
+            ObjectData* object_data = objectB;
+            if (objectA->collider_type == collider_anchor_point) {
+                object_data = objectA;
+            }
+
+            //木のオブジェクトの引っ張る処理
+            if (object_data->object_name == Object_Wood)
+            {
+                wood* wood_instance = object_manager.FindWoodByID(objectB->id);
+                if (wood_instance != nullptr && wood_instance->GetIfPulling() == true) {
+                    wood_instance->SetIfPulling(false);
+                }
+            }
+
+            //岩のオブジェクトの引っ張る処理
+            if (object_data->object_name == Object_Rock )
+            {
+                rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                if (rock_instance != nullptr && rock_instance->GetIfPulling() == true) {
+                    rock_instance->SetIfPulling(false);
+                }
+            }
+
+
+            //静的動的のオブジェクトの
+            if (object_data->object_name == Object_Static_to_Dynamic)
+            {
+                static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                if (static_to_dynamic_block_instance != nullptr && static_to_dynamic_block_instance->GetIfPulling() == true) {
+                    static_to_dynamic_block_instance->SetIfPulling(false);
+                }
+            }
+
+
+
+        }
     }
+
 
 
 };
