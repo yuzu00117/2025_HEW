@@ -1138,10 +1138,7 @@ public:
             spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
-
-
-
-
+<<<<<<<<< Temporary merge branch 1
          //動的エネミーに付属しているセンサーと地面が離れた時
         if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
@@ -1157,7 +1154,18 @@ public:
                 enemy_instance->SetIsGround(false);
             }
         }
+=========
+        //ボスのセンサーとプレイヤー
+        if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss_senosr))
+        {
+            if (boss.GetPlayerNearbylocked() == 0)
+            {
+                boss.SetPlayerisNearbyFlag(false);
+            }
+        }
 
+>>>>>>>>> Temporary merge branch 2
 
 
 
