@@ -81,6 +81,10 @@ public:
 	}
 
 
+	void SetSplitting_Destroy_Flag(bool flag)
+	{
+		Splitting_Destroy_Flag = flag;
+	}
 
 private:
 

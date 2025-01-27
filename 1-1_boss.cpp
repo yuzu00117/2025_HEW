@@ -16,10 +16,10 @@
 #include"player_position.h"
 #include"display.h"
 #include"collider_type.h"
-#include"anchor_point.h"
 #include"keyboard.h"
 #include"1_1boss_state_debug.h"
 #include"scene.h"
+#include"anchor.h"
 
 
 // 使用するテクスチャファイルを格納
@@ -200,7 +200,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	ObjectData* boss_sensor_data = new ObjectData{ collider_boss_senosr };
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
-	now_boss_state = panic_state;
+	
 
 }
 
@@ -237,8 +237,13 @@ void Boss_1_1::Update()
 		//ジャンプの更新処理
 		JumpUpdate();
 
+		//ボスのコアの更新処理
+		BossCoreUpdate();
+
 		//ボスが死んだか
 		BossDead();
+
+		
 
 		//クールタイムの管理
 		UpdateCoolTime();
@@ -271,18 +276,14 @@ void Boss_1_1::Update()
 			break;
 		case panic_state:
 
-			//コアを生成
-			if (sheet_cnt == 0)
-			{
-				CreateBossCore(b2Vec2(2.0f, 2.0f));
-			}
+			CreateBossCore(b2Vec2 (2.0f,2.0f));
+		
 			sheet_cnt += 0.5;
 
-			if (Max_Panic_Sheet <= Max_Panic_Stun_Frame)
+			if (Max_Panic_Stun_Frame <= sheet_cnt)
 			{
 				sheet_cnt = 0;
-				DestroyBossCore();
-				now_boss_state = wait_state;
+				CoreDeleteFlag = true;
 
 			}
 
@@ -469,6 +470,8 @@ void Boss_1_1::BossDamaged(void)
 {
 	//ボスのHPを減らすそれにより形態変更する
 	SetBossHP(GetBossHP() - 1);
+
+	
 }
 
 void Boss_1_1::BossDead(void)
@@ -478,6 +481,19 @@ void Boss_1_1::BossDead(void)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
 		sceneManager.ChangeScene(SCENE_RESULT);
+	}
+}
+
+void Boss_1_1::BossCoreUpdate()
+{
+	if (CoreDeleteFlag == true)
+	{
+		DestroyBossCore();//ボスのコアを破壊
+
+		sheet_cnt = 0;//シートカウントをリセット
+		now_boss_state = charge_attack_state;
+		CoreDeleteFlag = false;
+		Anchor::SetAnchorState(Deleting_state);
 	}
 }
 
@@ -555,9 +571,9 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
 
 
-		AnchorPoint::InsideSensor(m_anchor_point_body);
 
 
+		
 	}
 }
 
@@ -570,7 +586,9 @@ void Boss_1_1::DestroyBossCore(void)
 		b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
 
-		AnchorPoint::OutsideSensor(GetAnchorPointBody());
+	
+
+	
 
 		world->DestroyBody(GetAnchorPointBody());
 
@@ -1047,8 +1065,25 @@ void Boss_1_1::Draw()
 
 		
 
-	
+		if (GetAnchorPointBody() != nullptr)
+		{
+			//シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
+
+			// コライダーの位置の取得（プレイヤーの位置）
+			b2Vec2 anchorpoint_pos = GetAnchorPointBody()->GetPosition();
+
+			// プレイヤー位置を考慮してスクロール補正を加える
+			//取得したbodyのポジションに対してBox2dスケールの補正を加える
+			float anchor_point_draw_x = ((anchorpoint_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float anchor_point_draw_y = ((anchorpoint_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			DrawSprite(XMFLOAT2(anchor_point_draw_x, anchor_point_draw_y), 0.0f, XMFLOAT2(GetAnchorPointSize().x * scale, GetAnchorPointSize().y * scale));
+
+		}
 	}
+
+
 }
 void Boss_1_1::debugDraw()
 {
@@ -1143,22 +1178,7 @@ void Boss_1_1::debugDraw()
 		}
 	}
 
-	if (GetAnchorPointBody() != nullptr)
-	{
-		//シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_core);
-
-		// コライダーの位置の取得（プレイヤーの位置）
-		b2Vec2 anchorpoint_pos = GetAnchorPointBody()->GetPosition();
-
-		// プレイヤー位置を考慮してスクロール補正を加える
-		//取得したbodyのポジションに対してBox2dスケールの補正を加える
-		float anchor_point_draw_x = ((anchorpoint_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float anchor_point_draw_y = ((anchorpoint_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-		DrawSprite(XMFLOAT2(anchor_point_draw_x, anchor_point_draw_y), 0.0f, XMFLOAT2(GetAnchorPointSize().x * scale, GetAnchorPointSize().y * scale));
 	
-	}
 	
 }
 

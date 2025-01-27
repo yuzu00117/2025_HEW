@@ -233,8 +233,8 @@ void boss_pillar::Destroy_Splitting()
 				for (int x = 0; x < Splitting_x; x++)
 				{
 					// 分割後のボディのローカル座標を計算
-					float localX = ((x - Splitting_x / 2.0f + 0.5f)/BOX2D_SCALE_MANAGEMENT) * size.x;
-					float localY = ((y - Splitting_y / 2.0f + 0.5f) /BOX2D_SCALE_MANAGEMENT) * size.y;
+					float localX = ((x - Splitting_x / 2.0f )/BOX2D_SCALE_MANAGEMENT) * size.x;
+					float localY = ((y - Splitting_y / 2.0f ) /BOX2D_SCALE_MANAGEMENT) * size.y;
 
 					// 元の角度を考慮してワールド座標に変換
 					float rotatedX = localX * cos(angle) - localY * sin(angle);

@@ -483,6 +483,12 @@ void Player::Update()
 
     case Throwing_state://錨が飛んでいる状態
         Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
+        g_anchor_frame_management_number++;
+
+        if (180 < g_anchor_frame_management_number)
+        {
+            Anchor::SetAnchorState(Pulling_state);
+        }
 
        
        

@@ -298,10 +298,14 @@ public:
                 if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
                 {
                     boss.BossDamaged();
+                    boss.SetCoreDeleteFlag(true);
+              
                 }
                 else
                 {
                     boss.BossDamaged();
+                    boss.SetCoreDeleteFlag(true);
+                  
                 }
             }
 
@@ -861,34 +865,7 @@ public:
 
         }
 
-        //プレイヤーがボスに触れた時
-        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
-            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
-            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
-        {
-
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-           /* player.Player_Damaged(-50, 120);*/
-
-        }
-
-
-        //プレイヤーがボスに触れた時
-        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_player_body) ||
-            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss) ||
-            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_leg) ||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
-        {
-
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-            /* player.Player_Damaged(-50, 120);*/
-
-        }
+  
 
         //プレイヤーとショックウェーブ
         if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_player_body) ||
@@ -931,6 +908,7 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-50, 120);
 
             if (objectA->collider_type == collider_mini_golem)
             {
@@ -942,14 +920,14 @@ public:
             }
         }
 
-        //プレイヤーとミニゴーレム
+        //プレイヤーの通常攻撃ととミニゴーレム
         if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_normal_attack_anchor) ||
             (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_mini_golem) )
         {
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            /* player.Player_Damaged(-50, 120);*/
+           
 
             if (objectA->collider_type == collider_mini_golem)
             {
@@ -968,6 +946,62 @@ public:
         {
             boss.SetPlayerisNearbyFlag(true);
         }
+
+
+
+        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_boss))
+        {
+
+
+
+          
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+
+
+          
+            b2Vec2 GetObjectVelocity;
+
+            if (objectA->collider_type == collider_boss)
+
+            {
+            
+
+                GetObjectVelocity = fixtureB->GetBody()->GetLinearVelocity();
+            }
+            else
+            {
+               
+
+                GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
+            }
+
+            if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            {
+                boss.SetNowBossState(panic_state);
+
+                if (objectA->object_name == Boss_pillar)
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
+                  
+                }
+                if (objectB->object_name == Boss_pillar)
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
+                   
+                }
+
+            }
+
+
+        }
+
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突終了時

@@ -51,6 +51,8 @@ public:
 	void CreateBossCore(b2Vec2 size);//ボスの弱点を露出させた時
 	void DestroyBossCore(void);//ボスのアンカーポイントのボディを壊す
 
+	void BossCoreUpdate(void);
+
 
 	void BossDamaged(void);//ボスの被弾した処理
 	void BossDead(void);   //ボスの死亡判定
@@ -226,6 +228,17 @@ public:
 	{
 		return now_boss_state;
 	}
+
+	void SetNowBossState(boss_state state)
+	{
+		 now_boss_state=state;
+	}
+
+	void SetCoreDeleteFlag(bool flag)
+	{
+		CoreDeleteFlag = flag;
+	}
+
 	
 
 	//-------------------------------------------------------------------------------------------
@@ -251,6 +264,7 @@ private:
 
 	b2Body* anchorpoint_body;
 	b2Vec2 anchorpoint_size;
+	bool CoreDeleteFlag=false;
 
 
 
@@ -301,7 +315,7 @@ private:
 	static constexpr int Max_Max_Walk_CoolTime = 120;//歩きモーションの最大クールタイム　
 	int					 Now_Max_Walk_CoolTime = 0; //現在のクールタイム
 
-	b2Vec2 walk_power = { 1.0f,0.0f };
+	b2Vec2 walk_power = { 1.1f,0.0f };
 
 
 

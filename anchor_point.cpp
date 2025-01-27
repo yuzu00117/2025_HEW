@@ -127,28 +127,26 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 {
 	//センサーからでたアンカーポイントのボディを配列から削除する
-
+   // センサーから出たアンカーポイントのボディを配列から削除する
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 	{
-		if (g_anchor_point_body[i] == delete_anchor_point_body)//比較して同じボディだったらそのボディの配列を消す
+		if (g_anchor_point_body[i] == delete_anchor_point_body) // 削除対象のボディが見つかった場合
 		{
-			g_anchor_point_body[i] = nullptr;//一致したボディの配列をNULLに
+			g_anchor_point_body[i] = nullptr; // 配列内の該当エントリを無効化
 
-			//選択していたアンカーポイントがセンサー外にでた
+			// 配列の詰め処理
+			for (int j = i; j < MAX_ANCHOR_POINT_IN_SENSOR - 1; j++)
+			{
+				g_anchor_point_body[j] = g_anchor_point_body[j + 1];
+			}
+			g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR - 1] = nullptr; // 配列の最後をクリア
+
+			// 選択中のアンカーポイントを解除する
 			if (delete_anchor_point_body == g_select_anchor_point_body)
 			{
-				//アンカーが当たったアンカーポイントがぶつかって、センサー外にでると、
-				//座標更新でアンカーとアンカーポイントとプレイヤーが一体化したバグが発生　おい笑える
-				//応急処置として、アンカーポイントがジョイントしてないときに発動するようにした
-				if (Anchor::GetAnchorCreateJointFlag() != true)
-				{
-					if (Anchor::GetAnchorState() == Nonexistent_state)//アンカーを打ちながら移動してる時にセンサー外にでてる時にNULLがでたから
-					{
-						g_select_anchor_point_body = nullptr;
-					}
-				}
+				g_select_anchor_point_body = nullptr;
 			}
-			return;
+			return; // 処理終了
 		}
 	}
 }
