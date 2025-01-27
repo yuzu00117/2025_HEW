@@ -43,6 +43,8 @@ static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Texture = NULL;//小さ
 //デバック用の画像
 static ID3D11ShaderResourceView* g_debug_color = NULL;//デバック用
 
+static ID3D11ShaderResourceView* g_debug_boss_body_color = NULL;//デバック用
+
 static ID3D11ShaderResourceView* g_debug_attack_color = NULL;//デバック用
 
 static ID3D11ShaderResourceView* g_debug_core = NULL;//デバック用
@@ -89,6 +91,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 		//デバック用
 		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensorのテクスチャ
+		g_debug_boss_body_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 		g_debug_attack_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
 		g_debug_core = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
@@ -109,6 +112,13 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	//ボディのサイズをセット
 	SetBossDrawSize(bodysize);
+
+
+	//実際のボスのサイズ
+	bodysize.x=bodysize.x * 0.5;
+	bodysize.y=bodysize.y * 0.4;
+
+	SetBossRealSize(bodysize);
 
 	//bossのサイズ
 	b2Vec2 size; //サイズのスケールを調整
@@ -139,27 +149,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 
 
-	b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
-
-	if (left == true)
-	{
-		// 反時計回りで頂点を設定
-		vertices[0].Set(-size.x / 3, size.y / 2);  // 左下
-		vertices[1].Set(size.x / 2, size.y / 2);   // 右下
-		vertices[2].Set(size.x / 2, 0.0);    // 右上
-		vertices[3].Set(-size.x / 3, 0.0);   // 左上
-	}
-	else
-	{
-		// 反時計回りで頂点を設定
-		vertices[0].Set(-size.x / 2, size.y / 2);  // 左下
-		vertices[1].Set(size.x / 3, size.y / 2);   // 右下
-		vertices[2].Set(size.x / 3, 0.0);    // 右上
-		vertices[3].Set(-size.x / 2, 0.0);   // 左上
-	}
 
 
-	body_shape.Set(vertices, 4);
+
+	body_shape.SetAsBox(size.x*0.5,size.y*0.5);
 
 
 	b2FixtureDef body_fixture;
@@ -178,10 +171,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 
 	//センサーのサイズを記録
-	SetBossSensorSize(b2Vec2(bodysize.x*1.5,bodysize.y));
+	SetBossSensorSize(b2Vec2(bodysize.x*2.0,bodysize.y));
 
 	b2Vec2 sensor_size;
-	sensor_size.x = bodysize.x / BOX2D_SCALE_MANAGEMENT*1.5;
+	sensor_size.x = bodysize.x / BOX2D_SCALE_MANAGEMENT*2.0;
 	sensor_size.y = bodysize.y / BOX2D_SCALE_MANAGEMENT;
 
 
@@ -190,24 +183,9 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	b2Vec2 sensor_vertices[4] = { b2Vec2(0.0f,0.0f) };
 
-	if (left == true)
-	{
-		// 反時計回りで頂点を設定
-		sensor_vertices[0].Set(-sensor_size.x / 2, sensor_size.y / 2);  // 左下
-		sensor_vertices[1].Set(sensor_size.x / 2, sensor_size.y / 2);   // 右下
-		sensor_vertices[2].Set(sensor_size.x / 2, 0.0);    // 右上
-		sensor_vertices[3].Set(-sensor_size.x / 2, 0.0);   // 左上
-	}
-	else
-	{
-		// 反時計回りで頂点を設定
-		sensor_vertices[0].Set(-sensor_size.x / 2, sensor_size.y / 2);  // 左下
-		sensor_vertices[1].Set(sensor_size.x / 2, sensor_size.y / 2);   // 右下
-		sensor_vertices[2].Set(sensor_size.x / 2, 0.0);    // 右上
-		sensor_vertices[3].Set(-sensor_size.x / 2, 0.0);   // 左上
-	}
 
-	sensor_shape.Set(sensor_vertices, 4);
+
+	sensor_shape.SetAsBox(sensor_size.x * 0.5, sensor_size.y * 0.5);
 
 	sensor_fixture.shape = &sensor_shape;
 	sensor_fixture.friction = 0.0f;//摩擦
@@ -243,13 +221,7 @@ void Boss_1_1::Update()
 			left_flag = false;
 		}
 
-		if (old_left_flag != left_flag)
-		{
-			SetPlayerNearbylocked(10);
-			Initialize(GetBossBody()->GetPosition(), Boss_size, left_flag);
-		}
-
-		old_left_flag = left_flag;
+	
 		//-------------------------------------------------------------------------------------------
 
 		//デバック文字の更新
@@ -323,13 +295,15 @@ void Boss_1_1::Update()
 				now_boss_state = wait_state;
 			}
 
+			b2Vec2 vec = m_body->GetLinearVelocity();
+
 			if (left_flag)
 			{
-				m_body->SetLinearVelocity(b2Vec2(-0.5f, 0.0f));
+				m_body->SetLinearVelocity(b2Vec2(-walk_power.x, vec.y));
 			}
 			else
 			{
-				m_body->SetLinearVelocity(b2Vec2(0.5f, 0.0f));
+				m_body->SetLinearVelocity(b2Vec2(walk_power.x, vec.y));
 			}
 
 			break;
@@ -622,7 +596,7 @@ void Boss_1_1::JumpUpdate()
 				minus_flag = -1;
 			}
 
-			boss_body->SetLinearVelocity(b2Vec2(minus_flag, -6.0f));
+			boss_body->SetLinearVelocity(b2Vec2(minus_flag* JumpPower.x, JumpPower.y));
 		}
 
 	}
@@ -646,7 +620,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		body.type = b2_dynamicBody;
 
 		b2Vec2 boss_pos = m_body->GetPosition();
-		b2Vec2 boss_size = b2Vec2(GetBossDrawSize().x/BOX2D_SCALE_MANAGEMENT, GetBossDrawSize().y / BOX2D_SCALE_MANAGEMENT);
+		b2Vec2 boss_size = b2Vec2(GetBossRealSize().x/BOX2D_SCALE_MANAGEMENT, GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT);
 
 		if (left) {
 			body.position.Set(boss_pos.x - (boss_size.x / 3) - (size.x / 2), boss_pos.y+boss_size.y/2-size.y/2);
@@ -736,7 +710,7 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 		body.gravityScale=(0.0f);//重力の影響をうけない
 
 		b2Vec2 boss_pos = m_body->GetPosition();
-		b2Vec2 boss_size = b2Vec2(GetBossDrawSize().x / BOX2D_SCALE_MANAGEMENT, GetBossDrawSize().y / BOX2D_SCALE_MANAGEMENT);
+		b2Vec2 boss_size = b2Vec2(GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT, GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT);
 
 		if (left) {
 			body.position.Set(boss_pos.x - (boss_size.x / 3) - (size.x / 2), boss_pos.y + boss_size.y / 2-size.y/2);
@@ -953,6 +927,11 @@ void Boss_1_1::Draw()
 {
 	if (m_body != nullptr)
 	{
+
+		//文字の表示
+		DrawBossDebug();
+		debugDraw();
+
 		float scale = SCREEN_SCALE;
 
 		// スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
@@ -964,11 +943,16 @@ void Boss_1_1::Draw()
 
 		// コライダーの位置の取得（プレイヤーの位置）
 		b2Vec2 boss_pos = GetBossBody()->GetPosition();
+		b2Vec2 real_boss_size;
+		real_boss_size.x = GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT;
+		real_boss_size.y = GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT;
+
+	
 
 		// プレイヤー位置を考慮してスクロール補正を加える
 		//取得したbodyのポジションに対してBox2dスケールの補正を加える
 		float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y-(real_boss_size.y*0.7)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 		switch (now_boss_state)
@@ -1061,10 +1045,9 @@ void Boss_1_1::Draw()
 			break;
 		}
 
-		//文字の表示
-		DrawBossDebug();
+		
 
-		debugDraw();
+	
 	}
 }
 void Boss_1_1::debugDraw()
@@ -1099,8 +1082,25 @@ void Boss_1_1::debugDraw()
 
 	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSensorSize().x * scale, GetBossSensorSize().y * scale));
 
+	//----------------------------------------------------------------------------
+	//実際のボディのサイズを表示
 
+	if (GetBossBody() != nullptr)
+	{
 
+		//シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_boss_body_color);
+
+		// コライダーの位置の取得（プレイヤーの位置）
+		b2Vec2 boss_pos = GetBossBody()->GetPosition();
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float boss_draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float boss_draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		DrawSprite(XMFLOAT2(boss_draw_x, boss_draw_y), 0.0f, XMFLOAT2(GetBossRealSize().x * scale, GetBossRealSize().y * scale));
+	}
 	//---------------------------------------------------------------------------
 	//攻撃判定のDraw
 

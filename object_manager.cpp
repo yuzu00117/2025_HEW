@@ -81,12 +81,17 @@ void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 t
     teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
 
 }
-
+//ボスの部屋の床を追加
 void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level)
 {
     boss_field_blockList.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp, level));
 }
 
+//ボスの部屋の柱を追加
+void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level)
+{
+    boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
+}
 
 
 // ID を使って木を検索
@@ -202,10 +207,21 @@ teleport_block* ObjectManager::FindTeleportBlock(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
-
+//IDを使ってボスの部屋の床を検索
 boss_field_block* ObjectManager::FindBossFieldBlock(int id)
 {
     for (auto& w : boss_field_blockList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+//IDを使ってボスの部屋の柱を検索
+boss_pillar* ObjectManager::FindBossPillar(int id)
+{
+    for (auto& w : boss_pillarList) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -344,6 +360,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : boss_pillarList) {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -415,6 +435,10 @@ void ObjectManager::UpdateAll() {
 
         w->Update();
     }
+
+    for (auto& w : boss_pillarList) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -475,6 +499,10 @@ void ObjectManager::DrawAll() {
 
         w->Draw();
     }
+
+    for (auto& w : boss_pillarList) {
+        w->Draw();
+    }
     
     Item_Coin_UI::Draw();
 }
@@ -526,6 +554,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : boss_pillarList) {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -545,6 +577,8 @@ void ObjectManager::FinalizeAll() {
     teleport_blockList.clear();
 
     boss_field_blockList.clear();
+
+    boss_pillarList.clear();
 
 
 

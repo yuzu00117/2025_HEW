@@ -39,6 +39,10 @@ void DrawDividedSpritePlayer(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, 
 
 void DrawDividedSpriteBoss(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha, bool left);
 
+//現在使っているスケールに合わせた
+
+void DrawSplittingSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int Pattern_ID, float Alpha);
+
 //　一枚の画像を分割して、その中の複数を同時に描画
 // （ただし、同じ行のものだけ描画できる）
 //  (Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ)

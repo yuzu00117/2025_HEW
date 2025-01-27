@@ -32,6 +32,7 @@
 #include"camera_shake.h"
 #include"sound.h"
 #include"1-1_boss.h"
+#include"1_1_boss_pillar.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -301,6 +302,21 @@ public:
                 else
                 {
                     boss.BossDamaged();
+                }
+            }
+
+            if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
+            {
+                //どちらがボスの部屋の柱
+                if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->Pulling_pillar(objectA->add_force);//木を引っ張る処理を呼び出す
+                }
+                else
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
+                    pillar_instance->Pulling_pillar(objectB->add_force);
                 }
             }
        
@@ -1138,7 +1154,7 @@ public:
             spirit_instance->DeleteCollidedObject(object->GetBody());
         }
 
-<<<<<<<<< Temporary merge branch 1
+
          //動的エネミーに付属しているセンサーと地面が離れた時
         if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
@@ -1154,7 +1170,7 @@ public:
                 enemy_instance->SetIsGround(false);
             }
         }
-=========
+
         //ボスのセンサーとプレイヤー
         if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss_senosr))
@@ -1165,7 +1181,7 @@ public:
             }
         }
 
->>>>>>>>> Temporary merge branch 2
+
 
 
 

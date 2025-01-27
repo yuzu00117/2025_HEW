@@ -187,6 +187,40 @@ void Field::Initialize()
 			}
 
 
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f),1,6, boss_room_level_1);
+			}
+
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 27) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 18.f), 3, 18, boss_room_level_2);
+			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 28) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_3);
+			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 29) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_4);
+			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 30) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_5);
+			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 31) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_6);
+			}
+
+
+
 		}
 	}
 

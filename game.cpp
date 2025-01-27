@@ -172,25 +172,15 @@ void Game::Update(void)
             sceneManager.ChangeScene(SCENE_RESULT);
         }
 
-   
+  
 
 
-		//フィールドの更新処理
-		Field::Update();
-
-
-        Bg::Update();
-
-        CRIUpdate();
-
-        boss.Update();
-
-        //プレイヤーが死亡したらリザルト画面に遷移
-        if (PlayerStamina::IsPlayerDead())
-        {
-            SceneManager& sceneManager = SceneManager::GetInstance();
-            sceneManager.ChangeScene(SCENE_RESULT);
-        }
+	  //プレイヤーが死亡したらリザルト画面に遷移
+	  if (PlayerStamina::IsPlayerDead())
+	  {
+		  SceneManager& sceneManager = SceneManager::GetInstance();
+		  sceneManager.ChangeScene(SCENE_RESULT);
+	  }
 
 		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
 		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
@@ -198,8 +188,6 @@ void Game::Update(void)
 			SceneManager& sceneManager = SceneManager::GetInstance();
 			sceneManager.ChangeScene(SCENE_RESULT);
 		}
-
-
 
 		if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
 		{
@@ -210,6 +198,8 @@ void Game::Update(void)
 			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
 
 			boss.Initialize(b2Vec2(50, 0), b2Vec2(18, 24),true);
+
+
 
 		}
 
@@ -242,9 +232,6 @@ void Game::Draw(void)
     //プレイヤーの描画処理
     player.Draw();
 
-    //ボスの描画処理
-    boss.Draw();
-
     //フィールドの描画処理
     Field::Draw();
 
@@ -253,8 +240,8 @@ void Game::Draw(void)
 
 
 
-
-   
+	//ボスの描画処理
+    boss.Draw();
 
 
 
@@ -271,13 +258,6 @@ void Game::Draw(void)
 
   //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
-
-
-    //プレイヤーライフの描画処理
-    PlayerLife::Draw();
-
-
-
 
 
 	//プレイヤーUIの描画処理

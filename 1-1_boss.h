@@ -83,6 +83,16 @@ public:
 		boss_size = size;
 	}
 
+	b2Vec2 GetBossRealSize(void)
+	{
+		return reality_boss_size;
+	}
+
+	void SetBossRealSize(b2Vec2 size)
+	{
+		reality_boss_size = size;
+	}
+
 	b2Body* GetBossBody(void)
 	{
 		return m_body;
@@ -231,6 +241,8 @@ private:
 	b2Body* m_body;//ボスのボディ
 	b2Vec2 boss_size;//描画で使うボスのサイズ
 
+	b2Vec2 reality_boss_size;//実際のボディのサイズ
+
 	b2Vec2 boss_sensor_size;//ボスのセンサーサイズ
 
 	b2Body* m_attack_body;//攻撃の判定
@@ -275,6 +287,8 @@ private:
 	static constexpr int Max_Jump_CoolTime = 600;//ジャンプの最大クールタイム　
 	int					 Now_Jump_CoolTime = 200;  //現在のクールタイム
 
+	b2Vec2 JumpPower = { 1,-8.0f };
+
 	//小岩生成
 	static constexpr int Max_Create_MiniGolem_CoolTime = 1800;//小岩の最大クールタイム　
 	int					 Now_Create_MiniGolem_CoolTime = 1500;  //現在のクールタイム
@@ -287,7 +301,7 @@ private:
 	static constexpr int Max_Max_Walk_CoolTime = 120;//歩きモーションの最大クールタイム　
 	int					 Now_Max_Walk_CoolTime = 0; //現在のクールタイム
 
-
+	b2Vec2 walk_power = { 1.0f,0.0f };
 
 
 
