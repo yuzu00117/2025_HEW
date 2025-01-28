@@ -175,7 +175,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	b2FixtureDef body_fixture;
 	body_fixture.shape = &body_shape;
-	body_fixture.friction = 0.0f;//摩擦
+	body_fixture.friction = 0.3f;//摩擦
 	body_fixture.restitution = 0.1f;//反発係数
 	body_fixture.density = 0.1f;
 	body_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
@@ -310,24 +310,32 @@ void Boss_1_1::Update()
 
 			break;
 		case walk_state:
+			if (static_cast<int>(sheet_cnt)%10 == 0)
+			{
+				
+				if (left_flag)
+				{
+					m_body->SetLinearVelocity(b2Vec2(-walk_power.x, walk_power.y));
+				}
+				else
+				{
+					m_body->SetLinearVelocity(b2Vec2(walk_power.x, walk_power.y));
+				}
+
+				if ((static_cast<int>(sheet_cnt) % 20 == 0))
+				{
+					m_body->SetLinearVelocity(b2Vec2_zero);
+				}
+			}
 			sheet_cnt += 0.5;
+			
 			if (Max_Walk_Sheet <= sheet_cnt)
 			{
 				sheet_cnt = 0;
 				now_boss_state = wait_state;
 			}
 
-			b2Vec2 vec = m_body->GetLinearVelocity();
-
-			if (left_flag)
-			{
-				m_body->SetLinearVelocity(b2Vec2(-walk_power.x, vec.y));
-			}
-			else
-			{
-				m_body->SetLinearVelocity(b2Vec2(walk_power.x, vec.y));
-			}
-
+		
 			break;
 
 		case jump_state:
@@ -351,7 +359,7 @@ void Boss_1_1::Update()
 			
 			if (static_cast<int>(sheet_cnt) == Shock_Wave_Start_Frame)
 			{
-				CreateShockWave(b2Vec2(1.0f, 4.0f), left_flag);
+				CreateShockWave(b2Vec2(1.5f, 4.0f), left_flag);
 				Shock_Wave_Fly_flag = true;
 
 				//エフェクトスタート
@@ -939,7 +947,7 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 
 		//作成エフェクト用の管理
 		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();
-		mini_golem_break_effect = 1;
+		mini_golem_break_effect_cnt = 1;
 
 		world->DestroyBody(m_mini_golem_body);
 
@@ -979,7 +987,7 @@ void Boss_1_1::Draw()
 
 		//文字の表示
 		DrawBossDebug();
-		debugDraw();
+	/*	debugDraw();*/
 
 		float scale = SCREEN_SCALE;
 
@@ -1095,7 +1103,7 @@ void Boss_1_1::Draw()
 		}
 
 		
-
+		//コアをの描画
 		if (GetAnchorPointBody() != nullptr)
 		{
 			//シェーダリソースを設定
@@ -1111,6 +1119,28 @@ void Boss_1_1::Draw()
 
 			DrawSprite(XMFLOAT2(anchor_point_draw_x, anchor_point_draw_y), 0.0f, XMFLOAT2(GetAnchorPointSize().x * scale, GetAnchorPointSize().y * scale));
 
+		}
+
+		//----------------------------------------------------------------------------------------
+		//ミニゴーレムのDraw
+		for (int i = 0; i < 2; i++)
+		{
+			if (GetMiniGolemBody(i) != nullptr)
+			{
+
+				//シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_Texture);
+
+				// コライダーの位置の取得（プレイヤーの位置）
+				b2Vec2 mini_golem_pos = GetMiniGolemBody(i)->GetPosition();
+
+				// プレイヤー位置を考慮してスクロール補正を加える
+				//取得したbodyのポジションに対してBox2dスケールの補正を加える
+				float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+				float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+				DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale, GetMiniGolemDrawSize().y * scale));
+			}
 		}
 	}
 	EffectDraw();
@@ -1188,27 +1218,7 @@ void Boss_1_1::debugDraw()
 		
 	}
 
-	//----------------------------------------------------------------------------------------
-	//ミニゴーレムのDraw
-	for (int i = 0; i < 2; i++)
-	{
-		if (GetMiniGolemBody(i) != nullptr)
-		{
-
-			//シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_Texture);
-
-			// コライダーの位置の取得（プレイヤーの位置）
-			b2Vec2 mini_golem_pos = GetMiniGolemBody(i)->GetPosition();
-
-			// プレイヤー位置を考慮してスクロール補正を加える
-			//取得したbodyのポジションに対してBox2dスケールの補正を加える
-			float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-			float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-			DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale, GetMiniGolemDrawSize().y * scale));
-		}
-	}
+	
 
 	
 	
@@ -1220,79 +1230,67 @@ void Boss_1_1::UpdateEffectSheetCnt()
 	//ピヨピヨ
 	if (panic_effect_sheet_cnt != 0)
 	{
+		panic_effect_sheet_cnt += 0.5;
+
 		if (Max_panic_effect_sheet_cnt<panic_effect_sheet_cnt)
 		{
 			panic_effect_sheet_cnt = 0;
 		}
 
-		panic_effect_sheet_cnt += 0.5;
+		
 	}
 
 	//チャージ攻撃の攻撃時のエフェクト
 	if (charge_attack_effect_sheet_cnt != 0)
 	{
+		charge_attack_effect_sheet_cnt +=0.5;
+
 		if (Max_charge_attack_effect_sheet_cnt < charge_attack_effect_sheet_cnt)
 		{
 			charge_attack_effect_sheet_cnt = 0;
 		}
 
-		charge_attack_effect_sheet_cnt += 0.5;
+		
 	}
 
 	//チャージ中
 	if (charge_effect_sheet_cnt != 0)
 	{
+		charge_effect_sheet_cnt += 0.5;
+
 		if (Max_charge_effect_sheet_cnt < charge_effect_sheet_cnt)
 		{
 			charge_effect_sheet_cnt = 0;
 		}
 
-		charge_effect_sheet_cnt += 0.5;
+		
 	}
 
 	//衝撃波攻撃
 	if (shock_wave_effect_sheet_cnt != 0)
 	{
+		shock_wave_effect_sheet_cnt += 0.5;
+
 		if (Max_shock_wave_effect_sheet_cnt < shock_wave_effect_sheet_cnt)
 		{
 			shock_wave_effect_sheet_cnt = 0;
 		}
 
-		shock_wave_effect_sheet_cnt += 0.5;
+		
 	}
 
 
 	//miniゴーレムの破壊時
-	if (mini_golem_break_effect != 0)
+	if (mini_golem_break_effect_cnt != 0)
 	{
-		if (Max_mini_golem_break_effect < mini_golem_break_effect)
+		mini_golem_break_effect_cnt++;
+
+		if (Max_mini_golem_break_effect < mini_golem_break_effect_cnt)
 		{
-			mini_golem_break_effect = 0;
+			mini_golem_break_effect_cnt = 0;
 		}
-
-		mini_golem_break_effect += 0.5;
 	}
 
-
-	switch (now_boss_state)
-	{
-	case wait_state:
-		break;
-	case panic_state:
-		break;
-	case walk_state:
-		break;
-	case jump_state:
-		break;
-	case charge_attack_state:
-		break;
-	case shock_wave_state:
-		break;
-	case create_mini_golem_state:
-		break;
-	default:
-		break;
-	}
 }
 
 void Boss_1_1::EffectDraw()
@@ -1313,7 +1311,7 @@ void Boss_1_1::EffectDraw()
 			if (charge_attack_effect_sheet_cnt !=0)
 			{
 				//シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_effect);
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_charge_attack_effect);
 
 				// コライダーの位置の取得（プレイヤーの位置）
 				b2Vec2 attack_pos = GetAttackBody()->GetPosition();
@@ -1327,7 +1325,7 @@ void Boss_1_1::EffectDraw()
 				
 				
 
-				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale , GetAttackDrawSize().y * scale), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale*3 , GetAttackDrawSize().y * scale*3), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
 			}
 		
 		}
@@ -1359,23 +1357,24 @@ void Boss_1_1::EffectDraw()
 		}
 	}
 
-	if (mini_golem_break_effect != 0)
+	//ミニゴーレムの破壊
+	if (mini_golem_break_effect_cnt != 0)
 	{
 		//シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_effect);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_golem_break_effect);
 
 		// コライダーの位置の取得（プレイヤーの位置）
-		b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+		b2Vec2 break_pos = mini_golem_delete_effect_position;
 
 		// プレイヤー位置を考慮してスクロール補正を加える
 		//取得したbodyのポジションに対してBox2dスケールの補正を加える
-		float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		float break_draw_x = ((break_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float break_draw_y = ((break_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 	
 
-		DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale * 1.3, GetAttackDrawSize().y * scale * 1.3), 6, 4, shock_wave_effect_sheet_cnt, effect_alpha, 1);
+		DrawDividedSpriteBoss(XMFLOAT2(break_draw_x, break_draw_y), 0.0f, XMFLOAT2(GetMiniGolemDrawSize().x * scale * 1.3*1.5, GetMiniGolemDrawSize().y * scale * 1.7*1.5), 4, 2, mini_golem_break_effect_cnt/4, effect_alpha, 1);
 	}
 }
 

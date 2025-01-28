@@ -317,9 +317,13 @@ private:
 	static constexpr int Max_Max_Walk_CoolTime = 120;//歩きモーションの最大クールタイム　
 	int					 Now_Max_Walk_CoolTime = 0; //現在のクールタイム
 
-	b2Vec2 walk_power = { 1.05f,0.0f };
+	//歩きの管理
 
+	b2Vec2 walk_power = { 1.1f,0.3f };
 
+	float targetSpeed = 0;
+	float smoothingFactor = 0;
+	float newSpeed = 0;
 	//--------------------------------------------------------------------------------------------
 	//ボスの管理をする　変数
 	bool Player_is_Nearby = false;//プレイヤーが近くにいるかの管理
@@ -391,7 +395,7 @@ private:
 	float charge_effect_sheet_cnt = 0;
 	float shock_wave_effect_sheet_cnt = 0;
 
-	float mini_golem_break_effect = 0;
+	float mini_golem_break_effect_cnt = 0;
 	//ミニゴーレムはボディが消えるので座標をもっとく
 	b2Vec2 mini_golem_delete_effect_position;
 
