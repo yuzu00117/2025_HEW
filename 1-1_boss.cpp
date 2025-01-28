@@ -39,6 +39,16 @@ static ID3D11ShaderResourceView* g_mini_boss_create_sheet1_Texture = NULL;//小さ
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Texture = NULL;//小さなゴーレムを生成する際のボス側２
 
 
+//ボスまわりのエフェクトのテクスチャ
+static ID3D11ShaderResourceView* g_boss_charge_effect = NULL;//ボスのため中のエフェクト
+static ID3D11ShaderResourceView* g_boss_charge_attack_effect = NULL;//ボスのため攻撃の判定のエフェクト
+static ID3D11ShaderResourceView* g_mini_golem_break_effect = NULL;//小さなゴーレムを破壊するときにでるエフェクト
+static ID3D11ShaderResourceView* g_boss_panic_effect = NULL;//ボスが被弾したときのエフェクト
+static ID3D11ShaderResourceView* g_boss_shock_wave_effect = NULL;//ボスの衝撃波攻撃
+
+
+
+
 //-------------------------------------------------------------------------------------------
 //デバック用の画像
 static ID3D11ShaderResourceView* g_debug_color = NULL;//デバック用
@@ -89,6 +99,14 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");//ゴーレムの怯みモーション１
 
 
+		//エフェクト
+
+		g_boss_charge_attack_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_attack_effect.png");	//ボスのチャージ攻撃時のエフェクト
+		g_boss_charge_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_effect.png");				//ボスのチャージ攻撃時のエフェクト
+		g_boss_panic_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_effect.png");					//ボスのチャージ攻撃時のエフェクト
+		g_boss_shock_wave_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_effect.png");		//ボスのチャージ攻撃時のエフェクト
+		g_mini_golem_break_effect = InitTexture(L"asset\\texture\\boss_1_1\\mini_golem_break_effect.png");		//ボスのチャージ攻撃時のエフェクト
+	
 		//デバック用
 		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensorのテクスチャ
 		g_debug_boss_body_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
@@ -248,6 +266,9 @@ void Boss_1_1::Update()
 		//クールタイムの管理
 		UpdateCoolTime();
 
+		//エフェクトの管理
+		UpdateEffectSheetCnt();
+
 
 		//ボスの近距離か遠距離かの判定に使う
 		if (GetPlayerNearbylocked() != 0)
@@ -271,7 +292,7 @@ void Boss_1_1::Update()
 		{
 		case wait_state:
 
-			
+			sheet_cnt = 0;
 
 			break;
 		case panic_state:
@@ -332,6 +353,9 @@ void Boss_1_1::Update()
 			{
 				CreateShockWave(b2Vec2(1.0f, 4.0f), left_flag);
 				Shock_Wave_Fly_flag = true;
+
+				//エフェクトスタート
+				shock_wave_effect_sheet_cnt = 1;
 			}
 			
 
@@ -378,6 +402,8 @@ void Boss_1_1::Update()
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_Start_Frame)
 			{
 				CreateChargeAttack(b2Vec2(4.0f, 4.0f), left_flag);
+				//エフェクトスタート
+				charge_attack_effect_sheet_cnt = 1;
 			}
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_End_Frame)
 			{
@@ -910,6 +936,11 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 
 		b2Body* m_mini_golem_body = destroy_mini_golem_body;
 
+
+		//作成エフェクト用の管理
+		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();
+		mini_golem_break_effect = 1;
+
 		world->DestroyBody(m_mini_golem_body);
 
 		for (int i = 0; i < 2; i++)
@@ -1082,6 +1113,7 @@ void Boss_1_1::Draw()
 
 		}
 	}
+	EffectDraw();
 
 
 }
@@ -1137,23 +1169,23 @@ void Boss_1_1::debugDraw()
 		DrawSprite(XMFLOAT2(boss_draw_x, boss_draw_y), 0.0f, XMFLOAT2(GetBossRealSize().x * scale, GetBossRealSize().y * scale));
 	}
 	//---------------------------------------------------------------------------
-	//攻撃判定のDraw
-
 	if (GetAttackBody() != nullptr)
 	{
+		
 
-		//シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
+			//シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
 
-		// コライダーの位置の取得（プレイヤーの位置）
-		b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+			// コライダーの位置の取得（プレイヤーの位置）
+			b2Vec2 attack_pos = GetAttackBody()->GetPosition();
 
-		// プレイヤー位置を考慮してスクロール補正を加える
-		//取得したbodyのポジションに対してBox2dスケールの補正を加える
-		float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			// プレイヤー位置を考慮してスクロール補正を加える
+			//取得したbodyのポジションに対してBox2dスケールの補正を加える
+			float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-		DrawSprite(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale, GetAttackDrawSize().y * scale));
+			DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale, GetAttackDrawSize().y * scale), 6, 4, 1, 1.0, left_flag);
+		
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -1180,6 +1212,171 @@ void Boss_1_1::debugDraw()
 
 	
 	
+}
+
+void Boss_1_1::UpdateEffectSheetCnt()
+{
+
+	//ピヨピヨ
+	if (panic_effect_sheet_cnt != 0)
+	{
+		if (Max_panic_effect_sheet_cnt<panic_effect_sheet_cnt)
+		{
+			panic_effect_sheet_cnt = 0;
+		}
+
+		panic_effect_sheet_cnt += 0.5;
+	}
+
+	//チャージ攻撃の攻撃時のエフェクト
+	if (charge_attack_effect_sheet_cnt != 0)
+	{
+		if (Max_charge_attack_effect_sheet_cnt < charge_attack_effect_sheet_cnt)
+		{
+			charge_attack_effect_sheet_cnt = 0;
+		}
+
+		charge_attack_effect_sheet_cnt += 0.5;
+	}
+
+	//チャージ中
+	if (charge_effect_sheet_cnt != 0)
+	{
+		if (Max_charge_effect_sheet_cnt < charge_effect_sheet_cnt)
+		{
+			charge_effect_sheet_cnt = 0;
+		}
+
+		charge_effect_sheet_cnt += 0.5;
+	}
+
+	//衝撃波攻撃
+	if (shock_wave_effect_sheet_cnt != 0)
+	{
+		if (Max_shock_wave_effect_sheet_cnt < shock_wave_effect_sheet_cnt)
+		{
+			shock_wave_effect_sheet_cnt = 0;
+		}
+
+		shock_wave_effect_sheet_cnt += 0.5;
+	}
+
+
+	//miniゴーレムの破壊時
+	if (mini_golem_break_effect != 0)
+	{
+		if (Max_mini_golem_break_effect < mini_golem_break_effect)
+		{
+			mini_golem_break_effect = 0;
+		}
+
+		mini_golem_break_effect += 0.5;
+	}
+
+
+	switch (now_boss_state)
+	{
+	case wait_state:
+		break;
+	case panic_state:
+		break;
+	case walk_state:
+		break;
+	case jump_state:
+		break;
+	case charge_attack_state:
+		break;
+	case shock_wave_state:
+		break;
+	case create_mini_golem_state:
+		break;
+	default:
+		break;
+	}
+}
+
+void Boss_1_1::EffectDraw()
+{
+
+	float scale = SCREEN_SCALE;
+
+	// スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
+	//---------------------------------------------------------------------------
+	//チャージ攻撃
+	if (GetAttackBody() != nullptr)
+	{
+		if (now_boss_state == charge_attack_state)
+		{
+			if (charge_attack_effect_sheet_cnt !=0)
+			{
+				//シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_effect);
+
+				// コライダーの位置の取得（プレイヤーの位置）
+				b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+
+				// プレイヤー位置を考慮してスクロール補正を加える
+				//取得したbodyのポジションに対してBox2dスケールの補正を加える
+				float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+				float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+				
+				
+
+				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale , GetAttackDrawSize().y * scale), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
+			}
+		
+		}
+		else//ショックウェーブ
+		{
+			if (shock_wave_effect_sheet_cnt!=0)
+			{
+				//シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_effect);
+
+				// コライダーの位置の取得（プレイヤーの位置）
+				b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+
+				// プレイヤー位置を考慮してスクロール補正を加える
+				//取得したbodyのポジションに対してBox2dスケールの補正を加える
+				float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+				float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+				//これ貰ったスプライトが向きが反対だったから修正
+				bool left = 1;
+				if (left_flag)
+				{
+					left = 0;
+				}
+
+				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale * 1.3, GetAttackDrawSize().y * scale * 1.3), 6, 4, shock_wave_effect_sheet_cnt, effect_alpha, left);
+			}
+		}
+	}
+
+	if (mini_golem_break_effect != 0)
+	{
+		//シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_effect);
+
+		// コライダーの位置の取得（プレイヤーの位置）
+		b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+	
+
+		DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale * 1.3, GetAttackDrawSize().y * scale * 1.3), 6, 4, shock_wave_effect_sheet_cnt, effect_alpha, 1);
+	}
 }
 
 void Boss_1_1::Finalize()

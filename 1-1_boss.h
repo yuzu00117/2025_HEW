@@ -44,8 +44,10 @@ public:
 	void Initialize(b2Vec2 position, b2Vec2 bodysize,bool left);
 	void Update();
 	void UpdateCoolTime();
+	void UpdateEffectSheetCnt();
 	void Draw();
 	void debugDraw();//攻撃範囲を表示したりする
+	void EffectDraw();
 	void Finalize();
 
 	void CreateBossCore(b2Vec2 size);//ボスの弱点を露出させた時
@@ -315,8 +317,7 @@ private:
 	static constexpr int Max_Max_Walk_CoolTime = 120;//歩きモーションの最大クールタイム　
 	int					 Now_Max_Walk_CoolTime = 0; //現在のクールタイム
 
-	b2Vec2 walk_power = { 1.1f,0.0f };
-
+	b2Vec2 walk_power = { 1.05f,0.0f };
 
 
 	//--------------------------------------------------------------------------------------------
@@ -353,7 +354,7 @@ private:
 	//ため攻撃のフレーム達
 	static constexpr int Max_Charge_Attack_Sheet = 200;		//ため攻撃の生成する最大フレーム
 	static constexpr int Charge_Attack_Start_Frame = 67;//ため攻撃のモーションのボディの発生フレーム
-	static constexpr int Charge_Attack_End_Frame = 102;//ため攻撃のモーションのボディの発生フレーム
+	static constexpr int Charge_Attack_End_Frame = 102;//ため攻撃のモーションのボディの終了フレーム
 
 	//-----------------------------------------------------------------------------------------
 	
@@ -382,9 +383,31 @@ private:
 	//-------------------------------------------------------------------------------------------
 
 
-	static constexpr float boss_alpha = 3.0f;//ボスのアルファ値
-};
+	//-------------------------------------------------------------------------------------------
+	//エフェクト管理用の変数
 
+	float panic_effect_sheet_cnt = 0;
+	float charge_attack_effect_sheet_cnt = 0;
+	float charge_effect_sheet_cnt = 0;
+	float shock_wave_effect_sheet_cnt = 0;
+
+	float mini_golem_break_effect = 0;
+	//ミニゴーレムはボディが消えるので座標をもっとく
+	b2Vec2 mini_golem_delete_effect_position;
+
+
+
+
+	static constexpr int Max_panic_effect_sheet_cnt = Max_Panic_Stun_Frame;
+	static constexpr int Max_charge_attack_effect_sheet_cnt = Charge_Attack_End_Frame - Charge_Attack_Start_Frame;
+	static constexpr int Max_charge_effect_sheet_cnt = 30;
+	static constexpr int Max_shock_wave_effect_sheet_cnt = Shock_Wave_time_Frame;
+	static constexpr int Max_mini_golem_break_effect = 16;
+
+
+	static constexpr float boss_alpha = 3.0f;//ボスのアルファ値
+	static constexpr float effect_alpha = 3.0f;//ボスのアルファ値
+};
 
 
 #endif // !1_1_BOSS_H

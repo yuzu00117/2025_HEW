@@ -183,11 +183,14 @@ void boss_pillar::Update()
 			Destroy_Cnt++;
 		}
 
-		if (180 < Destroy_Cnt)
+		if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
 		{
 			DestroySplittedBodies(boss_pillar_body_Splitting);
 			isUse = false;
 		}
+
+
+	
 
 		Destroy_Splitting();
 	}
@@ -210,6 +213,8 @@ void boss_pillar::Destroy_Splitting()
 			//普通のボディも消す
 			b2Vec2 Destroy_position = m_body->GetPosition();
 			float angle = m_body->GetAngle(); // 元のボディの角度を取得
+			b2Vec2 vec = m_body->GetLinearVelocity();
+			float angle_vec = m_body->GetAngularVelocity();
 
 			world->DestroyBody(m_body);
 			m_body = nullptr;
@@ -233,8 +238,8 @@ void boss_pillar::Destroy_Splitting()
 				for (int x = 0; x < Splitting_x; x++)
 				{
 					// 分割後のボディのローカル座標を計算
-					float localX = ((x - Splitting_x / 2.0f )/BOX2D_SCALE_MANAGEMENT) * size.x;
-					float localY = ((y - Splitting_y / 2.0f ) /BOX2D_SCALE_MANAGEMENT) * size.y;
+					float localX = ((x - (Splitting_x - 1) / 2.0f) * size.x / Splitting_x);
+					float localY = ((y - (Splitting_y - 1) / 2.0f) * size.y / Splitting_y);
 
 					// 元の角度を考慮してワールド座標に変換
 					float rotatedX = localX * cos(angle) - localY * sin(angle);
@@ -254,9 +259,12 @@ void boss_pillar::Destroy_Splitting()
 					b2Body* fragment = world->CreateBody(&fragmentDef);
 					boss_pillar_body_Splitting.push_back(fragment);
 
+					fragment->SetLinearVelocity(b2Vec2(vec.x*2,vec.y*2));
+					fragment->SetAngularVelocity(angle_vec);
+
 					// 分割後の形状とフィクスチャを設定
 					b2PolygonShape fragmentShape;
-					fragmentShape.SetAsBox(size.x * 0.5f/Splitting_x, size.y * 0.5f/ Splitting_y);
+					fragmentShape.SetAsBox(size.x / (2.0f * Splitting_x), size.y / (2.0f * Splitting_y));
 
 					b2FixtureDef fragmentFixture;
 					fragmentFixture.shape = &fragmentShape;

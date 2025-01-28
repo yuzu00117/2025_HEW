@@ -949,7 +949,7 @@ public:
 
 
 
-        //引っ張られている状態のオブジェクトと動的エネミーの衝突
+        //ボスと柱の衝突
         if ((objectA->collider_type == collider_boss && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_boss) ||
             (objectA->collider_type == collider_boss && objectB->collider_type == collider_anchor_point) ||
@@ -999,6 +999,40 @@ public:
 
             }
 
+
+        }
+
+        //床と柱の衝突
+        if ((objectA->collider_type == collider_ground && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_ground))
+        {
+
+            
+
+            if (objectA->object_name == Boss_pillar)
+            {
+
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() +1);
+
+                if (pillar_instance->GetGroundTouchCnt() > pillar_instance->GetSize().x+5)
+                {
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
+                }
+
+            }
+            if (objectB->object_name == Boss_pillar)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() + 1);
+
+                if (pillar_instance->GetGroundTouchCnt() > pillar_instance->GetSize().x + 5)
+                {
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
+                }
+            }
 
         }
 
@@ -1262,6 +1296,33 @@ public:
         }
 
         //-------------------------------------------------------------------------------------------
+
+
+         //床と柱の衝突
+        if ((objectA->collider_type == collider_ground && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_anchor_point) ||
+            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_ground))
+        {
+
+      
+
+            if (objectA->object_name == Boss_pillar)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() - 1);
+
+            }
+
+            if (objectB->object_name == Boss_pillar)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() - 1);
+            }
+
+        }
+
+
 
         //ボスのセンサーとプレイヤー
         if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||

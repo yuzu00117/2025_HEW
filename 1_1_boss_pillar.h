@@ -86,6 +86,19 @@ public:
 		Splitting_Destroy_Flag = flag;
 	}
 
+
+
+	int GetGroundTouchCnt(void)
+	{
+		return touch_ground_cnt;
+	}
+
+
+	void SetGroundTouchCnt(int cnt)
+	{
+		touch_ground_cnt = cnt;
+	}
+
 private:
 
 	bool isUse;
@@ -108,6 +121,10 @@ private:
 
 	int Destroy_Cnt=0;
 
+	int touch_ground_cnt = 0;
+
+
+	b2Vec2 old_vec;
 
 	Boss_Room_Level boss_room_level;
 	//’Œ‚ªƒoƒ‰ƒoƒ‰‚É‚È‚Á‚½‚Æ‚«‚ÉŽg‚¤
