@@ -70,7 +70,7 @@ void Field::Initialize()
 
 
 	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip_stage_1_1.csv");
+	Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 
@@ -190,7 +190,7 @@ void Field::Initialize()
 
 			//ボスのオブジェクトに使う柱
 			if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f),1,6, boss_room_level_1);
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 18.f),1,6, boss_room_level_1);
 			}
 
 
@@ -201,17 +201,17 @@ void Field::Initialize()
 
 			//ボスのオブジェクトに使う柱
 			if (field_map[y][x] == 28) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_3);
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 18.f), 6, 36, boss_room_level_3);
 			}
 
 			//ボスのオブジェクトに使う柱
 			if (field_map[y][x] == 29) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_4);
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 18.f), 2, 12, boss_room_level_4);
 			}
 
 			//ボスのオブジェクトに使う柱
 			if (field_map[y][x] == 30) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_5);
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 18.f), 3, 18, boss_room_level_5);
 			}
 
 			//ボスのオブジェクトに使う柱
