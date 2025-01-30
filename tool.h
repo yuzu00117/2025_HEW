@@ -60,4 +60,7 @@ float calculateScale(float displayPercentage);
 // 倍率から表示範囲を計算する関数
 float calculateDisplayPercentage(float scale);
 
+//ランダムなスピードをもらえる
+b2Vec2 GetRandomVelocity(float baseSpeed);
+
 #endif // TOOL_H

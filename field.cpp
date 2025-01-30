@@ -70,7 +70,7 @@ void Field::Initialize()
 
 
 	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
+	Field::LoadCSV("asset/mapchip_stage_1_1.csv");
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 

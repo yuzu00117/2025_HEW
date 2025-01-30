@@ -279,8 +279,9 @@ void boss_pillar::Destroy_Splitting()
 					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
 					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
-					// 初速度はゼロに設定（必要に応じて速度を追加可能）
-					fragment->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+					
+					// ランダムな方向に飛び散るように速度を設定
+					fragment->SetLinearVelocity(GetRandomVelocity(5.0f)); // 5.0f は基準速度（調整可）
 				}
 			}
 
