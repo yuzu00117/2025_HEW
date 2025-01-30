@@ -221,6 +221,12 @@ void Field::Initialize()
 
 
 
+			//ボスの部屋におくようの間欠泉
+			if (field_map[y][x] == 35) {//ボスの地面ブロック破壊できる
+				objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(3.f,6.f),9,9,boss_room_level_1);
+			}
+
+
 		}
 	}
 

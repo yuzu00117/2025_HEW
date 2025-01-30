@@ -36,6 +36,8 @@ enum ColliderTypeList
 
     collider_item,
 
+    collider_geyser_water,
+
     collider_normal_attack_anchor,
 
     collider_enemy_dynamic,

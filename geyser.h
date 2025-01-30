@@ -12,12 +12,15 @@
 #define GEYSER_H
 
 #include"include/box2d/box2d.h"
+#include<vector>
+#include"1-1_boss.h"
+#include"1-1_boss_field_block.h"
 
 class geyser
 {
 public:
 
-	geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, b2Vec2 GeyserOnRockSize, int set_rock_need_anchor_level);
+	geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, Boss_Room_Level level);
 	~geyser();
 
 
@@ -33,6 +36,10 @@ public:
 
 	void JumpPlayer();
 
+	void Destroy_Splitting();
+
+
+	void DestroySplittedBodies(std::vector<b2Body*>& bodyList);
 
 	// ID を取得する
 	int GetID() const {
@@ -66,7 +73,7 @@ public:
 		geyser_size = size;
 	}
 
-	
+
 
 
 	//間欠泉の水の飛ぶ範囲の設定
@@ -107,17 +114,20 @@ public:
 	}
 
 
-	bool Get_geyser_on_rock_flag()const
+	bool GetFlag()const
 	{
-		return geyser_on_rock_flag;
+		return water_flag;
 	}
 
-	void Set_geyser_on_rock_flag(bool flag)
+	void SetFlag(bool flag)
 	{
-		geyser_on_rock_flag = flag;
+		water_flag = flag;
 	}
 
 private:
+
+	bool isUse;
+
 	int id; // 各インスタンス固有の ID
 
 	b2Body* geyser_body;//間欠泉のボディ
@@ -132,8 +142,25 @@ private:
 	b2Vec2 geyser_on_rock_size;//間欠泉に乗ってる岩のサイズ
 
 
-	bool geyser_on_rock_flag;//岩の上に間欠泉が乗ってる
+	bool water_flag;//水がプレイヤーとふれている
 
+	float easing_rate;
+
+
+	int Splitting_x;//横の分割すう
+
+	int Splitting_y;//たての分割すう
+
+	bool Splitting_Destroy_Flag = false;//柱のボディを破壊して分割するフラグ
+
+	bool Splitting_end = false;//分割終了
+
+	int Destroy_Cnt = 0;
+
+
+	Boss_Room_Level boss_room_level;
+	//柱がバラバラになったときに使う
+	std::vector<b2Body*> boss_geyser_body_Splitting;
 
 
 
