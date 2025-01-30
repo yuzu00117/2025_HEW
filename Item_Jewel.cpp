@@ -14,10 +14,13 @@
 #include"sprite.h"
 #include"texture.h"
 #include"player_position.h"
+#include"player.h"
+#include"player_stamina.h"
 #include"Item_Manager.h"
 #include"sound.h"
+#include"player_UI.h"
+#include"easing.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 
 ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon, float Alpha)
     :m_size(body_size), m_Alpha(Alpha), m_type(type)
@@ -74,7 +77,7 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
         fixture.density = 1.0f;//密度
         fixture.friction = 0.3f;//摩擦
         fixture.restitution = 0.1f;//反発係数
-        fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+        fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 
         p_fixture = m_body->CreateFixture(&fixture);
     }
@@ -98,24 +101,98 @@ void	ItemJewel::Update()
 {
     if (m_destory && m_body != nullptr)
     {
+        SetIfCollecting(false);
         //ボディの情報を消す
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
+        
+        return;
+    }
+
+    if (m_collecting)
+    {
+        auto ring_position = player_UI::GetRingPosition();
+        ring_position.y += 170.0f;
+
+
+        //イージング
+        //=====================================================================================================================================
+        float collecting_time = Ease::InQuint(m_collecting_time);
+
+        b2Vec2	new_position;	//startからendをtで保管してretvを作る
+        new_position.x = (1 - collecting_time) * m_position_collecting_start.x + collecting_time * ring_position.x;
+        new_position.y = (1 - collecting_time) * m_position_collecting_start.y+ collecting_time * ring_position.y;
+
+        m_body->SetTransform(new_position, 0.0f);
+        m_position_while_collecting = new_position;
+
+        m_collecting_time += 1.0f / 60.0f;
+
+        //=====================================================================================================================================
+        if (m_position_while_collecting.x <= ring_position.x)
+        {
+            SetDestory(true);
+            player_UI::SetJewelCollected(m_type, true);
+        }
+
+    }
+
+}
+
+void ItemJewel::SetIfCollecting(bool flag)
+{
+    m_collecting = flag;
+
+    if (m_collecting)
+    {
+        float scale = SCREEN_SCALE;
+
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+
+        // コライダーの位置の取得（アイテムーの位置）
+        b2Vec2 position;
+        position.x = m_body->GetPosition().x;
+        position.y = m_body->GetPosition().y;
+
+        m_position_collecting_start.x = SCREEN_WIDTH / 2;
+        m_position_collecting_start.y = (PlayerPosition::GetPlayerPosition().y * BOX2D_SCALE_MANAGEMENT * scale + screen_center.y)- SCREEN_HEIGHT / 2;
+
+        m_position_while_collecting = m_position_collecting_start;
 
         app_atomex_start(Object_Get_Coin_Sound);
+
+
     }
 }
 
 void    ItemJewel::Function()
 {
+    Player& player = Player::GetInstance();
+    float speed;
+    float speed_change_value;
+    b2Vec2 jump_force;
+    b2Vec2 jump_force_change_value;
+
     switch (m_type)
     {
     case BLUE:
+        //プレイヤーの移動速度が1.5倍
+        speed = player.GetSpeed();
+        speed_change_value = speed * 1.5 - speed;
+        player.SetSpeed(speed_change_value);
+        //プレイヤーのジャンプ力が1.5倍
+        jump_force = player.GetJumpForce();
+        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 1.5f - jump_force.y };
+        player.SetJumpForce(jump_force_change_value);
         break;
     case RED:
         break;
     case YELLOW:
+        PlayerStamina::SetAvoidDamageOnce(true);
         break;
     }
 }
@@ -146,8 +223,23 @@ void ItemJewel::Draw()
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 
+
         // コライダーと位置情報の補正をするため
         float scale = SCREEN_SCALE;
+
+        if (m_collecting)
+        {
+            //描画
+            DrawSpriteOld(
+                { m_position_while_collecting.x,
+                  m_position_while_collecting.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * 1.7f,GetSize().y * scale * 1.7f },
+                m_Alpha
+            );
+
+            return;
+        }
 
         b2Vec2 screen_center;
         screen_center.x = SCREEN_CENTER_X;
@@ -164,8 +256,7 @@ void ItemJewel::Draw()
         //取得したbodyのポジションに対してBox2dスケールの補正を加える
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-
+        
         //描画
         DrawSprite(
             { draw_x,

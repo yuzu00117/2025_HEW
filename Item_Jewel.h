@@ -12,6 +12,7 @@
 #define	ITEM_JEWEL_H
 
 #include"include/box2d/box2d.h"
+#include"texture.h"
 
 enum Jewel_Type
 {
@@ -44,6 +45,12 @@ public:
 	b2Vec2 GetSize() const { return m_size; }
 	//描画サイズセット
 	void SetSize(b2Vec2 size) { m_size = size; }
+	
+
+	//	ゲージへ回収されている途中なのかどうかを取得
+	bool	GetIfCollecting() { return m_collecting; }
+	//　ゲージへ回収されている途中なのかどうかをセット
+	void	SetIfCollecting(bool flag);
 
 	//これから消えるかどうかを取得
 	bool	GetDestory() { return m_destory; }
@@ -71,9 +78,25 @@ private:
 	//アイテムの透明度
 	float m_Alpha;
 
+	//テクスチャ
+	ID3D11ShaderResourceView* g_Texture;//アンカーのテクスチャ
+
 	//消す予定なのかどうか
 	bool	m_destory = false;
 
+	//回収中かどうか
+	bool	m_collecting = false;
+
+	//回収の経過時間
+	float	m_collecting_time = 0.3f;
+
+	//回収開始時の座標（イージングで使う）
+	b2Vec2	m_position_collecting_start;
+
+	//回収時の座標
+	b2Vec2 m_position_while_collecting;
+
+	//宝石のタイプ
 	Jewel_Type	m_type;
 
 

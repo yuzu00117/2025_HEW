@@ -45,6 +45,8 @@ ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
+b2Vec2  Player::m_jump_force = b2Vec2(0.0f, -0.40f);
+float   Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;
 
@@ -420,6 +422,18 @@ void Player::Update()
     {
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
+
+        app_atomex_start(Player_Soul_Colect_Sound);
+    }
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
+
+
+//宝石使う処理
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J) || state.buttonB))
+    {
+        ItemManager& itemManager = ItemManager::GetInstance();
+        itemManager.UseAllJewel();
 
         app_atomex_start(Player_Soul_Colect_Sound);
     }

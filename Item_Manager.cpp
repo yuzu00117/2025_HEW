@@ -175,6 +175,16 @@ void ItemManager::SetCollectSpirit(bool flag)
 	m_Coin_List.clear(); 
 }
 
+void ItemManager::UseAllJewel()
+{
+    for (auto& w : m_Jewel_List) {
+        w->Function();
+    }
+
+    m_Jewel_List.clear();
+
+}
+
 
 
 
