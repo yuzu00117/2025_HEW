@@ -1,11 +1,11 @@
-//-----------------------------------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------------------------------
 // #name tool.h
-// #description Float‚ÌŒvZ‚ğ‚©‚ñ‚½‚ñ‚É‚·‚é‚½‚ß
-// #make 2024/11/02@@‰i–ì‹`–ç
+// #description Floatã®è¨ˆç®—ã‚’ã‹ã‚“ãŸã‚“ã«ã™ã‚‹ãŸã‚
+// #make 2024/11/02ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/02
-// #comment ’Ç‰ÁEC³—\’è
-//          Efloat‚ğŠÈ’P‚É 
-// @@@@ E’†g‚Í—‰ğ‚µ‚Ä‚é@‚Å‚à‚»‚ñ‚È‚Ş‚¸‚¢‚±‚Æ‚µ‚Ä‚È‚¢@g‚¢‚â‚·‚­‚µ‚Ä‚é‚¾‚¯
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»floatã‚’ç°¡å˜ã« 
+// ã€€ã€€ã€€ã€€ ãƒ»ä¸­èº«ã¯ç†è§£ã—ã¦ã‚‹ã€€ã§ã‚‚ãã‚“ãªã‚€ãšã„ã“ã¨ã—ã¦ãªã„ã€€ä½¿ã„ã‚„ã™ãã—ã¦ã‚‹ã ã‘
 //          
 //----------------------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@
 
 
 // ==================================================
-// Float2‚É•ÏŠ· [Ÿ]
+// Float2ã«å¤‰æ› [â—†]
 // ==================================================
 XMFLOAT2 toFloat2(const XMFLOAT3& f) {
     return XMFLOAT2(f.x, f.y);
@@ -37,7 +37,7 @@ XMFLOAT2 toFloat2(const b2Vec2& f) {
 }
 
 // ==================================================
-// Float3‚É•ÏŠ· [Ÿ]
+// Float3ã«å¤‰æ› [â—†]
 // ==================================================
 XMFLOAT3 toFloat3(const XMFLOAT2& f) {
     return XMFLOAT3(f.x, f.y, 0.0f);
@@ -56,7 +56,7 @@ XMFLOAT3 toFloat3(const b2Vec2& f) {
 }
 
 // ==================================================
-// Float4‚É•ÏŠ· [Ÿ]
+// Float4ã«å¤‰æ› [â—†]
 // ==================================================
 XMFLOAT4 toFloat4(const XMFLOAT2& f) {
     return XMFLOAT4(f.x, f.y, 0.0f, 1.0f);
@@ -76,13 +76,13 @@ XMFLOAT4 toFloat4(const b2Vec2& f) {
 
 
 /**
- * @brief â‘Î’l‚ğ•Ô‚·ŠÖ”
- * @param value “ü‚ê‚½‚¢’l
- * @return â‘Î’l
+ * @brief çµ¶å¯¾å€¤ã‚’è¿”ã™é–¢æ•°
+ * @param value å…¥ã‚ŒãŸã„å€¤
+ * @return çµ¶å¯¾å€¤
  */
 float ReturnAbsoluteValue(float value)
 {
-    if (0 < value)//‚O‚æ‚è‘å‚«‚¢‚½‚ßó‚¯æ‚Á‚½’l‚ğ‚»‚Ì‚Ü‚Ü•Ô‚·
+    if (0 < value)//ï¼ã‚ˆã‚Šå¤§ãã„ãŸã‚å—ã‘å–ã£ãŸå€¤ã‚’ãã®ã¾ã¾è¿”ã™
     {
         return value;
     }
@@ -95,39 +95,54 @@ float ReturnAbsoluteValue(float value)
 
 
 
-// ƒ‰ƒ“ƒ_ƒ€‚È®”‚ğ¶¬‚·‚éŠÖ”
+// ãƒ©ãƒ³ãƒ€ãƒ ãªæ•´æ•°ã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°
 int GetRandomInt(int min, int max) {
-    static std::random_device rd;  // ƒ‰ƒ“ƒ_ƒ€ƒfƒoƒCƒXiƒV[ƒh¶¬j
-    static std::mt19937 gen(rd()); // ƒƒ‹ƒZƒ“ƒkEƒcƒCƒXƒ^—”¶¬Ší
-    std::uniform_int_distribution<> dist(min, max); // ”ÍˆÍw’è
+    static std::random_device rd;  // ãƒ©ãƒ³ãƒ€ãƒ ãƒ‡ãƒã‚¤ã‚¹ï¼ˆã‚·ãƒ¼ãƒ‰ç”Ÿæˆï¼‰
+    static std::mt19937 gen(rd()); // ãƒ¡ãƒ«ã‚»ãƒ³ãƒŒãƒ»ãƒ„ã‚¤ã‚¹ã‚¿ä¹±æ•°ç”Ÿæˆå™¨
+    std::uniform_int_distribution<> dist(min, max); // ç¯„å›²æŒ‡å®š
 
-    return dist(gen); // ƒ‰ƒ“ƒ_ƒ€‚È®”‚ğ¶¬‚µ‚Ä•Ô‚·
+    return dist(gen); // ãƒ©ãƒ³ãƒ€ãƒ ãªæ•´æ•°ã‚’ç”Ÿæˆã—ã¦è¿”ã™
 }
 
-// “x”‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·‚·‚éŠÖ”
+// åº¦æ•°ã‚’ãƒ©ã‚¸ã‚¢ãƒ³ã«å¤‰æ›ã™ã‚‹é–¢æ•°
 double DegreesToRadians(double degrees) {
     return degrees * M_PI / 180.0;
 }
 
 
-// •\¦”ÍˆÍ‚©‚ç”{—¦‚ğŒvZ‚·‚éŠÖ”
+// è¡¨ç¤ºç¯„å›²ã‹ã‚‰å€ç‡ã‚’è¨ˆç®—ã™ã‚‹é–¢æ•°
 float calculateScale(float displayPercentage) {
     if (displayPercentage <= 0 || displayPercentage > 100) {
-        throw std::invalid_argument("•\¦”ÍˆÍ‚Í0‚æ‚è‘å‚«‚­100ˆÈ‰º‚Ì’l‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B");
+        throw std::invalid_argument("è¡¨ç¤ºç¯„å›²ã¯0ã‚ˆã‚Šå¤§ãã100ä»¥ä¸‹ã®å€¤ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚");
     }
 
-    // •\¦”ÍˆÍi“j‚ğ”{—¦‚É•ÏŠ·
+    // è¡¨ç¤ºç¯„å›²ï¼ˆï¼…ï¼‰ã‚’å€ç‡ã«å¤‰æ›
     float scale = sqrt(1.0 / displayPercentage);
     return scale;
 }
 
-// ”{—¦‚©‚ç•\¦”ÍˆÍ‚ğŒvZ‚·‚éŠÖ”
+// å€ç‡ã‹ã‚‰è¡¨ç¤ºç¯„å›²ã‚’è¨ˆç®—ã™ã‚‹é–¢æ•°
 float calculateDisplayPercentage(float scale) {
     if (scale <= 0) {
-        throw std::invalid_argument("”{—¦‚Í0‚æ‚è‘å‚«‚¢’l‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B");
+        throw std::invalid_argument("å€ç‡ã¯0ã‚ˆã‚Šå¤§ãã„å€¤ã‚’æŒ‡å®šã—ã¦ãã ã•ã„ã€‚");
     }
 
-    // •\¦”ÍˆÍi“j‚ğŒvZ
+    // è¡¨ç¤ºç¯„å›²ï¼ˆï¼…ï¼‰ã‚’è¨ˆç®—
     float displayPercentage = 100.0 / pow(scale, 2);
     return displayPercentage;
+}
+
+
+// ãƒ©ãƒ³ãƒ€ãƒ ãªé€Ÿåº¦ã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°
+b2Vec2 GetRandomVelocity(float baseSpeed)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> angleDist(0.0f, 2.0f * M_PI); // 0ã€œ360åº¦ã®ãƒ©ãƒ³ãƒ€ãƒ è§’åº¦
+    std::uniform_real_distribution<float> speedDist(baseSpeed * 0.5f, baseSpeed * 1.5f); // é€Ÿåº¦ç¯„å›²
+
+    float randomAngle = angleDist(gen);
+    float randomSpeed = speedDist(gen);
+
+    return b2Vec2(cos(randomAngle) * randomSpeed, sin(randomAngle) * randomSpeed);
 }

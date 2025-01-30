@@ -727,6 +727,8 @@ void Player::Player_sensor_size_change(int anchor_level)
         {
             b2Vec2 pos=GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev1_2());
+
+            SetSensorSize(GetSensorSizeLev1_2());
             sensor_flag = true;
         }
     }
@@ -737,6 +739,7 @@ void Player::Player_sensor_size_change(int anchor_level)
         {
             b2Vec2 pos = GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
+            SetSensorSize(GetSensorSizeLev3());
             sensor_flag = true;
         }
     }
@@ -968,17 +971,17 @@ void Player::Draw()
         //センサー描画
 
 
-        //// シェーダリソースを設定
-        //GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        //DrawSprite(
-        //    { screen_center.x,
-        //      screen_center.y },
-        //    m_body->GetAngle(),
-        //    { GetSensorSize().x * scale,GetSensorSize().y * scale }
-        //);
-        //float size_sensor = GetSensorSize().x * scale;
-        //float size = GetSize().x * scale;
+        DrawSprite(
+            { screen_center.x,
+              screen_center.y },
+            m_body->GetAngle(),
+            { GetSensorSize().x * scale,GetSensorSize().y * scale }
+        );
+        float size_sensor = GetSensorSize().x * scale;
+        float size = GetSize().x * scale;
 
     }
 }

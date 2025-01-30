@@ -391,6 +391,8 @@ private:
 	//エフェクト管理用の変数
 
 	float panic_effect_sheet_cnt = 0;
+	b2Vec2 panic_effect_size=b2Vec2(4.f, 4.f);
+
 	float charge_attack_effect_sheet_cnt = 0;
 	float charge_effect_sheet_cnt = 0;
 	float shock_wave_effect_sheet_cnt = 0;

@@ -605,7 +605,8 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
 
 
-
+		//エフェクトスタート
+		panic_effect_sheet_cnt = 1;
 
 		
 	}
@@ -626,7 +627,8 @@ void Boss_1_1::DestroyBossCore(void)
 
 		world->DestroyBody(GetAnchorPointBody());
 
-
+		//テクスチャを終了
+		panic_effect_sheet_cnt = 0;
 
 		//nullをセット
 		SetAnchorPointBody(nullptr);
@@ -737,6 +739,8 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 
 		world->CreateJoint(&jointDef); //ワールドにジョイントを追加
 
+
+		//地面を破壊
 		boss_field_level++;
 
 		
@@ -1375,6 +1379,25 @@ void Boss_1_1::EffectDraw()
 	
 
 		DrawDividedSpriteBoss(XMFLOAT2(break_draw_x, break_draw_y), 0.0f, XMFLOAT2(GetMiniGolemDrawSize().x * scale * 1.3*1.5, GetMiniGolemDrawSize().y * scale * 1.7*1.5), 4, 2, mini_golem_break_effect_cnt/4, effect_alpha, 1);
+	}
+
+	//ピヨピヨの表示
+	if (panic_effect_sheet_cnt != 0)
+	{
+		//シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_effect);
+
+		b2Vec2 panic_pos = m_body->GetPosition();
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float panic_draw_x = ((panic_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float panic_draw_y = ((panic_pos.y - PlayerPosition::GetPlayerPosition().y-((reality_boss_size.y/2)/BOX2D_SCALE_MANAGEMENT)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+
+
+		DrawDividedSpriteBoss(XMFLOAT2(panic_draw_x, panic_draw_y), 0.0f, XMFLOAT2(panic_effect_size.x * scale , panic_effect_size.y * scale ), 10, 13, panic_effect_sheet_cnt / 4, effect_alpha, 1);
 	}
 }
 
