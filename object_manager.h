@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <memory>
+#include "main.h"
 #include "wood.h"
 #include"one-way_platform.h"
 #include"sloping_block.h"
@@ -26,6 +27,7 @@
 #include"teleport_block.h"
 #include"1-1_boss_field_block.h"
 #include"Item_Coin_UI.h"
+#include"1_1_boss_pillar.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -35,13 +37,16 @@ enum ObjectType {
     Object_one_way_platform,//足場　したからしか乗れない
     Object_Static_to_Dynamic,//静的から動的に変更するオブジェクト
     Object_Movable_Ground,  //引っ張れる床 
-    
+
     Object_Enemy_Static,//静的エネミー
     Object_Enemy_Dynamic,//動的エネミー
     Object_Enemy_Attack, //エネミーの攻撃
     Object_Enemy_Floating,//浮遊エネミー
 
     Object_teleport_block,//テレポートブロック
+
+    Boss_core,//ボスのこあ
+    Boss_pillar,//ボスの柱
 };
 
 class Object{};
@@ -78,6 +83,8 @@ public:
 
     void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
 
+    void AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -103,6 +110,8 @@ public:
     teleport_block* FindTeleportBlock(int id);
 
     boss_field_block* FindBossFieldBlock(int id);
+
+    boss_pillar* FindBossPillar(int id);
 
     
     //IDとオブジェクトタイプでオブジェクトを検索
@@ -147,7 +156,8 @@ private:
 
     std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
 
-    std::vector<std::unique_ptr<boss_field_block>> boss_field_blockList;//テレポートブロック
+    std::vector<std::unique_ptr<boss_field_block>> boss_field_blockList;//ボス部屋の床
+    std::vector<std::unique_ptr<boss_pillar>> boss_pillarList;//ボスの部屋の柱
 
     //ここにオブジェクトごとにリストを追加していく感じ
 

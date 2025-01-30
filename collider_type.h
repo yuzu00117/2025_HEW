@@ -42,6 +42,7 @@ enum ColliderTypeList
     collider_enemy_static,
     collider_enemy_attack,
     collider_enemy_sensor,
+    collider_enemy_sensor_move,
     collider_enemy_floating,
     collider_enemy_floating_sensor,
 
@@ -51,6 +52,7 @@ enum ColliderTypeList
     collider_boss_field,
 
     collider_boss,
+    collider_boss_senosr,
     collider_mini_golem,
     collider_shock_wave,
     collider_chage_attack,
@@ -69,7 +71,7 @@ public:
 
 
     b2Vec2 add_force = { 0.0f,0.0f }; // 追加のb2Vecデータ
-    ObjectType object_name;           // オブジェクト用の識別データ
+    ObjectType object_name = NULL_object;           // オブジェクト用の識別データ
     ItemType Item_name;               // アイテム用の識別データ
     int id;                           // オブジェクト管理用ID
 

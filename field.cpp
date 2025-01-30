@@ -25,9 +25,6 @@
 #include"object_manager.h"
 #include"Item_Manager.h"
 
-
-
-
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
 
@@ -73,7 +70,7 @@ void Field::Initialize()
 
 
 	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip_stage_1_1.csv");
+	Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 
@@ -158,31 +155,71 @@ void Field::Initialize()
 				objectManager.AddTeleportBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(25.f, 1.f), b2Vec2(25.f, 4.f));
 			}
 
-			if (field_map[y][x] == 17) {//間欠泉にいくようのテレポートブロック
+
+
+
+			if (field_map[y][x] == 17) {//ボスの地面ブロック破壊できる
 				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f),3,boss_room_level_1);
 			}
-
-			if (field_map[y][x] == 18) {//間欠泉にいくようのテレポートブロック
+			if (field_map[y][x] == 18) {//ボスの地面ブロック破壊できる
 				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2);
 			}
-
-			if (field_map[y][x] == 19) {//間欠泉にいくようのテレポートブロック
+			if (field_map[y][x] == 19) {//ボスの地面ブロック破壊できる
 				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3);
 			}
-
-			if (field_map[y][x] == 21) {//浮遊敵
-				objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			if (field_map[y][x] == 20) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_4);
+			}
+			if (field_map[y][x] == 21) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_5);
+			}
+			if (field_map[y][x] == 22) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_6);
+			}
+			if (field_map[y][x] == 23) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_7);
+			}
+			if (field_map[y][x] == 24) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_8);
+			}
+			if (field_map[y][x] == 25) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_9);
 			}
 
-			if (field_map[y][x] == 22) {//宝石
-				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE);
+
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f),1,6, boss_room_level_1);
 			}
-			if (field_map[y][x] == 23) {//宝石
-				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, RED);
+
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 27) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 18.f), 3, 18, boss_room_level_2);
 			}
-			if (field_map[y][x] == 24) {//宝石
-				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, YELLOW);
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 28) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_3);
 			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 29) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_4);
+			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 30) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_5);
+			}
+
+			//ボスのオブジェクトに使う柱
+			if (field_map[y][x] == 31) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_6);
+			}
+
+
 
 		}
 	}
@@ -357,4 +394,25 @@ void Field::DeleteFieldObject(b2Body* delete_object)
 			}
 		}
 	}
+}
+
+//マップ切り替え
+void Field::LoadMap(StageType stage_type)
+{
+    // 現在のマップをクリア
+    Field::Finalize();
+
+    // マップタイプに応じて対応する CSV ファイルを読み込む
+    switch (stage_type) {
+        case StageType::Stage1:
+            LoadCSV("asset/mapchip_stage_1_1.csv");
+            break;
+        // 他のステージを追加
+        default:
+            std::cerr << "Unknown map type" << std::endl;
+            return;
+    }
+
+    // 新しいマップを初期化
+    Initialize();
 }

@@ -22,6 +22,8 @@ ID3D11ShaderResourceView* g_anchor_level_1_Texture = NULL;		   //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚
 ID3D11ShaderResourceView* g_anchor_level_2_Texture = NULL;		   //ƒAƒ“ƒJ[ƒŒƒxƒ‹2‚ÌƒeƒNƒXƒ`ƒƒ
 ID3D11ShaderResourceView* g_anchor_level_3_Texture = NULL;		   //ƒAƒ“ƒJ[ƒŒƒxƒ‹3‚ÌƒeƒNƒXƒ`ƒƒ
 ID3D11ShaderResourceView* g_anchor_level_border_Texture = NULL;	   //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO˜g
+ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌdØ‚è
+ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO‘¤‚Ì‘•ü
 
 // Ã“Iƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
 DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(130.f, 450.f);
@@ -55,8 +57,8 @@ void player_UI::Initialize()
 	g_yellow_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\yellow_jewel.png");
 
 	//ƒ\ƒEƒ‹ƒQ[ƒW’B
-	g_soul_gage_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_back_ground.png");
-	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul.png");
+	/*g_soul_gage_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_back_ground.png");*/
+	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul .png");
 	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP.png");
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
 
@@ -66,6 +68,10 @@ void player_UI::Initialize()
 	g_anchor_level_2_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\level2.png");
 	g_anchor_level_3_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\level3.png");
 	g_anchor_level_border_Texture= InitTexture(L"asset\\texture\\UI_soul_gage\\level_line.png");
+	g_anchor_level_division_Texture= InitTexture(L"asset\\texture\\UI_soul_gage\\gage_division.png");
+	g_anchor_level_outline_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_out_line.png");
+
+	
 
 
 
@@ -80,6 +86,96 @@ void player_UI::Update()
 void player_UI::Draw()
 {
 
+
+
+
+	
+	//-------------------------------------------------------------------------------------------
+	//ƒAƒ“ƒJ[ƒQ[ƒW
+
+	//ƒAƒ“ƒJ[ƒQ[ƒW‚Ì”wŒi‚ğ•\¦
+
+	//ƒQ[ƒW‚ÌŠO˜g
+	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_border_Texture);
+
+	DrawSpriteOld(
+		{ player_ui_position },
+		0,
+		{ player_ui_size },
+		player_ui_alpha
+	);
+	
+	//// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+	//GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_background_Texture);
+
+	//DrawSpriteOld(
+	//	{ player_ui_position },
+	//	0,
+	//	{ player_ui_size },
+	//	player_ui_alpha
+	//);
+
+
+
+
+
+	if (true) //‚±‚±‚ÍƒAƒ“ƒJ[ƒQ[ƒW‚Ì@”’l‚É‚æ‚Á‚Ä•ÏX‚ª•K—v
+	{
+		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_Texture);
+
+		DrawSpriteOld(
+			{ player_ui_position },
+			0,
+			{ player_ui_size },
+			player_ui_alpha
+		);
+	
+	}
+
+	if (true) //‚±‚±‚ÍƒAƒ“ƒJ[ƒQ[ƒW‚ÌHP@”’l‚É‚æ‚Á‚Ä•ÏX‚ª•K—v
+	{
+		//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_HP_Texture);
+
+		DrawSpriteOld(
+			{ player_ui_position },
+			0,
+			{ player_ui_size },
+			player_ui_alpha
+		);
+	}
+
+
+	//˜g‚ğ•\¦
+	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_division_Texture);
+
+	DrawSpriteOld(
+		{ player_ui_position },
+		0,
+		{ player_ui_size },
+		player_ui_alpha
+	);
+	
+
+	//ŠO‘¤‚Ì‘•ü‚ğ•\¦
+	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_outline_Texture);
+
+	DrawSpriteOld(
+		{ player_ui_position },
+		0,
+		{ player_ui_size },
+		player_ui_alpha
+	);
+
+
+
+
+	//-----------------------------------------------------------------------------------------
+
 	//----------------------------------------------------------
 	// ring‚Ì•`‰æ
 	// 
@@ -87,11 +183,13 @@ void player_UI::Draw()
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_ring_Texture);
 
 	DrawSpriteOld(
-		{ player_ui_position},
+		{ player_ui_position },
 		0,
-		{ player_ui_size},
+		{ player_ui_size },
 		player_ui_alpha
 	);
+
+
 
 	//-------------------------------------------------------------------------------------------
 	//•óÎ‚Ì•`‰æ
@@ -135,66 +233,6 @@ void player_UI::Draw()
 		);
 	}
 	//-------------------------------------------------------------------------------------------
-
-
-
-	//-------------------------------------------------------------------------------------------
-	//ƒAƒ“ƒJ[ƒQ[ƒW
-
-	//ƒAƒ“ƒJ[ƒQ[ƒW‚Ì”wŒi‚ğ•\¦
-	
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_background_Texture);
-
-	DrawSpriteOld(
-		{ player_ui_position },
-		0,
-		{ player_ui_size },
-		player_ui_alpha
-	);
-
-
-
-	if (true) //‚±‚±‚ÍƒAƒ“ƒJ[ƒQ[ƒW‚ÌHP@”’l‚É‚æ‚Á‚Ä•ÏX‚ª•K—v
-	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_HP_Texture);
-
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	}
-
-	if (true) //‚±‚±‚ÍƒAƒ“ƒJ[ƒQ[ƒW‚Ì@”’l‚É‚æ‚Á‚Ä•ÏX‚ª•K—v
-	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_Texture);
-
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	}
-
-	//ƒQ[ƒW‚ÌŠO˜g
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_border_Texture);
-
-	DrawSpriteOld(
-		{ player_ui_position },
-		0,
-		{ player_ui_size },
-		player_ui_alpha
-	);
-
-	//-----------------------------------------------------------------------------------------
-
-
 
 	//---------------------------------------------------------------------------------------
 	//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚Ì•\¦
@@ -288,3 +326,4 @@ void player_UI::Finalize()
 	UnInitTexture(g_anchor_level_3_Texture);
 	UnInitTexture(g_anchor_level_border_Texture);
 }
+
