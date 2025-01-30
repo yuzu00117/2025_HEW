@@ -189,7 +189,18 @@ void boss_pillar::Update()
 			isUse = false;
 		}
 
+		if (m_body != nullptr)
+		{
+			float angle = m_body->GetAngle();  // ラジアンで取得
+			float angleDeg = angle * 57.2958f; // 度数法に変換
 
+			// 85°以上275°以下を判定
+			if (angleDeg >= 85.0f && angleDeg <= 275.0f)
+			{
+				//角度がそうなったら壊す
+				Splitting_Destroy_Flag = true;
+			}
+		}
 	
 
 		Destroy_Splitting();
