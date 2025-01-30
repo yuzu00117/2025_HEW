@@ -75,7 +75,7 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 	geyser_fixture.density = 3.0f;
 	geyser_fixture.restitution = 0.0f;//反発係数
 	geyser_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	geyser_fixture.filter = createFilterExclude("object_filter", {});
+	geyser_fixture.filter = createFilterExclude("ground_filter", {});
 
 
 	b2Fixture* object_geyser_fixture = m_geyser_body->CreateFixture(&geyser_fixture);
