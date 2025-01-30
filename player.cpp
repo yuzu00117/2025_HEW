@@ -483,6 +483,12 @@ void Player::Update()
 
     case Throwing_state://錨が飛んでいる状態
         Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
+        g_anchor_frame_management_number++;
+
+        if (180 < g_anchor_frame_management_number)
+        {
+            Anchor::SetAnchorState(Pulling_state);
+        }
 
        
        
@@ -677,6 +683,8 @@ void Player::updateFixtureFilter(const std::string& category, const std::vector<
     // ボディの最初のフィクスチャを取得
     b2Fixture* fixture = GetOutSidePlayerBody()->GetFixtureList();
 
+  
+
     // フィクスチャが存在しない場合は早期リターン
     if (!fixture) {
         return;
@@ -687,7 +695,11 @@ void Player::updateFixtureFilter(const std::string& category, const std::vector<
 
     // すべてのフィクスチャに対してフィルターを更新
     while (fixture) {
-        fixture->SetFilterData(newFilter);
+
+        if (fixture->IsSensor()==false)//センサーじゃなかったらフィルターを変更する
+        {
+            fixture->SetFilterData(newFilter);   
+        }
         fixture = fixture->GetNext(); // 次のフィクスチャに移動
     }
 }

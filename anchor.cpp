@@ -217,14 +217,7 @@ void Anchor::Update()
 {
 
 	
-	if(Anchor::GetAnchorState()==Connected_state)//くっついている状態になったら
-	{
-		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(b2Vec2_zero);
-
-		Anchor::CreateRotateJoint();
-
-		Anchor::SetAnchorState(Pulling_state);
-	}
+	
 }
 
 void Anchor::Draw()
@@ -330,9 +323,20 @@ void Anchor::ThrowAnchorToAP()
 	//今のアンカーがある座標の取得
 	b2Vec2 anchor_pos=g_anchor_instance->GetAnchorBody()->GetPosition();
 
-	//対象となるAPの座標を取得する
+
+	b2Body* body=AnchorPoint::GetTargetAnchorPointBody();
+
+	
+
 	b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
 
+	// 値が異常かチェック
+	if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
+		// 異常値の場合、エラーログを出力するか処理をスキップ
+		std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
+		SetAnchorState(Pulling_state);
+		return; // 処理を中断
+	}
 	b2Vec2 velocity = to_pos - anchor_pos;
 	velocity.Normalize(); // 単位ベクトル化して方向を決定
 	velocity *= 20; // 投擲速度を設定	

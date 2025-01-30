@@ -200,7 +200,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	//木を倒しす時に必要になるForce とりあえずサイズに依存でつくる
 	b2Vec2 need_power;
 
-	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//１は必要に応じて変更して
+	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 3;//１は必要に応じて変更して
 	need_power.y = 10.0f;//縦に必要な力はない
 	
 
