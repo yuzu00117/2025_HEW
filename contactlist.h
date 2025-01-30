@@ -1002,39 +1002,7 @@ public:
 
         }
 
-        //床と柱の衝突
-        if ((objectA->collider_type == collider_ground && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_anchor_point) ||
-            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_ground))
-        {
-
-            
-
-            if (objectA->object_name == Boss_pillar)
-            {
-
-                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() +1);
-
-                if (pillar_instance->GetGroundTouchCnt() > pillar_instance->GetSize().x+5)
-                {
-                    pillar_instance->SetSplitting_Destroy_Flag(true);
-                }
-
-            }
-            if (objectB->object_name == Boss_pillar)
-            {
-                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() + 1);
-
-                if (pillar_instance->GetGroundTouchCnt() > pillar_instance->GetSize().x + 5)
-                {
-                    pillar_instance->SetSplitting_Destroy_Flag(true);
-                }
-            }
-
-        }
+        
 
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
@@ -1298,29 +1266,7 @@ public:
         //-------------------------------------------------------------------------------------------
 
 
-         //床と柱の衝突
-        if ((objectA->collider_type == collider_ground && objectB->collider_type == collider_object) ||
-            (objectA->collider_type == collider_object && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_anchor_point) ||
-            (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_ground))
-        {
 
-      
-
-            if (objectA->object_name == Boss_pillar)
-            {
-                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() - 1);
-
-            }
-
-            if (objectB->object_name == Boss_pillar)
-            {
-                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                pillar_instance->SetGroundTouchCnt(pillar_instance->GetGroundTouchCnt() - 1);
-            }
-
-        }
 
 
 
