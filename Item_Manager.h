@@ -80,7 +80,7 @@ private:
 	std::vector<std::unique_ptr<ItemSpeedUp>> m_SpeedUp_List; // スピードアップアイテムのリスト
 	std::vector<std::unique_ptr<ItemSpirit>> m_Spirit_List; // ソウルアイテムのリスト
 	std::vector<std::unique_ptr<ItemCoin>> m_Coin_List; // コインのリスト
-	std::vector<std::unique_ptr<ItemJewel>> m_Jewel_List; // 宝石のリスト
+	std::list<std::unique_ptr<ItemJewel>> m_Jewel_List; // 宝石のリスト
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;

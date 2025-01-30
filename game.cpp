@@ -158,6 +158,9 @@ void Game::Update(void)
 		//ボスの更新処理
         boss.Update();
 
+        //アンカーゲージの更新処理
+        AnchorSpirit::Update();
+
         //プレイヤーが死亡したらリザルト画面に遷移
         if (PlayerStamina::IsPlayerDead())
         {

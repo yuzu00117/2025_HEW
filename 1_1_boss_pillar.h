@@ -31,7 +31,7 @@ public:
 
 	void DestroySplittedBodies(std::vector<b2Body*>& bodyList);
 
-	void Pulling_pillar(b2Vec2 pulling_power);
+	void Pulling_pillar();
 
 	// ID ‚ðŽæ“¾‚·‚é
 	int GetID() const {
@@ -99,11 +99,20 @@ public:
 		touch_ground_cnt = cnt;
 	}
 
+	b2Vec2	GetPullingPower() { return m_pulling_power; }
+	void	SetPullingPower_With_Multiple(b2Vec2 multiple) {
+		m_pulling_power.x *= multiple.x;
+		m_pulling_power.y *= multiple.y;
+	}
+
+
 private:
 
 	bool isUse;
 
 	int id;
+
+	b2Vec2 m_pulling_power;
 
 	b2Body* m_body;//’Œ‚Ìƒ{ƒfƒB
 

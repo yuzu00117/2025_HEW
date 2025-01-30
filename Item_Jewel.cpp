@@ -200,6 +200,8 @@ void    ItemJewel::Function()
         PlayerStamina::SetAvoidDamageOnce(true);
         break;
     }
+
+    player_UI::SetJewelCollected(m_type, false);
 }
 
 

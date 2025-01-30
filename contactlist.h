@@ -201,13 +201,13 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->Pulling_ground(objectA->add_force);
+                ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->Pulling_ground(objectB->add_force);
+                ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
 
@@ -335,12 +335,12 @@ public:
                 if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
                 {
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    pillar_instance->Pulling_pillar(objectA->add_force);//木を引っ張る処理を呼び出す
+                    pillar_instance->Pulling_pillar();//木を引っ張る処理を呼び出す
                 }
                 else
                 {
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
-                    pillar_instance->Pulling_pillar(objectB->add_force);
+                    pillar_instance->Pulling_pillar();
                 }
             }
        

@@ -596,6 +596,10 @@ void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
 
     for (auto& w : movable_groundList) {
         w->SetPullingPower_With_Multiple(multiple);
+    }  
+    
+    for (auto& w : boss_pillarList) {
+        w->SetPullingPower_With_Multiple(multiple);
     }
 
 }

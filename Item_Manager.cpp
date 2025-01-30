@@ -14,6 +14,7 @@
 #include "world_box2d.h"
 #include"Item_Coin.h"
 #include"Item_Coin_UI.h"
+#include"anchor_spirit.h"
 
 
 // シングルトンのインスタンス取得
@@ -177,11 +178,22 @@ void ItemManager::SetCollectSpirit(bool flag)
 
 void ItemManager::UseAllJewel()
 {
+    int count = 0;
     for (auto& w : m_Jewel_List) {
-        w->Function();
+        if (w->GetBody() == nullptr)
+        {
+            w->Function();
+            count++;
+        }
     }
 
-    m_Jewel_List.clear();
+    //宝石全部回収されているなら
+    if (count == 3)
+    {
+        AnchorSpirit::SetIfAutoHeal(true);
+    }
+
+    m_Jewel_List.remove_if([](const auto& p) {return p->GetBody() == nullptr; });
 
 }
 
