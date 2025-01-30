@@ -67,8 +67,7 @@ void Game::Initialize()
     //背景の初期化
     Bg::Initialize();
 
-	//criの初期化
-    CRIInitialize();
+
 
     b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
     // 衝突リスナーをワールドに登録
@@ -92,8 +91,7 @@ void Game::Finalize(void)
 	//プレイヤーの終了処理
     player.Finalize();
 
-	//criの終了処理
-    CRIFinalize();
+	
 
     //アンカー終了処理
     Anchor::Finalize();
