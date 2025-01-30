@@ -34,7 +34,7 @@ public:
 	void Finalize();
 
 	//引っ張るを実行
-	void Pulling_ground(b2Vec2 pullingpower);
+	void Pulling_ground();
 
 	//　当たっている敵リストから敵の情報を消す（例えば敵と離れた時とか）
 	void	DeleteContactedEnemyList(EnemyStatic* enemy)
@@ -92,6 +92,11 @@ public:
 		Ground_body = body;
 	}
 
+	b2Vec2	GetPullingPower() { return m_pulling_power; }
+	void	SetPullingPower_With_Multiple(b2Vec2 multiple) {
+		m_pulling_power.x *= multiple.x;
+		m_pulling_power.y *= multiple.y;
+	}
 
 
 	
@@ -146,7 +151,8 @@ private:
 	int id; // 各インスタンス固有の ID
 
 	bool pulling;	//今引っ張っているのか
-	b2Vec2	add_force;	//引っ張る力
+	//引っ張る時の力
+	b2Vec2 m_pulling_power;
 	std::list<EnemyStatic*>enemy_static;	//今当たっている動かない敵のリスト
 	std::list<EnemyDynamic*>enemy_dynamic;	//今当たっている動く敵のリスト
 	std::list<EnemyFloating*>enemy_floating;	//今当たっている浮遊敵のリスト

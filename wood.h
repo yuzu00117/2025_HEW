@@ -30,7 +30,7 @@ public:
 	void Draw();
 	void Finalize();
 
-	void Pulling_wood(b2Vec2 pullingpower);
+	void Pulling_wood();
 
 
 	// ID を取得する
@@ -66,6 +66,11 @@ public:
 	}
 
 
+	b2Vec2	GetPullingPower() { return m_pulling_power; }
+	void	SetPullingPower_With_Multiple(b2Vec2 multiple) {
+		m_pulling_power.x *= multiple.x;
+		m_pulling_power.y *= multiple.y;	
+	}
 
 
 	///-----------------------------------------------------------------------------
@@ -95,6 +100,8 @@ public:
 
 private:
 	int id; // 各インスタンス固有の ID
+
+	b2Vec2 m_pulling_power;
 
 	b2Body* Wood_body;
 

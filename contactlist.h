@@ -223,12 +223,12 @@ public:
                 if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
                 {
                     wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
+                    wood_instance->Pulling_wood();//木を引っ張る処理を呼び出す
                 }
                 else
                 {
                     wood* wood_instance = object_manager.FindWoodByID(objectB->id);
-                    wood_instance->Pulling_wood(objectB->add_force);
+                    wood_instance->Pulling_wood();
                 }
 
             }
@@ -241,13 +241,13 @@ public:
                 if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
                 {
                     movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectA->add_force);
+                    ground_instance->Pulling_ground();
                     ground_instance->SetIfPulling(true);
                 }
                 else
                 {
                     movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                    ground_instance->Pulling_ground(objectB->add_force);
+                    ground_instance->Pulling_ground();
                     ground_instance->SetIfPulling(true);
                 }
 
@@ -260,12 +260,12 @@ public:
                 if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
                 {
                     rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    rock_instance->Pulling_rock(objectA->add_force);//木を引っ張る処理を呼び出す
+                    rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
                 }
                 else
                 {
                     rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                    rock_instance->Pulling_rock(objectB->add_force);//木を引っ張る処理を呼び出す
+                    rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
                 }
 
             }

@@ -130,6 +130,9 @@ public:
     // 全てのオブジェクトを破棄
     void FinalizeAll();
 
+    //  引っ張る強さを更新
+    void    SetPullingPower_With_Multiple(b2Vec2 multiple);
+
 private:
     std::vector<std::unique_ptr<wood>> woodList;//木のリスト
     std::vector < std::unique_ptr<rock>>rockList;//岩のリスト

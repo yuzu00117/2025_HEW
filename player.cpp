@@ -428,16 +428,16 @@ void Player::Update()
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
 
 
-//宝石使う処理
+//宝石使う処理(テスト用)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J) || state.buttonB))
-    {
-        ItemManager& itemManager = ItemManager::GetInstance();
-        itemManager.UseAllJewel();
+    //if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J)))
+    //{
+    //    ItemManager& itemManager = ItemManager::GetInstance();
+    //    itemManager.UseAllJewel();
 
-        app_atomex_start(Player_Soul_Colect_Sound);
-    }
-    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
+    //    app_atomex_start(Player_Soul_Colect_Sound);
+    //}
+    //CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B));
 
 
 

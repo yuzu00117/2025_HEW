@@ -137,6 +137,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	
 
 	object_anchorpoint_data->add_force = need_power;
+	m_pulling_power = need_power;
 
 
 	//アンカーレベルの設定
@@ -177,12 +178,13 @@ void wood::Initialize()
 
 void wood::Update()
 {
-
+	
 }
 
-void wood::Pulling_wood(b2Vec2 pulling_power)
+void wood::Pulling_wood()
 {
 	b2Body*body=GetObjectAnchorPointBody();
+	b2Vec2 pulling_power = m_pulling_power;
 	//プレイヤー側に倒す
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
 	{

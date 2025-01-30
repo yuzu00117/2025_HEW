@@ -4,7 +4,8 @@
 // #make 2025/1/24　王泳心
 // #update 2025/1/24
 // #comment 追加・修正予定
-
+//                  アンカーがリメイクされたら赤の宝石の効果にアンカー投げる速度アップを追加する予定
+//                  効果の倍率まだ調整いる
 //----------------------------------------------------------------------------------------------------
 
 #include "Item_Jewel.h"
@@ -17,6 +18,7 @@
 #include"player.h"
 #include"player_stamina.h"
 #include"Item_Manager.h"
+#include"object_manager.h"
 #include"sound.h"
 #include"player_UI.h"
 #include"easing.h"
@@ -172,6 +174,7 @@ void ItemJewel::SetIfCollecting(bool flag)
 void    ItemJewel::Function()
 {
     Player& player = Player::GetInstance();
+    ObjectManager& object_manager = ObjectManager::GetInstance();
     float speed;
     float speed_change_value;
     b2Vec2 jump_force;
@@ -190,6 +193,8 @@ void    ItemJewel::Function()
         player.SetJumpForce(jump_force_change_value);
         break;
     case RED:
+        //オブジェを引っ張る時の力を倍数で掛ける
+        object_manager.SetPullingPower_With_Multiple(b2Vec2{ 1.5f,1.5f });
         break;
     case YELLOW:
         PlayerStamina::SetAvoidDamageOnce(true);
