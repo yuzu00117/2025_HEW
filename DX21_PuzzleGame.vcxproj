@@ -135,6 +135,8 @@
   <ItemGroup>
     <ClCompile Include="1-1_boss.cpp" />
     <ClCompile Include="1-1_boss_field_block.cpp" />
+    <ClCompile Include="1_1boss_state_debug.cpp" />
+    <ClCompile Include="1_1_boss_pillar.cpp" />
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
@@ -157,6 +159,7 @@
     <ClCompile Include="field.cpp" />
     <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="geyser.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
@@ -196,6 +199,8 @@
   <ItemGroup>
     <ClInclude Include="1-1_boss.h" />
     <ClInclude Include="1-1_boss_field_block.h" />
+    <ClInclude Include="1_1boss_state_debug.h" />
+    <ClInclude Include="1_1_boss_pillar.h" />
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="anchor_spirit.h" />
@@ -221,6 +226,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="geyser.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="hit_stop.h" />
     <ClInclude Include="Item_Coin.h" />

@@ -36,6 +36,8 @@ enum ColliderTypeList
 
     collider_item,
 
+    collider_geyser_water,
+
     collider_normal_attack_anchor,
 
     collider_enemy_dynamic,
@@ -52,6 +54,7 @@ enum ColliderTypeList
     collider_boss_field,
 
     collider_boss,
+    collider_boss_senosr,
     collider_mini_golem,
     collider_shock_wave,
     collider_chage_attack,

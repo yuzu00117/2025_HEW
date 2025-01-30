@@ -56,7 +56,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
 	fixture.friction = 0.01f;
-	fixture.restitution = 0.0f;
+	fixture.restitution = 0.3f;
 	fixture.isSensor = false;
 	fixture.filter = createFilterExclude("ground_filter",{});
 
@@ -113,7 +113,7 @@ void boss_field_block::Update()
 		}
 
 		// 新しいフィルターを作成
-		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter" });
+		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter" });
 		fixture->SetFilterData(newFilter);
 
 		break_flag = true;

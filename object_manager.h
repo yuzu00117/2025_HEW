@@ -27,6 +27,8 @@
 #include"teleport_block.h"
 #include"1-1_boss_field_block.h"
 #include"Item_Coin_UI.h"
+#include"1_1_boss_pillar.h"
+#include"geyser.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -43,6 +45,10 @@ enum ObjectType {
     Object_Enemy_Floating,//浮遊エネミー
 
     Object_teleport_block,//テレポートブロック
+
+    Object_Geyser_Water,
+    Boss_core,//ボスのこあ
+    Boss_pillar,//ボスの柱
 };
 
 class Object{};
@@ -75,9 +81,13 @@ public:
     //浮遊エネミー生成
     void AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle);
 
+    void AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize,int splitting_x, int splitting_y, Boss_Room_Level level);
+
     void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
 
     void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
+
+    void AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -99,11 +109,15 @@ public:
     EnemyAttack* FindEnemyAttackByID(int id);
     //IDを使って浮遊エネミーを検索
     EnemyFloating* FindEnemyFloatingByID(int id);
+
+    geyser* FindGeyserID(int id);
     
 
     teleport_block* FindTeleportBlock(int id);
 
     boss_field_block* FindBossFieldBlock(int id);
+
+    boss_pillar* FindBossPillar(int id);
 
     
     //IDとオブジェクトタイプでオブジェクトを検索
@@ -145,7 +159,11 @@ private:
 
     std::vector<std::unique_ptr<teleport_block>> teleport_blockList;//テレポートブロック
 
-    std::vector<std::unique_ptr<boss_field_block>> boss_field_blockList;//テレポートブロック
+
+    std::vector<std::unique_ptr<geyser>>geyserList;//間欠泉
+
+    std::vector<std::unique_ptr<boss_field_block>> boss_field_blockList;//ボス部屋の床
+    std::vector<std::unique_ptr<boss_pillar>> boss_pillarList;//ボスの部屋の柱
 
     //ここにオブジェクトごとにリストを追加していく感じ
 

@@ -75,18 +75,30 @@ void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float an
 {
     enemy_floatingList.emplace_back(std::make_unique<EnemyFloating>(position, body_size, angle));
 }
+
+//間欠泉の生成
+void ObjectManager::AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, Boss_Room_Level level)
+{
+    geyserList.emplace_back(std::make_unique<geyser>(GeyserPosition, GeyserSize, RangeFlyWaterSize, splitting_x, splitting_y, level));
+}
+
 //テレポートブロックの生成
 void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
 {
     teleport_blockList.emplace_back(std::make_unique<teleport_block>(position, body_size, to_teleport_point));
 
 }
-
+//ボスの部屋の床を追加
 void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level)
 {
     boss_field_blockList.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp, level));
 }
 
+//ボスの部屋の柱を追加
+void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level)
+{
+    boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
+}
 
 
 // ID を使って木を検索
@@ -191,6 +203,20 @@ EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+//IDを使って使って間欠泉を検索
+geyser* ObjectManager::FindGeyserID(int id)
+{
+    for (auto& w : geyserList) {
+
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
+
 //IDを使って使ってテレポートブロックを検索
 teleport_block* ObjectManager::FindTeleportBlock(int id)
 {
@@ -202,10 +228,21 @@ teleport_block* ObjectManager::FindTeleportBlock(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
-
+//IDを使ってボスの部屋の床を検索
 boss_field_block* ObjectManager::FindBossFieldBlock(int id)
 {
     for (auto& w : boss_field_blockList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+//IDを使ってボスの部屋の柱を検索
+boss_pillar* ObjectManager::FindBossPillar(int id)
+{
+    for (auto& w : boss_pillarList) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -340,7 +377,16 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : geyserList) {
+        w->Initialize();
+    }
+
+
     for (auto& w : boss_field_blockList) {
+        w->Initialize();
+    }
+
+    for (auto& w : boss_pillarList) {
         w->Initialize();
     }
 
@@ -410,9 +456,18 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+    for (auto& w : geyserList) {
+        w->Update();
+    }
+
+
 
     for (auto& w : boss_field_blockList) {
 
+        w->Update();
+    }
+
+    for (auto& w : boss_pillarList) {
         w->Update();
     }
 }
@@ -461,6 +516,9 @@ void ObjectManager::DrawAll() {
     }
 
 
+    for (auto& w : geyserList) {
+        w->Draw();
+    }
 
   
     for (auto& w : teleport_blockList) {
@@ -473,6 +531,10 @@ void ObjectManager::DrawAll() {
     for (auto& w : boss_field_blockList) 
     {
 
+        w->Draw();
+    }
+
+    for (auto& w : boss_pillarList) {
         w->Draw();
     }
     
@@ -518,11 +580,20 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : teleport_blockList) {
         w->Finalize();
     }
+
+    for (auto& w : geyserList) {
+        w->Finalize();
+    }
+
     for (auto& w : boss_field_blockList) {
         w->Finalize();
     }
 
     for (auto& w : enemy_floatingList) {
+        w->Finalize();
+    }
+
+    for (auto& w : boss_pillarList) {
         w->Finalize();
     }
 
@@ -544,7 +615,11 @@ void ObjectManager::FinalizeAll() {
 
     teleport_blockList.clear();
 
+    geyserList.clear();
+
     boss_field_blockList.clear();
+
+    boss_pillarList.clear();
 
 
 

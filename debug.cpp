@@ -23,8 +23,7 @@
 #include"anchor_spirit.h"
 
 
-#define	MAX_WORD	(100)
-#define NUMBER_PARAMETER	(3)
+
 
 enum PARAMETER
 {
