@@ -277,7 +277,7 @@ private:
 	bool destroy_mini_golem_flag=false;
 
 	
-
+	int debug_flag = 0;
 
 
 	float sheet_cnt;//シートの管理で使っている
@@ -341,7 +341,9 @@ private:
 
 	bool Shock_Wave_Fly_flag=false;
 	static constexpr int Shock_Wave_time_Frame = 180;
-	int Now_Shock_Wave_time_Frame = 0;
+	int Now_Shock_Wave_time_Frame = 0;//ショックウェーブの現在の管理
+	bool ShockWaveLeftFlag = true;
+
 
 
 	//-------------------------------------------------------------------------------------------

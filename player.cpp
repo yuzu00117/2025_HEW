@@ -487,12 +487,13 @@ void Player::Update()
 
         if (180 < g_anchor_frame_management_number)
         {
+            g_anchor_frame_management_number = 0;
             Anchor::SetAnchorState(Pulling_state);
         }
 
+      
+     
        
-       
-
 
         //ここはコンタクトリストないの接触判定から接触状態へと移行
         break;
@@ -509,12 +510,27 @@ void Player::Update()
 
     case Pulling_state://引っ張っている状態
 
+        g_anchor_frame_management_number++;
         //呼ばれた回数でするかね　とりあえず2秒で
-        if (g_anchor_frame_management_number > 100)
+      
+        if (g_anchor_frame_management_number > 60)
         {
-            Anchor::DeleteRotateJoint();
             Anchor::PullingAnchor();
+            Anchor::DeleteRotateJoint();
         }
+
+
+       
+           
+        
+
+
+        if (g_anchor_frame_management_number > 120)
+        {
+            g_anchor_frame_management_number = 0;
+            Anchor::SetAnchorState(Deleting_state);
+        }
+       
 
 
         if ((state.rightTrigger) || (Keyboard_IsKeyDown(KK_G)))

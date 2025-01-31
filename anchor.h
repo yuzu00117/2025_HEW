@@ -111,6 +111,10 @@ public:
 	static void DeleteNormalAttackAnchor();
 
 	void DeleteNormalAttackAnchorBody();
+	 
+
+
+
 
 
 
