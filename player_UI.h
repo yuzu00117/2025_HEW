@@ -18,6 +18,9 @@ private:
     // 静的メンバー変数の型を正しく指定
     static DirectX::XMFLOAT2 player_ui_position;
     static DirectX::XMFLOAT2 player_ui_size;
+
+    static DirectX::XMFLOAT2 gauge_only_position;
+    static DirectX::XMFLOAT2 gauge_only_size;
     static float player_ui_alpha;
 };
 
