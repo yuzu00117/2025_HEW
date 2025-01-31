@@ -142,7 +142,6 @@ void ItemManager::SetCollectSpirit(bool flag)
         w->SetState(Spirit_Collecting);
     }
 
-	m_Coin_List.clear(); 
 }
 
 

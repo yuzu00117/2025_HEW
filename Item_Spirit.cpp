@@ -137,6 +137,11 @@ void	ItemSpirit::Update()
 
 void ItemSpirit::SetState(SpiritState state)
 {
+    if (m_state == Spirit_Destory)
+    {
+        return;
+    }
+
     if (m_body != nullptr)
     {
         m_state = state;
@@ -154,6 +159,14 @@ void ItemSpirit::SetState(SpiritState state)
             break;
         case Spirit_Collecting:
         {
+            if (!m_CollidedObject.empty())
+            {
+                m_CollidedObject.clear();
+            }
+            if (m_state == Spirit_Destory)
+            {
+                return;
+            }
             //  当たり判定をセンサーに変更、フィルタもなしに変更（何にも反応できる）
             b2Fixture* fixture = m_body->GetFixtureList();
             b2Filter filter;
