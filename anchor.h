@@ -112,9 +112,9 @@ public:
 
 	void DeleteNormalAttackAnchorBody();
 	 
-	static bool CheckAnchorJoint(void);
 
-	static bool CheckAnchorNearPlayer(void);
+
+
 
 
 

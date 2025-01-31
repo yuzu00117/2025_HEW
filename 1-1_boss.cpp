@@ -533,7 +533,7 @@ void Boss_1_1::BossCoreUpdate()
 		sheet_cnt = 0;//シートカウントをリセット
 		now_boss_state = charge_attack_state;
 		CoreDeleteFlag = false;
-		Anchor::SetAnchorState(Deleting_state);
+		
 	}
 }
 
@@ -627,9 +627,6 @@ void Boss_1_1::DestroyBossCore(void)
 		b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
 
-	
-
-	
 
 		world->DestroyBody(GetAnchorPointBody());
 
@@ -747,7 +744,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 
 
 		//地面を破壊
-	/*	boss_field_level++;*/
+		boss_field_level++;
 
 		
 

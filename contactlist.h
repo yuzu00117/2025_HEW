@@ -179,6 +179,11 @@ public:
                 Anchor::SetAnchorState(Deleting_state);
             }
 
+            if (Anchor::GetAnchorState() == Throwing_state)
+            {
+                Anchor::SetAnchorState(Deleting_state);
+            }
+
 
         }
 
@@ -256,88 +261,91 @@ public:
             contactPoint = worldManifold.points[0];
 
 
-
-            //木のオブジェクトの引っ張る処理
-            if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
+            //状態が投げてる時にのみ以降する
+            if (Anchor::GetAnchorState() == Connected_state)
             {
-                //どちらが木のオブジェクトか特定
-                if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
+                //木のオブジェクトの引っ張る処理
+                if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
                 {
-                    wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
-                }
-                else
-                {
-                    wood* wood_instance = object_manager.FindWoodByID(objectB->id);
-                    wood_instance->Pulling_wood(objectB->add_force);
+                    //どちらが木のオブジェクトか特定
+                    if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
+                    {
+                        wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        wood* wood_instance = object_manager.FindWoodByID(objectB->id);
+                        wood_instance->Pulling_wood(objectB->add_force);
+                    }
+
                 }
 
-            }
-
-            //岩のオブジェクトの引っ張る処理
-            if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
-            {
-                //どちらが岩のオブジェクトか特定
-                if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
+                //岩のオブジェクトの引っ張る処理
+                if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
                 {
-                    rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    rock_instance->Pulling_rock(objectA->add_force);//木を引っ張る処理を呼び出す
-                }
-                else
-                {
-                    rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                    rock_instance->Pulling_rock(objectB->add_force);//木を引っ張る処理を呼び出す
-                }
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
+                    {
+                        rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        rock_instance->Pulling_rock(objectA->add_force);//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                        rock_instance->Pulling_rock(objectB->add_force);//木を引っ張る処理を呼び出す
+                    }
 
-            }
+                }
 
 
-            //静的動的のオブジェクトの
-            if (objectA->object_name == Object_Static_to_Dynamic || objectB->object_name == Object_Static_to_Dynamic)
-            {
-                //どちらが岩のオブジェクトか特定
-                if (objectA->object_name == Object_Static_to_Dynamic)//Aが静的動的のオブジェクト
+                //静的動的のオブジェクトの
+                if (objectA->object_name == Object_Static_to_Dynamic || objectB->object_name == Object_Static_to_Dynamic)
                 {
-                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Object_Static_to_Dynamic)//Aが静的動的のオブジェクト
+                    {
+                        static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                    }
+                    else
+                    {
+                        static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                        static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                    }
                 }
-                else
-                {
-                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
-                }
-            }
 
-            //ボスのコア
-            if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
-            {
-                //どちらが岩のオブジェクトか特定
-                if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
+                //ボスのコア
+                if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
                 {
-                    boss.BossDamaged();
-                    boss.SetCoreDeleteFlag(true);
-              
-                }
-                else
-                {
-                    boss.BossDamaged();
-                    boss.SetCoreDeleteFlag(true);
-                  
-                }
-            }
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
+                    {
+                        boss.BossDamaged();
+                        boss.SetCoreDeleteFlag(true);
 
-            if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
-            {
-                //どちらがボスの部屋の柱
-                if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
-                {
-                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    pillar_instance->Pulling_pillar(objectA->add_force);//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        boss.BossDamaged();
+                        boss.SetCoreDeleteFlag(true);
+
+                    }
                 }
-                else
+
+                if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
                 {
-                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
-                    pillar_instance->Pulling_pillar(objectB->add_force);
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
+                    {
+                        boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        pillar_instance->Pulling_pillar(objectA->add_force);//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
+                        pillar_instance->Pulling_pillar(objectB->add_force);
+                    }
                 }
             }
        

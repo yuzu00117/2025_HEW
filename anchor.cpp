@@ -409,25 +409,7 @@ void Anchor::DeleteRotateJoint(void)
 }
 
 
-bool Anchor::CheckAnchorJoint()
-{
-	b2Body* body = g_anchor_instance->GetAnchorBody();
-	if (body)
-	{
-		// ボディが持つジョイントのリストを取得
-		b2JointEdge* jointEdge = body->GetJointList();
-		if (jointEdge)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-		
-	
-}
+
 
 
 void Anchor::PullingAnchor(void)

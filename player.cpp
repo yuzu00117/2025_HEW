@@ -491,6 +491,7 @@ void Player::Update()
             Anchor::SetAnchorState(Pulling_state);
         }
 
+      
      
        
 
@@ -512,11 +513,16 @@ void Player::Update()
         g_anchor_frame_management_number++;
         //呼ばれた回数でするかね　とりあえず2秒で
       
-        Anchor::DeleteRotateJoint();
-        Anchor::PullingAnchor();
+        if (g_anchor_frame_management_number > 60)
+        {
+            Anchor::PullingAnchor();
+            Anchor::DeleteRotateJoint();
+        }
 
 
-      
+       
+           
+        
 
 
         if (g_anchor_frame_management_number > 120)
