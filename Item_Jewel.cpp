@@ -185,11 +185,11 @@ void    ItemJewel::Function()
     case BLUE:
         //プレイヤーの移動速度が1.5倍
         speed = player.GetSpeed();
-        speed_change_value = speed * 1.5 - speed;
+        speed_change_value = speed * 4.0f - speed;
         player.SetSpeed(speed_change_value);
         //プレイヤーのジャンプ力が1.5倍
         jump_force = player.GetJumpForce();
-        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 1.5f - jump_force.y };
+        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 1.2f - jump_force.y };
         player.SetJumpForce(jump_force_change_value);
         break;
     case RED:
@@ -201,7 +201,6 @@ void    ItemJewel::Function()
         break;
     }
 
-    player_UI::SetJewelCollected(m_type, false);
 }
 
 
