@@ -103,6 +103,7 @@ void	ItemJewel::Update()
 {
     if (m_destory && m_body != nullptr)
     {
+        app_atomex_start(Object_Get_Coin_Sound);
         SetIfCollecting(false);
         //ƒ{ƒfƒB‚Ìî•ñ‚ğÁ‚·
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
