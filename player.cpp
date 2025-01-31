@@ -516,6 +516,9 @@ void Player::Update()
         Anchor::PullingAnchor();
 
 
+      
+
+
         if (g_anchor_frame_management_number > 120)
         {
             g_anchor_frame_management_number = 0;

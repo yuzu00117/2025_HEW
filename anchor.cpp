@@ -327,21 +327,23 @@ void Anchor::ThrowAnchorToAP()
 	b2Body* body=AnchorPoint::GetTargetAnchorPointBody();
 
 	
+	if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+	{
+		b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
 
-	b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
+		// 値が異常かチェック
+		if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
+			// 異常値の場合、エラーログを出力するか処理をスキップ
+			std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
+			SetAnchorState(Pulling_state);
+			return; // 処理を中断
+		}
+		b2Vec2 velocity = to_pos - anchor_pos;
+		velocity.Normalize(); // 単位ベクトル化して方向を決定
+		velocity *= 20; // 投擲速度を設定	
 
-	// 値が異常かチェック
-	if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
-		// 異常値の場合、エラーログを出力するか処理をスキップ
-		std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
-		SetAnchorState(Pulling_state);
-		return; // 処理を中断
+		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 	}
-	b2Vec2 velocity = to_pos - anchor_pos;
-	velocity.Normalize(); // 単位ベクトル化して方向を決定
-	velocity *= 20; // 投擲速度を設定	
-
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 
 }
 	
@@ -406,6 +408,26 @@ void Anchor::DeleteRotateJoint(void)
 	}
 }
 
+
+bool Anchor::CheckAnchorJoint()
+{
+	b2Body* body = g_anchor_instance->GetAnchorBody();
+	if (body)
+	{
+		// ボディが持つジョイントのリストを取得
+		b2JointEdge* jointEdge = body->GetJointList();
+		if (jointEdge)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+		
+	
+}
 
 
 void Anchor::PullingAnchor(void)
