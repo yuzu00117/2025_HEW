@@ -182,8 +182,9 @@ void StageSelectScene::Update()
 		if (m_player.GetTouchStageSelectNum() != 0)
 		{
 			
-			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+			if ((Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))&& (Stage_select_flag==false))
 			{
+				Stage_select_flag = true;
 				fade_rate = 0.01;
 				app_atomex_start(Select_Sound);
 			}
