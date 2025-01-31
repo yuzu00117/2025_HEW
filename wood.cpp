@@ -27,6 +27,19 @@ static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチ�
 static ID3D11ShaderResourceView* g_Stump_Texture = NULL;//木の切り株のテクスチャ
 
 
+
+static ID3D11ShaderResourceView* g_leaf_Texture1 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture2 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture3 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture4 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture5 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture6 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture7 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture8 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture9 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture10 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture11 = NULL;//葉っぱのテクスチャ
+
 int ObjectData::current_id = 0;
 
 wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_level)
@@ -223,8 +236,49 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	auto joint = world->CreateJoint(&jointDef2);						  //ワールドにジョイントを追加
 	SetWoodStumpJoint(joint);	//木を引っ張ったらこのjointを消せるように保存しておく
+
+
+
 	//-------------------------------------------------------------------------------------------
-	//木を倒す為に必要な挙動
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	//ここからボディを１１こ作って
+	leaf_size = GetWoodSize();
+
+
+	leaf_bodies.reserve(NUM_BODIES);//事前に容量を確保
+
+
+	// ボディの定義
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody; // 動的ボディ
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(leaf_size.x, leaf_size.y); // 1x1 の四角形
+
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &boxShape;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.3f;
+	fixtureDef.isSensor = true;
+
+
+	// 11個のボディを作成してワールドに追加
+	for (int i = 0; i < NUM_BODIES; i++) {
+		bodyDef.position.Set(Position.x,Position.y + (wood_size.y / 2)); // 適当な位置に配置
+		b2Body* body = world->CreateBody(&bodyDef);
+		body->CreateFixture(&fixtureDef);
+		leaf_bodies.push_back(body); // ベクターに追加
+
+		//b2WeldJointDef leafjointDef;
+		//leafjointDef.bodyA = m_Wood_body;
+		//leafjointDef.bodyB = m_AnchorPoint_body;
+		//leafjointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // 木の上端
+		//leafjointDef.localAnchorB.Set(0.0f, 0.0f); // アンカーポイントの下端
+		//leafjointDef.collideConnected = true;					  //ジョイントした物体同士の接触を消す
+
+		//world->CreateJoint(&leafjointDef);						  //ワールドにジョイントを追加
+
+	}
 
 };
 
@@ -241,6 +295,19 @@ void wood::Initialize()
 		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
 		g_Stump_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood_stump.png");
+
+
+		g_leaf_Texture1 = InitTexture(L"asset\\texture\\wood_texture\\three_happa1.png");
+		g_leaf_Texture2 = InitTexture(L"asset\\texture\\wood_texture\\three_happa2.png");
+		g_leaf_Texture3 = InitTexture(L"asset\\texture\\wood_texture\\three_happa3.png");
+		g_leaf_Texture4 = InitTexture(L"asset\\texture\\wood_texture\\three_happa4.png");
+		g_leaf_Texture5 = InitTexture(L"asset\\texture\\wood_texture\\three_happa5.png");
+		g_leaf_Texture6 = InitTexture(L"asset\\texture\\wood_texture\\three_happa6.png");
+		g_leaf_Texture7 = InitTexture(L"asset\\texture\\wood_texture\\three_happa7.png");
+		g_leaf_Texture8 = InitTexture(L"asset\\texture\\wood_texture\\three_happa_tama8.png");
+		g_leaf_Texture9 = InitTexture(L"asset\\texture\\wood_texture\\three_happa9.png");
+		g_leaf_Texture10 = InitTexture(L"asset\\texture\\wood_texture\\three_happa_tama10.png");
+		g_leaf_Texture11 = InitTexture(L"asset\\texture\\wood_texture\\three_happa11.png");
 	}
 }
 
@@ -423,6 +490,63 @@ void wood::Draw()
 		{ GetWoodSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
+
+	for (size_t i = 0; i < leaf_bodies.size(); i++) {
+		b2Vec2 position = leaf_bodies[i]->GetPosition();
+		float angle = leaf_bodies[i]->GetAngle();
+
+		draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		switch (i)
+		{
+		case 0:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture1);
+			break;
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture2);
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture3);
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture4);
+			break;
+		case 4:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture5);
+			break;
+		case 5:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture6);
+			break;
+		case 6:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture7);
+			break;
+		case 7:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture8);
+			break;
+		case 8:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture9);
+			break;
+		case 9:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture10);
+			break;
+		case 10:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture11);
+			break;
+		default:
+			break;
+		}
+	
+
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			GetObjectAnchorPointBody()->GetAngle(),
+			{ GetLeafSize().x * scale*5,GetLeafSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		);
+	}
 }
 
 void wood::Finalize()

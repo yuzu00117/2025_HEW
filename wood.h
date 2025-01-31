@@ -15,6 +15,7 @@
 #include"include/box2d/box2d.h"
 #include"sound.h"
 #include<list>
+#include<vector>
 
 enum Wood_State
 {
@@ -39,6 +40,9 @@ public:
 	void Finalize();
 
 	void Pulling_wood(b2Vec2 pullingpower);
+
+
+	
 
 
 	// ID を取得する
@@ -148,6 +152,18 @@ public:
 		AnchorPoint_body = body;
 	}
 
+
+
+	void SetLeafSize(b2Vec2 size)
+	{
+		leaf_size = size;
+	}
+
+	b2Vec2 GetLeafSize(void)
+	{
+		return leaf_size;
+	}
+	
 private:
 	int id; // 各インスタンス固有の ID
 
@@ -174,8 +190,17 @@ private:
   
 	float	angle_when_pulling_start = 0;	//引っ張り始める時や音鳴らされた直後の木の回転角度を保持
 
+	
+
 	//音源
 	//----------------------------------------
 	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//倒れた時の音
+
+
+	b2Vec2 leaf_size;
+
+	std::vector<b2Body*> leaf_bodies; // b2Body* のベクター
+
+	const int NUM_BODIES = 11;
 };
 #endif // !WOOD_H
