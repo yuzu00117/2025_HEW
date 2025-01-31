@@ -281,10 +281,16 @@ void Boss_1_1::Update()
 		// デバック用　本番環境ではけす
 		
 		//アンカーポイントのボディを削除するデバック用
-		if (Keyboard_IsKeyDown(KK_Y))
+		if (Keyboard_IsKeyDown(KK_Y)&&debug_flag==0)
 		{
-			DestroyBossCore();
+			debug_flag = 60;
+			boss_field_level++;
 		}
+		if (debug_flag != 0)
+		{
+			debug_flag--;
+		}
+
 		//-------------------------------------------------------------------------------------------
 
 
@@ -359,7 +365,7 @@ void Boss_1_1::Update()
 			
 			if (static_cast<int>(sheet_cnt) == Shock_Wave_Start_Frame)
 			{
-				CreateShockWave(b2Vec2(1.5f, 4.0f), left_flag);
+				CreateShockWave(b2Vec2(5.0f, 6.0f), left_flag);
 				Shock_Wave_Fly_flag = true;
 
 				//エフェクトスタート
@@ -741,7 +747,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 
 
 		//地面を破壊
-		boss_field_level++;
+	/*	boss_field_level++;*/
 
 		
 
@@ -770,10 +776,12 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 
 		if (left) {
 			body.position.Set(boss_pos.x - (boss_size.x / 3) - (size.x / 2), boss_pos.y + boss_size.y / 2-size.y/2);
+			ShockWaveLeftFlag = true;
 		}
 		else
 		{
 			body.position.Set(boss_pos.x + (boss_size.x / 3) + (size.x / 2), boss_pos.y + boss_size.y / 2-size.y / 2);
+			ShockWaveLeftFlag = false;
 		}
 		body.angle = 0.0f;
 		body.fixedRotation = true;//回転を固定にする
@@ -818,7 +826,7 @@ void Boss_1_1::ShockWaveUpdate(void)
 		if (GetAttackBody() != nullptr)
 		{
 			float minus_flag = 1;
-			if (left_flag == true)
+			if (ShockWaveLeftFlag == true)
 			{
 				minus_flag = -1;
 			}
@@ -1318,7 +1326,9 @@ void Boss_1_1::EffectDraw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_charge_attack_effect);
 
 				// コライダーの位置の取得（プレイヤーの位置）
-				b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+				b2Vec2 attack_pos;
+				attack_pos.x = GetAttackBody()->GetPosition().x;
+				attack_pos.y= GetAttackBody()->GetPosition().y+ (GetAttackDrawSize().y/BOX2D_SCALE_MANAGEMENT/2);
 
 				// プレイヤー位置を考慮してスクロール補正を加える
 				//取得したbodyのポジションに対してBox2dスケールの補正を加える
@@ -1329,7 +1339,7 @@ void Boss_1_1::EffectDraw()
 				
 				
 
-				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale*3 , GetAttackDrawSize().y * scale*3), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale*7 , GetAttackDrawSize().y * scale*7), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
 			}
 		
 		}
@@ -1351,7 +1361,7 @@ void Boss_1_1::EffectDraw()
 
 				//これ貰ったスプライトが向きが反対だったから修正
 				bool left = 1;
-				if (left_flag)
+				if (ShockWaveLeftFlag)
 				{
 					left = 0;
 				}

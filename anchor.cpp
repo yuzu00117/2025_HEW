@@ -475,8 +475,6 @@ void Anchor::DrawChain()
 
 	
 
-	
-
 	// ‹——£‚ðŒvŽZ
 	float distance = b2Distance(anchor_position, player_position);
 
