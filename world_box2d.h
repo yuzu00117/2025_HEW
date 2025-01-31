@@ -49,6 +49,34 @@ public:
 	}
 
 
+    // **ワールドのリセット**
+    void ResetWorld() {
+        if (!m_p_world) return;
+
+        // すべてのジョイントを削除
+        b2Joint* joint = m_p_world->GetJointList();
+        while (joint) {
+            b2Joint* nextJoint = joint->GetNext();
+            m_p_world->DestroyJoint(joint);
+            joint = nextJoint;
+        }
+
+        // すべてのボディを削除
+        b2Body* body = m_p_world->GetBodyList();
+        while (body) {
+            b2Body* nextBody = body->GetNext();
+            m_p_world->DestroyBody(body);
+            body = nextBody;
+        }
+    }
+
+    // **ワールドを完全に作り直す**
+    void RecreateWorld() {
+        if (m_p_world) {
+            delete m_p_world;
+        }
+        m_p_world = new b2World(b2Vec2(0.0f, 10.f)); // 重力もリセット
+    }
 
 private:
 
