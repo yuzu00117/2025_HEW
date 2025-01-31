@@ -75,6 +75,13 @@ void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float an
 {
     enemy_floatingList.emplace_back(std::make_unique<EnemyFloating>(position, body_size, angle));
 }
+
+//間欠泉の生成
+void ObjectManager::AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, Boss_Room_Level level)
+{
+    geyserList.emplace_back(std::make_unique<geyser>(GeyserPosition, GeyserSize, RangeFlyWaterSize, splitting_x, splitting_y, level));
+}
+
 //テレポートブロックの生成
 void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 to_teleport_point)
 {
@@ -195,6 +202,20 @@ EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+
+//IDを使って使って間欠泉を検索
+geyser* ObjectManager::FindGeyserID(int id)
+{
+    for (auto& w : geyserList) {
+
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
 
 //IDを使って使ってテレポートブロックを検索
 teleport_block* ObjectManager::FindTeleportBlock(int id)
@@ -356,6 +377,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : geyserList) {
+        w->Initialize();
+    }
+
+
     for (auto& w : boss_field_blockList) {
         w->Initialize();
     }
@@ -430,6 +456,11 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+    for (auto& w : geyserList) {
+        w->Update();
+    }
+
+
 
     for (auto& w : boss_field_blockList) {
 
@@ -485,6 +516,9 @@ void ObjectManager::DrawAll() {
     }
 
 
+    for (auto& w : geyserList) {
+        w->Draw();
+    }
 
   
     for (auto& w : teleport_blockList) {
@@ -546,6 +580,11 @@ void ObjectManager::FinalizeAll() {
     for (auto& w : teleport_blockList) {
         w->Finalize();
     }
+
+    for (auto& w : geyserList) {
+        w->Finalize();
+    }
+
     for (auto& w : boss_field_blockList) {
         w->Finalize();
     }
@@ -575,6 +614,8 @@ void ObjectManager::FinalizeAll() {
     enemy_floatingList.clear();
 
     teleport_blockList.clear();
+
+    geyserList.clear();
 
     boss_field_blockList.clear();
 

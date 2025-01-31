@@ -18,6 +18,8 @@
 #include"player_position.h"
 #include"create_filter.h"
 #include"player.h"
+#include"easing.h"
+
 
 
 //ƒeƒNƒXƒ`ƒƒ‚Ì“ü‚ê•¨
@@ -29,15 +31,14 @@ static ID3D11ShaderResourceView* g_Geyser_on_Rock_Texture = NULL;//ƒAƒ“ƒJ[‚Ìƒeƒ
 
 
 
-geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize,b2Vec2 RangeFlyWaterSize,b2Vec2 GeyserOnRockSize,int set_rock_need_anchor_level)
+geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, Boss_Room_Level level)
 {
 	//ƒ{ƒfƒB‚Íˆê‚Â‚Å@ƒtƒBƒNƒXƒ`ƒƒ‚ğ“ñ‚Â•t‚¯‚é\‘¢‚É‚·‚é
 	SetGeyserSize(GeyserSize);					//ŠÔŒ‡ò‚ÌƒTƒCƒY‚ğƒZƒbƒg
 	SetRangeFlyWaterSize(RangeFlyWaterSize);	//ŠÔŒ‡ò‚Ì‚ª•¬‚«o‚·…‚Ì”ò‚Ô”ÍˆÍ
-	SetGeyserOnRockSize(GeyserOnRockSize);		//ŠÔŒ‡ò‚Ìã‚Éæ‚Á‚Ä‚éŠâ‚ÌƒTƒCƒY
 
-	//ƒtƒ‰ƒO‚ğƒZƒbƒg
-	Set_geyser_on_rock_flag(true);
+
+	SetFlag(false);
 
 
 
@@ -74,8 +75,8 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize,b2Vec2 RangeFlyWaterSize
 	geyser_fixture.density = 3.0f;
 	geyser_fixture.restitution = 0.0f;//”½”­ŒW”
 	geyser_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
-	geyser_fixture.filter = createFilterExclude("object_filter", {});
-	
+	geyser_fixture.filter = createFilterExclude("ground_filter", {});
+
 
 	b2Fixture* object_geyser_fixture = m_geyser_body->CreateFixture(&geyser_fixture);
 
@@ -97,9 +98,9 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize,b2Vec2 RangeFlyWaterSize
 
 	b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
 
-	vertices[0].Set(- range_fly_water_size.x/ 2, -geyser_size.y / 2);//¶‰º
-	vertices[1].Set( range_fly_water_size.x / 2, -geyser_size.y / 2);//‰E‰º
-	vertices[2].Set(range_fly_water_size.x / 2, -geyser_size.y / 2-range_fly_water_size.y);//¶‰º
+	vertices[0].Set(-range_fly_water_size.x / 2, -geyser_size.y / 2);//¶ã
+	vertices[1].Set(range_fly_water_size.x / 2, -geyser_size.y / 2);//‰Eã
+	vertices[2].Set(range_fly_water_size.x / 2, -geyser_size.y / 2 - range_fly_water_size.y);//¶‰º
 	vertices[3].Set(-range_fly_water_size.x / 2, -geyser_size.y / 2 - range_fly_water_size.y);//‰E‰º
 
 	range_fly_water_shape.Set(vertices, 4); // ’¸“_‚ğw’è‚µ‚ÄOŠpŒ`‚ğİ’è
@@ -115,92 +116,20 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize,b2Vec2 RangeFlyWaterSize
 	b2Fixture* object_range_fly_water_fixture = m_geyser_body->CreateFixture(&range_fly_water_fixture);
 
 	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-	ObjectData* range_fly_water_object_data = new ObjectData{collider_geyser_water };//İ’è‚ğŠÔŒ‡ò‚Ì…‚É
+	ObjectData* range_fly_water_object_data = new ObjectData{ collider_geyser_water };//İ’è‚ğŠÔŒ‡ò‚Ì…‚É
 	object_range_fly_water_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(range_fly_water_object_data);
 
 	range_fly_water_object_data->object_name = Object_Geyser_Water;
 
 
+	range_fly_water_object_data->id = GetID();
 
-	
+	boss_room_level = level;
 
+	Splitting_x = splitting_x;
+	Splitting_y = splitting_y;
 
-	//Šâ‚Ìƒ{ƒfƒB‚ğ‚Â‚­‚é
-
-	//Šâ‚ÌƒTƒCƒY‚ÌƒXƒP[ƒ‹‚Ì’²®
-	b2Vec2  geyser_on_rock_size;
-	geyser_on_rock_size.x = GeyserOnRockSize.x / BOX2D_SCALE_MANAGEMENT;
-	geyser_on_rock_size.y = GeyserOnRockSize.y / BOX2D_SCALE_MANAGEMENT;
-
-	b2BodyDef geyser_on_rock_body;
-	geyser_on_rock_body.type = b2_dynamicBody;
-	geyser_on_rock_body.position.Set(
-
-		GeyserPosition.x,
-		GeyserPosition.y - (geyser_size.y / 2) - (geyser_on_rock_size.y / 2)
-	);
-	geyser_on_rock_body.fixedRotation = false;//‰ñ“]‚ğŒÅ’è‚µ‚È‚¢
-
-	b2Body* m_geyser_on_rock_body = world->CreateBody(&geyser_on_rock_body);
-	SetGeyserOnRockBody(m_geyser_on_rock_body);
-
-
-	b2PolygonShape geyser_on_rock_body_shape;
-	geyser_on_rock_body_shape.SetAsBox(geyser_on_rock_size.x * 0.5, geyser_on_rock_size.y * 0.5 );
-
-	b2FixtureDef geyser_on_rock_fixture;
-	geyser_on_rock_fixture.shape = &geyser_on_rock_body_shape;
-	geyser_on_rock_fixture.density = 1.0f;
-	geyser_on_rock_fixture.friction = 0.05f;//–€C
-	geyser_on_rock_fixture.restitution = 0.0f;//”½”­ŒW”
-	geyser_on_rock_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
-	b2Fixture* object_geyser_on_rock_fixture = m_geyser_on_rock_body->CreateFixture(&geyser_on_rock_fixture);
-
-	ObjectData* object_geyser_on_rock_data = new ObjectData{ collider_object };
-	object_geyser_on_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_geyser_on_rock_data);
-
-	b2PolygonShape anchor_point_geyser_on_rock_body_shape;
-	anchor_point_geyser_on_rock_body_shape.SetAsBox(geyser_on_rock_size.x * 0.5*0.5, geyser_on_rock_size.y * 0.5*0.5);
-
-	b2FixtureDef anchor_point_geyser_on_rock_fixture;
-	anchor_point_geyser_on_rock_fixture.shape = &anchor_point_geyser_on_rock_body_shape;
-	anchor_point_geyser_on_rock_fixture.density = 1.0f;
-	anchor_point_geyser_on_rock_fixture.friction = 0.05f;//–€C
-	anchor_point_geyser_on_rock_fixture.restitution = 0.0f;//”½”­ŒW”
-	anchor_point_geyser_on_rock_fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
-
-	b2Fixture* anchor_point_object_geyser_on_rock_fixture = m_geyser_on_rock_body->CreateFixture(&anchor_point_geyser_on_rock_fixture);
-
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ
-	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
-	anchor_point_object_geyser_on_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
-
-
-	int ID = object_anchorpoint_data->GenerateID();
-	object_anchorpoint_data->id = ID;
-
-	range_fly_water_object_data->id = ID;
-
-	object_anchorpoint_data->object_name = Object_Geyser_on_Rock;
-	SetID(ID);
-	object_anchorpoint_data->need_anchor_level =set_rock_need_anchor_level;
-
-
-
-	//-----------------------------------------------------------------------------------------------------------------------------------------
-	//ƒWƒ‡ƒCƒ“ƒg‚·‚é
-
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = m_geyser_body;
-	jointDef.bodyB = m_geyser_on_rock_body;
-	jointDef.localAnchorA.Set(0.0f, -geyser_size.y * 0.5f); // ŠÔŒ‡ò‚Ì‚Ìã’[
-	jointDef.localAnchorB.Set(0.0f, geyser_on_rock_size.y * 0.5f); // Šâ‚Ì‰º’[
-	jointDef.collideConnected = false;					  //ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
-
-	world->CreateJoint(&jointDef);						  //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
-	//------------------------------------------------------------------------------------------
-
-
+	isUse = true;
 };
 
 geyser::~geyser()
@@ -219,21 +148,186 @@ void geyser::Initialize()
 
 void geyser::Update()
 {
-	if (Get_geyser_on_rock_flag() == false)
+	if (isUse)
 	{
-		Destroy_Joint();
-		PullingOnRock();
-		Set_geyser_on_rock_flag(true);
+		Boss_1_1& boss = Boss_1_1::GetInstance();
+		if (boss_room_level < boss.GetBossFieldLevel() && (Splitting_end == false))
+		{
+			Splitting_Destroy_Flag = true;
+		}
+
+
+		if (geyser_body != nullptr)
+		{
+			JumpPlayer();
+		}
+
+
+		if (Splitting_end == true)
+		{
+			Destroy_Cnt++;
+		}
+
+		if (180 < Destroy_Cnt)//•ª‰ğ‚µ‚½‚ ‚Æ”j‰ó‚³‚ê‚éƒtƒ‰ƒO
+		{
+			DestroySplittedBodies(boss_geyser_body_Splitting);
+			isUse = false;
+		}
+
+		Destroy_Splitting();
 	}
 }
 
 
+
+
+
 void geyser::JumpPlayer()
 {
-	if (Get_geyser_on_rock_flag() == false)
+
+
+	if (GetFlag() == true)
 	{
-		Player::GetOutSidePlayerBody()->ApplyForceToCenter(b2Vec2(0.0f, -100.f), true);
+		//ã‚Éã‚°‚éŠ
+		easing_rate += 0.02;
+
+		if (1.5 < easing_rate)
+		{
+			easing_rate = 1.5;
+		}
+
+		// ƒC[ƒWƒ“ƒO‚ª‚©‚©‚Á‚½’l‚ğ•Û‘¶‚·‚é•Ï”
+		double easingRate;
+		easingRate = Ease::InCubic(easing_rate);
+
+
+		Player::GetOutSidePlayerBody()->ApplyForceToCenter(b2Vec2(0.0f, -easingRate), true);
+		//-------------------------------------------------------------------------------------------
+
+		b2Vec2 vec = Player::GetOutSidePlayerBody()->GetLinearVelocity();
+
+
+		Player::GetOutSidePlayerBody()->SetLinearVelocity(b2Vec2(vec.x / 2, vec.y));
 	}
+	else
+	{
+		easing_rate = 0.8;
+	}
+}
+
+
+
+void geyser::Destroy_Splitting()
+{
+	if (Splitting_Destroy_Flag == true)//”j‰ó‚Ìƒtƒ‰ƒO‚ªƒIƒ“‚É‚È‚Á‚Ä‚¢‚é
+	{
+		if (geyser_body != nullptr && Splitting_end == false)
+		{
+			//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+			//”j‰ó‚³‚ê‚½position‚ğæ“¾
+
+
+			//•’Ê‚Ìƒ{ƒfƒB‚àÁ‚·
+			b2Vec2 Destroy_position = geyser_body->GetPosition();
+			float angle = geyser_body->GetAngle(); // Œ³‚Ìƒ{ƒfƒB‚ÌŠp“x‚ğæ“¾
+			b2Vec2 vec = geyser_body->GetLinearVelocity();
+			float angle_vec = geyser_body->GetAngularVelocity();
+
+			world->DestroyBody(geyser_body);
+			geyser_body = nullptr;
+
+			SetGeyserBody(nullptr);
+
+
+		
+
+			b2Vec2 size;
+			size.x = geyser_size.x / BOX2D_SCALE_MANAGEMENT;
+			size.y = geyser_size.y / BOX2D_SCALE_MANAGEMENT;
+
+
+
+			// •ªŠ„Œã‚Ìƒ{ƒfƒB‚ğ”z’u
+			for (int y = 0; y < Splitting_y; y++)
+			{
+				for (int x = 0; x < Splitting_x; x++)
+				{
+					// •ªŠ„Œã‚Ìƒ{ƒfƒB‚Ìƒ[ƒJƒ‹À•W‚ğŒvZ
+					float localX = ((x - (Splitting_x - 1) / 2.0f) * size.x / Splitting_x);
+					float localY = ((y - (Splitting_y - 1) / 2.0f) * size.y / Splitting_y);
+
+					// Œ³‚ÌŠp“x‚ğl—¶‚µ‚Äƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·
+					float rotatedX = localX * cos(angle) - localY * sin(angle);
+					float rotatedY = localX * sin(angle) + localY * cos(angle);
+
+					b2Vec2 fragmentPosition(
+						Destroy_position.x + rotatedX,
+						Destroy_position.y + rotatedY
+					);
+
+					// •ªŠ„Œã‚Ìƒ{ƒfƒB‚ğì¬
+					b2BodyDef fragmentDef;
+					fragmentDef.type = b2_dynamicBody;
+					fragmentDef.position = fragmentPosition;
+					fragmentDef.angle = angle; // Œ³‚Ìƒ{ƒfƒB‚ÌŠp“x‚ğˆø‚«Œp‚®
+
+					b2Body* fragment = world->CreateBody(&fragmentDef);
+					boss_geyser_body_Splitting.push_back(fragment);
+
+					fragment->SetLinearVelocity(b2Vec2(vec.x * 2, vec.y * 2));
+					fragment->SetAngularVelocity(angle_vec);
+
+					// •ªŠ„Œã‚ÌŒ`ó‚ÆƒtƒBƒNƒXƒ`ƒƒ‚ğİ’è
+					b2PolygonShape fragmentShape;
+					fragmentShape.SetAsBox(size.x / (2.0f * Splitting_x), size.y / (2.0f * Splitting_y));
+
+					b2FixtureDef fragmentFixture;
+					fragmentFixture.shape = &fragmentShape;
+					fragmentFixture.density = 1.0f; // ƒ{ƒfƒB‚Ì–§“x‚ğİ’èB–§“x‚ª‘å‚«‚¢‚Ù‚Çƒ{ƒfƒB‚Ì¿—Ê‚ªd‚­‚È‚éB
+					fragmentFixture.friction = 0.5f; // –€CŒW”‚ğİ’èBÚG–Ê‚ÌŠŠ‚è‚â‚·‚³‚ğ§Œä‚µA¬‚³‚¢’l‚Ù‚ÇŠŠ‚è‚â‚·‚¢B
+					fragmentFixture.restitution = 0.0f; // ”½”­ŒW”‚ğİ’èB0‚Í”½”­‚µ‚È‚¢iÕ“Ë‚ÉƒGƒlƒ‹ƒM[‚ğ¸‚¤jA1‚ÍŠ®‘S‚É’e‚ŞB
+					fragmentFixture.filter = createFilterExclude("ground_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter" });
+
+					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
+
+					// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
+					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
+					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+
+					// ‰‘¬“x‚Íƒ[ƒ‚Éİ’èi•K—v‚É‰‚¶‚Ä‘¬“x‚ğ’Ç‰Á‰Â”\j
+					fragment->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+				}
+			}
+
+			Splitting_Destroy_Flag = false;
+			Splitting_end = true;
+		}
+
+
+
+
+	}
+
+}
+
+
+void geyser::DestroySplittedBodies(std::vector<b2Body*>& bodyList) 
+{
+	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+	for (b2Body*& body : bodyList) {
+		if (body != nullptr) {
+			world->DestroyBody(body);
+			body = nullptr; // ƒ|ƒCƒ“ƒ^‚ğ–³Œø‰»
+		}
+	}
+
+
 }
 
 void geyser::Destroy_Joint()
@@ -270,74 +364,95 @@ void geyser::PullingOnRock()
 	}
 
 
-	GetGeyserOnRockBody()->ApplyForceToCenter(b2Vec2(add_force,0.0f), true);
+	GetGeyserOnRockBody()->ApplyForceToCenter(b2Vec2(add_force, 0.0f), true);
 }
 
 
 void geyser::Draw()
 {
+	if (isUse)
+	{
+		// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+		float scale = SCREEN_SCALE;
 
-	///‚±‚±‚©‚ç’²®‚µ‚Ä‚Ë
-
-	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
-	float scale = SCREEN_SCALE;
-
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
-
-	b2Vec2 geyser_pos = GetGeyserBody()->GetPosition();
-
-
+		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
+		///‚±‚±‚©‚ç’²®‚µ‚Ä‚Ë
+		if (GetGeyserBody() != nullptr)
+		{
 
 
-	// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-	//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
-	float draw_x = ((geyser_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((geyser_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Texture);
-
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetGeyserBody()->GetAngle(),
-		{ GetGeyserSize().x * scale,GetGeyserSize().y * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-	);
-
-
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
-
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y-(GetRangeFlyWaterSize().y*scale)},
-		GetGeyserBody()->GetAngle(),
-		{ GetRangeFlyWaterSize().x * scale,GetRangeFlyWaterSize().y * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-	);
-
-	b2Vec2 geyser_on_rock_pos=GetGeyserOnRockBody()->GetPosition();
-
-	float rock_draw_x = ((geyser_on_rock_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float rock_draw_y = ((geyser_on_rock_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_on_Rock_Texture);
-
-	//draw
-	DrawSprite(
-		{ rock_draw_x,
-		  rock_draw_y },
-		GetGeyserOnRockBody()->GetAngle(),
-		{ GetGeyserOnRockSize().x * scale,GetGeyserOnRockSize().y * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-	);
+			b2Vec2 geyser_pos = GetGeyserBody()->GetPosition();
 
 
 
+
+			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
+			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+			float draw_x = ((geyser_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((geyser_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Texture);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				GetGeyserBody()->GetAngle(),
+				{ GetGeyserSize().x * scale,GetGeyserSize().y * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+			);
+
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y - (GetGeyserSize().y / 2 * scale) - (GetRangeFlyWaterSize().y / 2 * scale) },
+				GetGeyserBody()->GetAngle(),
+				{ GetRangeFlyWaterSize().x * scale,GetRangeFlyWaterSize().y * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+			);
+		}
+
+		//•ªŠ„Œã‚Ì•`‰æ
+		if (Splitting_end == true)
+		{
+
+			for (int i = 0; i < Splitting_x * Splitting_y; i++)
+			{
+
+
+				b2Vec2 bodyPos = boss_geyser_body_Splitting[i]->GetPosition();
+
+
+				float body_draw_x = ((bodyPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+				float body_draw_y = ((bodyPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Texture);
+
+
+				//draw
+				DrawSplittingSprite(
+					{ body_draw_x,
+					body_draw_y },
+					boss_geyser_body_Splitting[i]->GetAngle(),
+					{ GetGeyserSize().x / Splitting_x * scale,GetGeyserSize().y / Splitting_y * scale },
+					Splitting_x,
+					Splitting_y,
+					i,
+					1.0f
+				);
+
+			}
+		}
+	}
 }
+
+
+
 
 void geyser::Finalize()
 {

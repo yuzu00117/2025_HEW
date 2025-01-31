@@ -116,6 +116,23 @@ public:
         }
 
 
+        //プレイヤーと間欠泉の水が触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_geyser_water) ||
+            (objectA->collider_type == collider_geyser_water && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_geyser_water)
+            {
+                geyser* geyser_instance = object_manager.FindGeyserID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+            }
+            else
+            {
+                geyser* geyser_instance = object_manager.FindGeyserID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+            }
+        }
 
         // プレーヤーとテレポートブロックが衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
@@ -1108,6 +1125,25 @@ public:
             }
         }
 
+
+
+        //プレイヤーと間欠泉の水が触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_geyser_water) ||
+            (objectA->collider_type == collider_geyser_water && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_geyser_water)
+            {
+                geyser* geyser_instance = object_manager.FindGeyserID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(false);//木を引っ張る処理を呼び出す
+            }
+            else
+            {
+                geyser* geyser_instance = object_manager.FindGeyserID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                geyser_instance->SetFlag(false);//木を引っ張る処理を呼び出す
+            }
+        }
 
 
         //プレイヤーに付属しているセンサーとアンカーポイントが触れ終わった　（センサーの範囲外にでた）

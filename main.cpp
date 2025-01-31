@@ -16,6 +16,7 @@
 #include"game.h"
 #include"scene.h"
 #include"stage_select.h"
+#include"sound.h"
 
 
 
@@ -191,7 +192,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	timeEndPeriod(1);
 
 	//èIóπ
-	game.Finalize();
+	FinalFinalize();
 	return (int)msg.wParam;
 }
 

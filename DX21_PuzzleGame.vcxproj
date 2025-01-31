@@ -159,6 +159,7 @@
     <ClCompile Include="field.cpp" />
     <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="geyser.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="field.h" />
     <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="geyser.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="hit_stop.h" />
     <ClInclude Include="Item_Coin.h" />

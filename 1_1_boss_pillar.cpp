@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------------------------------
 // #name 1_1_boss_pillar.cpp
-// #description ƒ{ƒXí‚Å—˜—p‚·‚é’Œ‚ÌƒIƒuƒWƒFƒNƒg
-// #make 2025/01/25		‰i–ì‹`–ç
+// #description ãƒœã‚¹æˆ¦ã§åˆ©ç”¨ã™ã‚‹æŸ±ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+// #make 2025/01/25		æ°¸é‡ç¾©ä¹Ÿ
 // #update 2025/01/25
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 //----------------------------------------------------------------------------------------------------
 
 
@@ -18,23 +18,23 @@
 #include"create_filter.h"
 #include"tool.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//ƒtƒB[ƒ‹ƒh‚ÌƒeƒNƒXƒ`ƒƒ
+static ID3D11ShaderResourceView* g_Texture = NULL;//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int splitting_y,Boss_Room_Level level)
 {
-	SetSize(size);//•`‰æ—p‚ÌƒTƒCƒY‚ğ•Û‘¶
+	SetSize(size);//æç”»ç”¨ã®ã‚µã‚¤ã‚ºã‚’ä¿å­˜
 
-	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
-	//ƒTƒCƒY‚ğ’²®‚·‚é
+	//ã‚µã‚¤ã‚ºã‚’èª¿æ•´ã™ã‚‹
 	b2Vec2 body_size;
 	body_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
 	body_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
 
-	//ƒ{ƒfƒB‚ğì¬‚·‚é
+	//ãƒœãƒ‡ã‚£ã‚’ä½œæˆã™ã‚‹
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position.Set(position.x, position.y);
@@ -45,13 +45,13 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	SetBody(m_Body);
 
 
-	//Œ`‚Ì’è‹`
+	//å½¢ã®å®šç¾©
 	b2PolygonShape shape;
 	shape.SetAsBox(body_size.x * 0.5, body_size.y * 0.5);
 
 
 	//-----------------------------------------------------
-	//	fixture‚ğì‚é
+	//	fixtureã‚’ä½œã‚‹
 	b2FixtureDef fixture;
 
 	fixture.shape = &shape;
@@ -63,10 +63,10 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 
-	// V‚µ‚¢ƒtƒBƒ‹ƒ^[‚ğì¬
+	// æ–°ã—ã„ãƒ•ã‚£ãƒ«ã‚¿ãƒ¼ã‚’ä½œæˆ
 
 
-	//ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬
+	//ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆ
 	ObjectData* object_data = new ObjectData{ collider_object };
 	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
@@ -76,14 +76,14 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	SetID(ID);
 
 
-	//ƒTƒCƒY‚Ì•â³‚ğ‚¢‚ê‚é
+	//ã‚µã‚¤ã‚ºã®è£œæ­£ã‚’ã„ã‚Œã‚‹
 	b2Vec2 anchorpoint_size;
 	anchorpoint_size.x = body_size.x;
 	anchorpoint_size.y =0.5/ BOX2D_SCALE_MANAGEMENT;
 
 
 
-	b2BodyDef anchorpoint_body;//–Ø‚ÌŠ²‚Ì•”•ª
+	b2BodyDef anchorpoint_body;//æœ¨ã®å¹¹ã®éƒ¨åˆ†
 	anchorpoint_body.type = b2_dynamicBody;
 	anchorpoint_body.position.Set(
 		position.x,
@@ -103,14 +103,14 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 	anchorpoint_fixture.shape = &anchorpoint_shape;
 	anchorpoint_fixture.density = 1.0f;
-	anchorpoint_fixture.friction = 0.05f;//–€C
-	anchorpoint_fixture.restitution = 0.0f;//”½”­ŒW”
-	anchorpoint_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	anchorpoint_fixture.friction = 0.05f;//æ‘©æ“¦
+	anchorpoint_fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+	anchorpoint_fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	anchorpoint_fixture.filter = createFilterExclude("object_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter" });
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
@@ -124,8 +124,8 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 	b2Vec2 need_power;
 
-	need_power.x = (GetSize().x * GetSize().y);//‚P‚Í•K—v‚É‰‚¶‚Ä•ÏX‚µ‚Ä
-	need_power.y = 10.0f;//c‚É•K—v‚È—Í‚Í‚È‚¢
+	need_power.x = (GetSize().x * GetSize().y);//ï¼‘ã¯å¿…è¦ã«å¿œã˜ã¦å¤‰æ›´ã—ã¦
+	need_power.y = 10.0f;//ç¸¦ã«å¿…è¦ãªåŠ›ã¯ãªã„
 
 
 	object_anchorpoint_data->add_force = need_power;
@@ -134,20 +134,20 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = m_Body;
 	jointDef.bodyB = m_AnchorPoint_body;
-	jointDef.localAnchorA.Set(0.0f, -body_size.y * 0.5f); // –Ø‚Ìã’[
-	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ì‰º’[
-	jointDef.collideConnected = true;					  //ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
+	jointDef.localAnchorA.Set(0.0f, -body_size.y * 0.5f); // æœ¨ã®ä¸Šç«¯
+	jointDef.localAnchorB.Set(0.0f, anchorpoint_size.y * 0.5f); // ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ä¸‹ç«¯
+	jointDef.collideConnected = true;					  //ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸç‰©ä½“åŒå£«ã®æ¥è§¦ã‚’æ¶ˆã™
 
-	world->CreateJoint(&jointDef);						  //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
+	world->CreateJoint(&jointDef);						  //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
 
-	//•ªŠ„‚·‚¤‚ğ•Û‘¶
+	//åˆ†å‰²ã™ã†ã‚’ä¿å­˜
 	Splitting_x = splitting_x;
 	Splitting_y = splitting_y;
 
 
 	boss_room_level = level;
 
-	//ƒ{ƒfƒB‚Ì—Ìˆæ‚ğ–‘O‚ÉŠm•Û‚µ‚Ä‚¨‚­
+	//ãƒœãƒ‡ã‚£ã®é ˜åŸŸã‚’äº‹å‰ã«ç¢ºä¿ã—ã¦ãŠã
 	boss_pillar_body_Splitting.reserve(Splitting_x* Splitting_y);
 
 
@@ -165,7 +165,7 @@ boss_pillar::~boss_pillar()
 void boss_pillar::Initialize()
 {
 	if (g_Texture == NULL) {
-		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_gyaser.png");//’Œ‚ÌƒeƒNƒXƒ`ƒƒ
+		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_gyaser.png");//æŸ±ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	}
 }
 
@@ -184,36 +184,50 @@ void boss_pillar::Update()
 			Destroy_Cnt++;
 		}
 
-		if (180 < Destroy_Cnt)//•ª‰ğ‚µ‚½‚ ‚Æ”j‰ó‚³‚ê‚éƒtƒ‰ƒO
+		if (180 < Destroy_Cnt)//åˆ†è§£ã—ãŸã‚ã¨ç ´å£Šã•ã‚Œã‚‹ãƒ•ãƒ©ã‚°
 		{
 			DestroySplittedBodies(boss_pillar_body_Splitting);
 			isUse = false;
 		}
 
 
-	
+		if (m_body != nullptr)
+		{
+			float angle = m_body->GetAngle();  // ãƒ©ã‚¸ã‚¢ãƒ³ã§å–å¾—
+			float angleDeg = angle * 57.2958f; // åº¦æ•°æ³•ã«å¤‰æ›
+
+			// 85Â°ä»¥ä¸Š275Â°ä»¥ä¸‹ã‚’åˆ¤å®š
+			if (angleDeg >= 85.0f && angleDeg <= 275.0f)
+			{
+				//è§’åº¦ãŒãã†ãªã£ãŸã‚‰å£Šã™
+				Splitting_Destroy_Flag = true;
+			}
+		}
+
+
 
 		Destroy_Splitting();
 	}
 }
 
+
 void boss_pillar::Destroy_Splitting()
 {
-	if (Splitting_Destroy_Flag == true)//”j‰ó‚Ìƒtƒ‰ƒO‚ªƒIƒ“‚É‚È‚Á‚Ä‚¢‚é
+	if (Splitting_Destroy_Flag == true)//ç ´å£Šã®ãƒ•ãƒ©ã‚°ãŒã‚ªãƒ³ã«ãªã£ã¦ã„ã‚‹
 	{
 		if (m_body != nullptr && Splitting_end == false)
 		{
-			//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
-			//”j‰ó‚³‚ê‚½position‚ğæ“¾
+			//ç ´å£Šã•ã‚ŒãŸpositionã‚’å–å¾—
 
 
-			//•’Ê‚Ìƒ{ƒfƒB‚àÁ‚·
+			//æ™®é€šã®ãƒœãƒ‡ã‚£ã‚‚æ¶ˆã™
 			b2Vec2 Destroy_position = m_body->GetPosition();
-			float angle = m_body->GetAngle(); // Œ³‚Ìƒ{ƒfƒB‚ÌŠp“x‚ğæ“¾
+			float angle = m_body->GetAngle(); // å…ƒã®ãƒœãƒ‡ã‚£ã®è§’åº¦ã‚’å–å¾—
 			b2Vec2 vec = m_body->GetLinearVelocity();
 			float angle_vec = m_body->GetAngularVelocity();
 
@@ -223,7 +237,7 @@ void boss_pillar::Destroy_Splitting()
 			SetBody(nullptr);
 
 
-			//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚àÁ‚·
+			//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚‚æ¶ˆã™
 
 			world->DestroyBody(GetObjectAnchorPointBody());
 
@@ -233,16 +247,16 @@ void boss_pillar::Destroy_Splitting()
 
 
 
-			// •ªŠ„Œã‚Ìƒ{ƒfƒB‚ğ”z’u
+			// åˆ†å‰²å¾Œã®ãƒœãƒ‡ã‚£ã‚’é…ç½®
 			for (int y = 0; y < Splitting_y; y++)
 			{
 				for (int x = 0; x < Splitting_x; x++)
 				{
-					// •ªŠ„Œã‚Ìƒ{ƒfƒB‚Ìƒ[ƒJƒ‹À•W‚ğŒvZ
+					// åˆ†å‰²å¾Œã®ãƒœãƒ‡ã‚£ã®ãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ã‚’è¨ˆç®—
 					float localX = ((x - (Splitting_x - 1) / 2.0f) * size.x / Splitting_x);
 					float localY = ((y - (Splitting_y - 1) / 2.0f) * size.y / Splitting_y);
 
-					// Œ³‚ÌŠp“x‚ğl—¶‚µ‚Äƒ[ƒ‹ƒhÀ•W‚É•ÏŠ·
+					// å…ƒã®è§’åº¦ã‚’è€ƒæ…®ã—ã¦ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã«å¤‰æ›
 					float rotatedX = localX * cos(angle) - localY * sin(angle);
 					float rotatedY = localX * sin(angle) + localY * cos(angle);
 
@@ -251,11 +265,11 @@ void boss_pillar::Destroy_Splitting()
 						Destroy_position.y + rotatedY
 					);
 
-					// •ªŠ„Œã‚Ìƒ{ƒfƒB‚ğì¬
+					// åˆ†å‰²å¾Œã®ãƒœãƒ‡ã‚£ã‚’ä½œæˆ
 					b2BodyDef fragmentDef;
 					fragmentDef.type = b2_dynamicBody;
 					fragmentDef.position = fragmentPosition;
-					fragmentDef.angle = angle; // Œ³‚Ìƒ{ƒfƒB‚ÌŠp“x‚ğˆø‚«Œp‚®
+					fragmentDef.angle = angle; // å…ƒã®ãƒœãƒ‡ã‚£ã®è§’åº¦ã‚’å¼•ãç¶™ã
 
 					b2Body* fragment = world->CreateBody(&fragmentDef);
 					boss_pillar_body_Splitting.push_back(fragment);
@@ -263,26 +277,31 @@ void boss_pillar::Destroy_Splitting()
 					fragment->SetLinearVelocity(b2Vec2(vec.x*2,vec.y*2));
 					fragment->SetAngularVelocity(angle_vec);
 
-					// •ªŠ„Œã‚ÌŒ`ó‚ÆƒtƒBƒNƒXƒ`ƒƒ‚ğİ’è
+					// åˆ†å‰²å¾Œã®å½¢çŠ¶ã¨ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’è¨­å®š
 					b2PolygonShape fragmentShape;
 					fragmentShape.SetAsBox(size.x / (2.0f * Splitting_x), size.y / (2.0f * Splitting_y));
 
 					b2FixtureDef fragmentFixture;
 					fragmentFixture.shape = &fragmentShape;
-					fragmentFixture.density = 1.0f; // ƒ{ƒfƒB‚Ì–§“x‚ğİ’èB–§“x‚ª‘å‚«‚¢‚Ù‚Çƒ{ƒfƒB‚Ì¿—Ê‚ªd‚­‚È‚éB
-					fragmentFixture.friction = 0.5f; // –€CŒW”‚ğİ’èBÚG–Ê‚ÌŠŠ‚è‚â‚·‚³‚ğ§Œä‚µA¬‚³‚¢’l‚Ù‚ÇŠŠ‚è‚â‚·‚¢B
-					fragmentFixture.restitution = 0.0f; // ”½”­ŒW”‚ğİ’èB0‚Í”½”­‚µ‚È‚¢iÕ“Ë‚ÉƒGƒlƒ‹ƒM[‚ğ¸‚¤jA1‚ÍŠ®‘S‚É’e‚ŞB
+					fragmentFixture.density = 1.0f; // ãƒœãƒ‡ã‚£ã®å¯†åº¦ã‚’è¨­å®šã€‚å¯†åº¦ãŒå¤§ãã„ã»ã©ãƒœãƒ‡ã‚£ã®è³ªé‡ãŒé‡ããªã‚‹ã€‚
+					fragmentFixture.friction = 0.5f; // æ‘©æ“¦ä¿‚æ•°ã‚’è¨­å®šã€‚æ¥è§¦é¢ã®æ»‘ã‚Šã‚„ã™ã•ã‚’åˆ¶å¾¡ã—ã€å°ã•ã„å€¤ã»ã©æ»‘ã‚Šã‚„ã™ã„ã€‚
+					fragmentFixture.restitution = 0.0f; // åç™ºä¿‚æ•°ã‚’è¨­å®šã€‚0ã¯åç™ºã—ãªã„ï¼ˆè¡çªæ™‚ã«ã‚¨ãƒãƒ«ã‚®ãƒ¼ã‚’å¤±ã†ï¼‰ã€1ã¯å®Œå…¨ã«å¼¾ã‚€ã€‚
 					fragmentFixture.filter = createFilterExclude("ground_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter" });
 
 					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
 
-					// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
+					// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
 					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
 					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
+
+					// åˆé€Ÿåº¦ã¯ã‚¼ãƒ­ã«è¨­å®šï¼ˆå¿…è¦ã«å¿œã˜ã¦é€Ÿåº¦ã‚’è¿½åŠ å¯èƒ½ï¼‰
+					fragment->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
 					
-					// ƒ‰ƒ“ƒ_ƒ€‚È•ûŒü‚É”ò‚ÑU‚é‚æ‚¤‚É‘¬“x‚ğİ’è
-					fragment->SetLinearVelocity(GetRandomVelocity(5.0f)); // 5.0f ‚ÍŠî€‘¬“xi’²®‰Âj
+					// ãƒ©ãƒ³ãƒ€ãƒ ãªæ–¹å‘ã«é£›ã³æ•£ã‚‹ã‚ˆã†ã«é€Ÿåº¦ã‚’è¨­å®š
+					fragment->SetLinearVelocity(GetRandomVelocity(5.0f)); // 5.0f ã¯åŸºæº–é€Ÿåº¦ï¼ˆèª¿æ•´å¯ï¼‰
+
 				}
 			}
 
@@ -299,13 +318,13 @@ void boss_pillar::Destroy_Splitting()
 
 
 void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
-	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 	for (b2Body*& body : bodyList) {
 		if (body != nullptr) {
 			world->DestroyBody(body);
-			body = nullptr; // ƒ|ƒCƒ“ƒ^‚ğ–³Œø‰»
+			body = nullptr; // ãƒã‚¤ãƒ³ã‚¿ã‚’ç„¡åŠ¹åŒ–
 		}
 	}
 	
@@ -316,8 +335,8 @@ void boss_pillar::Pulling_pillar()
 	b2Body* body = GetObjectAnchorPointBody();
 	b2Vec2 pulling_power = m_pulling_power;
 
-	//ƒvƒŒƒCƒ„[‘¤‚É“|‚·
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//ƒvƒŒƒCƒ„[‚ª¶‘¤
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼å´ã«å€’ã™
+	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå·¦å´
 	{
 		pulling_power.x = pulling_power.x * -1;
 	}
@@ -330,10 +349,10 @@ void boss_pillar::Draw()
 {
 	if (isUse)
 	{
-		// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+		// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
 		float scale = SCREEN_SCALE;
 
-		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+		// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
 		b2Vec2 screen_center;
 		screen_center.x = SCREEN_CENTER_X;
 		screen_center.y = SCREEN_CENTER_Y;
@@ -361,7 +380,7 @@ void boss_pillar::Draw()
 		}
 
 
-		//•ªŠ„Œã‚Ì•`‰æ
+		//åˆ†å‰²å¾Œã®æç”»
 		if (Splitting_end == true)
 		{
 

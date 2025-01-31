@@ -224,4 +224,10 @@ void rock::Finalize()
 	UnInitTexture(g_Rock_Texture);
 	UnInitTexture(g_Rock_Texture1);
 	UnInitTexture(g_Rock_Texture2);
+
+	
+	//‚È‚ñ‚©‚¢‚é‚Ý‚½‚¢
+	g_Rock_Texture = NULL;
+	g_Rock_Texture1 = NULL;
+	g_Rock_Texture2 = NULL;
 }
