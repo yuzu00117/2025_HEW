@@ -203,10 +203,11 @@ void boss_pillar::Update()
 			}
 		}
 
-	
+
 
 		Destroy_Splitting();
 	}
+}
 
 
 void boss_pillar::Destroy_Splitting()
