@@ -221,8 +221,8 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	ObjectData* boss_sensor_data = new ObjectData{ collider_boss_senosr };
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
-	time_count_flag = true;
-	elapsed_time = 0.0f;
+	time_count_flag = true; // 時間をカウントするフラグを立てる
+	elapsed_time = 0.0f;	// 経過時間を初期化
 }
 
 void Boss_1_1::Update()
