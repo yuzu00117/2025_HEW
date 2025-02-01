@@ -240,6 +240,18 @@ public:
 	{
 		CoreDeleteFlag = flag;
 	}
+	
+	// ボス戦の経過時間を設定
+    void SetBossElapsedTime(float time) 
+    {
+        elapsed_time = time;
+    }
+
+    // ボス戦の経過時間を取得
+    float GetBossElapsedTime() const
+    {
+        return elapsed_time;
+    }
 
 	
 
@@ -291,6 +303,9 @@ private:
 
 
 	boss_state now_boss_state;//ボスのステート管理
+
+	bool time_count_flag = false;//時間をカウントするかのフラグ
+	float elapsed_time = 0;//経過時間
 
 	//-------------------------------------------------------------------------------------------
 	//クールタイムの管理
