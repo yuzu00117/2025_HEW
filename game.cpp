@@ -31,6 +31,7 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"player_UI.h"
+#include"impact_effect.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -66,6 +67,8 @@ void Game::Initialize()
 
     //背景の初期化
     Bg::Initialize();
+
+    InitImpactEffect();
 
 
 
@@ -107,12 +110,17 @@ void Game::Finalize(void)
 	//ボスの終了処理
     boss.Finalize();
 
+    //衝突時のエフェクトの終了処理
+    FinalizeImpactEffects();
+
     //文字（絵）
     FinalizeWord();
 
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
 
+    //衝突時のエフェクトを描画
+    InitImpactEffect();
 
 #ifdef _DEBUG
     //デバッグ文字
@@ -163,6 +171,10 @@ void Game::Update(void)
 
             //ボスの更新処理
             boss.Update();
+
+
+            //衝突エフェクトの描画処理
+            UpdateImpactEffects();
 
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
@@ -253,6 +265,8 @@ void Game::Draw(void)
     //アンカーの描画処理
     Anchor::Draw();
 
+    //衝突時のエフェクト
+    DrawImpactEffects(1.0f); 
 
 
 
@@ -260,7 +274,7 @@ void Game::Draw(void)
 
 
 	
-
+ 
 
 
 	//�c�@�̕`�揈��
