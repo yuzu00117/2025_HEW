@@ -404,9 +404,8 @@ void Boss_1_1::Update()
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
 				CreateMiniGolem(b2Vec2(3.0f,2.0f),left_flag);//画像が横に空白があるため　ｘを引き伸ばし　実際の半径で参照しているのはｙ軸
-				//カメラシェイクスタート
-				CameraShake::StartCameraShake(10, 10, 40);
-				HitStop::SetHitStopFlag(5);
+				
+			
 			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
