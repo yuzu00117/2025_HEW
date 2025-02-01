@@ -38,6 +38,10 @@ ID3D11ShaderResourceView* g_player_normal_attack_anchor_sheet = NULL;
 ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 
 
+//歩く時のエフェクト
+ID3D11ShaderResourceView* g_player_walk_effect = NULL;
+
+
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 
@@ -95,7 +99,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         g_player_sensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
 
-
+        g_player_walk_effect = InitTexture(L"asset\\texture\\player_texture\\player_walk_effect.png");
 
     }
 
@@ -789,7 +793,7 @@ void Player::Draw()
        
    
        
-
+        int left = 1;
 
         switch (draw_state)
         {
@@ -909,7 +913,10 @@ void Player::Draw()
                 draw_state = player_nomal_state;
             }
 
+          
 
+            // **10フレームごとにプレイヤーの座標を記録**
+            CreateDustEffect(m_body->GetPosition());
            
 
             // シェーダリソースを設定
@@ -923,6 +930,15 @@ void Player::Draw()
                 3, 6, draw_cnt / 3, player_alpha, m_direction
 
             );
+
+         
+
+            dustFrameCnt++; // フレームをカウント
+
+
+
+
+            
             break;
 
         case player_normal_attack_state:
@@ -967,6 +983,10 @@ void Player::Draw()
         }
 
 
+        // **土煙エフェクトの更新**
+        UpdateDustEffect();
+        // **土煙を描画**
+        DrawDustEffect();
       
 
         //----------------------------------------------------------------------------------------
@@ -988,6 +1008,61 @@ void Player::Draw()
     }
 }
 
+
+
+void Player::UpdateDustEffect() {
+    // **土煙の寿命を減らし、30フレーム経過したものを削除**
+    for (auto it = dustEffects.begin(); it != dustEffects.end();) {
+        it->lifeTime--;
+        if (it->lifeTime <= 0) {
+            it = dustEffects.erase(it); // 30フレーム経過で削除
+        }
+        else {
+            ++it;
+        }
+    }
+}
+
+// **プレイヤーが走った際に土煙を記録**
+void Player::CreateDustEffect(b2Vec2 playerPos) {
+    if (dustFrameCnt % 10 == 0) { // 10フレームごとに記録
+        dustEffects.emplace_back(playerPos);
+    }
+}
+
+// **土煙を描画**
+void Player::DrawDustEffect() {
+    // コライダーと位置情報の補正をするため
+    float scale = SCREEN_SCALE;
+
+    // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+    b2Vec2 screen_center;
+    screen_center.x = SCREEN_CENTER_X;
+    screen_center.y = SCREEN_CENTER_Y;
+    if (dustEffects.size() > 1) {
+        for (size_t i = 0; i < dustEffects.size() - 1; i++) { // 最後の要素はスキップ
+            const auto& dust = dustEffects[i];
+
+            float dust_draw_x = ((dust.pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+            float dust_draw_y = ((dust.pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_walk_effect);
+
+
+
+            DrawDividedSpritePlayer(
+                { dust_draw_x, dust_draw_y + 45 },
+                0.0,
+                { Walk_effect_size.x * scale, Walk_effect_size.y * scale },
+                6, 4, draw_cnt, player_alpha, 1
+            );
+        }
+    }
+}
+
+
+
 void Player::Finalize()
 {
     if (m_body) {
@@ -1004,6 +1079,8 @@ void Player::Finalize()
     }
 
 }
+
+
 
 
 //ボディを外部から取得するために作った関数
