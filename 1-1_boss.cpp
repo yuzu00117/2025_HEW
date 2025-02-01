@@ -20,6 +20,8 @@
 #include"1_1boss_state_debug.h"
 #include"scene.h"
 #include"anchor.h"
+#include"camera_shake.h"
+#include"hit_stop.h"
 
 
 // 使用するテクスチャファイルを格納
@@ -303,6 +305,8 @@ void Boss_1_1::Update()
 			break;
 		case panic_state:
 
+
+			
 			CreateBossCore(b2Vec2 (2.0f,2.0f));
 		
 			sheet_cnt += 0.5;
@@ -332,6 +336,10 @@ void Boss_1_1::Update()
 				{
 					m_body->SetLinearVelocity(b2Vec2_zero);
 				}
+
+				//カメラシェイクスタート
+				CameraShake::StartCameraShake(3, 00, 10);
+				
 			}
 			sheet_cnt += 0.5;
 			
@@ -355,6 +363,11 @@ void Boss_1_1::Update()
 				b2Body*body =GetBossBody();
 				b2Vec2 velocity=body->GetLinearVelocity();
 				body->SetLinearVelocity(b2Vec2(0.0f, velocity.y));
+
+
+				//カメラシェイクスタート
+				CameraShake::StartCameraShake(120, 00, 20);
+				HitStop::SetHitStopFlag(5);
 
 				now_boss_state = wait_state;
 			}
@@ -391,6 +404,9 @@ void Boss_1_1::Update()
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
 				CreateMiniGolem(b2Vec2(3.0f,2.0f),left_flag);//画像が横に空白があるため　ｘを引き伸ばし　実際の半径で参照しているのはｙ軸
+				//カメラシェイクスタート
+				CameraShake::StartCameraShake(10, 10, 40);
+				HitStop::SetHitStopFlag(5);
 			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
@@ -614,6 +630,15 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		//エフェクトスタート
 		panic_effect_sheet_cnt = 1;
 
+		//カメラシェイクスタート
+		CameraShake::StartCameraShake(40, 20, 40);
+		HitStop::SetHitStopFlag(10);
+
+
+		b2Vec2 vec= m_body->GetLinearVelocity();
+
+		m_body->SetLinearVelocity(b2Vec2(0.0f, vec.y));
+
 		
 	}
 }
@@ -746,6 +771,10 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		//地面を破壊
 		boss_field_level++;
 
+		//カメラシェイクスタート
+		CameraShake::StartCameraShake(40, 0, 60);
+		HitStop::SetHitStopFlag(15);
+
 		
 
 	}
@@ -812,6 +841,10 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 
 		ObjectData* boss_attack_data = new ObjectData{ collider_shock_wave };
 		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
+
+		//カメラシェイクスタート
+		CameraShake::StartCameraShake(0, 20, 40);
+		HitStop::SetHitStopFlag(5);
 	}
 }
 
@@ -966,6 +999,11 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 			{
 				SetMiniGolemBody(nullptr, i);
 				destroy_mini_golem_flag = false;
+
+
+				//カメラシェイクスタート
+				CameraShake::StartCameraShake(0, 20, 10);
+				HitStop::SetHitStopFlag(5);
 			}
 		}
 	}
