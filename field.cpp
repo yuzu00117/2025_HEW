@@ -24,6 +24,7 @@
 #include"enemy_floating.h"
 #include"object_manager.h"
 #include"Item_Manager.h"
+#include"1_1_boss_carry_object_enemy.h"
 
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
@@ -235,6 +236,23 @@ void Field::Initialize()
 			if (field_map[y][x] == 37) {//ボスの地面ブロック破壊できる
 				objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 1.f), b2Vec2(3.f, 6.f), 9, 9, boss_room_level_2);
 			}
+
+
+			//ボスのステージのオブジェクトをもったエネミーのスポナー
+			if (field_map[y][x] == 45) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossCarryObjectEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f),boss_room_level_1, b2Vec2(3.f,3.f),b2Vec2(-2.0f,0.0f),b2Vec2(3.0f,3.0f),1);
+			}
+
+			//ボスのステージのオブジェクトをもったエネミーのスポナー
+			if (field_map[y][x] == 46) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossCarryObjectEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_2, b2Vec2(3.f, 3.f), b2Vec2(-2.0f, 0.0f), b2Vec2(3.0f, 3.0f), 1);
+			}
+
+			//ボスのステージのオブジェクトをもったエネミーのスポナー
+			if (field_map[y][x] == 47) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossCarryObjectEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_3, b2Vec2(3.f, 3.f), b2Vec2(-2.0f, 0.0f), b2Vec2(3.0f, 3.0f), 1);
+			}
+
 
 
 		}

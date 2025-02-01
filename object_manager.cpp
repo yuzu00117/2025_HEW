@@ -100,6 +100,13 @@ void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x,
     boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
 }
 
+//ボスの部屋のオブジェクトを運んでくるエネミーを追加
+void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 size, Boss_Room_Level level, b2Vec2 enemy_size, b2Vec2 enemy_speed, b2Vec2 max_obejct_size, int object_need_levl)
+{
+    boss_carry_obeject_enemy_List.emplace_back(std::make_unique<boss_carry_object_enemy>(position, size, level, enemy_size, enemy_speed, max_obejct_size, object_need_levl));
+}
+
+
 
 // ID を使って木を検索
 wood* ObjectManager::FindWoodByID(int id) {
@@ -251,6 +258,17 @@ boss_pillar* ObjectManager::FindBossPillar(int id)
 }
 
 
+//IDを使ってボスの部屋の柱を検索
+boss_carry_object_enemy* ObjectManager::FindBossEnemyCarryEnemyID(int id)
+{
+    for (auto& w : boss_carry_obeject_enemy_List) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 
 
@@ -390,6 +408,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : boss_carry_obeject_enemy_List) {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -470,6 +492,10 @@ void ObjectManager::UpdateAll() {
     for (auto& w : boss_pillarList) {
         w->Update();
     }
+
+    for (auto& w : boss_carry_obeject_enemy_List) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -538,6 +564,10 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
     
+
+    for (auto& w : boss_carry_obeject_enemy_List) {
+        w->Draw();
+    }
     Item_Coin_UI::Draw();
 }
 
@@ -597,6 +627,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : boss_carry_obeject_enemy_List) {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -620,6 +654,8 @@ void ObjectManager::FinalizeAll() {
     boss_field_blockList.clear();
 
     boss_pillarList.clear();
+
+    boss_carry_obeject_enemy_List.clear();
 
 
 
