@@ -141,7 +141,7 @@ void geyser::Initialize()
 {
 	//間欠泉周りのテクスチャ！！！（日本語）
 	g_Geyser_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_gyaser.png");
-	g_Geyser_Water_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_geyser_water.png");
+	g_Geyser_Water_Texture = InitTexture(L"asset\\texture\\sample_texture\\geyser_water.png");
 	g_Geyser_on_Rock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_geyser_on_rock.png");
 
 }
@@ -386,13 +386,30 @@ void geyser::Draw()
 
 			b2Vec2 geyser_pos = GetGeyserBody()->GetPosition();
 
-
-
-
 			// プレイヤー位置を考慮してスクロール補正を加える
 			//取得したbodyのポジションに対してBox2dスケールの補正を加える
 			float draw_x = ((geyser_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float draw_y = ((geyser_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
+
+			//draw
+			DrawSplittingSprite(
+				{ draw_x,
+				  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale) },
+				GetGeyserBody()->GetAngle(),
+				{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale *1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				7, 6, water_sheet_cnt / 3, 3.0f
+
+			);
+			water_sheet_cnt++;
+			if (126 < water_sheet_cnt)
+			{
+				water_sheet_cnt = 0;
+			}
+
+
+			
 
 
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Texture);
@@ -406,15 +423,7 @@ void geyser::Draw()
 			);
 
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
-
-			//draw
-			DrawSprite(
-				{ draw_x,
-				  draw_y - (GetGeyserSize().y / 2 * scale) - (GetRangeFlyWaterSize().y / 2 * scale) },
-				GetGeyserBody()->GetAngle(),
-				{ GetRangeFlyWaterSize().x * scale,GetRangeFlyWaterSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-			);
+			
 		}
 
 		//分割後の描画
