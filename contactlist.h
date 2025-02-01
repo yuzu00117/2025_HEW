@@ -85,8 +85,18 @@ public:
             // サイズの上限を設定
             if (effectScale > maxScale) effectScale = maxScale;
 
-            //エフェクトを設定できる
-            int effectType =  rand() % 2;
+            //エフェクトの種類を設定できる
+            int effectType;
+
+
+            if (effectScale < 0.5f)
+            {
+                effectType = 1;
+            }
+            else
+            {
+                effectType = 2;
+            }
 
             // エフェクトリストに追加
             impactEffects.emplace_back(ImpactEffect(worldPoint, effectAngle, effectScale, effectType));

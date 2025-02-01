@@ -1,4 +1,11 @@
-
+//-----------------------------------------------------------------------------------------------------
+// #name impact_effect.cpp
+// #description 衝突の時の衝撃を取得してエフェクトを表示するCPP
+// #make 2025/02/01　永野義也
+// #update 2024/02/01
+// #comment 追加・修正予定
+//          ・衝突時のエフェクトに変更があれば変更
+//----------------------------------------------------------------------------------------------------
 #include"impact_effect.h"
 #include"texture.h"
 #include"sprite.h"
@@ -70,7 +77,7 @@ void DrawImpactEffects(float Draw_size) {
             DrawSplittingSprite(
                 { effect_draw_x, effect_draw_y },
                 effect.angle, // **エフェクトの回転角度**
-                { 200 * effect.scale, 200 * effect.scale }, // **スケール適用**
+                { 400 * effect.scale, 400 * effect.scale }, // **スケール適用**
                 5, 4, effect.lifeTime / 4, 1.f
             );
         }
