@@ -481,6 +481,15 @@ void Player::Update()
         
         app_atomex_start(Anchor_Thorw_Sound);
         Anchor::SetAnchorState(Throwing_state);
+
+        if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition().x < m_body->GetPosition().x)
+        {
+            m_direction = 0;
+        }
+        else
+        {
+            m_direction = 1;
+        }
     
    
         break;
