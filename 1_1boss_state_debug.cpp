@@ -28,7 +28,8 @@ enum PARAMETER_BOSS
 	BOSS_POSITION = 0,
 	BOSS_HP,
 	BOSS_STATE,
-	BOSS_PLAYER_NEAR
+	BOSS_PLAYER_NEAR,
+	BOSS_ELAPSED_TIME,
 };
 
 
@@ -150,12 +151,21 @@ void	UpdateBossDebug()
 				break;
 
 			case BOSS_PLAYER_NEAR://プレイヤーが近くにいるかどうか
+			{
 				bool near_flag = boss.GetPlayerisNearbyFlag();
 				words = ToString(L"Boss_near : ", near_flag);
 				//文字列を画像に変換
 				SetWord(words, g_boss_word[i], MAX_WORD);
-				break;
+			}
+			break;
 
+			case BOSS_ELAPSED_TIME:
+				// ボスの経過時間を取得
+				float boss_elapsed_time = boss.GetBossElapsedTime();
+				// 経過時間を文字列に変換
+				words = ToString(L"Boss Elapsed Time: ", boss_elapsed_time);
+				// 文字列を画像に変換
+				SetWord(words, g_boss_word[i], MAX_WORD);
 				break;
 			}
 		}
@@ -204,6 +214,11 @@ void	DrawBossDebug()
 				DrawWord(first_word_position, word_scales, word_rotate, g_boss_word[i]);
 				break;
 			case BOSS_PLAYER_NEAR:
+				first_word_position.x = (screen_rightup.x - screen_rightup.x / 4) * scale;
+				first_word_position.y = (screen_rightup.y + distance_y * i) * scale;
+				DrawWord(first_word_position, word_scales, word_rotate, g_boss_word[i]);
+				break;
+			case BOSS_ELAPSED_TIME:
 				first_word_position.x = (screen_rightup.x - screen_rightup.x / 4) * scale;
 				first_word_position.y = (screen_rightup.y + distance_y * i) * scale;
 				DrawWord(first_word_position, word_scales, word_rotate, g_boss_word[i]);

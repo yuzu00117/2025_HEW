@@ -19,6 +19,15 @@ public:
 
 	static void StartCameraShake(int shake_height,int shake_width,int shake_frame)
 	{
+
+		//カメラシェイクのスタートを呼び出すと、直ぐにそのカメラシェイクに移行してしまうため　
+		//例えばボスの大きな震度をプレイヤーが敵を倒した小さな震度で上書きできてしまう問題が発生していたのでそれを修正する
+		if (shake_height + shake_width < camera_shake_height + camera_shake_width)
+		{
+			return;
+		}
+
+
 		camera_shake_flag = true;
 		camera_shake_height = shake_height;
 		camera_shake_width=shake_width;

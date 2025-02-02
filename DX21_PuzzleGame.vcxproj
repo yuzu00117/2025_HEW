@@ -163,6 +163,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="geyser.cpp" />
     <ClCompile Include="ground.cpp" />
+    <ClCompile Include="impact_effect.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="geyser.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="hit_stop.h" />
+    <ClInclude Include="impact_effect.h" />
     <ClInclude Include="Item_Coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />
     <ClInclude Include="Item_Manager.h" />
