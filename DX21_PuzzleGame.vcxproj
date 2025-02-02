@@ -160,6 +160,7 @@
     <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="geyser.cpp" />
+    <ClCompile Include="gokai.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="impact_effect.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="geyser.h" />
+    <ClInclude Include="gokai.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="hit_stop.h" />
     <ClInclude Include="impact_effect.h" />

@@ -88,7 +88,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 	ObjectData* object_data = new ObjectData{ collider_object };
 	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
-
+	object_data->need_anchor_level = need_anchor_level;
 	////--------------------------------------------------------------------------------------------------
 	//アンカーポイントのフィクスチャ
 	b2FixtureDef fixture_anchorpoint;
