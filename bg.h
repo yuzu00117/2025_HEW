@@ -24,6 +24,8 @@ public:
 	static void Draw();
 	static void Finalize();
 
+	static void FrontDraw();
+
 	XMFLOAT2 GetPosition()
 	{
 		return m_bg_position;

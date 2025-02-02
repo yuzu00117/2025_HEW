@@ -21,6 +21,8 @@ static ID3D11ShaderResourceView* g_Bg_Texture3 = NULL;//背景のテクスチャ
 static ID3D11ShaderResourceView* g_Bg_Texture4 = NULL;//背景のテクスチャ
 static ID3D11ShaderResourceView* g_Bg_Texture5 = NULL;//背景のテクスチャ
 
+static ID3D11ShaderResourceView* g_Bg_Texture_light = NULL;//背景のテクスチャ
+
 
 
 // プレイヤーの過去の座標
@@ -40,13 +42,13 @@ Bg bg;
 void Bg::Initialize()
 {
     // 各背景テクスチャの読み込み
-    g_Bg_Texture1 = InitTexture(L"asset\\texture\\stage1_1\\background1.png");
-    g_Bg_Texture2 = InitTexture(L"asset\\texture\\stage1_1\\background5.png");
-    g_Bg_Texture3 = InitTexture(L"asset\\texture\\stage1_1\\background4.png");
-    g_Bg_Texture4 = InitTexture(L"asset\\texture\\stage1_1\\background3.png");
-    g_Bg_Texture5 = InitTexture(L"asset\\texture\\stage1_1\\background2.png");
+    g_Bg_Texture1 = InitTexture(L"asset\\texture\\stage1_1\\background5.png");
+    g_Bg_Texture2 = InitTexture(L"asset\\texture\\stage1_1\\background4.png");
+    g_Bg_Texture3 = InitTexture(L"asset\\texture\\stage1_1\\background3.png");
+    g_Bg_Texture4 = InitTexture(L"asset\\texture\\stage1_1\\background2.png");
+    g_Bg_Texture5 = InitTexture(L"asset\\texture\\stage1_1\\background1.png");
 
-    
+    g_Bg_Texture_light= InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
    
     
    // 背景画像の初期配置（4枚に増やす）
@@ -74,10 +76,10 @@ void Bg::Initialize()
     bg.texture_4_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3 * 2, BACK_GROUND_HEIGHT);
 
 
-    bg.texture_5_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT);
-    bg.texture_5_pos[1] = XMFLOAT2(SCREEN_WIDTH * 2, BACK_GROUND_HEIGHT);
-    bg.texture_5_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2 * 2, BACK_GROUND_HEIGHT);
-    bg.texture_5_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3 * 2, BACK_GROUND_HEIGHT);
+    bg.texture_5_pos[0] = XMFLOAT2(0.0f, BACK_GROUND_HEIGHT*2);
+    bg.texture_5_pos[1] = XMFLOAT2(SCREEN_WIDTH * 2, BACK_GROUND_HEIGHT*2);
+    bg.texture_5_pos[2] = XMFLOAT2(SCREEN_WIDTH * 2 * 2, BACK_GROUND_HEIGHT*2);
+    bg.texture_5_pos[3] = XMFLOAT2(SCREEN_WIDTH * 3 * 2, BACK_GROUND_HEIGHT*2);
 }
 
 void Bg::Update()
@@ -168,7 +170,7 @@ void Bg::Draw()
 
 
     // 背景テクスチャの描画
-    ID3D11ShaderResourceView* textures[] = { g_Bg_Texture1, g_Bg_Texture2, g_Bg_Texture3 ,g_Bg_Texture4,g_Bg_Texture5};
+    ID3D11ShaderResourceView* textures[] = { g_Bg_Texture1, g_Bg_Texture2, g_Bg_Texture3 ,g_Bg_Texture4};
 
     // 背景1の描画
     for (int i = 0; i < 4; i++)
@@ -197,11 +199,18 @@ void Bg::Draw()
         DrawSprite(bg.texture_3_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2));
     }
 
+  
+    GetDeviceContext()->PSSetShaderResources(0, 1,&g_Bg_Texture_light);
+    DrawSpriteOld({ SCREEN_WIDTH/2,SCREEN_HEIGHT/2 }, 0.0f, { SCREEN_WIDTH,SCREEN_HEIGHT }, 1.0f);
+}
+
+void Bg::FrontDraw()
+{
     // 背景2の描画
     for (int i = 0; i < 4; i++)
     {
-        GetDeviceContext()->PSSetShaderResources(0, 1, &textures[4]);
-        DrawSprite(bg.texture_3_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH * 2, SCREEN_HEIGHT * 2));
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture5);
+        DrawSprite(bg.texture_3_pos[i], 0.0f, XMFLOAT2(SCREEN_WIDTH*2 , SCREEN_HEIGHT*2));
     }
 }
 
