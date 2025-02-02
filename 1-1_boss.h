@@ -262,7 +262,7 @@ private:
 
 	int boss_hp=3;		   //bossのHP
 
-	int boss_field_level=1;//ボスの床の崩壊を管理する関数
+	int boss_field_level=0;//ボスの床の崩壊を管理する関数
 
 
 	b2Body* m_body;//ボスのボディ

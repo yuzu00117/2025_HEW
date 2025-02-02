@@ -100,6 +100,17 @@ void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x,
     boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
 }
 
+void ObjectManager::AddBossCarryEnemySpawner(b2Vec2 position, b2Vec2 Size, Boss_Room_Level level, bool left)
+{
+    boss_carry_object_spawnerList.emplace_back(std::make_unique<boss_carry_object_spawner>(position, Size, level, left));
+}
+
+void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size, int object_type, int anchor_level)
+{
+    boss_carry_object_enemyList.emplace_back(std::make_unique<boss_carry_object_enemy>(position, enemy_size, left, enemy_speed, object_size, object_type, anchor_level));
+}
+
+
 
 // ID を使って木を検索
 wood* ObjectManager::FindWoodByID(int id) {
@@ -251,6 +262,30 @@ boss_pillar* ObjectManager::FindBossPillar(int id)
 }
 
 
+//IDを使ってボスのオブジェクトエネミーのスポナー
+boss_carry_object_spawner* ObjectManager::FindBossCarryEnemySpawner(int id)
+{
+    for (auto& w : boss_carry_object_spawnerList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+//IDを使ってボスのオブジェクトエネミー
+boss_carry_object_enemy* ObjectManager::FindBossCarryObjectEnemy(int id)
+{
+    for (auto& w : boss_carry_object_enemyList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
+
 
 
 
@@ -390,6 +425,14 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Initialize();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -470,6 +513,14 @@ void ObjectManager::UpdateAll() {
     for (auto& w : boss_pillarList) {
         w->Update();
     }
+
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Update();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -538,6 +589,14 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
     
+
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Draw();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
+        w->Draw();
+    }
     Item_Coin_UI::Draw();
 }
 
@@ -597,6 +656,14 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Finalize();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -620,6 +687,10 @@ void ObjectManager::FinalizeAll() {
     boss_field_blockList.clear();
 
     boss_pillarList.clear();
+
+    boss_carry_object_enemyList.clear();
+
+    boss_carry_object_spawnerList.clear();
 
 
 

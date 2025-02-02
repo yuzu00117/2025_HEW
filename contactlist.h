@@ -383,6 +383,7 @@ public:
                     }
                 }
 
+                //ボスの部屋の柱
                 if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
                 {
                     //どちらがボスの部屋の柱
@@ -397,6 +398,25 @@ public:
                         pillar_instance->Pulling_pillar(objectB->add_force);
                     }
                 }
+
+
+                //ボスのオブジェクト
+                if (objectA->object_name == Boss_Carry_Object_Enemy || objectB->object_name == Boss_Carry_Object_Enemy)
+                {
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
+                    {
+                        boss_carry_object_enemy*enemy_instance= object_manager.FindBossCarryObjectEnemy(objectA->id);
+                        enemy_instance->SetAnchorHItFlag(true);
+
+                    }
+                    else
+                    {
+                        boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
+                        enemy_instance->SetAnchorHItFlag(true);
+                    }
+                }
+        
             }
        
              
@@ -1031,14 +1051,6 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_boss))
         {
 
-
-
-          
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-
-
-          
             b2Vec2 GetObjectVelocity;
 
             if (objectA->collider_type == collider_boss)
@@ -1072,9 +1084,65 @@ public:
                    
                 }
 
+
+                if (objectA->object_name == Boss_Carry_Object_Enemy)
+                {
+                 
+                }
+                if (objectB->object_name == Boss_Carry_Object_Enemy)
+                {
+
+                }
+
             }
 
+           
 
+
+        }
+
+        //ボスのオブジェクト
+        if (objectA->object_name == Boss_Carry_Object_Enemy || objectB->object_name == Boss_Carry_Object_Enemy)
+        {
+            //どちらがボスの部屋の柱
+            if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
+            {
+
+                if (fixtureA->IsSensor() == false && fixtureB->IsSensor() == false)
+                {
+                    if (objectB->collider_type == collider_anchor) { return; } 
+                    if (objectB->object_name == Boss_Carry_Object_Enemy) { return; }
+ 
+                    boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectA->id);
+                    enemy_instance->SetSplittingDestroyFlag(true);
+
+                    if (objectB->collider_type == collider_boss)
+                    {
+                        boss.SetNowBossState(panic_state);
+                    }
+                }
+
+              
+              
+            }
+            if (objectB->object_name == Boss_Carry_Object_Enemy)
+            {
+                if (fixtureB->IsSensor() == false&&fixtureA->IsSensor()==false)
+                {
+                    if (objectA->collider_type == collider_anchor) { return; }
+                    if (objectA->object_name == Boss_Carry_Object_Enemy) { return; }
+
+                    boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
+                    enemy_instance->SetSplittingDestroyFlag(true);
+                    if (objectA->collider_type == collider_boss)
+                    {
+                        boss.SetNowBossState(panic_state);
+                    }
+                }
+
+              
+            }
+     
         }
 
         
