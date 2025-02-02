@@ -10,111 +10,138 @@
 #ifndef BOSS_CARRY_OBJECT_ENEMY_H
 #define BOSS_CARRY_OBJECT_ENEMY_H
 
-#include"include/box2d/box2d.h"
+#include "include/box2d/box2d.h"
 #include"1-1_boss_field_block.h"
 #include<vector>
-
-
-struct EnemyObjectPair {
-	b2Body* enemyBody;
-	b2Body* objectBody;
-	b2Vec2 enemySize;
-	b2Vec2 objectSize;
-	float lifetime;
-};
 
 class boss_carry_object_enemy
 {
 public:
-	boss_carry_object_enemy(b2Vec2 position, b2Vec2 size, Boss_Room_Level level, b2Vec2 enemy_size, b2Vec2 enemy_speed, b2Vec2 max_obejct_size, int object_need_levl);
-	~boss_carry_object_enemy();
+    boss_carry_object_enemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size,int object_type, int anchor_level);
+    ~boss_carry_object_enemy();
+
+    void Initialize();
+    void Update();
+    void Draw();
+    void Finalize();
+    void Destroy_Splitting();
+    bool IsDestroyed() const { return destroyed; }
+
+    void DestroySplittedBodies(std::vector<b2Body*>& bodyList);
+
+    void AnchorHit();
+
+    void Destroy_Body();
+
+    // ID を取得する
+    int GetID() const {
+        return id;
+    }
+
+    void SetID(int ID)
+    {
+        id = ID;
+    }
 
 
-	void Initialize();
-	void Update();
-	void Draw();
-	void Finalize();
+    //ボディを取得
+    b2Body* GetEnemyBody(void)
+    {
+        return enemy_body;
+    }
 
-	void EnemyUpdate();
-
-	void CreateEnemyBodyandObjectBody(b2Vec2 object_size, b2Vec2 enemy_size);
-
-	
-
-
-
-	// ID を取得する
-	int GetID() const {
-		return id;
-	}
-
-	void SetID(int ID)
-	{
-		id = ID;
-	}
-
-
-	//ボディを取得
-	b2Body* GetBody(void)
-	{
-		return m_body;
-	}
-
-	//ボディをセット
-	void SetBody(b2Body* body)
-	{
-		m_body = body;
-	}
-
-
-
-	//サイズを取得
-	b2Vec2 GetSize(void)
-	{
-		return m_size;
-	}
-	//サイズをセット
-	void SetSize(b2Vec2 size)
-	{
-		m_size = size;
-	}
+    //ボディをセット
+    void SetEnemyBody(b2Body* body)
+    {
+        enemy_body = body;
+    }
 
 
 
+    //サイズを取得
+    b2Vec2 GetEnemySize(void)
+    {
+        return m_enemy_size;
+    }
+    //サイズをセット
+    void SetEnemySize(b2Vec2 size)
+    {
+        m_enemy_size = size;
+    }
+
+
+
+    //ボディを取得
+    b2Body* GetObjectBody(void)
+    {
+        return object_body;
+    }
+
+    //ボディをセット
+    void SetObjectBody(b2Body* body)
+    {
+        object_body = body;
+    }
+
+
+
+    //サイズを取得
+    b2Vec2 GetObjectSize(void)
+    {
+        return m_object_size;
+    }
+    //サイズをセット
+    void SetObjectSize(b2Vec2 size)
+    {
+        m_object_size = size;
+    }
+
+
+    void SetAnchorHItFlag(bool flag)
+    {
+        Anchor_Hit_flag = flag;
+    }
+
+    void SetSplittingDestroyFlag(bool flag)
+    {
+        Splitting_Destroy_Flag = flag;
+    }
 
 private:
+    bool isUse = false;
 
-	int id;
+    b2Body* enemy_body;
+    b2Vec2 m_enemy_size;
+   
+    b2Body* object_body;
+    b2Vec2 m_object_size;
 
-	//スポナーのボディ
-	b2Body* m_body;
-	b2Vec2 m_size;
+    float enemy_speed;//横に移動するスピード
 
+    bool left_flag;//左にすすむかどうか
 
-	int spawnTimer = 0;  // 生成用タイマー（フレーム単位）
-	int spawnIntervalFrames = 600;  // 10秒ごとにエネミー生成（60FPS × 10秒）
-
-	std::vector<EnemyObjectPair> enemyObjectPairs; // 敵とオブジェクトのセット
-	int maxLifetimeFrames = 4000; // 削除されるまでのフレーム数 (例: 300フレーム = 5秒 @ 60FPS)
-
-
-	b2Vec2 Enemy_Speed;
-
-	b2Vec2 Max_object_size;
+    int object_type;//テクスチャのタイプ
 
 
-	Boss_Room_Level BossRoomLevel;
+    bool Anchor_Hit_flag=false;
+
+    int id;
+    bool destroyed = false;
 
 
+    int lifetime = 0;
 
-	int body_delete_cnt = 0;
+    
 
-	bool break_flag = false;
+    int Destroy_Cnt=0;
 
-	int Object_need_level;
+    std::vector<b2Body*> boss_Object_body_Splitting;
 
+    bool Splitting_Destroy_Flag;//分割するフラグ
+    bool Splitting_end;//分割が終わった
+    int Splitting_x;
+    int Splitting_y;
 
 };
 
-
-#endif // !BOSS_CARRY_OBJECT_ENEMY_H
+#endif // BOSS_CARRY_OBJECT_ENEMY_H

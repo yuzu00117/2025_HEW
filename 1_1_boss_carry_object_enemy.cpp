@@ -7,313 +7,511 @@
 //          
 //----------------------------------------------------------------------------------------------------
 
-
 #include"1_1_boss_carry_object_enemy.h"
-#include"texture.h"
-#include"sprite.h"
-#include"world_box2d.h"
+#include "world_box2d.h"
 #include"collider_type.h"
 #include"player_position.h"
-#include"1-1_boss.h"
+#include"sprite.h"
 #include"create_filter.h"
-#include"tool.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//スポナーのテクスチャ
 static ID3D11ShaderResourceView* g_Enemy_Texture = NULL;//エネミーのテクスチャ
 static ID3D11ShaderResourceView* g_Object_Texture = NULL;//エネミーのテクスチャ
 
 
-boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position, b2Vec2 size, Boss_Room_Level level,b2Vec2 enemy_size,b2Vec2 enemy_speed,b2Vec2 max_obejct_size,int object_need_levl)
+boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_size,bool left, float Enemy_speed,b2Vec2 Object_size, int Object_type,int anchor_level)
 {
-	SetSize(size);//描画用のサイズを保存
 
-	//ワールドのインスタンスを持ってくる
+	if (g_Enemy_Texture == nullptr)
+	{
+		g_Enemy_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating .png");
+		g_Object_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//オブジェクトのテクスチャ
+	}
+	// ワールドのインスタンス
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
-	//サイズを調整する
-	b2Vec2 body_size;
-	body_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
-	body_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
+	left_flag = left;
+	enemy_speed= Enemy_speed;
 
-	//ボディを作成する
-	b2BodyDef body;
-	body.type = b2_staticBody;
-	body.position.Set(position.x, position.y);
-	body.fixedRotation = false;
+	object_type = Object_type;
 
-	b2Body* m_Body = world->CreateBody(&body);
+	//分割数を登録しておく
+	Splitting_x = Object_size.x;
+	Splitting_y = Object_size.y;
 
-	SetBody(m_Body);
+	//サイズを登録
+	SetEnemySize(Enemy_size);
+	SetObjectSize(Object_size);
 
+	// サイズの補正
+	b2Vec2 object_size;
+	b2Vec2 enemy_size;
 
-	//形の定義
-	b2PolygonShape shape;
-	shape.SetAsBox(body_size.x * 0.5, body_size.y * 0.5);
+	object_size.x = Object_size.x / BOX2D_SCALE_MANAGEMENT;
+	object_size.y = Object_size.y / BOX2D_SCALE_MANAGEMENT;
 
+	enemy_size.x = Enemy_size.x / BOX2D_SCALE_MANAGEMENT;
+	enemy_size.y = Enemy_size.y / BOX2D_SCALE_MANAGEMENT;
 
-	//-----------------------------------------------------
-	//	fixtureを作る
-	b2FixtureDef fixture;
+	b2Vec2 pos = position; 
 
-	fixture.shape = &shape;
-	fixture.density = 1.0f;
-	fixture.friction = 0.01f;
-	fixture.restitution = 0.3f;
-	fixture.isSensor = true;
-	fixture.filter = createFilterExclude("ground_filter", {});
+	// === EnemyBody の作成 ===
+	b2BodyDef enemyBodyDef;
+	enemyBodyDef.type = b2_dynamicBody;
+	enemyBodyDef.position.Set(pos.x, pos.y);
+	enemyBodyDef.gravityScale = (0.0f);
+	b2Body* enemyBody = world->CreateBody(&enemyBodyDef);
+	SetEnemyBody(enemyBody);
 
-	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
+	b2PolygonShape enemyShape;
+	enemyShape.SetAsBox(enemy_size.x * 0.5f, enemy_size.y * 0.5f);
 
-	// 新しいフィルターを作成
+	b2FixtureDef enemyFixtureDef;
+	enemyFixtureDef.shape = &enemyShape;
+	enemyFixtureDef.density = 1.0f;
+	enemyFixtureDef.friction = 0.3f;
+	enemyFixtureDef.isSensor = true;
+	b2Fixture* enemy_fixture = enemyBody->CreateFixture(&enemyFixtureDef);
 
+	// カスタムデータを作成して設定
+	ObjectData* enemy_data = new ObjectData{ collider_object };
+	enemy_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemy_data);
 
-	//カスタムデータを作成
-	ObjectData* object_data = new ObjectData{ collider_ground };
-	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
-
-	int ID = object_data->GenerateID();
-	object_data->id = ID;
-	object_data->object_name = NULL_object;
+	int ID = enemy_data->GenerateID();
 	SetID(ID);
 
-
-	//各種特殊な変数をセット
-	BossRoomLevel = level;
-
-	Enemy_Speed = enemy_speed;
-
-	//enemySize = enemy_size;
-
-	//Max_object_size=max_obejct_size;
+	enemy_data->id = GetID();
 
 
-	Object_need_level = object_need_levl;
 
-	CreateEnemyBodyandObjectBody(b2Vec2(5.0f, 1.0f), b2Vec2(3.f, 3.f));
+	// === ObjectBody の作成 ===
+	b2BodyDef objectBodyDef;
+	objectBodyDef.type = b2_dynamicBody;
+	objectBodyDef.position.Set(pos.x, pos.y + (object_size.y / 2) + (enemy_size.y / 2));
+	objectBodyDef.gravityScale = (0.0f);
+	b2Body* objectBody = world->CreateBody(&objectBodyDef);
+	SetObjectBody(objectBody);
+
+	b2PolygonShape objectShape;
+	objectShape.SetAsBox(object_size.x * 0.5f, object_size.y * 0.5f);
+
+	b2FixtureDef objectFixtureDef;
+	objectFixtureDef.shape = &objectShape;
+	objectFixtureDef.density = 1.0f;
+	objectFixtureDef.friction = 0.3f;
+	objectFixtureDef.isSensor = true;
+
+	b2Fixture* object_fixture = objectBody->CreateFixture(&objectFixtureDef);
+	// カスタムデータを作成して設定
+	ObjectData* object_data = new ObjectData{ collider_anchor_point };
+	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
+
+	object_data->need_anchor_level = anchor_level;
+	object_data->id = GetID();
+	object_data->object_name = Boss_Carry_Object_Enemy;
+
+
+
+
+
+	// === ジョイントの作成 (Weld Joint) ===
+	b2WeldJointDef weldJointDef;
+	weldJointDef.bodyA = enemyBody;
+	weldJointDef.bodyB = objectBody;
+	weldJointDef.localAnchorA.Set(0.0f, enemy_size.y * 0.5f); // エネミーの下
+	weldJointDef.localAnchorB.Set(0.0f, -object_size.y * 0.5f); // オブジェクトの上
+	weldJointDef.collideConnected = false;  // ジョイントした物体同士の衝突を防ぐ
+	world->CreateJoint(&weldJointDef);
 
 	
+
+	isUse = true;
+}
+
+
+void boss_carry_object_enemy::Destroy_Splitting()
+{
+	if (Splitting_Destroy_Flag == true)//破壊のフラグがオンになっている
+	{
+		
+
+		if (object_body != nullptr && Splitting_end == false)
+		{
+			//ワールドのインスタンスを持ってくる
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+
+			//破壊されたpositionを取得
+
+
+			//普通のボディも消す
+			b2Vec2 Destroy_position = object_body->GetPosition();
+			float angle = object_body->GetAngle(); // 元のボディの角度を取得
+			b2Vec2 vec = object_body->GetLinearVelocity();
+			float angle_vec = object_body->GetAngularVelocity();
+
+			world->DestroyBody(object_body);
+			object_body = nullptr;
+
+			SetObjectBody(nullptr);
+
+
+			//アンカーポイントのボディも消す
+
+		
+
+			b2Vec2 size;
+			size.x = GetObjectSize().x / BOX2D_SCALE_MANAGEMENT;
+			size.y = GetObjectSize().y / BOX2D_SCALE_MANAGEMENT;
+
+
+
+			// 分割後のボディを配置
+			for (int y = 0; y < Splitting_y; y++)
+			{
+				for (int x = 0; x < Splitting_x; x++)
+				{
+					// 分割後のボディのローカル座標を計算
+					float localX = ((x - (Splitting_x - 1) / 2.0f) * size.x / Splitting_x);
+					float localY = ((y - (Splitting_y - 1) / 2.0f) * size.y / Splitting_y);
+
+					// 元の角度を考慮してワールド座標に変換
+					float rotatedX = localX * cos(angle) - localY * sin(angle);
+					float rotatedY = localX * sin(angle) + localY * cos(angle);
+
+					b2Vec2 fragmentPosition(
+						Destroy_position.x + rotatedX,
+						Destroy_position.y + rotatedY
+					);
+
+					// 分割後のボディを作成
+					b2BodyDef fragmentDef;
+					fragmentDef.type = b2_dynamicBody;
+					fragmentDef.position = fragmentPosition;
+					fragmentDef.angle = angle; // 元のボディの角度を引き継ぐ
+
+					b2Body* fragment = world->CreateBody(&fragmentDef);
+					boss_Object_body_Splitting.push_back(fragment);
+
+					fragment->SetLinearVelocity(b2Vec2(vec.x * 2, vec.y * 2));
+					fragment->SetAngularVelocity(angle_vec);
+
+					// 分割後の形状とフィクスチャを設定
+					b2PolygonShape fragmentShape;
+					fragmentShape.SetAsBox(size.x / (2.0f * Splitting_x), size.y / (2.0f * Splitting_y));
+
+					b2FixtureDef fragmentFixture;
+					fragmentFixture.shape = &fragmentShape;
+					fragmentFixture.density = 1.0f; // ボディの密度を設定。密度が大きいほどボディの質量が重くなる。
+					fragmentFixture.friction = 0.5f; // 摩擦係数を設定。接触面の滑りやすさを制御し、小さい値ほど滑りやすい。
+					fragmentFixture.restitution = 0.0f; // 反発係数を設定。0は反発しない（衝突時にエネルギーを失う）、1は完全に弾む。
+					fragmentFixture.filter = createFilterExclude("ground_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter" });
+
+					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
+
+					// カスタムデータを作成して設定
+					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
+					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+
+
+					// 初速度はゼロに設定（必要に応じて速度を追加可能）
+					fragment->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
+
+					// ランダムな方向に飛び散るように速度を設定
+					fragment->SetLinearVelocity(GetRandomVelocity(5.0f)); // 5.0f は基準速度（調整可）
+
+				}
+			}
+
+			Splitting_Destroy_Flag = false;
+			Splitting_end = true;
+		}
+
+
+
+
+	}
+
 }
 
 boss_carry_object_enemy::~boss_carry_object_enemy()
 {
+
 }
-
-
 
 void boss_carry_object_enemy::Initialize()
 {
-	if (g_Texture == NULL) {
-		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//グラウンドのテクスチャ
-		g_Enemy_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating .png");
-		g_Object_Texture=InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//オブジェクトのテクスチャ
-	}
+	
 }
 
 void boss_carry_object_enemy::Update()
 {
-	Boss_1_1& boss = Boss_1_1::GetInstance();
-	if (m_body != nullptr)
+	if (isUse)
 	{
-		if (boss.GetBossFieldLevel() > BossRoomLevel)
+		if (enemy_body != nullptr && object_body != nullptr)
 		{
-			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-			b2World* world = box2d_world.GetBox2dWorldPointer();
-			if (m_body != nullptr)
-			{
-				world->DestroyBody(m_body);
-				SetBody(nullptr);
-			}
+			// 移動方向を決定（左: 負、右: 正）
+			float moveSpeed = left_flag ? -fabs(enemy_speed) : fabs(enemy_speed);
+
+
+			// エネミーを移動
+			enemy_body->SetLinearVelocity(b2Vec2(moveSpeed, enemy_body->GetLinearVelocity().y));
+
+			// オブジェクトをエネミーの位置に追従させる
+			b2Vec2 enemyPos = enemy_body->GetPosition();
+			b2Vec2 objectPos = object_body->GetPosition();
+
+			object_body->SetTransform(b2Vec2(enemyPos.x, objectPos.y), 0);
+		}
+
+		if (Anchor_Hit_flag == true)
+		{
+			AnchorHit();
+			Anchor_Hit_flag = false;
+		}
+
+		if (Splitting_end == true)
+		{
+			Destroy_Cnt++;
+		}
+		if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
+		{
+			DestroySplittedBodies(boss_Object_body_Splitting);
+			isUse = false;
+		}
+
+		// 30秒（1800フレーム）経過後にボディ削除
+		lifetime++;
+		if (lifetime > 1800)
+		{
+			Destroy_Body();
 		}
 	}
 
-	EnemyUpdate();
-
-
-
+	Destroy_Splitting();
 
 }
 
-void boss_carry_object_enemy::CreateEnemyBodyandObjectBody(b2Vec2 Object_size, b2Vec2 Enemy_size) {
+void boss_carry_object_enemy::AnchorHit()
+{
+	
+		b2Body* enemyBody = GetEnemyBody();
+		b2Body* objectBody =GetObjectBody();
 
-	if (m_body != nullptr)
-	{
-		// ワールドのインスタンス
+
+		// ワールドのインスタンス取得
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 
-		// サイズの補正
-		b2Vec2 object_size;
-		b2Vec2 enemy_size;
+		b2JointEdge* jointEdge = enemyBody->GetJointList();
+		while (jointEdge)
+		{
+			b2Joint* joint = jointEdge->joint;
+			jointEdge = jointEdge->next;
+			world->DestroyJoint(joint);
+		}
 
-		object_size.x = Object_size.x / BOX2D_SCALE_MANAGEMENT;
-		object_size.y = Object_size.y / BOX2D_SCALE_MANAGEMENT;
+		// --- 既存のフィクスチャを削除 ---
+		for (b2Fixture* f = enemyBody->GetFixtureList(); f;)
+		{
+			b2Fixture* next = f->GetNext();
+			enemyBody->DestroyFixture(f);
+			f = next;
+		}
 
-		enemy_size.x = Enemy_size.x / BOX2D_SCALE_MANAGEMENT;
-		enemy_size.y = Enemy_size.y / BOX2D_SCALE_MANAGEMENT;
+		for (b2Fixture* f = objectBody->GetFixtureList(); f;)
+		{
+			b2Fixture* next = f->GetNext();
+			objectBody->DestroyFixture(f);
+			f = next;
+		}
 
-		b2Vec2 pos = this->m_body->GetPosition();  // this-> を明示
+		// --- 新しいフィクスチャを作成 ---
+		b2PolygonShape newEnemyShape;
+		newEnemyShape.SetAsBox(GetEnemySize().x/ BOX2D_SCALE_MANAGEMENT * 0.5f, GetEnemySize().y/ BOX2D_SCALE_MANAGEMENT * 0.5f);
 
-		// === EnemyBody の作成 ===
-		b2BodyDef enemyBodyDef;
-		enemyBodyDef.type = b2_dynamicBody;
-		enemyBodyDef.position.Set(pos.x, pos.y);
-		enemyBodyDef.gravityScale = (0.0f);
-		b2Body* enemyBody = world->CreateBody(&enemyBodyDef);
+		b2FixtureDef newEnemyFixtureDef;
+		newEnemyFixtureDef.shape = &newEnemyShape;
+		newEnemyFixtureDef.density = 1.0; // 変更例
+		newEnemyFixtureDef.friction = 0.5f;
+		newEnemyFixtureDef.isSensor = false;
 
-		b2PolygonShape enemyShape;
-		enemyShape.SetAsBox(enemy_size.x * 0.5f, enemy_size.y * 0.5f);
+		b2Fixture* newEnemyFixture = enemyBody->CreateFixture(&newEnemyFixtureDef);
 
-		b2FixtureDef enemyFixtureDef;
-		enemyFixtureDef.shape = &enemyShape;
-		enemyFixtureDef.density = 1.0f;
-		enemyFixtureDef.friction = 0.3f;
-		enemyFixtureDef.isSensor = true;
-		enemyBody->CreateFixture(&enemyFixtureDef);
+		// --- カスタムデータの更新 ---
+		ObjectData* enemyData = new ObjectData{ collider_object };
+		newEnemyFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemyData);
+		enemyData->id = GetID();
+		enemyData->object_name = Boss_Carry_Object_Enemy;
 
-		// === ObjectBody の作成 ===
-		b2BodyDef objectBodyDef;
-		objectBodyDef.type = b2_dynamicBody;
-		objectBodyDef.position.Set(pos.x, pos.y + (object_size.y / 2) + (enemy_size.y / 2));
-		objectBodyDef.gravityScale = (0.0f);
-		b2Body* objectBody = world->CreateBody(&objectBodyDef);
+		// --- ObjectBodyの再設定 ---
+		b2PolygonShape newObjectShape;
+		newObjectShape.SetAsBox(GetObjectSize().x / BOX2D_SCALE_MANAGEMENT * 0.5f, GetObjectSize().y / BOX2D_SCALE_MANAGEMENT * 0.5f);
 
-		b2PolygonShape objectShape;
-		objectShape.SetAsBox(object_size.x * 0.5f, object_size.y * 0.5f);
+		b2FixtureDef newObjectFixtureDef;
+		newObjectFixtureDef.shape = &newObjectShape;
+		newObjectFixtureDef.density = 1.0f; // 変更例
+		newObjectFixtureDef.friction = 0.4f;
+		newObjectFixtureDef.isSensor = false;
 
-		b2FixtureDef objectFixtureDef;
-		objectFixtureDef.shape = &objectShape;
-		objectFixtureDef.density = 1.0f;
-		objectFixtureDef.friction = 0.3f;
-		objectFixtureDef.isSensor = true;
-		objectBody->CreateFixture(&objectFixtureDef);
+		b2Fixture* newObjectFixture = objectBody->CreateFixture(&newObjectFixtureDef);
 
-		// === ジョイントの作成 (Weld Joint) ===
-		b2WeldJointDef weldJointDef;
-		weldJointDef.bodyA = enemyBody;
-		weldJointDef.bodyB = objectBody;
-		weldJointDef.localAnchorA.Set(0.0f, enemy_size.y * 0.5f); // エネミーの下
-		weldJointDef.localAnchorB.Set(0.0f, -object_size.y * 0.5f); // オブジェクトの上
-		weldJointDef.collideConnected = false;  // ジョイントした物体同士の衝突を防ぐ
-		world->CreateJoint(&weldJointDef);
+		// --- カスタムデータの更新 ---
+		ObjectData* objectData = new ObjectData{ collider_object };
+		objectData-= GetID();
+		objectData->object_name = Boss_Carry_Object_Enemy;
+		newObjectFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(objectData);
+		objectData->id = GetID();
 
-		// 構造体にまとめて追加（this-> を使用）
-		this->enemyObjectPairs.push_back({ enemyBody, objectBody, Enemy_size, Object_size, 0.0f });
-	}
+		// === グラヴィティスケールの変更 ===
+		enemyBody->SetGravityScale(0.0f);  // 変更後の値（デフォルト1.0）
+		objectBody->SetGravityScale(1.0f); // 変更後の値（デフォルト1.0）
+
+	
+		
+	
+
 }
 
 
-void boss_carry_object_enemy::EnemyUpdate() {
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
-
-	// フレームごとにカウントを増加
-	spawnTimer++;
-
-	// 10秒ごとに新しいエネミーを作成（60FPS × 10秒 = 600フレーム）
-	if (spawnTimer >= spawnIntervalFrames) {
-		CreateEnemyBodyandObjectBody(b2Vec2(5.0f, 1.0f), b2Vec2(3.f, 3.f));  // エネミー生成
-		spawnTimer = 0;  // タイマーをリセット
-	}
-
-	// 移動速度（負の値で左方向へ移動）
-	float moveSpeed = -0.009f;
-
-	for (size_t i = 0; i < enemyObjectPairs.size(); ) {
-		enemyObjectPairs[i].lifetime++;  // フレームごとにカウントを増加
-
-		// エネミーとオブジェクトを左へ移動
-		b2Vec2 enemyPos = enemyObjectPairs[i].enemyBody->GetPosition();
-		b2Vec2 objectPos = enemyObjectPairs[i].objectBody->GetPosition();
-
-		enemyObjectPairs[i].enemyBody->SetTransform(b2Vec2(enemyPos.x + moveSpeed, enemyPos.y), 0);
-		enemyObjectPairs[i].objectBody->SetTransform(b2Vec2(objectPos.x + moveSpeed, objectPos.y), 0);
-
-		// 一定時間経過で削除
-		if (enemyObjectPairs[i].lifetime >= maxLifetimeFrames) {
-			world->DestroyBody(enemyObjectPairs[i].enemyBody);
-			world->DestroyBody(enemyObjectPairs[i].objectBody);
-			enemyObjectPairs.erase(enemyObjectPairs.begin() + i);
-		}
-		else {
-			++i;
-		}
-	}
-}
 
 void boss_carry_object_enemy::Draw()
 {
-	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	float scale = SCREEN_SCALE;
-
-	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
-
-	if (m_body != nullptr)
+	if (isUse)
 	{
-	
+		// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+		float scale = SCREEN_SCALE;
 
-		b2Vec2 Pos = GetBody()->GetPosition();
+		// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
+		//エネミーのボディの描画処理
+		if (enemy_body != nullptr)
+		{
 
 
-		float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+			b2Vec2 Pos = GetEnemyBody()->GetPosition();
 
 
-		//draw
-		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			GetBody()->GetAngle(),
-			{ GetSize().x * scale ,GetSize().y * scale }
-		);
+			float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Enemy_Texture);
+
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				GetEnemyBody()->GetAngle(),
+				{ GetEnemySize().x * scale ,GetEnemySize().y * scale }
+			);
+		}
+
+		//オブジェクトの描画処理
+		if (GetObjectBody() != nullptr)
+		{
+
+
+			b2Vec2 ObjectPos = GetObjectBody()->GetPosition();
+
+
+			float object_draw_x = ((ObjectPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float object_draw_y = ((ObjectPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Object_Texture);
+
+
+			//draw
+			DrawSprite(
+				{ object_draw_x,
+				  object_draw_y },
+				GetObjectBody()->GetAngle(),
+				{ GetObjectSize().x * scale ,GetObjectSize().y * scale }
+			);
+		}
+
+		//オブジェクトの描画的処理
+
+			//分割後の描画
+		if (Splitting_end == true)
+		{
+
+			for (int i = 0; i < Splitting_x * Splitting_y; i++)
+			{
+
+
+				b2Vec2 bodyPos = boss_Object_body_Splitting[i]->GetPosition();
+
+
+				float body_draw_x = ((bodyPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+				float body_draw_y = ((bodyPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Object_Texture);
+
+
+				//draw
+				DrawSplittingSprite(
+					{ body_draw_x,
+					body_draw_y },
+					boss_Object_body_Splitting[i]->GetAngle(),
+					{ GetObjectSize().x / Splitting_x * scale,GetObjectSize().y / Splitting_y * scale },
+					Splitting_x,
+					Splitting_y,
+					i,
+					1.0f
+				);
+
+			}
+		}
 	}
-
-	for (const auto& pair : this->enemyObjectPairs) {
-		//----------------------------------------------------------
-		// エネミーの描画処理
-
-		b2Vec2 posEnemy = pair.enemyBody->GetPosition();
-
-		float Enemy_draw_x = ((posEnemy.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float Enemy_draw_y = ((posEnemy.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Enemy_Texture);
-
-		// Draw
-		DrawSprite(
-			{ Enemy_draw_x, Enemy_draw_y },
-			pair.enemyBody->GetAngle(),
-			{ pair.enemySize.x * scale, pair.enemySize.y * scale }
-		);
-
-		//----------------------------------------------------------
-		// オブジェクトの描画処理
-
-		b2Vec2 posObject = pair.objectBody->GetPosition();
-
-		float Object_draw_x = ((posObject.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float Object_draw_y = ((posObject.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Object_Texture);
-
-		// Draw
-		DrawSprite(
-			{ Object_draw_x, Object_draw_y },
-			pair.objectBody->GetAngle(),
-			{ pair.objectSize.x * scale, pair.objectSize.y * scale}
-		);
-
-	}
-
 }
+
+void boss_carry_object_enemy::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+	for (b2Body*& body : bodyList) {
+		if (body != nullptr) {
+			world->DestroyBody(body);
+			body = nullptr; // ポインタを無効化
+		}
+	}
+}
+
+
+
 
 void boss_carry_object_enemy::Finalize()
 {
-	UnInitTexture(g_Texture);
+	UnInitTexture(g_Enemy_Texture);
+	UnInitTexture(g_Object_Texture);
+}
+
+void boss_carry_object_enemy::Destroy_Body()
+{
+	if (enemy_body == nullptr && object_body == nullptr) return;
+
+	// ワールドのインスタンスを取得
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	// ボディの削除
+	if (enemy_body)
+	{
+		world->DestroyBody(enemy_body);
+		enemy_body = nullptr;
+	}
+	if (object_body)
+	{
+		world->DestroyBody(object_body);
+		object_body = nullptr;
+	}
+
+	// 無効化
+	isUse = false;
 }

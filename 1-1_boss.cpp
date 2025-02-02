@@ -219,7 +219,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
 	
-
+	boss_field_level = 1;
 }
 
 void Boss_1_1::Update()

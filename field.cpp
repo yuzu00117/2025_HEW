@@ -240,18 +240,27 @@ void Field::Initialize()
 
 			//ボスのステージのオブジェクトをもったエネミーのスポナー
 			if (field_map[y][x] == 45) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossCarryObjectEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f),boss_room_level_1, b2Vec2(3.f,3.f),b2Vec2(-2.0f,0.0f),b2Vec2(3.0f,3.0f),1);
+				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_1,true);
 			}
 
-			//ボスのステージのオブジェクトをもったエネミーのスポナー
 			if (field_map[y][x] == 46) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossCarryObjectEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_2, b2Vec2(3.f, 3.f), b2Vec2(-2.0f, 0.0f), b2Vec2(3.0f, 3.0f), 1);
+				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_2, true);
 			}
 
-			//ボスのステージのオブジェクトをもったエネミーのスポナー
 			if (field_map[y][x] == 47) {//ボスの地面ブロック破壊できる
-				objectManager.AddBossCarryObjectEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_3, b2Vec2(3.f, 3.f), b2Vec2(-2.0f, 0.0f), b2Vec2(3.0f, 3.0f), 1);
+				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_3, true);
 			}
+
+			if (field_map[y][x] == 48) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_4, false);
+			}
+
+			if (field_map[y][x] == 49) {//ボスの地面ブロック破壊できる
+				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_5, false);
+			}
+			
+
+	
 
 
 

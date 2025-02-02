@@ -100,10 +100,14 @@ void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x,
     boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
 }
 
-//ボスの部屋のオブジェクトを運んでくるエネミーを追加
-void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 size, Boss_Room_Level level, b2Vec2 enemy_size, b2Vec2 enemy_speed, b2Vec2 max_obejct_size, int object_need_levl)
+void ObjectManager::AddBossCarryEnemySpawner(b2Vec2 position, b2Vec2 Size, Boss_Room_Level level, bool left)
 {
-    boss_carry_obeject_enemy_List.emplace_back(std::make_unique<boss_carry_object_enemy>(position, size, level, enemy_size, enemy_speed, max_obejct_size, object_need_levl));
+    boss_carry_object_spawnerList.emplace_back(std::make_unique<boss_carry_object_spawner>(position, Size, level, left));
+}
+
+void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size, int object_type, int anchor_level)
+{
+    boss_carry_object_enemyList.emplace_back(std::make_unique<boss_carry_object_enemy>(position, enemy_size, left, enemy_speed, object_size, object_type, anchor_level));
 }
 
 
@@ -258,16 +262,29 @@ boss_pillar* ObjectManager::FindBossPillar(int id)
 }
 
 
-//IDを使ってボスの部屋の柱を検索
-boss_carry_object_enemy* ObjectManager::FindBossEnemyCarryEnemyID(int id)
+//IDを使ってボスのオブジェクトエネミーのスポナー
+boss_carry_object_spawner* ObjectManager::FindBossCarryEnemySpawner(int id)
 {
-    for (auto& w : boss_carry_obeject_enemy_List) {
+    for (auto& w : boss_carry_object_spawnerList) {
         if (w->GetID() == id) {
             return w.get();
         }
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+
+//IDを使ってボスのオブジェクトエネミー
+boss_carry_object_enemy* ObjectManager::FindBossCarryObjectEnemy(int id)
+{
+    for (auto& w : boss_carry_object_enemyList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
 
 
 
@@ -408,7 +425,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
-    for (auto& w : boss_carry_obeject_enemy_List) {
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Initialize();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
         w->Initialize();
     }
 
@@ -493,7 +514,11 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
-    for (auto& w : boss_carry_obeject_enemy_List) {
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Update();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
         w->Update();
     }
 }
@@ -565,7 +590,11 @@ void ObjectManager::DrawAll() {
     }
     
 
-    for (auto& w : boss_carry_obeject_enemy_List) {
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Draw();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
         w->Draw();
     }
     Item_Coin_UI::Draw();
@@ -627,7 +656,11 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
-    for (auto& w : boss_carry_obeject_enemy_List) {
+    for (auto& w : boss_carry_object_enemyList) {
+        w->Finalize();
+    }
+
+    for (auto& w : boss_carry_object_spawnerList) {
         w->Finalize();
     }
 
@@ -655,7 +688,9 @@ void ObjectManager::FinalizeAll() {
 
     boss_pillarList.clear();
 
-    boss_carry_obeject_enemy_List.clear();
+    boss_carry_object_enemyList.clear();
+
+    boss_carry_object_spawnerList.clear();
 
 
 
