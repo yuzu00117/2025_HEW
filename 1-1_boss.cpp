@@ -638,7 +638,7 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 
 		m_body->SetLinearVelocity(b2Vec2(0.0f, vec.y));
 
-		
+		sheet_cnt = 0;
 	}
 }
 
