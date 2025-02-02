@@ -76,6 +76,8 @@ private:
 	int coin_effect_start_cnt = 0;
 
 
+	b2Vec2 coin_effect_pos;
+
 
 };
 
