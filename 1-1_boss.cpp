@@ -119,6 +119,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 		InitializeBossDebug();//デバック用のもの
 
 	}
+
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
@@ -220,8 +221,8 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	ObjectData* boss_sensor_data = new ObjectData{ collider_boss_senosr };
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
-	
-
+	time_count_flag = true; // 時間をカウントするフラグを立てる
+	elapsed_time = 0.0f;	// 経過時間を初期化
 }
 
 void Boss_1_1::Update()
@@ -452,6 +453,12 @@ void Boss_1_1::Update()
 
 		}
 	}
+
+	// 時間をカウント
+	if (time_count_flag == true)
+	{
+		elapsed_time += 1.0f / 60.0f; // 1フレームで1/60秒
+	}
 }
 
 void Boss_1_1::UpdateCoolTime(void)
@@ -534,6 +541,8 @@ void Boss_1_1::BossDead(void)
 	//ボスのHPが０以下になったらリザルトに飛ぶ
 	if (boss_hp <= 0)
 	{
+		time_count_flag = false; //時間のカウントを止める
+
 		SceneManager& sceneManager = SceneManager::GetInstance();
 		sceneManager.ChangeScene(SCENE_RESULT);
 	}
