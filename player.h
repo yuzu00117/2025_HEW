@@ -91,6 +91,9 @@ public:
 	static b2Body* GetOutSidePlayerBody();
 
 
+
+	void DrawAnchorLevel3Frame(void);
+
 	//土煙の描画
 
 	 // 土煙の寿命を減らし、30フレーム経過したものを削除**
@@ -232,7 +235,7 @@ private:
 	int old_anchor_Lev;
 
 
-
+	float Anchor_level3_Frame_Sheet_cnt = 0;
 
 
 	// **土煙エフェクトのリスト**
