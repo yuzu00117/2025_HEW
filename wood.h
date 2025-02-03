@@ -190,7 +190,7 @@ private:
   
 	float	angle_when_pulling_start = 0;	//引っ張り始める時や音鳴らされた直後の木の回転角度を保持
 
-	
+	bool leaf_drop_flag = false;
 
 	//音源
 	//----------------------------------------

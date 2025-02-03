@@ -19,6 +19,7 @@
 #include"player_position.h"
 #include"create_filter.h"
 
+
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
@@ -252,14 +253,16 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	// ボディの定義
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody; // 動的ボディ
+	bodyDef.gravityScale = (0.4);
 	b2PolygonShape boxShape;
-	boxShape.SetAsBox(leaf_size.x, leaf_size.y); // 1x1 の四角形
+	boxShape.SetAsBox(leaf_size.x/100, leaf_size.y/100); // 1x1 の四角形
 
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &boxShape;
 	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.3f;
-	fixtureDef.isSensor = true;
+	fixtureDef.friction = 0.0f;
+	fixtureDef.isSensor = false;
+	fixtureDef.filter = createFilterExclude("texture_body_filter", {"texture_body_filter","object_filter","ground_filter","enemy_filter","Player_filter" });
 
 
 	// 11個のボディを作成してワールドに追加
@@ -269,14 +272,14 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 		body->CreateFixture(&fixtureDef);
 		leaf_bodies.push_back(body); // ベクターに追加
 
-		//b2WeldJointDef leafjointDef;
-		//leafjointDef.bodyA = m_Wood_body;
-		//leafjointDef.bodyB = m_AnchorPoint_body;
-		//leafjointDef.localAnchorA.Set(0.0f, -wood_size.y * 0.5f); // 木の上端
-		//leafjointDef.localAnchorB.Set(0.0f, 0.0f); // アンカーポイントの下端
-		//leafjointDef.collideConnected = true;					  //ジョイントした物体同士の接触を消す
+		b2WeldJointDef leafjointDef;
+		leafjointDef.bodyA = body;
+		leafjointDef.bodyB = m_Wood_body;
+		leafjointDef.localAnchorA.Set(0.0f, 0.0f);
+		leafjointDef.localAnchorB.Set(0.0f, -wood_size.y*0.3);
+		leafjointDef.collideConnected = true;					  //ジョイントした物体同士の接触を消す
 
-		//world->CreateJoint(&leafjointDef);						  //ワールドにジョイントを追加
+		world->CreateJoint(&leafjointDef);						  //ワールドにジョイントを追加
 
 	}
 
@@ -313,20 +316,61 @@ void wood::Initialize()
 
 void wood::Update()
 {
-	//切り株と本体のジョイントを消すフラグがオンになってる場合
-	if (m_destory_joint)
-	{
-		b2Joint* joint = GetWoodStumpJoint();
-		if (joint != nullptr)
+
+		static int leafDeleteCountdown = 600; // 10秒後に削除 (60FPS x 10秒 = 600フレーム)
+
+		// 切り株と本体のジョイントを消すフラグがオンになってる場合
+		if (m_destory_joint)
 		{
-			//ワールドのインスタンスを持ってくる
-			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-			b2World* world = box2d_world.GetBox2dWorldPointer();
-			world->DestroyJoint(joint);		//	ワールドからジョイントを消す
-			SetWoodStumpJoint(nullptr);		//	自分が保持してるジョイントの情報を消す
+			b2Joint* joint = GetWoodStumpJoint();
+			if (joint != nullptr)
+			{
+				// ワールドのインスタンスを持ってくる
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+				world->DestroyJoint(joint); // ワールドからジョイントを消す
+				SetWoodStumpJoint(nullptr); // 自分が保持してるジョイントの情報を消す
+			}
+			m_destory_joint = false; // フラグをオフにする
+
+		
 		}
-		m_destory_joint = false;	//フラグをオフにする
-	}
+
+		if (leaf_drop_flag)
+		{
+			// 10秒後に葉っぱのボディを削除
+			if (leafDeleteCountdown > 0) {
+				leafDeleteCountdown--;
+
+				if (leafDeleteCountdown % 60==0)
+				{
+					// 葉っぱの物理計算を有効化 & ランダムな力を加える
+					for (b2Body* body : leaf_bodies) {
+						body->SetAwake(true);
+						body->SetAngularVelocity(0.0f);
+						body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+
+						// ランダムな力を適用（葉っぱを散らす）
+						float forceX = ((rand() % 20) - 10) * 0.01f;
+						float forceY = (rand() % 10) * -0.01f;
+						body->ApplyForceToCenter(b2Vec2(forceX, forceY), true);
+
+						
+						
+					}
+				}
+			}
+			else {
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+
+				for (b2Body* body : leaf_bodies) {
+					world->DestroyBody(body);
+				}
+				leaf_bodies.clear();
+				leaf_drop_flag = false;
+			}
+		}
 
 	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
 	if (start_stop_sound_count > 0) {
@@ -346,6 +390,45 @@ void wood::Update()
 		if (rotated > 0.5f || rotated < -0.5f)
 		{
 			SetState(Wood_HitObject);	//音鳴らす
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+			// `m_Wood_body` に関連するすべてのジョイントを削除
+			b2JointEdge* jointEdge = GetObjectWoodBody()->GetJointList();
+			while (jointEdge) {
+				b2Joint* joint = jointEdge->joint;
+				jointEdge = jointEdge->next; // 次のジョイントを先に取得
+
+				// アンカーポイントのジョイントは削除しない
+				if (joint->GetBodyA() == GetObjectAnchorPointBody() || joint->GetBodyB() == GetObjectAnchorPointBody()) {
+					continue;
+				}
+
+				world->DestroyJoint(joint); // ジョイントを削除
+			}
+
+			// 葉っぱの物理計算を有効化
+			for (b2Body* body : leaf_bodies) {
+				body->SetAwake(true);
+			}
+
+			// 葉っぱの物理計算を有効化 & ランダムな力を加える
+			for (b2Body* body : leaf_bodies) {
+				body->SetAwake(true);
+				body->SetAngularVelocity(0.0f);
+				body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
+				// ランダムな力を適用（葉っぱを散らす）
+				float forceX = ((rand() % 20) - 10) * 0.01f;
+				float forceY = (rand() % 10) * -0.01f;
+				body->ApplyForceToCenter(b2Vec2(forceX, forceY), true);
+
+				// 角速度もランダムにする
+				float angularImpulse = ((rand() % 20) - 10) * 0.000005f;
+				body->ApplyAngularImpulse(angularImpulse, true);
+			}
+
+			leaf_drop_flag = true;
 		}
 	}
 	//さっきまで落ちていて、今は静止している
@@ -493,58 +576,37 @@ void wood::Draw()
 
 	for (size_t i = 0; i < leaf_bodies.size(); i++) {
 		b2Vec2 position = leaf_bodies[i]->GetPosition();
-		float angle = leaf_bodies[i]->GetAngle();
+		float angle = leaf_bodies[i]->GetAngle(); // 修正: 各葉っぱの角度を取得
 
-		draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-
-		switch (i)
-		{
-		case 0:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture1);
-			break;
-		case 1:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture2);
-			break;
-		case 2:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture3);
-			break;
-		case 3:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture4);
-			break;
-		case 4:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture5);
-			break;
-		case 5:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture6);
-			break;
-		case 6:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture7);
-			break;
-		case 7:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture8);
-			break;
-		case 8:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture9);
-			break;
-		case 9:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture10);
-			break;
-		case 10:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_leaf_Texture11);
-			break;
-		default:
-			break;
+		// テクスチャを設定
+		ID3D11ShaderResourceView* texture = nullptr;
+		switch (i) {
+		case 0: texture = g_leaf_Texture1; break;
+		case 1: texture = g_leaf_Texture2; break;
+		case 2: texture = g_leaf_Texture3; break;
+		case 3: texture = g_leaf_Texture4; break;
+		case 4: texture = g_leaf_Texture5; break;
+		case 5: texture = g_leaf_Texture6; break;
+		case 6: texture = g_leaf_Texture7; break;
+		case 7: texture = g_leaf_Texture8; break;
+		case 8: texture = g_leaf_Texture9; break;
+		case 9: texture = g_leaf_Texture10; break;
+		case 10: texture = g_leaf_Texture11; break;
+		default: break;
 		}
-	
 
-		//draw
+		if (texture) {
+			GetDeviceContext()->PSSetShaderResources(0, 1, &texture);
+		}
+
+		// 修正: 各葉っぱの角度を使用
 		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			GetObjectAnchorPointBody()->GetAngle(),
-			{ GetLeafSize().x * scale*5,GetLeafSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			{ draw_x, draw_y },
+			angle, // 各葉っぱの角度を適用
+			{ GetLeafSize().x * scale * 5, GetLeafSize().y * scale }
 		);
 	}
 }
