@@ -127,6 +127,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
 	object_wood_data->object_name = Object_Wood;
+	object_wood_data->need_anchor_level = need_level;
 	object_anchorpoint_data->object_name = Object_Wood;
 
 

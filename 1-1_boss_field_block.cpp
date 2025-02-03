@@ -80,6 +80,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 	BossRoomLevel = level;
 
+	
 
 
 }
