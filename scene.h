@@ -76,6 +76,9 @@ public:
     void Draw()override;
 
     void Finalize() override;
+
+private:
+    int total_score_points = 0;
 };
 
 class GameScene : public Scene {
