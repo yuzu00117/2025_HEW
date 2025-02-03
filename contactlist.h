@@ -35,6 +35,7 @@
 #include"1_1_boss_pillar.h"
 #include"impact_effect.h"
 #include<vector>
+#include"gokai.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -314,6 +315,10 @@ public:
             //状態が投げてる時にのみ以降する
             if (Anchor::GetAnchorState() == Connected_state)
             {
+             
+
+                 
+                
                 //木のオブジェクトの引っ張る処理
                 if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
                 {
@@ -622,9 +627,7 @@ public:
 
 
 
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
+            
  
 
             EnemyDynamic* enemy_instance;
@@ -646,7 +649,38 @@ public:
 
             if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
+
+
+                //豪快ゲージの加算処理-------------------------------------------------------------------------------------------
+                int needlevel=0;
+                if (objectA->collider_type == collider_enemy_dynamic)
+                {
+                    needlevel = objectB->need_anchor_level;
+                }
+                else
+                {
+                    needlevel = objectA->need_anchor_level;
+                }
+                switch (needlevel)
+                {
+                case 1:
+                    Gokai_UI::AddGokaiCount(100);
+                    break;
+                case 2:
+                    Gokai_UI::AddGokaiCount(500);
+                    break;
+                case 3:
+                    Gokai_UI::AddGokaiCount(1000);
+                    break;
+                default:
+                    break;
+                }
+                //--------------------------------------------------------------------------------------------
                 enemy_instance->CollisionPulledObject();
+
+                app_atomex_start(Player_Dead_Sound);
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
             }
            
        
