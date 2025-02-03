@@ -29,6 +29,8 @@ static ID3D11ShaderResourceView* g_Anchor_Texture_Lev2 = NULL;//アンカーのテクス
 static ID3D11ShaderResourceView* g_Anchor_Texture_Lev3 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Anchor_Chain_Texture = NULL;//アンカーの鎖のテクスチャ
 
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Texture = NULL;//アンカーのヒット時のエフェクトのテクスチャ
+
 //アンカーの一端のプレイヤーのボディをもっとく
 b2Body* Player_body;
 
@@ -70,6 +72,8 @@ void Anchor::Initialize()
 
 	//アンカーの鎖
 	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
+
+	g_Anchor_Hit_Effect_Texture=InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect.png");
 }
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
@@ -286,6 +290,7 @@ void Anchor::Draw()
 
 	DrawChain();//チェーンの描画処理
 	DrawNormalAttack();//通常攻撃の描写
+	DrawAnchorHitEffect();//ヒットエフェクト
 }
 
 
@@ -327,21 +332,23 @@ void Anchor::ThrowAnchorToAP()
 	b2Body* body=AnchorPoint::GetTargetAnchorPointBody();
 
 	
+	if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+	{
+		b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
 
-	b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
+		// 値が異常かチェック
+		if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
+			// 異常値の場合、エラーログを出力するか処理をスキップ
+			std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
+			SetAnchorState(Pulling_state);
+			return; // 処理を中断
+		}
+		b2Vec2 velocity = to_pos - anchor_pos;
+		velocity.Normalize(); // 単位ベクトル化して方向を決定
+		velocity *= 20; // 投擲速度を設定	
 
-	// 値が異常かチェック
-	if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
-		// 異常値の場合、エラーログを出力するか処理をスキップ
-		std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
-		SetAnchorState(Pulling_state);
-		return; // 処理を中断
+		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 	}
-	b2Vec2 velocity = to_pos - anchor_pos;
-	velocity.Normalize(); // 単位ベクトル化して方向を決定
-	velocity *= 20; // 投擲速度を設定	
-
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 
 }
 	
@@ -376,6 +383,9 @@ void Anchor::CreateRotateJoint()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 	world->CreateJoint(&jointDef);
+
+	//エフェクトスタート
+	g_anchor_instance->anchor_hit_effect_flag = true;
 }
 
 /**
@@ -405,6 +415,8 @@ void Anchor::DeleteRotateJoint(void)
 		}
 	}
 }
+
+
 
 
 
@@ -475,8 +487,6 @@ void Anchor::DrawChain()
 
 	
 
-	
-
 	// 距離を計算
 	float distance = b2Distance(anchor_position, player_position);
 
@@ -512,6 +522,56 @@ void Anchor::DrawChain()
 
 
 
+}
+
+void Anchor::DrawAnchorHitEffect(void)
+{
+
+	//描画の表示が
+	if (g_anchor_instance->anchor_hit_effect_flag == true)
+	{
+		// スケール設定
+		float scale = SCREEN_SCALE;
+
+		// スクリーン中央位置
+		b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+
+		b2Body* anchor = g_anchor_instance->GetAnchorBody();
+
+		if (anchor != nullptr)
+		{
+			b2Vec2 position;
+			position.x = anchor->GetPosition().x;
+			position.y = anchor->GetPosition().y;
+
+			// プレイヤー位置を考慮してスクロール補正を加える
+			//取得したbodyのポジションに対してBox2dスケールの補正を加える
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+
+			DrawSplittingSprite(
+				{ draw_x+ g_anchor_instance->GetSize().x*scale*0.5f,
+				draw_y- g_anchor_instance->GetSize().y*scale*0.5f },
+				anchor->GetAngle(),
+				{ g_anchor_instance->GetSize().x * scale*3  ,g_anchor_instance->GetSize().y * scale*3 },
+				4,2,
+				g_anchor_instance->anchor_hit_effect_sheet_cnt/2,
+				1.0f
+				);
+		}
+
+		g_anchor_instance->anchor_hit_effect_sheet_cnt++;
+
+		if (32<g_anchor_instance->anchor_hit_effect_sheet_cnt)
+		{
+			g_anchor_instance->anchor_hit_effect_flag = false;
+			g_anchor_instance->anchor_hit_effect_sheet_cnt = 0;
+		}
+
+	}
 }
 
 
@@ -613,6 +673,9 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 	jointDef.collideConnected = false;//ジョイントした物体同士の接触を消す
 
 	world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+
+	//エフェクトスタート
+	g_anchor_instance->anchor_hit_effect_flag = true;
 }
 
 void Anchor::UpdateNormalAttack()

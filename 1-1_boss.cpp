@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name 1-1_boss.cpp
-// #description boss‚ğ‚Â‚­‚é@‚¦‚®‚¢
-// #make 2025/01/07@@‰i–ì‹`–ç
+// #description bossã‚’ã¤ãã‚‹ã€€ãˆãã„
+// #make 2025/01/07ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2025/01/21
-// #comment ’Ç‰ÁEC³—\’è
-//          E“Á‚É‚È‚µ
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ç‰¹ã«ãªã—
 //----------------------------------------------------------------------------------------------------
 #include"1-1_boss.h"
 #include"include/box2d/box2d.h"
@@ -20,51 +20,53 @@
 #include"1_1boss_state_debug.h"
 #include"scene.h"
 #include"anchor.h"
+#include"camera_shake.h"
+#include"hit_stop.h"
 
 
-// g—p‚·‚éƒeƒNƒXƒ`ƒƒƒtƒ@ƒCƒ‹‚ğŠi”[
-static ID3D11ShaderResourceView* g_mini_boss_Texture = NULL;//¬‚³‚ÈƒS[ƒŒƒ€‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_boss_shock_wave_sheet1_Texture = NULL;//ÕŒ‚”g‚ÌƒeƒNƒXƒ`ƒƒ‚P
-static ID3D11ShaderResourceView* g_boss_shock_wave_sheet2_Texture = NULL;//ÕŒ‚”g‚ÌƒeƒNƒXƒ`ƒƒ‚Q
-static ID3D11ShaderResourceView* g_boss_charge_attack_sheet1_Texture = NULL;//—­‚ßUŒ‚‚ÌƒeƒNƒXƒ`ƒƒ‚P
-static ID3D11ShaderResourceView* g_boss_charge_attack_sheet2_Texture = NULL;//‚½‚ßUŒ‚‚ÌƒeƒNƒXƒ`ƒƒ‚Q
+// ä½¿ç”¨ã™ã‚‹ãƒ†ã‚¯ã‚¹ãƒãƒ£ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ ¼ç´
+static ID3D11ShaderResourceView* g_mini_boss_Texture = NULL;//å°ã•ãªã‚´ãƒ¼ãƒ¬ãƒ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_boss_shock_wave_sheet1_Texture = NULL;//è¡æ’ƒæ³¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼‘
+static ID3D11ShaderResourceView* g_boss_shock_wave_sheet2_Texture = NULL;//è¡æ’ƒæ³¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼’
+static ID3D11ShaderResourceView* g_boss_charge_attack_sheet1_Texture = NULL;//æºœã‚æ”»æ’ƒã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼‘
+static ID3D11ShaderResourceView* g_boss_charge_attack_sheet2_Texture = NULL;//ãŸã‚æ”»æ’ƒã®ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼’
 
-static ID3D11ShaderResourceView* g_boss_walk_sheet1_Texture = NULL;//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚P
-static ID3D11ShaderResourceView* g_boss_walk_sheet2_Texture = NULL;//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚Q
-static ID3D11ShaderResourceView* g_boss_jump_sheet1_Texture = NULL;//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚P
-static ID3D11ShaderResourceView* g_boss_jump_sheet2_Texture = NULL;//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“2
-static ID3D11ShaderResourceView* g_boss_panic_sheet_Texture = NULL;//ƒS[ƒŒƒ€‚Ì¬—”í’eƒ‚[ƒVƒ‡ƒ“
+static ID3D11ShaderResourceView* g_boss_walk_sheet1_Texture = NULL;//ã‚´ãƒ¼ãƒ¬ãƒ ã®æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼‘
+static ID3D11ShaderResourceView* g_boss_walk_sheet2_Texture = NULL;//ã‚´ãƒ¼ãƒ¬ãƒ ã®æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼’
+static ID3D11ShaderResourceView* g_boss_jump_sheet1_Texture = NULL;//ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¸ãƒ£ãƒ³ãƒ—ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼‘
+static ID3D11ShaderResourceView* g_boss_jump_sheet2_Texture = NULL;//ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¸ãƒ£ãƒ³ãƒ—ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³2
+static ID3D11ShaderResourceView* g_boss_panic_sheet_Texture = NULL;//ã‚´ãƒ¼ãƒ¬ãƒ ã®æ··ä¹±è¢«å¼¾ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 
-static ID3D11ShaderResourceView* g_mini_boss_create_sheet1_Texture = NULL;//¬‚³‚ÈƒS[ƒŒƒ€‚ğ¶¬‚·‚éÛ‚Ìƒ{ƒX‘¤‚P
-static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Texture = NULL;//¬‚³‚ÈƒS[ƒŒƒ€‚ğ¶¬‚·‚éÛ‚Ìƒ{ƒX‘¤‚Q
+static ID3D11ShaderResourceView* g_mini_boss_create_sheet1_Texture = NULL;//å°ã•ãªã‚´ãƒ¼ãƒ¬ãƒ ã‚’ç”Ÿæˆã™ã‚‹éš›ã®ãƒœã‚¹å´ï¼‘
+static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Texture = NULL;//å°ã•ãªã‚´ãƒ¼ãƒ¬ãƒ ã‚’ç”Ÿæˆã™ã‚‹éš›ã®ãƒœã‚¹å´ï¼’
 
 
-//ƒ{ƒX‚Ü‚í‚è‚ÌƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_boss_charge_effect = NULL;//ƒ{ƒX‚Ì‚½‚ß’†‚ÌƒGƒtƒFƒNƒg
-static ID3D11ShaderResourceView* g_boss_charge_attack_effect = NULL;//ƒ{ƒX‚Ì‚½‚ßUŒ‚‚Ì”»’è‚ÌƒGƒtƒFƒNƒg
-static ID3D11ShaderResourceView* g_mini_golem_break_effect = NULL;//¬‚³‚ÈƒS[ƒŒƒ€‚ğ”j‰ó‚·‚é‚Æ‚«‚É‚Å‚éƒGƒtƒFƒNƒg
-static ID3D11ShaderResourceView* g_boss_panic_effect = NULL;//ƒ{ƒX‚ª”í’e‚µ‚½‚Æ‚«‚ÌƒGƒtƒFƒNƒg
-static ID3D11ShaderResourceView* g_boss_shock_wave_effect = NULL;//ƒ{ƒX‚ÌÕŒ‚”gUŒ‚
+//ãƒœã‚¹ã¾ã‚ã‚Šã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_boss_charge_effect = NULL;//ãƒœã‚¹ã®ãŸã‚ä¸­ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+static ID3D11ShaderResourceView* g_boss_charge_attack_effect = NULL;//ãƒœã‚¹ã®ãŸã‚æ”»æ’ƒã®åˆ¤å®šã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+static ID3D11ShaderResourceView* g_mini_golem_break_effect = NULL;//å°ã•ãªã‚´ãƒ¼ãƒ¬ãƒ ã‚’ç ´å£Šã™ã‚‹ã¨ãã«ã§ã‚‹ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+static ID3D11ShaderResourceView* g_boss_panic_effect = NULL;//ãƒœã‚¹ãŒè¢«å¼¾ã—ãŸã¨ãã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+static ID3D11ShaderResourceView* g_boss_shock_wave_effect = NULL;//ãƒœã‚¹ã®è¡æ’ƒæ³¢æ”»æ’ƒ
 
 
 
 
 //-------------------------------------------------------------------------------------------
-//ƒfƒoƒbƒN—p‚Ì‰æ‘œ
-static ID3D11ShaderResourceView* g_debug_color = NULL;//ƒfƒoƒbƒN—p
+//ãƒ‡ãƒãƒƒã‚¯ç”¨ã®ç”»åƒ
+static ID3D11ShaderResourceView* g_debug_color = NULL;//ãƒ‡ãƒãƒƒã‚¯ç”¨
 
-static ID3D11ShaderResourceView* g_debug_boss_body_color = NULL;//ƒfƒoƒbƒN—p
+static ID3D11ShaderResourceView* g_debug_boss_body_color = NULL;//ãƒ‡ãƒãƒƒã‚¯ç”¨
 
-static ID3D11ShaderResourceView* g_debug_attack_color = NULL;//ƒfƒoƒbƒN—p
+static ID3D11ShaderResourceView* g_debug_attack_color = NULL;//ãƒ‡ãƒãƒƒã‚¯ç”¨
 
-static ID3D11ShaderResourceView* g_debug_core = NULL;//ƒfƒoƒbƒN—p
-
-
+static ID3D11ShaderResourceView* g_debug_core = NULL;//ãƒ‡ãƒãƒƒã‚¯ç”¨
 
 
 
 
-//‚»‚Æ‚ÌCPP‚©‚çQÆ‚Å‚«‚é‚½‚ß
+
+
+//ãã¨ã®CPPã‹ã‚‰å‚ç…§ã§ãã‚‹ãŸã‚
 b2Body* outside_boss_body;
 
 Boss_1_1::Boss_1_1()
@@ -85,61 +87,62 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	if (g_mini_boss_create_sheet1_Texture == NULL)
 	{
-		g_mini_boss_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_boss.png");//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒCƒ“ƒNƒ‹[ƒh
-		g_boss_shock_wave_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet1.png");//ÕŒ‚”gUŒ‚‚ÌƒCƒ“ƒNƒ‹[ƒhƒV[ƒg‚P
-		g_boss_shock_wave_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet2.png");//ÕŒ‚”gUŒ‚‚ÌƒCƒ“ƒNƒ‹[ƒhƒV[ƒg‚Q
-		g_boss_charge_attack_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet1.png");//‚½‚ßUŒ‚‚ÌƒV[ƒg‚P
-		g_boss_charge_attack_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet2_.png");//‚½‚ßUŒ‚‚ÌƒV[ƒg‚Q
-		g_mini_boss_create_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet1.png");//ƒ~ƒjƒS[ƒŒƒ€‚Ì¶¬‚Ìƒ{ƒX‘¤‚P
-		g_mini_boss_create_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet2_.png");//ƒ~ƒjƒS[ƒŒƒ€‚Ì¶¬‚Ìƒ{ƒX‘¤‚Q
-		g_boss_walk_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet1.png");//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚P
-		g_boss_walk_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet2.png");//ƒS[ƒŒƒ€‚Ì•à‚«ƒ‚[ƒVƒ‡ƒ“‚Q
-		g_boss_jump_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet1.png");//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚P
-		g_boss_jump_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet2.png");//ƒS[ƒŒƒ€‚ÌƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚Q
-		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");//ƒS[ƒŒƒ€‚Ì‹¯‚İƒ‚[ƒVƒ‡ƒ“‚P
+		g_mini_boss_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_boss.png");//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
+		g_boss_shock_wave_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet1.png");//è¡æ’ƒæ³¢æ”»æ’ƒã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ã‚·ãƒ¼ãƒˆï¼‘
+		g_boss_shock_wave_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_sheet2.png");//è¡æ’ƒæ³¢æ”»æ’ƒã®ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ã‚·ãƒ¼ãƒˆï¼’
+		g_boss_charge_attack_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet1.png");//ãŸã‚æ”»æ’ƒã®ã‚·ãƒ¼ãƒˆï¼‘
+		g_boss_charge_attack_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_sheet2_.png");//ãŸã‚æ”»æ’ƒã®ã‚·ãƒ¼ãƒˆï¼’
+		g_mini_boss_create_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet1.png");//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ç”Ÿæˆã®ãƒœã‚¹å´ï¼‘
+		g_mini_boss_create_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_create_mini_golem_sheet2_.png");//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ç”Ÿæˆã®ãƒœã‚¹å´ï¼’
+		g_boss_walk_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet1.png");//ã‚´ãƒ¼ãƒ¬ãƒ ã®æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼‘
+		g_boss_walk_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_walk_sheet2.png");//ã‚´ãƒ¼ãƒ¬ãƒ ã®æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼’
+		g_boss_jump_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet1.png");//ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¸ãƒ£ãƒ³ãƒ—ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼‘
+		g_boss_jump_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet2.png");//ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¸ãƒ£ãƒ³ãƒ—ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼’
+		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");//ã‚´ãƒ¼ãƒ¬ãƒ ã®æ€¯ã¿ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼‘
 
 
-		//ƒGƒtƒFƒNƒg
+		//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 
-		g_boss_charge_attack_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_attack_effect.png");	//ƒ{ƒX‚Ìƒ`ƒƒ[ƒWUŒ‚‚ÌƒGƒtƒFƒNƒg
-		g_boss_charge_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_effect.png");				//ƒ{ƒX‚Ìƒ`ƒƒ[ƒWUŒ‚‚ÌƒGƒtƒFƒNƒg
-		g_boss_panic_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_effect.png");					//ƒ{ƒX‚Ìƒ`ƒƒ[ƒWUŒ‚‚ÌƒGƒtƒFƒNƒg
-		g_boss_shock_wave_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_effect.png");		//ƒ{ƒX‚Ìƒ`ƒƒ[ƒWUŒ‚‚ÌƒGƒtƒFƒNƒg
-		g_mini_golem_break_effect = InitTexture(L"asset\\texture\\boss_1_1\\mini_golem_break_effect.png");		//ƒ{ƒX‚Ìƒ`ƒƒ[ƒWUŒ‚‚ÌƒGƒtƒFƒNƒg
+		g_boss_charge_attack_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_attack_effect.png");	//ãƒœã‚¹ã®ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		g_boss_charge_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_effect.png");				//ãƒœã‚¹ã®ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		g_boss_panic_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_effect.png");					//ãƒœã‚¹ã®ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		g_boss_shock_wave_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_effect.png");		//ãƒœã‚¹ã®ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+		g_mini_golem_break_effect = InitTexture(L"asset\\texture\\boss_1_1\\mini_golem_break_effect.png");		//ãƒœã‚¹ã®ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	
-		//ƒfƒoƒbƒN—p
-		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensor‚ÌƒeƒNƒXƒ`ƒƒ
+		//ãƒ‡ãƒãƒƒã‚¯ç”¨
+		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//sensorã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 		g_debug_boss_body_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 		g_debug_attack_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
 		g_debug_core = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
 
-		InitializeBossDebug();//ƒfƒoƒbƒN—p‚Ì‚à‚Ì
+		InitializeBossDebug();//ãƒ‡ãƒãƒƒã‚¯ç”¨ã®ã‚‚ã®
 
 	}
+
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
-	//ƒ{ƒfƒB‚ª‚ ‚Á‚½‚çÁ‚·
+	//ãƒœãƒ‡ã‚£ãŒã‚ã£ãŸã‚‰æ¶ˆã™
 	if (GetBossBody() != nullptr)
 	{
 		world->DestroyBody(GetBossBody());
 		SetBossBody(nullptr);
 	}
 
-	//ƒ{ƒfƒB‚ÌƒTƒCƒY‚ğƒZƒbƒg
+	//ãƒœãƒ‡ã‚£ã®ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆ
 	SetBossDrawSize(bodysize);
 
 
-	//ÀÛ‚Ìƒ{ƒX‚ÌƒTƒCƒY
+	//å®Ÿéš›ã®ãƒœã‚¹ã®ã‚µã‚¤ã‚º
 	bodysize.x=bodysize.x * 0.5;
 	bodysize.y=bodysize.y * 0.4;
 
 	SetBossRealSize(bodysize);
 
-	//boss‚ÌƒTƒCƒY
-	b2Vec2 size; //ƒTƒCƒY‚ÌƒXƒP[ƒ‹‚ğ’²®
+	//bossã®ã‚µã‚¤ã‚º
+	b2Vec2 size; //ã‚µã‚¤ã‚ºã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’èª¿æ•´
 	size.x = bodysize.x / BOX2D_SCALE_MANAGEMENT;
 	size.y = bodysize.y / BOX2D_SCALE_MANAGEMENT;
 
@@ -150,17 +153,17 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	body.type = b2_dynamicBody;
 	body.position.Set(position.x, position.y);
 	body.angle = 0.0f;
-	body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+	body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
 	body.userData.pointer = (uintptr_t)this;
 
 
 	
 
-	//ƒ[ƒ‹ƒh‚É“o˜^
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²
 	b2Body* m_boss_body = world->CreateBody(&body);
 
 	SetBossBody(m_boss_body);
-	outside_boss_body = m_boss_body;//ŠO•”‚©‚ç‚ÌQÆ‚æ‚¤u
+	outside_boss_body = m_boss_body;//å¤–éƒ¨ã‹ã‚‰ã®å‚ç…§ã‚ˆã†ã€Œ
 
 	b2PolygonShape body_shape;
 
@@ -175,10 +178,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 
 	b2FixtureDef body_fixture;
 	body_fixture.shape = &body_shape;
-	body_fixture.friction = 0.3f;//–€C
-	body_fixture.restitution = 0.1f;//”½”­ŒW”
+	body_fixture.friction = 0.3f;//æ‘©æ“¦
+	body_fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
 	body_fixture.density = 0.1f;
-	body_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	body_fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 	body_fixture.filter = createFilterExclude("Boss_filter",{});
 
 	
@@ -188,7 +191,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	m_body_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_body_data);
 
 
-	//ƒZƒ“ƒT[‚ÌƒTƒCƒY‚ğ‹L˜^
+	//ã‚»ãƒ³ã‚µãƒ¼ã®ã‚µã‚¤ã‚ºã‚’è¨˜éŒ²
 	SetBossSensorSize(b2Vec2(bodysize.x*2.0,bodysize.y));
 
 	b2Vec2 sensor_size;
@@ -206,10 +209,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	sensor_shape.SetAsBox(sensor_size.x * 0.5, sensor_size.y * 0.5);
 
 	sensor_fixture.shape = &sensor_shape;
-	sensor_fixture.friction = 0.0f;//–€C
-	sensor_fixture.restitution = 0.1f;//”½”­ŒW”
+	sensor_fixture.friction = 0.0f;//æ‘©æ“¦
+	sensor_fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
 	sensor_fixture.density = 0.1f;
-	sensor_fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	sensor_fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
 
 
@@ -219,7 +222,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize,bool left)
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
 	
+	boss_field_level = 1;
 
+	time_count_flag = true; // æ™‚é–“ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹ãƒ•ãƒ©ã‚°ã‚’ç«‹ã¦ã‚‹
+	elapsed_time = 0.0f;	// çµŒéæ™‚é–“ã‚’åˆæœŸåŒ–
 }
 
 void Boss_1_1::Update()
@@ -228,9 +234,9 @@ void Boss_1_1::Update()
 	{
 
 		//---------------------------------------------------------------------------------------------------------------------------
-		//¶‰E‚ÌU‚èŒü‚«‚ğì‚é
+		//å·¦å³ã®æŒ¯ã‚Šå‘ãã‚’ä½œã‚‹
 		float player_x= PlayerPosition::GetPlayerPosition().x;
-		if (player_x < m_body->GetPosition().x)//¶‚É‚¢‚é
+		if (player_x < m_body->GetPosition().x)//å·¦ã«ã„ã‚‹
 		{
 			left_flag = true;
 		}
@@ -242,35 +248,35 @@ void Boss_1_1::Update()
 	
 		//-------------------------------------------------------------------------------------------
 
-		//ƒfƒoƒbƒN•¶š‚ÌXV
+		//ãƒ‡ãƒãƒƒã‚¯æ–‡å­—ã®æ›´æ–°
 		UpdateBossDebug();
 
-		//ÕŒ‚”g‚ÌXVˆ—
+		//è¡æ’ƒæ³¢ã®æ›´æ–°å‡¦ç†
 		ShockWaveUpdate();
 
-		//ƒ~ƒjƒS[ƒŒƒ€‚ÌXVˆ—
+		//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®æ›´æ–°å‡¦ç†
 		MiniGolemUpdate();
-		//ƒ~ƒjƒS[ƒŒƒ€
+		//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ 
 		DestroyMiniGolemBody();
-		//ƒWƒƒƒ“ƒv‚ÌXVˆ—
+		//ã‚¸ãƒ£ãƒ³ãƒ—ã®æ›´æ–°å‡¦ç†
 		JumpUpdate();
 
-		//ƒ{ƒX‚ÌƒRƒA‚ÌXVˆ—
+		//ãƒœã‚¹ã®ã‚³ã‚¢ã®æ›´æ–°å‡¦ç†
 		BossCoreUpdate();
 
-		//ƒ{ƒX‚ª€‚ñ‚¾‚©
+		//ãƒœã‚¹ãŒæ­»ã‚“ã ã‹
 		BossDead();
 
 		
 
-		//ƒN[ƒ‹ƒ^ƒCƒ€‚ÌŠÇ—
+		//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®ç®¡ç†
 		UpdateCoolTime();
 
-		//ƒGƒtƒFƒNƒg‚ÌŠÇ—
+		//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ç®¡ç†
 		UpdateEffectSheetCnt();
 
 
-		//ƒ{ƒX‚Ì‹ß‹——£‚©‰“‹——£‚©‚Ì”»’è‚Ég‚¤
+		//ãƒœã‚¹ã®è¿‘è·é›¢ã‹é è·é›¢ã‹ã®åˆ¤å®šã«ä½¿ã†
 		if (GetPlayerNearbylocked() != 0)
 		{
 			SetPlayerNearbylocked(GetPlayerNearbylocked() - 1);
@@ -278,13 +284,19 @@ void Boss_1_1::Update()
 
 
 		//-------------------------------------------------------------------------------------------
-		// ƒfƒoƒbƒN—p@–{”ÔŠÂ‹«‚Å‚Í‚¯‚·
+		// ãƒ‡ãƒãƒƒã‚¯ç”¨ã€€æœ¬ç•ªç’°å¢ƒã§ã¯ã‘ã™
 		
-		//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğíœ‚·‚éƒfƒoƒbƒN—p
-		if (Keyboard_IsKeyDown(KK_Y))
+		//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’å‰Šé™¤ã™ã‚‹ãƒ‡ãƒãƒƒã‚¯ç”¨
+		if (Keyboard_IsKeyDown(KK_Y)&&debug_flag==0)
 		{
-			DestroyBossCore();
+			debug_flag = 60;
+			boss_field_level++;
 		}
+		if (debug_flag != 0)
+		{
+			debug_flag--;
+		}
+
 		//-------------------------------------------------------------------------------------------
 
 
@@ -297,6 +309,8 @@ void Boss_1_1::Update()
 			break;
 		case panic_state:
 
+
+			
 			CreateBossCore(b2Vec2 (2.0f,2.0f));
 		
 			sheet_cnt += 0.5;
@@ -326,6 +340,10 @@ void Boss_1_1::Update()
 				{
 					m_body->SetLinearVelocity(b2Vec2_zero);
 				}
+
+				//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ã‚¹ã‚¿ãƒ¼ãƒˆ
+				CameraShake::StartCameraShake(3, 00, 10);
+				
 			}
 			sheet_cnt += 0.5;
 			
@@ -345,10 +363,15 @@ void Boss_1_1::Update()
 			{
 				sheet_cnt = 0;
 
-				//ƒWƒƒƒ“ƒv‚Ì‚ ‚Æ’n‚·‚×‚è‚·‚é‚©‚ç X²‚Ì‰Á‘¬“x‚ğ‚O‚ÉY‚Í‚»‚Ì‚Ü‚Ü
+				//ã‚¸ãƒ£ãƒ³ãƒ—ã®ã‚ã¨åœ°ã™ã¹ã‚Šã™ã‚‹ã‹ã‚‰ Xè»¸ã®åŠ é€Ÿåº¦ã‚’ï¼ã«Yã¯ãã®ã¾ã¾
 				b2Body*body =GetBossBody();
 				b2Vec2 velocity=body->GetLinearVelocity();
 				body->SetLinearVelocity(b2Vec2(0.0f, velocity.y));
+
+
+				//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ã‚¹ã‚¿ãƒ¼ãƒˆ
+				CameraShake::StartCameraShake(120, 00, 20);
+				HitStop::SetHitStopFlag(5);
 
 				now_boss_state = wait_state;
 			}
@@ -359,10 +382,10 @@ void Boss_1_1::Update()
 			
 			if (static_cast<int>(sheet_cnt) == Shock_Wave_Start_Frame)
 			{
-				CreateShockWave(b2Vec2(1.5f, 4.0f), left_flag);
+				CreateShockWave(b2Vec2(5.0f, 6.0f), left_flag);
 				Shock_Wave_Fly_flag = true;
 
-				//ƒGƒtƒFƒNƒgƒXƒ^[ƒg
+				//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ
 				shock_wave_effect_sheet_cnt = 1;
 			}
 			
@@ -384,11 +407,13 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
-				CreateMiniGolem(b2Vec2(3.0f,2.0f),left_flag);//‰æ‘œ‚ª‰¡‚É‹ó”’‚ª‚ ‚é‚½‚ß@‚˜‚ğˆø‚«L‚Î‚µ@ÀÛ‚Ì”¼Œa‚ÅQÆ‚µ‚Ä‚¢‚é‚Ì‚Í‚™²
+				CreateMiniGolem(b2Vec2(3.0f,2.0f),left_flag);//ç”»åƒãŒæ¨ªã«ç©ºç™½ãŒã‚ã‚‹ãŸã‚ã€€ï½˜ã‚’å¼•ãä¼¸ã°ã—ã€€å®Ÿéš›ã®åŠå¾„ã§å‚ç…§ã—ã¦ã„ã‚‹ã®ã¯ï½™è»¸
+				
+			
 			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
-				Mini_golem_Create_flag = true;//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒNƒŠƒGƒCƒgƒtƒ‰ƒO‚ÌŠÇ—
+				Mini_golem_Create_flag = true;//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¯ãƒªã‚¨ã‚¤ãƒˆãƒ•ãƒ©ã‚°ã®ç®¡ç†
 				sheet_cnt = 0;
 				now_boss_state = wait_state;
 			}
@@ -397,12 +422,12 @@ void Boss_1_1::Update()
 			break;
 		case charge_attack_state:
 
-			//ƒV[ƒg‚P–‡–Ú‚©‚ç‚Íis‚ª­‚µ‘‚¢
+			//ã‚·ãƒ¼ãƒˆï¼‘æšç›®ã‹ã‚‰ã¯é€²è¡ŒãŒå°‘ã—æ—©ã„
 			if (sheet_cnt < 100)
 			{
 				sheet_cnt += 0.75;
 			}
-			else // ƒV[ƒg‚Q–‡–Ú‚©‚ç‚Íis‚ª­‚µ’x‚¢
+			else // ã‚·ãƒ¼ãƒˆï¼’æšç›®ã‹ã‚‰ã¯é€²è¡ŒãŒå°‘ã—é…ã„
 			{
 				sheet_cnt += 0.5;
 			}
@@ -410,7 +435,7 @@ void Boss_1_1::Update()
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_Start_Frame)
 			{
 				CreateChargeAttack(b2Vec2(4.0f, 4.0f), left_flag);
-				//ƒGƒtƒFƒNƒgƒXƒ^[ƒg
+				//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ
 				charge_attack_effect_sheet_cnt = 1;
 			}
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_End_Frame)
@@ -418,7 +443,7 @@ void Boss_1_1::Update()
 				DeleteAttackBody();
 			}
 			
-			//ƒ‚[ƒVƒ‡ƒ“‚ªŠ®—¹‚µ‚½
+			//ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ãŒå®Œäº†ã—ãŸ
 			if (Max_Charge_Attack_Sheet <= sheet_cnt)
 			{
 				sheet_cnt = 0;
@@ -431,24 +456,30 @@ void Boss_1_1::Update()
 
 		}
 	}
+
+	// æ™‚é–“ã‚’ã‚«ã‚¦ãƒ³ãƒˆ
+	if (time_count_flag == true)
+	{
+		elapsed_time += 1.0f / 60.0f; // 1ãƒ•ãƒ¬ãƒ¼ãƒ ã§1/60ç§’
+	}
 }
 
 void Boss_1_1::UpdateCoolTime(void)
 {
-	Now_Shock_Wave_CoolTime++;		//ÕŒ‚”gUŒ‚‚ÌƒCƒ“ƒNƒŠƒƒ“ƒg
-	Now_Jump_CoolTime++;			//ƒWƒƒƒ“ƒv‚ÌƒCƒ“ƒNƒŠƒƒ“ƒg
-	Now_Create_MiniGolem_CoolTime++;//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒCƒ“ƒNƒŠƒƒ“ƒg
-	Now_Charge_Attack_CoolTime++;	//ƒ`ƒƒ[ƒWUŒ‚‚ÌƒCƒ“ƒNƒŠƒƒ“ƒg
-	Now_Max_Walk_CoolTime++;		//•à‚«ƒ‚[ƒVƒ‡ƒ“
+	Now_Shock_Wave_CoolTime++;		//è¡æ’ƒæ³¢æ”»æ’ƒã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+	Now_Jump_CoolTime++;			//ã‚¸ãƒ£ãƒ³ãƒ—ã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+	Now_Create_MiniGolem_CoolTime++;//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+	Now_Charge_Attack_CoolTime++;	//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒã®ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+	Now_Max_Walk_CoolTime++;		//æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 
-	//‹ß‹——£‚©‰“‹——£‚©
+	//è¿‘è·é›¢ã‹é è·é›¢ã‹
 	if (now_boss_state == wait_state)
 	{
 		if (Player_is_Nearby == true)
 		{
-			//‹ß‹——£‚É‚¢‚é
+			//è¿‘è·é›¢ã«ã„ã‚‹
 
-			//ƒ`ƒƒ[ƒWUŒ‚
+			//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒ
 			if (Now_Charge_Attack_CoolTime > Max_Charge_Attack_CoolTime)
 			{
 				now_boss_state = charge_attack_state;
@@ -456,7 +487,7 @@ void Boss_1_1::UpdateCoolTime(void)
 				return;
 			}
 
-			//ƒWƒƒƒ“ƒv
+			//ã‚¸ãƒ£ãƒ³ãƒ—
 			if (Now_Jump_CoolTime > Max_Jump_CoolTime)
 			{
 				now_boss_state = jump_state;
@@ -467,11 +498,11 @@ void Boss_1_1::UpdateCoolTime(void)
 		}
 		else
 		{
-			//‰“‹——£‚É‚¢‚é
+			//é è·é›¢ã«ã„ã‚‹
 
 		
 
-			//ÕŒ‚”gUŒ‚
+			//è¡æ’ƒæ³¢æ”»æ’ƒ
 			if (Now_Shock_Wave_CoolTime > Max_Shock_Wave_CoolTime)
 			{
 				now_boss_state = shock_wave_state;
@@ -479,7 +510,7 @@ void Boss_1_1::UpdateCoolTime(void)
 				return;
 			}
 
-			//¬Šâ¶¬
+			//å°å²©ç”Ÿæˆ
 			if (Now_Create_MiniGolem_CoolTime > Max_Create_MiniGolem_CoolTime)
 			{
 				now_boss_state = create_mini_golem_state;
@@ -488,7 +519,7 @@ void Boss_1_1::UpdateCoolTime(void)
 			}
 
 
-			//‰½‚à‚È‚©‚Á‚½‚ç•à‚«ƒ‚[ƒVƒ‡ƒ“
+			//ä½•ã‚‚ãªã‹ã£ãŸã‚‰æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 			if (wait_state == now_boss_state)
 			{
 				now_boss_state=walk_state;
@@ -502,7 +533,7 @@ void Boss_1_1::UpdateCoolTime(void)
 
 void Boss_1_1::BossDamaged(void)
 {
-	//ƒ{ƒX‚ÌHP‚ğŒ¸‚ç‚·‚»‚ê‚É‚æ‚èŒ`‘Ô•ÏX‚·‚é
+	//ãƒœã‚¹ã®HPã‚’æ¸›ã‚‰ã™ãã‚Œã«ã‚ˆã‚Šå½¢æ…‹å¤‰æ›´ã™ã‚‹
 	SetBossHP(GetBossHP() - 1);
 
 	
@@ -510,9 +541,11 @@ void Boss_1_1::BossDamaged(void)
 
 void Boss_1_1::BossDead(void)
 {
-	//ƒ{ƒX‚ÌHP‚ª‚OˆÈ‰º‚É‚È‚Á‚½‚çƒŠƒUƒ‹ƒg‚É”ò‚Ô
+	//ãƒœã‚¹ã®HPãŒï¼ä»¥ä¸‹ã«ãªã£ãŸã‚‰ãƒªã‚¶ãƒ«ãƒˆã«é£›ã¶
 	if (boss_hp <= 0)
 	{
+		time_count_flag = false; //æ™‚é–“ã®ã‚«ã‚¦ãƒ³ãƒˆã‚’æ­¢ã‚ã‚‹
+
 		SceneManager& sceneManager = SceneManager::GetInstance();
 		sceneManager.ChangeScene(SCENE_RESULT);
 	}
@@ -522,12 +555,12 @@ void Boss_1_1::BossCoreUpdate()
 {
 	if (CoreDeleteFlag == true)
 	{
-		DestroyBossCore();//ƒ{ƒX‚ÌƒRƒA‚ğ”j‰ó
+		DestroyBossCore();//ãƒœã‚¹ã®ã‚³ã‚¢ã‚’ç ´å£Š
 
-		sheet_cnt = 0;//ƒV[ƒgƒJƒEƒ“ƒg‚ğƒŠƒZƒbƒg
+		sheet_cnt = 0;//ã‚·ãƒ¼ãƒˆã‚«ã‚¦ãƒ³ãƒˆã‚’ãƒªã‚»ãƒƒãƒˆ
 		now_boss_state = charge_attack_state;
 		CoreDeleteFlag = false;
-		Anchor::SetAnchorState(Deleting_state);
+		
 	}
 }
 
@@ -537,7 +570,7 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 
 	if (GetAnchorPointBody() == nullptr)
 	{
-		//ƒTƒCƒY‚ğƒZƒbƒg
+		//ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆ
 		SetAnchorPointSize(size);
 
 		b2Vec2 anchorpoint_size;
@@ -550,36 +583,36 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		b2Vec2 position = m_body->GetPosition();
 
 		b2BodyDef anchor_point_body;
-		anchor_point_body.type = b2_dynamicBody;//Ã“I‚ÈƒIƒuƒWƒFƒNƒg‚É‚·‚é‚È‚çtrue
-		anchor_point_body.position.Set(position.x, position.y);			//ƒ|ƒWƒVƒ‡ƒ“‚ğƒZƒbƒg
-		anchor_point_body.angle = 0;									//Šp“x‚Ì’è‹`
-		anchor_point_body.userData.pointer = (uintptr_t)this;			//userData‚Ìƒ|ƒCƒ“ƒ^‚ğ’è‹` 
-		anchor_point_body.fixedRotation = true;							//‰ñ“]‚ğŒÅ’è‚·‚éA@‚±‚ê‚ğƒIƒ“‚É‚·‚é‚Æ‰ñ“]‚µ‚È‚¢
+		anchor_point_body.type = b2_dynamicBody;//é™çš„ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã™ã‚‹ãªã‚‰true
+		anchor_point_body.position.Set(position.x, position.y);			//ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚’ã‚»ãƒƒãƒˆ
+		anchor_point_body.angle = 0;									//è§’åº¦ã®å®šç¾©
+		anchor_point_body.userData.pointer = (uintptr_t)this;			//userDataã®ãƒã‚¤ãƒ³ã‚¿ã‚’å®šç¾© 
+		anchor_point_body.fixedRotation = true;							//å›è»¢ã‚’å›ºå®šã™ã‚‹ã€ã€€ã“ã‚Œã‚’ã‚ªãƒ³ã«ã™ã‚‹ã¨å›è»¢ã—ãªã„
 
 
-		Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚·‚é
-		b2World* world = box2d_world.GetBox2dWorldPointer();//ƒ[ƒ‹ƒh‚Ìƒ|ƒCƒ“ƒ^‚ğ‚Á‚Ä‚­‚é
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
+		b2World* world = box2d_world.GetBox2dWorldPointer();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒã£ã¦ãã‚‹
 
-		b2Body* m_anchor_point_body = world->CreateBody(&anchor_point_body);//Body‚ğƒ[ƒ‹ƒh‚ÉŒÅ’è
+		b2Body* m_anchor_point_body = world->CreateBody(&anchor_point_body);//Bodyã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«å›ºå®š
 
 		SetAnchorPointBody(m_anchor_point_body);
 
 
-		b2PolygonShape shape;                         //shape‚É‚ÍFX‚ÈŒ^‚ª‚ ‚é@ƒT[ƒNƒ‹‚Æ‚©‚à‚ ‚é‚æ
-		shape.SetAsBox(anchorpoint_size.x * 0.5f, anchorpoint_size.y * 0.5f);//‚ ‚½‚è”»’è‚ğ“o˜^‚·‚é4“_@*0.5‚·‚é‚Ì‚Í
+		b2PolygonShape shape;                         //shapeã«ã¯è‰²ã€…ãªå‹ãŒã‚ã‚‹ã€€ã‚µãƒ¼ã‚¯ãƒ«ã¨ã‹ã‚‚ã‚ã‚‹ã‚ˆ
+		shape.SetAsBox(anchorpoint_size.x * 0.5f, anchorpoint_size.y * 0.5f);//ã‚ãŸã‚Šåˆ¤å®šã‚’ç™»éŒ²ã™ã‚‹4ç‚¹ã€€*0.5ã™ã‚‹ã®ã¯
 
 		b2FixtureDef fixture;
-		fixture.shape = &shape;    //ƒVƒƒ[ƒv‚ğƒtƒBƒNƒXƒ`ƒƒ‚É“o˜^‚·‚é
-		fixture.density = 1.0f;    //–§“x
-		fixture.friction = 0.05f;  //–€C
-		fixture.restitution = 0.0f;//”½”­ŒW”
-		fixture.isSensor = false;  //ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+		fixture.shape = &shape;    //ã‚·ãƒ£ãƒ¼ãƒ—ã‚’ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã«ç™»éŒ²ã™ã‚‹
+		fixture.density = 1.0f;    //å¯†åº¦
+		fixture.friction = 0.05f;  //æ‘©æ“¦
+		fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+		fixture.isSensor = false;  //ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
-		b2Fixture* ground_fixture = m_anchor_point_body->CreateFixture(&fixture);//Body‚ğ‚ÉƒtƒBƒNƒXƒ`ƒƒ‚ğ“o˜^‚·‚é
+		b2Fixture* ground_fixture = m_anchor_point_body->CreateFixture(&fixture);//Bodyã‚’ã«ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’ç™»éŒ²ã™ã‚‹
 
-		// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-		// ’n–Ê‚É’l‚ğ“o˜^
-		// ’n–Ê‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+		// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+		// åœ°é¢ã«å€¤ã‚’ç™»éŒ²
+		// åœ°é¢ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
 		ObjectData* data = new ObjectData{ collider_anchor_point };
 		ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
@@ -590,23 +623,32 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 
 
 		
-		//ƒvƒŒƒCƒ„[‚ÆƒWƒ‡ƒCƒ“ƒg‚·‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã™ã‚‹
 		b2WeldJointDef jointDef;
-		jointDef.bodyA = m_body;//ƒ{ƒX‚Ìƒ{ƒfƒB
-		jointDef.bodyB = GetAnchorPointBody();//boss‚ÌUŒ‚‚Ìƒ{ƒfƒB
+		jointDef.bodyA = m_body;//ãƒœã‚¹ã®ãƒœãƒ‡ã‚£
+		jointDef.bodyB = GetAnchorPointBody();//bossã®æ”»æ’ƒã®ãƒœãƒ‡ã‚£
 
-		//boss‘¤
+		//bosså´
 		jointDef.localAnchorA.Set(0.0f, 0.0f);
-		//UŒ‚‘¤
+		//æ”»æ’ƒå´
 		jointDef.localAnchorB.Set(0.0f, 0.0f);
 
-		jointDef.collideConnected = true;//ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
+		jointDef.collideConnected = true;//ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸç‰©ä½“åŒå£«ã®æ¥è§¦ã‚’æ¶ˆã™
 
-		world->CreateJoint(&jointDef); //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
+		world->CreateJoint(&jointDef); //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
 
 
-		//ƒGƒtƒFƒNƒgƒXƒ^[ƒg
+		//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã‚¹ã‚¿ãƒ¼ãƒˆ
 		panic_effect_sheet_cnt = 1;
+
+		//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ã‚¹ã‚¿ãƒ¼ãƒˆ
+		CameraShake::StartCameraShake(40, 20, 40);
+		HitStop::SetHitStopFlag(10);
+
+
+		b2Vec2 vec= m_body->GetLinearVelocity();
+
+		m_body->SetLinearVelocity(b2Vec2(0.0f, vec.y));
 
 		
 	}
@@ -614,23 +656,20 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 
 void Boss_1_1::DestroyBossCore(void)
 {
-	//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒgƒ{ƒfƒB‚ª‚ ‚ê‚Î
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãƒœãƒ‡ã‚£ãŒã‚ã‚Œã°
 	if (GetAnchorPointBody() != nullptr)
 	{
-		Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚·‚é
-		b2World* world = box2d_world.GetBox2dWorldPointer();//ƒ[ƒ‹ƒh‚Ìƒ|ƒCƒ“ƒ^‚ğ‚Á‚Ä‚­‚é
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
+		b2World* world = box2d_world.GetBox2dWorldPointer();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒã£ã¦ãã‚‹
 
 
-	
-
-	
 
 		world->DestroyBody(GetAnchorPointBody());
 
-		//ƒeƒNƒXƒ`ƒƒ‚ğI—¹
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’çµ‚äº†
 		panic_effect_sheet_cnt = 0;
 
-		//null‚ğƒZƒbƒg
+		//nullã‚’ã‚»ãƒƒãƒˆ
 		SetAnchorPointBody(nullptr);
 	}
 }
@@ -663,10 +702,10 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 {
 	if (GetAttackBody() == nullptr) {
 
-		//ƒ{ƒfƒB‚ÌƒTƒCƒY‚ğƒZƒbƒg
+		//ãƒœãƒ‡ã‚£ã®ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆ
 		SetAttackDrawSize(attack_size);
 
-		b2Vec2 size; //ƒTƒCƒY‚ÌƒXƒP[ƒ‹‚ğ’²®
+		b2Vec2 size; //ã‚µã‚¤ã‚ºã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’èª¿æ•´
 		size.x = attack_size.x / BOX2D_SCALE_MANAGEMENT;
 		size.y = attack_size.y / BOX2D_SCALE_MANAGEMENT;
 
@@ -684,31 +723,31 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 			body.position.Set(boss_pos.x + (boss_size.x / 3 ) + (size.x / 2), boss_pos.y + boss_size.y / 2-size.y/2);
 		}
 		body.angle = 0.0f;
-		body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+		body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
 		body.userData.pointer = (uintptr_t)this;
 
 
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 
-		//ƒ[ƒ‹ƒh‚É“o˜^
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²
 		b2Body* m_attack_body = world->CreateBody(&body);
 
 		
 		SetAttackBody(m_attack_body);
 
-		//’ÊíUŒ‚‚ÌƒtƒBƒNƒXƒ`ƒƒ
+		//é€šå¸¸æ”»æ’ƒã®ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£
 		b2FixtureDef fixture;
 
-		// ƒNƒ‰ƒX“à‚É b2Shape ‚ğƒƒ“ƒo[‚Æ‚µ‚Ä•Û‚·‚éê‡‚Ì—á
-		b2PolygonShape shape; // ƒNƒ‰ƒX‚Ìƒƒ“ƒo[•Ï”‚Æ‚µ‚Ä•Û
+		// ã‚¯ãƒ©ã‚¹å†…ã« b2Shape ã‚’ãƒ¡ãƒ³ãƒãƒ¼ã¨ã—ã¦ä¿æŒã™ã‚‹å ´åˆã®ä¾‹
+		b2PolygonShape shape; // ã‚¯ãƒ©ã‚¹ã®ãƒ¡ãƒ³ãƒãƒ¼å¤‰æ•°ã¨ã—ã¦ä¿æŒ
 		shape.SetAsBox(size.x * 0.5, size.y * 0.5);
 
-		fixture.shape = &shape;//Œ`‚ğİ’è
-		fixture.density = 0.1f;//–§“x
-		fixture.friction = 0.0f;//–€C
-		fixture.restitution = 0.0f;//”½”­ŒW”
-		fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©
+		fixture.shape = &shape;//å½¢ã‚’è¨­å®š
+		fixture.density = 0.1f;//å¯†åº¦
+		fixture.friction = 0.0f;//æ‘©æ“¦
+		fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+		fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹
 
 		b2Fixture* m_fixture = m_attack_body->CreateFixture(&fixture);
 
@@ -716,32 +755,36 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		ObjectData* boss_attack_data = new ObjectData{ collider_chage_attack };
 		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
 
-		//ƒvƒŒƒCƒ„[‚ÆƒWƒ‡ƒCƒ“ƒg‚·‚é
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã™ã‚‹
 		b2WeldJointDef jointDef;
-		jointDef.bodyA = m_body;//ƒ{ƒX‚Ìƒ{ƒfƒB
-		jointDef.bodyB = GetAttackBody();//boss‚ÌUŒ‚‚Ìƒ{ƒfƒB
+		jointDef.bodyA = m_body;//ãƒœã‚¹ã®ãƒœãƒ‡ã‚£
+		jointDef.bodyB = GetAttackBody();//bossã®æ”»æ’ƒã®ãƒœãƒ‡ã‚£
 
-		if (left)//‰E‚©‚Ç‚¤‚©
+		if (left)//å³ã‹ã©ã†ã‹
 		{
-			//boss‘¤
+			//bosså´
 			jointDef.localAnchorA.Set((-boss_size.x /3),boss_size.y/2-size.y/2);
-			//UŒ‚‘¤
+			//æ”»æ’ƒå´
 			jointDef.localAnchorB.Set((size.x * 0.5), 0.0f);
 		}
-		else//¶‘¤
+		else//å·¦å´
 		{
-			//boss‘¤
+			//bosså´
 			jointDef.localAnchorA.Set((boss_size.x /3), boss_size.y / 2 - size.y / 2);
-			//UŒ‚‘¤
+			//æ”»æ’ƒå´
 			jointDef.localAnchorB.Set((-size.x * 0.5), 0.0f);
 		}
-		jointDef.collideConnected = true;//ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
+		jointDef.collideConnected = true;//ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸç‰©ä½“åŒå£«ã®æ¥è§¦ã‚’æ¶ˆã™
 
-		world->CreateJoint(&jointDef); //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
+		world->CreateJoint(&jointDef); //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
 
 
-		//’n–Ê‚ğ”j‰ó
+		//åœ°é¢ã‚’ç ´å£Š
 		boss_field_level++;
+
+		//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ã‚¹ã‚¿ãƒ¼ãƒˆ
+		CameraShake::StartCameraShake(40, 0, 60);
+		HitStop::SetHitStopFlag(15);
 
 		
 
@@ -754,29 +797,31 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 {
 	if (GetAttackBody() == nullptr) {
 
-		//ƒ{ƒfƒB‚ÌƒTƒCƒY‚ğƒZƒbƒg
+		//ãƒœãƒ‡ã‚£ã®ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆ
 		SetAttackDrawSize(attack_size);
 
-		b2Vec2 size; //ƒTƒCƒY‚ÌƒXƒP[ƒ‹‚ğ’²®
+		b2Vec2 size; //ã‚µã‚¤ã‚ºã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’èª¿æ•´
 		size.x = attack_size.x / BOX2D_SCALE_MANAGEMENT;
 		size.y = attack_size.y / BOX2D_SCALE_MANAGEMENT;
 
 		b2BodyDef body;
 		body.type = b2_dynamicBody;
-		body.gravityScale=(0.0f);//d—Í‚Ì‰e‹¿‚ğ‚¤‚¯‚È‚¢
+		body.gravityScale=(0.0f);//é‡åŠ›ã®å½±éŸ¿ã‚’ã†ã‘ãªã„
 
 		b2Vec2 boss_pos = m_body->GetPosition();
 		b2Vec2 boss_size = b2Vec2(GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT, GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT);
 
 		if (left) {
 			body.position.Set(boss_pos.x - (boss_size.x / 3) - (size.x / 2), boss_pos.y + boss_size.y / 2-size.y/2);
+			ShockWaveLeftFlag = true;
 		}
 		else
 		{
 			body.position.Set(boss_pos.x + (boss_size.x / 3) + (size.x / 2), boss_pos.y + boss_size.y / 2-size.y / 2);
+			ShockWaveLeftFlag = false;
 		}
 		body.angle = 0.0f;
-		body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+		body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
 		body.userData.pointer = (uintptr_t)this;
 		
 
@@ -784,29 +829,33 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 
-		//ƒ[ƒ‹ƒh‚É“o˜^
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²
 		b2Body* m_attack_body = world->CreateBody(&body);
 
 		SetAttackBody(m_attack_body);
 
-		//’ÊíUŒ‚‚ÌƒtƒBƒNƒXƒ`ƒƒ
+		//é€šå¸¸æ”»æ’ƒã®ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£
 		b2FixtureDef fixture;
 
-		// ƒNƒ‰ƒX“à‚É b2Shape ‚ğƒƒ“ƒo[‚Æ‚µ‚Ä•Û‚·‚éê‡‚Ì—á
-		b2PolygonShape shape; // ƒNƒ‰ƒX‚Ìƒƒ“ƒo[•Ï”‚Æ‚µ‚Ä•Û
+		// ã‚¯ãƒ©ã‚¹å†…ã« b2Shape ã‚’ãƒ¡ãƒ³ãƒãƒ¼ã¨ã—ã¦ä¿æŒã™ã‚‹å ´åˆã®ä¾‹
+		b2PolygonShape shape; // ã‚¯ãƒ©ã‚¹ã®ãƒ¡ãƒ³ãƒãƒ¼å¤‰æ•°ã¨ã—ã¦ä¿æŒ
 		shape.SetAsBox(size.x * 0.5, size.y * 0.5);
 
-		fixture.shape = &shape;//Œ`‚ğİ’è
-		fixture.density = 0.0f;//–§“x
-		fixture.friction = 0.0f;//–€C
-		fixture.restitution = 0.0f;//”½”­ŒW”
-		fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©
+		fixture.shape = &shape;//å½¢ã‚’è¨­å®š
+		fixture.density = 0.0f;//å¯†åº¦
+		fixture.friction = 0.0f;//æ‘©æ“¦
+		fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+		fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹
 
 		b2Fixture* m_fixture = m_attack_body->CreateFixture(&fixture);
 
 
 		ObjectData* boss_attack_data = new ObjectData{ collider_shock_wave };
 		m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_attack_data);
+
+		//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ã‚¹ã‚¿ãƒ¼ãƒˆ
+		CameraShake::StartCameraShake(0, 20, 40);
+		HitStop::SetHitStopFlag(5);
 	}
 }
 
@@ -818,7 +867,7 @@ void Boss_1_1::ShockWaveUpdate(void)
 		if (GetAttackBody() != nullptr)
 		{
 			float minus_flag = 1;
-			if (left_flag == true)
+			if (ShockWaveLeftFlag == true)
 			{
 				minus_flag = -1;
 			}
@@ -827,12 +876,12 @@ void Boss_1_1::ShockWaveUpdate(void)
 		}
 		Now_Shock_Wave_time_Frame++;
 
-		//ÕŒ‚”g‚ÌI—¹
+		//è¡æ’ƒæ³¢ã®çµ‚äº†
 		if (Shock_Wave_time_Frame < Now_Shock_Wave_time_Frame)
 		{
 			DeleteAttackBody();
-			Shock_Wave_Fly_flag = false;//ƒŠƒZƒbƒgˆ—
-			Now_Shock_Wave_time_Frame = 0;//ƒŠƒZƒbƒgˆ—
+			Shock_Wave_Fly_flag = false;//ãƒªã‚»ãƒƒãƒˆå‡¦ç†
+			Now_Shock_Wave_time_Frame = 0;//ãƒªã‚»ãƒƒãƒˆå‡¦ç†
 		}
 	}
 }
@@ -845,10 +894,10 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 	{
 		if (GetMiniGolemBody(i) == nullptr&&Mini_golem_Create_flag==true) {
 
-			//ƒ{ƒfƒB‚ÌƒTƒCƒY‚ğƒZƒbƒg
+			//ãƒœãƒ‡ã‚£ã®ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆ
 			SetMiniGolemDrawSize(mini_golem_size);
 
-			b2Vec2 size; //ƒTƒCƒY‚ÌƒXƒP[ƒ‹‚ğ’²®
+			b2Vec2 size; //ã‚µã‚¤ã‚ºã®ã‚¹ã‚±ãƒ¼ãƒ«ã‚’èª¿æ•´
 			size.x = mini_golem_size.x / BOX2D_SCALE_MANAGEMENT;
 			size.y = mini_golem_size.y / BOX2D_SCALE_MANAGEMENT;
 
@@ -865,7 +914,7 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 				body.position.Set(boss_pos.x, boss_pos.y );
 			}
 			body.angle = 0.0f;
-			body.fixedRotation = false;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+			body.fixedRotation = false;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
 			body.userData.pointer = (uintptr_t)this;
 
 
@@ -873,23 +922,23 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 
-			//ƒ[ƒ‹ƒh‚É“o˜^
+			//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«ç™»éŒ²
 			b2Body* m_mini_golem_body = world->CreateBody(&body);
 
 			SetMiniGolemBody(m_mini_golem_body,i);
 
-			//ƒ~ƒjƒS[ƒŒƒ€‚ÌƒtƒBƒNƒXƒ`ƒƒ
+			//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£
 			b2FixtureDef fixture;
 
-			// ƒNƒ‰ƒX“à‚É b2Shape ‚ğƒƒ“ƒo[‚Æ‚µ‚Ä•Û‚·‚éê‡‚Ì—á
-			b2CircleShape shape; // ƒNƒ‰ƒX‚Ìƒƒ“ƒo[•Ï”‚Æ‚µ‚Ä•Û
-			shape.m_radius = size.y / 2;//‰æ‘œ‚ª‰¡‚É‹ó”’‚ª‚ ‚é‚½‚ß@‚™‚ğQÆ
+			// ã‚¯ãƒ©ã‚¹å†…ã« b2Shape ã‚’ãƒ¡ãƒ³ãƒãƒ¼ã¨ã—ã¦ä¿æŒã™ã‚‹å ´åˆã®ä¾‹
+			b2CircleShape shape; // ã‚¯ãƒ©ã‚¹ã®ãƒ¡ãƒ³ãƒãƒ¼å¤‰æ•°ã¨ã—ã¦ä¿æŒ
+			shape.m_radius = size.y / 2;//ç”»åƒãŒæ¨ªã«ç©ºç™½ãŒã‚ã‚‹ãŸã‚ã€€ï½™ã‚’å‚ç…§
 
-			fixture.shape = &shape;//Œ`‚ğİ’è
-			fixture.density = 1.0f;//–§“x
-			fixture.friction = 0.5f;//–€C
-			fixture.restitution = 0.3f;//”½”­ŒW”
-			fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©
+			fixture.shape = &shape;//å½¢ã‚’è¨­å®š
+			fixture.density = 1.0f;//å¯†åº¦
+			fixture.friction = 0.5f;//æ‘©æ“¦
+			fixture.restitution = 0.3f;//åç™ºä¿‚æ•°
+			fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹
 			fixture.filter= createFilterExclude("MiniGolem_filter", {"Boss_filter"});
 
 			b2Fixture* m_fixture = m_mini_golem_body->CreateFixture(&fixture);
@@ -912,17 +961,17 @@ void Boss_1_1::MiniGolemUpdate(void)
 	{
 		if (GetMiniGolemBody(i) != nullptr)
 		{
-			//ƒ{ƒfƒB‚ğ‚Á‚Ä‚­‚é
+			//ãƒœãƒ‡ã‚£ã‚’æŒã£ã¦ãã‚‹
 			b2Body* mini_golem_body = GetMiniGolemBody(i);
 
-			//ƒvƒŒƒCƒ„[‚ÌˆÊ’uî•ñ‚Ì’è‹`
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®æƒ…å ±ã®å®šç¾©
 			b2Vec2 player_pos = PlayerPosition::GetPlayerPosition();
 			
 			
-			//ƒvƒŒƒCƒ„[‚Æ¶‰E‚Ç‚¿‚ç‚És‚­‚©‚Ì’²®
-			if (player_pos.x < mini_golem_body->GetPosition().x)//ƒvƒŒƒCƒ„[‚Ì•û‚ª¶
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨å·¦å³ã©ã¡ã‚‰ã«è¡Œãã‹ã®èª¿æ•´
+			if (player_pos.x < mini_golem_body->GetPosition().x)//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ–¹ãŒå·¦
 			{
-				if (mini_golem_body->GetAngularVelocity() > -3)//Å‘å‰ñ“]—Ê‚ğ§ŒÀ
+				if (mini_golem_body->GetAngularVelocity() > -3)//æœ€å¤§å›è»¢é‡ã‚’åˆ¶é™
 				{
 					mini_golem_body->ApplyTorque(-0.1, true);
 				}
@@ -930,7 +979,7 @@ void Boss_1_1::MiniGolemUpdate(void)
 			}
 			else
 			{
-				if (mini_golem_body->GetAngularVelocity() < 3)//Å‘å‰ñ“]—Ê‚ğ§ŒÀ
+				if (mini_golem_body->GetAngularVelocity() < 3)//æœ€å¤§å›è»¢é‡ã‚’åˆ¶é™
 				{
 					mini_golem_body->ApplyTorque(0.1, true);
 				}
@@ -949,7 +998,7 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 		b2Body* m_mini_golem_body = destroy_mini_golem_body;
 
 
-		//ì¬ƒGƒtƒFƒNƒg—p‚ÌŠÇ—
+		//ä½œæˆã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”¨ã®ç®¡ç†
 		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();
 		mini_golem_break_effect_cnt = 1;
 
@@ -961,6 +1010,11 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 			{
 				SetMiniGolemBody(nullptr, i);
 				destroy_mini_golem_flag = false;
+
+
+				//ã‚«ãƒ¡ãƒ©ã‚·ã‚§ã‚¤ã‚¯ã‚¹ã‚¿ãƒ¼ãƒˆ
+				CameraShake::StartCameraShake(0, 20, 10);
+				HitStop::SetHitStopFlag(5);
 			}
 		}
 	}
@@ -989,20 +1043,20 @@ void Boss_1_1::Draw()
 	if (m_body != nullptr)
 	{
 
-		//•¶š‚Ì•\¦
+		//æ–‡å­—ã®è¡¨ç¤º
 		DrawBossDebug();
 	/*	debugDraw();*/
 
 		float scale = SCREEN_SCALE;
 
-		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (16m x 9m ‚Ì‰ğ‘œ“x‚ÅA’†‰›‚Í x = 8, y = 4.5 ‚Æ‰¼’è)
+		// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (16m x 9m ã®è§£åƒåº¦ã§ã€ä¸­å¤®ã¯ x = 8, y = 4.5 ã¨ä»®å®š)
 		b2Vec2 screen_center;
 		screen_center.x = SCREEN_CENTER_X;
 		screen_center.y = SCREEN_CENTER_Y;
 
 
 
-		// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+		// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 		b2Vec2 boss_pos = GetBossBody()->GetPosition();
 		b2Vec2 real_boss_size;
 		real_boss_size.x = GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT;
@@ -1010,8 +1064,8 @@ void Boss_1_1::Draw()
 
 	
 
-		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+		//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 		float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y-(real_boss_size.y*0.7)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1034,7 +1088,7 @@ void Boss_1_1::Draw()
 
 			break;
 		case jump_state:
-			// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+			// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 			if (sheet_cnt < Max_Jump_Sheet / 2) 
 			{
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_jump_sheet1_Texture);
@@ -1047,7 +1101,7 @@ void Boss_1_1::Draw()
 			}
 			break;
 		case shock_wave_state:
-			// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+			// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 			if (sheet_cnt < Max_Shock_Wave_Sheet / 2) {
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_sheet1_Texture);
 
@@ -1086,7 +1140,7 @@ void Boss_1_1::Draw()
 			}
 			break;
 
-		case walk_state://•à‚«ƒ‚[ƒVƒ‡ƒ“
+		case walk_state://æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 
 			if (sheet_cnt < Max_Walk_Sheet / 2) {
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_walk_sheet1_Texture);
@@ -1107,17 +1161,17 @@ void Boss_1_1::Draw()
 		}
 
 		
-		//ƒRƒA‚ğ‚Ì•`‰æ
+		//ã‚³ã‚¢ã‚’ã®æç”»
 		if (GetAnchorPointBody() != nullptr)
 		{
-			//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+			//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
 
-			// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+			// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 			b2Vec2 anchorpoint_pos = GetAnchorPointBody()->GetPosition();
 
-			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+			//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 			float anchor_point_draw_x = ((anchorpoint_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float anchor_point_draw_y = ((anchorpoint_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1126,20 +1180,20 @@ void Boss_1_1::Draw()
 		}
 
 		//----------------------------------------------------------------------------------------
-		//ƒ~ƒjƒS[ƒŒƒ€‚ÌDraw
+		//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®Draw
 		for (int i = 0; i < 2; i++)
 		{
 			if (GetMiniGolemBody(i) != nullptr)
 			{
 
-				//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+				//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_Texture);
 
-				// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+				// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 				b2Vec2 mini_golem_pos = GetMiniGolemBody(i)->GetPosition();
 
-				// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-				//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+				//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 				float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1156,23 +1210,23 @@ void Boss_1_1::debugDraw()
 
 
 	///------------------------------------------------------------------------
-	//ƒ{ƒfƒB‚Ì‚ ‚½‚è”»’è‚ğ•\¦
+	//ãƒœãƒ‡ã‚£ã®ã‚ãŸã‚Šåˆ¤å®šã‚’è¡¨ç¤º
 
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (16m x 9m ‚Ì‰ğ‘œ“x‚ÅA’†‰›‚Í x = 8, y = 4.5 ‚Æ‰¼’è)
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (16m x 9m ã®è§£åƒåº¦ã§ã€ä¸­å¤®ã¯ x = 8, y = 4.5 ã¨ä»®å®š)
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+	// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_color);
 
-	// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+	// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 	b2Vec2 boss_pos = GetBossBody()->GetPosition();
 
-	// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-	//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+	//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 	float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1184,19 +1238,19 @@ void Boss_1_1::debugDraw()
 	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSensorSize().x * scale, GetBossSensorSize().y * scale));
 
 	//----------------------------------------------------------------------------
-	//ÀÛ‚Ìƒ{ƒfƒB‚ÌƒTƒCƒY‚ğ•\¦
+	//å®Ÿéš›ã®ãƒœãƒ‡ã‚£ã®ã‚µã‚¤ã‚ºã‚’è¡¨ç¤º
 
 	if (GetBossBody() != nullptr)
 	{
 
-		//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_boss_body_color);
 
-		// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+		// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 		b2Vec2 boss_pos = GetBossBody()->GetPosition();
 
-		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+		//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 		float boss_draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float boss_draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1207,14 +1261,14 @@ void Boss_1_1::debugDraw()
 	{
 		
 
-			//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+			//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
 
-			// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+			// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 			b2Vec2 attack_pos = GetAttackBody()->GetPosition();
 
-			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+			//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 			float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1231,7 +1285,7 @@ void Boss_1_1::debugDraw()
 void Boss_1_1::UpdateEffectSheetCnt()
 {
 
-	//ƒsƒˆƒsƒˆ
+	//ãƒ”ãƒ¨ãƒ”ãƒ¨
 	if (panic_effect_sheet_cnt != 0)
 	{
 		panic_effect_sheet_cnt += 0.5;
@@ -1244,7 +1298,7 @@ void Boss_1_1::UpdateEffectSheetCnt()
 		
 	}
 
-	//ƒ`ƒƒ[ƒWUŒ‚‚ÌUŒ‚‚ÌƒGƒtƒFƒNƒg
+	//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒã®æ”»æ’ƒæ™‚ã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	if (charge_attack_effect_sheet_cnt != 0)
 	{
 		charge_attack_effect_sheet_cnt +=0.5;
@@ -1257,7 +1311,7 @@ void Boss_1_1::UpdateEffectSheetCnt()
 		
 	}
 
-	//ƒ`ƒƒ[ƒW’†
+	//ãƒãƒ£ãƒ¼ã‚¸ä¸­
 	if (charge_effect_sheet_cnt != 0)
 	{
 		charge_effect_sheet_cnt += 0.5;
@@ -1270,7 +1324,7 @@ void Boss_1_1::UpdateEffectSheetCnt()
 		
 	}
 
-	//ÕŒ‚”gUŒ‚
+	//è¡æ’ƒæ³¢æ”»æ’ƒ
 	if (shock_wave_effect_sheet_cnt != 0)
 	{
 		shock_wave_effect_sheet_cnt += 0.5;
@@ -1284,7 +1338,7 @@ void Boss_1_1::UpdateEffectSheetCnt()
 	}
 
 
-	//miniƒS[ƒŒƒ€‚Ì”j‰ó
+	//miniã‚´ãƒ¼ãƒ¬ãƒ ã®ç ´å£Šæ™‚
 	if (mini_golem_break_effect_cnt != 0)
 	{
 		mini_golem_break_effect_cnt++;
@@ -1302,26 +1356,28 @@ void Boss_1_1::EffectDraw()
 
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (16m x 9m ‚Ì‰ğ‘œ“x‚ÅA’†‰›‚Í x = 8, y = 4.5 ‚Æ‰¼’è)
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (16m x 9m ã®è§£åƒåº¦ã§ã€ä¸­å¤®ã¯ x = 8, y = 4.5 ã¨ä»®å®š)
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 	//---------------------------------------------------------------------------
-	//ƒ`ƒƒ[ƒWUŒ‚
+	//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒ
 	if (GetAttackBody() != nullptr)
 	{
 		if (now_boss_state == charge_attack_state)
 		{
 			if (charge_attack_effect_sheet_cnt !=0)
 			{
-				//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+				//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_charge_attack_effect);
 
-				// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
-				b2Vec2 attack_pos = GetAttackBody()->GetPosition();
+				// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
+				b2Vec2 attack_pos;
+				attack_pos.x = GetAttackBody()->GetPosition().x;
+				attack_pos.y= GetAttackBody()->GetPosition().y+ (GetAttackDrawSize().y/BOX2D_SCALE_MANAGEMENT/2);
 
-				// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-				//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+				//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 				float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1329,29 +1385,29 @@ void Boss_1_1::EffectDraw()
 				
 				
 
-				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale*3 , GetAttackDrawSize().y * scale*3), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
+				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale*7 , GetAttackDrawSize().y * scale*7), 5, 6, charge_attack_effect_sheet_cnt, effect_alpha, left_flag);
 			}
 		
 		}
-		else//ƒVƒ‡ƒbƒNƒEƒF[ƒu
+		else//ã‚·ãƒ§ãƒƒã‚¯ã‚¦ã‚§ãƒ¼ãƒ–
 		{
 			if (shock_wave_effect_sheet_cnt!=0)
 			{
-				//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+				//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_shock_wave_effect);
 
-				// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+				// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 				b2Vec2 attack_pos = GetAttackBody()->GetPosition();
 
-				// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-				//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+				// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+				//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 				float attack_draw_x = ((attack_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float attack_draw_y = ((attack_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-				//‚±‚ê–á‚Á‚½ƒXƒvƒ‰ƒCƒg‚ªŒü‚«‚ª”½‘Î‚¾‚Á‚½‚©‚çC³
+				//ã“ã‚Œè²°ã£ãŸã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãŒå‘ããŒåå¯¾ã ã£ãŸã‹ã‚‰ä¿®æ­£
 				bool left = 1;
-				if (left_flag)
+				if (ShockWaveLeftFlag)
 				{
 					left = 0;
 				}
@@ -1361,17 +1417,17 @@ void Boss_1_1::EffectDraw()
 		}
 	}
 
-	//ƒ~ƒjƒS[ƒŒƒ€‚Ì”j‰ó
+	//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ç ´å£Š
 	if (mini_golem_break_effect_cnt != 0)
 	{
-		//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_golem_break_effect);
 
-		// ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒvƒŒƒCƒ„[‚ÌˆÊ’uj
+		// ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä½ç½®ï¼‰
 		b2Vec2 break_pos = mini_golem_delete_effect_position;
 
-		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+		//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 		float break_draw_x = ((break_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float break_draw_y = ((break_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
@@ -1381,16 +1437,16 @@ void Boss_1_1::EffectDraw()
 		DrawDividedSpriteBoss(XMFLOAT2(break_draw_x, break_draw_y), 0.0f, XMFLOAT2(GetMiniGolemDrawSize().x * scale * 1.3*1.5, GetMiniGolemDrawSize().y * scale * 1.7*1.5), 4, 2, mini_golem_break_effect_cnt/4, effect_alpha, 1);
 	}
 
-	//ƒsƒˆƒsƒˆ‚Ì•\¦
+	//ãƒ”ãƒ¨ãƒ”ãƒ¨ã®è¡¨ç¤º
 	if (panic_effect_sheet_cnt != 0)
 	{
-		//ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		//ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_effect);
 
 		b2Vec2 panic_pos = m_body->GetPosition();
 
-		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+		//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 		float panic_draw_x = ((panic_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float panic_draw_y = ((panic_pos.y - PlayerPosition::GetPlayerPosition().y-((reality_boss_size.y/2)/BOX2D_SCALE_MANAGEMENT)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 

@@ -158,6 +158,8 @@ private:
 	int Destroy_Cnt = 0;
 
 
+	int water_sheet_cnt = 0;
+
 	Boss_Room_Level boss_room_level;
 	//’Œ‚ªƒoƒ‰ƒoƒ‰‚É‚È‚Á‚½‚Æ‚«‚ÉŽg‚¤
 	std::vector<b2Body*> boss_geyser_body_Splitting;
