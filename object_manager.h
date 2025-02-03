@@ -96,7 +96,7 @@ public:
 
     void AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size, int object_type, int anchor_level);
 
-    void AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Textur, float speed, float angle);
+    void AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Textur, int texture_x, int texture_y,b2Vec2 vec);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);

@@ -16,7 +16,8 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"Shockwave_filter",        0x0100},  // 1 << 8
     {"Boss_field_filter",        0x0120 },  // 1 << 8
 
-    {"blown_away_enemy_filter",  0x0140}
+    {"blown_away_enemy_filter",  0x0140},
+    {"player_sensor_filter",    0x0160 },
 
 };
 

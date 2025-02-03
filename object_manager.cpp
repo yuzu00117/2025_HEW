@@ -111,9 +111,9 @@ void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, 
 }
 
 
-void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Texture, float speed, float angle)
+void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Texture, int texture_x,int texture_y,b2Vec2 vec)
 {
-    change_filter_boidy_enemy_list.emplace_back(std::make_unique<change_enemy_filter_and_body>(position, size, velocity, Texture, speed, angle));
+    change_filter_boidy_enemy_list.emplace_back(std::make_unique<change_enemy_filter_and_body>(position, size, velocity, Texture, texture_x, texture_y,vec));
 }
 
 

@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------------------------------
+// #name Chage_Enemy_filter_and_body.h
+// #description 敵のボディとフィルターを新しくする
+// #make 2025/02/03　永野義也
+// #update 2024/02/03
+// #comment 追加・修正予定
+//          
+//----------------------------------------------------------------------------------------------------
+
 #ifndef CHANGE_ENEMY_FILTER_AND_BODY_H
 #define CHANGE_ENEMY_FILTER_AND_BODY_H
 #include"include/box2d/box2d.h"
@@ -7,7 +16,7 @@
 class change_enemy_filter_and_body
 {
 public:
-	change_enemy_filter_and_body(b2Vec2 position, b2Vec2 size, b2Vec2 vectol,ID3D11ShaderResourceView* Textur,float speed,float angle);//コインのテクスチャ );
+	change_enemy_filter_and_body(b2Vec2 position, b2Vec2 size, b2Vec2 vectol,ID3D11ShaderResourceView* Textur, int texture_x, int texture_y,b2Vec2 vec);//コインのテクスチャ );
 	~change_enemy_filter_and_body();
 
 
@@ -54,6 +63,13 @@ public:
 		m_size = size;
 	}
 
+
+
+	void SetDestoryFlag(bool flag)
+	{
+		Destory_Flag = flag;
+	}
+
 private:
 
 	int id;
@@ -63,6 +79,16 @@ private:
 	b2Vec2 m_size;
 
 	ID3D11ShaderResourceView* g_Texture;
+
+	int Splitting_x;
+	int Splitting_y;
+
+	int max_sheet_cnt=0;
+
+	float sheet_cnt_now=0;
+
+
+	float Destory_Flag=false;
 
 
 };
