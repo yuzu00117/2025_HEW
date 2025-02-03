@@ -307,10 +307,19 @@ void Anchor::Finalize()
 	if(g_anchor_instance!=nullptr)
 	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
 
-	UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture_Lev1);	  //アンカーのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture_Lev2);	  //アンカーのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture_Lev3);	  //アンカーのテクスチャの解放
+	if (g_Anchor_Texture_Lev1 != NULL)
+	{
+		UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
+		UnInitTexture(g_Anchor_Texture_Lev1);	  //アンカーのテクスチャの解放
+		UnInitTexture(g_Anchor_Texture_Lev2);	  //アンカーのテクスチャの解放
+		UnInitTexture(g_Anchor_Texture_Lev3);	  //アンカーのテクスチャの解放
+
+
+		g_Anchor_Chain_Texture = NULL;
+		g_Anchor_Texture_Lev1 = NULL;
+		g_Anchor_Texture_Lev2 = NULL;
+		g_Anchor_Texture_Lev3 = NULL;
+	}
 	
 }
 

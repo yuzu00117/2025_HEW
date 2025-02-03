@@ -340,3 +340,5 @@ void Game::Teleport_player(b2Vec2 position)
     player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
 
 }
+
+

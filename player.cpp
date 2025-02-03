@@ -1347,6 +1347,45 @@ void Player::Finalize()
     if (g_player_Texture != nullptr)
     {
         UnInitTexture(g_player_Texture);
+        UnInitTexture(g_player_jump_sheet);
+        UnInitTexture(g_player_throw_anchor_sheet);
+        UnInitTexture(g_player_walk_sheet);
+        UnInitTexture(g_player_normal_attack_sheet);
+        UnInitTexture(g_player_normal_attack_anchor_sheet);
+        UnInitTexture(g_player_damaged_sheet);
+        UnInitTexture(g_player_walk_effect);
+        UnInitTexture(g_player_sensor_Texture);
+        UnInitTexture(g_anachor_level_3_Frame1_Texture);
+        UnInitTexture(g_anachor_level_3_Frame2_Texture);
+        UnInitTexture(g_Anchor_Effect_S1);
+        UnInitTexture(g_Anchor_Effect_S2);
+        UnInitTexture(g_Anchor_Effect_S3);
+        UnInitTexture(g_Anchor_Effect_M1);
+        UnInitTexture(g_Anchor_Effect_M2);
+        UnInitTexture(g_Anchor_Effect_M3);
+        UnInitTexture(g_Anchor_Effect_L1);
+        UnInitTexture(g_Anchor_Effect_L2);
+        UnInitTexture(g_Anchor_Effect_L3);
+
+        g_player_Texture = NULL;
+        g_player_jump_sheet = NULL;
+        g_player_throw_anchor_sheet = NULL;
+        g_player_walk_sheet = NULL;
+        g_player_normal_attack_sheet = NULL;
+        g_player_normal_attack_anchor_sheet = NULL;
+        g_player_damaged_sheet = NULL;
+        g_player_sensor_Texture = NULL;
+        g_anachor_level_3_Frame1_Texture = NULL;
+        g_anachor_level_3_Frame2_Texture = NULL;
+        g_Anchor_Effect_S1 = NULL;
+        g_Anchor_Effect_S2 = NULL;
+        g_Anchor_Effect_S3 = NULL;
+        g_Anchor_Effect_M1 = NULL;
+        g_Anchor_Effect_M2 = NULL;
+        g_Anchor_Effect_M3 = NULL;
+        g_Anchor_Effect_L1 = NULL;
+        g_Anchor_Effect_L2 = NULL;
+        g_Anchor_Effect_L3 = NULL;
     }
 
 }

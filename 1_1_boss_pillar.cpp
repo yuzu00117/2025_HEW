@@ -414,5 +414,9 @@ void boss_pillar::Draw()
 
 void boss_pillar::Finalize()
 {
-	UnInitTexture(g_Texture);
+	if (g_Texture != NULL)
+	{
+		UnInitTexture(g_Texture);
+		g_Texture = NULL;
+	}
 }

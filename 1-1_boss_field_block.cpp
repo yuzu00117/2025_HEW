@@ -196,5 +196,9 @@ void boss_field_block::Draw()
 
 void boss_field_block::Finalize()
 {
-	UnInitTexture(g_Texture);
+	if (g_Texture != NULL)
+	{
+		UnInitTexture(g_Texture);
+		g_Texture = NULL;
+	}
 }

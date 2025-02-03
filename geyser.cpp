@@ -480,7 +480,16 @@ void geyser::Finalize()
 		world->DestroyBody(geyser_on_rock_body);
 	}
 	//‰æ‘œ‚Ì‰ð•ú
-	UnInitTexture(g_Geyser_on_Rock_Texture);
-	UnInitTexture(g_Geyser_Texture);
-	UnInitTexture(g_Geyser_Water_Texture);
+
+	if (g_Geyser_on_Rock_Texture != NULL)
+	{
+		UnInitTexture(g_Geyser_on_Rock_Texture);
+		UnInitTexture(g_Geyser_Texture);
+		UnInitTexture(g_Geyser_Water_Texture);
+
+		g_Geyser_on_Rock_Texture = NULL;
+		g_Geyser_Texture = NULL;
+		g_Geyser_Water_Texture = NULL;
+
+	}
 }
