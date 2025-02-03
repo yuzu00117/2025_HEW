@@ -13,7 +13,7 @@
 #include"include/box2d/box2d.h"
 
 
-
+#define BOSS_SIZE_SCALE (1.5)
 enum boss_state
 {
 	wait_state,//‘Ò‚¿ó‘Ô
