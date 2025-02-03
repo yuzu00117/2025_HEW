@@ -58,6 +58,9 @@ enum ColliderTypeList
     collider_mini_golem,
     collider_shock_wave,
     collider_chage_attack,
+
+
+    collider_blown_away_enemy,
 };
 
 

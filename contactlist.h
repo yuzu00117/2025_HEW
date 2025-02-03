@@ -1160,6 +1160,7 @@ public:
         b2Fixture* fixtureB = contact->GetFixtureB();
         if (!fixtureA || !fixtureB) return; // NULLチェック
 
+        
 
         // それぞれのボディからユーザーデータを取得
           // ボディのユーザーデータを取得
