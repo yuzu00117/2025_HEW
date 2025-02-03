@@ -45,6 +45,9 @@ ID3D11ShaderResourceView* g_player_walk_effect = NULL;
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 
+//レベル３で
+ID3D11ShaderResourceView* g_anachor_level_3_Frame1_Texture = NULL;
+ID3D11ShaderResourceView* g_anachor_level_3_Frame2_Texture = NULL;
 
 static ID3D11ShaderResourceView* g_Anchor_Effect_S1 =   NULL;//アンカーのエフェクト
 static ID3D11ShaderResourceView* g_Anchor_Effect_S2=    NULL;//アンカーのエフェクト
@@ -115,6 +118,10 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         g_player_walk_effect = InitTexture(L"asset\\texture\\player_texture\\player_walk_effect.png");
 
+
+        g_anachor_level_3_Frame1_Texture = InitTexture(L"asset\\texture\\anchor_point\\soul_frame1.png");
+
+        g_anachor_level_3_Frame2_Texture = InitTexture(L"asset\\texture\\anchor_point\\soul_frame2.png");
 
         g_Anchor_Effect_S1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_1_3_2.png");
         g_Anchor_Effect_S2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_2_3_2.png");
@@ -774,6 +781,7 @@ void Player::Player_sensor_size_change(int anchor_level)
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
             SetSensorSize(GetSensorSizeLev3());
             sensor_flag = true;
+            Anchor_level3_Frame_Sheet_cnt = 0;
         }
     }
 }
@@ -1256,6 +1264,9 @@ void Player::Draw()
         float size_sensor = GetSensorSize().x * scale;
         float size = GetSize().x * scale;
 
+
+        DrawAnchorLevel3Frame();
+
     }
 }
 
@@ -1362,3 +1373,38 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
     
 
 
+void Player::DrawAnchorLevel3Frame()
+{
+    if (AnchorSpirit::GetAnchorLevel() == 3)
+    {
+
+        if (Anchor_level3_Frame_Sheet_cnt < 50)
+        {
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame1_Texture);
+            DrawDividedSprite(
+                { SCREEN_WIDTH / 2,
+                 SCREEN_HEIGHT / 2 },
+                0,
+                { 1280 ,720 }
+                , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
+            );
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame2_Texture);
+            DrawDividedSprite(
+                { SCREEN_WIDTH / 2,
+                 SCREEN_HEIGHT / 2 },
+                0,
+                { 1280 ,720 }
+                , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
+            );
+
+            //フレームのカウントを加算
+            Anchor_level3_Frame_Sheet_cnt += 0.5;
+        }
+
+      
+    }
+ 
+}
