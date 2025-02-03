@@ -102,6 +102,11 @@ public:
 	void DrawDustEffect();
 
 
+	void StartAnchorEffect();
+
+	void DrawAnchorEffect();
+
+
 	//描画用にサイズを持たせておく
 	b2Vec2 GetSize() const 
 	{
@@ -233,6 +238,12 @@ private:
 
 
 
+
+	int Anchor_Effect_Type = 0;
+
+	int Max_Anchor_effect_sheet = 0;
+
+	float Anchor_effect_sheet = 0;
 
 
 	// **土煙エフェクトのリスト**
