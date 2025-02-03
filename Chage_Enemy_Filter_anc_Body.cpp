@@ -65,9 +65,6 @@ change_enemy_filter_and_body::change_enemy_filter_and_body(b2Vec2 position, b2Ve
 
 
 
-
-
-
 }
 
 change_enemy_filter_and_body::~change_enemy_filter_and_body()
