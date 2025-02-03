@@ -167,10 +167,6 @@ void EnemyDynamic::Update()
 			Attack();
 			m_old_state = ENEMY_STATE_ATTACK;
 			break;
-		case ENEMY_STATE_DESTROYED:
-
-			m_old_state = ENEMY_STATE_DESTROYED;
-			break;
 		default:
 			if (GetInScreen())
 			{
@@ -263,17 +259,29 @@ void EnemyDynamic::Draw()
 		m_anim_id = m_anim_id % 25;
 		break;
 	case ENEMY_STATE_DESTROYED:
-		break;
-	default:
 		//貼るテクスチャを指定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Destroyed);
 
-		//draw
-		DrawSprite(
+		DrawDividedSpritePlayer(
 			{ draw_x,
 			  draw_y },
 			GetBody()->GetAngle(),
-			{ GetSize().x * scale * 2.0f , GetSize().y * scale * 2.0f }
+			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
+			4, 4, m_anim_id, 3.0, m_direction
+		);
+		m_anim_id++;
+		break;
+		break;
+	default:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Move);
+
+		DrawDividedSpritePlayer(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
+			5, 5, 0, 3.0, m_direction
 		);
 		break;
 	}
@@ -282,13 +290,13 @@ void EnemyDynamic::Draw()
 	//============================================================
 	//テスト:センサー描画
 	//============================================================
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	/*GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
 	DrawSprite(
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
 		{ m_size_sensor.x * scale , m_size_sensor.y * scale }
-	);
+	);*/
 }
 
 //移動

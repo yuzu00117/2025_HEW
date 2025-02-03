@@ -35,6 +35,7 @@
 #include"1_1_boss_pillar.h"
 #include"impact_effect.h"
 #include<vector>
+#include"gokai.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -314,6 +315,10 @@ public:
             //状態が投げてる時にのみ以降する
             if (Anchor::GetAnchorState() == Connected_state)
             {
+             
+
+                 
+                
                 //木のオブジェクトの引っ張る処理
                 if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
                 {
@@ -383,6 +388,7 @@ public:
                     }
                 }
 
+                //ボスの部屋の柱
                 if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
                 {
                     //どちらがボスの部屋の柱
@@ -397,6 +403,25 @@ public:
                         pillar_instance->Pulling_pillar(objectB->add_force);
                     }
                 }
+
+
+                //ボスのオブジェクト
+                if (objectA->object_name == Boss_Carry_Object_Enemy || objectB->object_name == Boss_Carry_Object_Enemy)
+                {
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
+                    {
+                        boss_carry_object_enemy*enemy_instance= object_manager.FindBossCarryObjectEnemy(objectA->id);
+                        enemy_instance->SetAnchorHItFlag(true);
+
+                    }
+                    else
+                    {
+                        boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
+                        enemy_instance->SetAnchorHItFlag(true);
+                    }
+                }
+        
             }
        
              
@@ -602,9 +627,7 @@ public:
 
 
 
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
+            
  
 
             EnemyDynamic* enemy_instance;
@@ -626,7 +649,38 @@ public:
 
             if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
+
+
+                //豪快ゲージの加算処理-------------------------------------------------------------------------------------------
+                int needlevel=0;
+                if (objectA->collider_type == collider_enemy_dynamic)
+                {
+                    needlevel = objectB->need_anchor_level;
+                }
+                else
+                {
+                    needlevel = objectA->need_anchor_level;
+                }
+                switch (needlevel)
+                {
+                case 1:
+                    Gokai_UI::AddGokaiCount(100);
+                    break;
+                case 2:
+                    Gokai_UI::AddGokaiCount(500);
+                    break;
+                case 3:
+                    Gokai_UI::AddGokaiCount(1000);
+                    break;
+                default:
+                    break;
+                }
+                //--------------------------------------------------------------------------------------------
                 enemy_instance->CollisionPulledObject();
+
+                app_atomex_start(Player_Dead_Sound);
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
             }
            
        
@@ -1031,14 +1085,6 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_boss))
         {
 
-
-
-          
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-
-
-          
             b2Vec2 GetObjectVelocity;
 
             if (objectA->collider_type == collider_boss)
@@ -1072,9 +1118,65 @@ public:
                    
                 }
 
+
+                if (objectA->object_name == Boss_Carry_Object_Enemy)
+                {
+                 
+                }
+                if (objectB->object_name == Boss_Carry_Object_Enemy)
+                {
+
+                }
+
             }
 
+           
 
+
+        }
+
+        //ボスのオブジェクト
+        if (objectA->object_name == Boss_Carry_Object_Enemy || objectB->object_name == Boss_Carry_Object_Enemy)
+        {
+            //どちらがボスの部屋の柱
+            if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
+            {
+
+                if (fixtureA->IsSensor() == false && fixtureB->IsSensor() == false)
+                {
+                    if (objectB->collider_type == collider_anchor) { return; } 
+                    if (objectB->object_name == Boss_Carry_Object_Enemy) { return; }
+ 
+                    boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectA->id);
+                    enemy_instance->SetSplittingDestroyFlag(true);
+
+                    if (objectB->collider_type == collider_boss)
+                    {
+                        boss.SetNowBossState(panic_state);
+                    }
+                }
+
+              
+              
+            }
+            if (objectB->object_name == Boss_Carry_Object_Enemy)
+            {
+                if (fixtureB->IsSensor() == false&&fixtureA->IsSensor()==false)
+                {
+                    if (objectA->collider_type == collider_anchor) { return; }
+                    if (objectA->object_name == Boss_Carry_Object_Enemy) { return; }
+
+                    boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
+                    enemy_instance->SetSplittingDestroyFlag(true);
+                    if (objectA->collider_type == collider_boss)
+                    {
+                        boss.SetNowBossState(panic_state);
+                    }
+                }
+
+              
+            }
+     
         }
 
         

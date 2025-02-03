@@ -32,6 +32,7 @@
 #include"camera_shake.h"
 #include"player_UI.h"
 #include"impact_effect.h"
+#include"gokai.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -69,6 +70,8 @@ void Game::Initialize()
     Bg::Initialize();
 
     InitImpactEffect();
+
+    Gokai_UI::Initialize();
 
 
 
@@ -116,6 +119,8 @@ void Game::Finalize(void)
     //文字（絵）
     FinalizeWord();
 
+    Gokai_UI::Finalize();
+
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
 
@@ -154,6 +159,9 @@ void Game::Update(void)
             PlayerLife::Update();
             //プレイヤーUIの更新処理
             player_UI::Update();
+
+            
+
             //プレイヤーの更新処理
             player.Update();
 
@@ -171,6 +179,8 @@ void Game::Update(void)
 
             //ボスの更新処理
             boss.Update();
+
+
 
 
             //衝突エフェクトの描画処理
@@ -285,6 +295,8 @@ void Game::Draw(void)
 
 
 	player_UI::Draw();
+
+    Gokai_UI::Draw();
 
   //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();

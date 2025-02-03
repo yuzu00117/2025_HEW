@@ -136,6 +136,8 @@
     <ClCompile Include="1-1_boss.cpp" />
     <ClCompile Include="1-1_boss_field_block.cpp" />
     <ClCompile Include="1_1boss_state_debug.cpp" />
+    <ClCompile Include="1_1_boss_carry_object_enemy.cpp" />
+    <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp" />
     <ClCompile Include="1_1_boss_pillar.cpp" />
     <ClCompile Include="anchor.cpp" />
     <ClCompile Include="anchor_point.cpp" />
@@ -160,6 +162,7 @@
     <ClCompile Include="FixtureSizeCalculate.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="geyser.cpp" />
+    <ClCompile Include="gokai.cpp" />
     <ClCompile Include="ground.cpp" />
     <ClCompile Include="impact_effect.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
@@ -201,6 +204,8 @@
     <ClInclude Include="1-1_boss.h" />
     <ClInclude Include="1-1_boss_field_block.h" />
     <ClInclude Include="1_1boss_state_debug.h" />
+    <ClInclude Include="1_1_boss_carry_object_enemy.h" />
+    <ClInclude Include="1_1_boss_carry_object_enemy_spawner.h" />
     <ClInclude Include="1_1_boss_pillar.h" />
     <ClInclude Include="anchor.h" />
     <ClInclude Include="anchor_point.h" />
@@ -228,6 +233,7 @@
     <ClInclude Include="FixtureSizeCalculate.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="geyser.h" />
+    <ClInclude Include="gokai.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="hit_stop.h" />
     <ClInclude Include="impact_effect.h" />
