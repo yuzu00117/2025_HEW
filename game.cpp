@@ -282,7 +282,7 @@ void Game::Draw(void)
 
 
 
-
+    Bg::FrontDraw();
 
 
 	
