@@ -317,7 +317,7 @@ void wood::Initialize()
 void wood::Update()
 {
 
-		static int leafDeleteCountdown = 600; // 10秒後に削除 (60FPS x 10秒 = 600フレーム)
+		
 
 		// 切り株と本体のジョイントを消すフラグがオンになってる場合
 		if (m_destory_joint)
@@ -339,10 +339,10 @@ void wood::Update()
 		if (leaf_drop_flag)
 		{
 			// 10秒後に葉っぱのボディを削除
-			if (leafDeleteCountdown > 0) {
-				leafDeleteCountdown--;
+			if (leafDeleteCountdown > now_delete_leaf_countDown) {
+				now_delete_leaf_countDown++;
 
-				if (leafDeleteCountdown % 60==0)
+				if (now_delete_leaf_countDown % 60==0)
 				{
 					// 葉っぱの物理計算を有効化 & ランダムな力を加える
 					for (b2Body* body : leaf_bodies) {

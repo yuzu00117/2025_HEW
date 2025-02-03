@@ -192,6 +192,10 @@ private:
 
 	bool leaf_drop_flag = false;
 
+	static constexpr int  leafDeleteCountdown = 600; // 10秒後に削除 (60FPS x 10秒 = 600フレーム)
+
+	int now_delete_leaf_countDown=0;
+
 	//音源
 	//----------------------------------------
 	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//倒れた時の音
