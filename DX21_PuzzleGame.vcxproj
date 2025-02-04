@@ -146,6 +146,7 @@
     <ClCompile Include="camera_shake.cpp" />
     <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
     <ClCompile Include="blown_away_effect.cpp" />
+    <ClCompile Include="contact_block.cpp" />
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
     <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
+    <ClInclude Include="contact_block.h" />
     <ClInclude Include="create_filter.h" />
     <ClInclude Include="cri\common\include\CriSmpFramework.h" />
     <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />

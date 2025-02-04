@@ -1,4 +1,3 @@
-//-----------------------------------------------------------------------------------------------------
 // #name teleport_block.cpp
 // #description 接触したら指定した場所に飛ぶブロック
 // #make 2024/01/02
@@ -8,7 +7,7 @@
 //          
 //----------------------------------------------------------------------------------------------------
 
-#include"teleport_block.h"
+#include"contact_block.h"
 #include"sprite.h"
 #include"texture.h"
 #include"include/box2d/box2d.h"
@@ -35,7 +34,7 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 
 
 
-	
+
 
 	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -46,7 +45,7 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 
 
 	b2BodyDef body;//木の幹の部分
-	body.type =b2_staticBody;
+	body.type = b2_staticBody;
 	body.position.Set(Position.x, Position.y);
 	body.fixedRotation = true;
 
@@ -83,7 +82,7 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 	object_teleport_data->id = ID;
 	object_teleport_data->object_name = Object_teleport_block;
 	SetID(ID);
-	
+
 
 	//テレポートブロックの所にテレポート先を入れる
 	SetTeleportPoint(to_position);
@@ -101,15 +100,15 @@ void teleport_block::Initialize()
 {
 	//アンカーの錨の部分（日本語）
 	g_Teleport_Block_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
-\
+	\
 
 }
 
 void teleport_block::Update()
 {
-	if (GetTeleportFlag () == true)
+	if (GetTeleportFlag() == true)
 	{
-		Game instance=Game::GetInstance();
+		Game instance = Game::GetInstance();
 
 		instance.Teleport_player(GetTeleportPoint());
 
@@ -181,5 +180,5 @@ void teleport_block::Finalize()
 		UnInitTexture(g_Teleport_Block_Texture);
 		g_Teleport_Block_Texture = NULL;
 	}
-	
+
 }
