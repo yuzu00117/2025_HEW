@@ -1,19 +1,19 @@
 ﻿/*===========================================================================*
  *  Header file for Atom CueSheet Binary
  *  Project          : HEW_sound
- *  Tool Ver.        : Ver.3.52.03
- *  ACB  Ver.        : Ver.1.42.1
- *  File Path        : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound/Public/WorkUnit_0
+ *  Tool Ver.        : Ver.3.54.02
+ *  ACB  Ver.        : Ver.1.44.1
+ *  File Path        : C:/Users/ynk04/Downloads/HEW_sound 1/HEW_sound/Public/WorkUnit_0
  *  File Name        : CueSheet_0.h
- *  File Size        : 14939456 bytes
- *  Date Time        : 2025/01/17 17:58:18
+ *  File Size        : 15589888 bytes
+ *  Date Time        : 2025/02/04 16:24:23
  *  Target           : Public
- *  Cues             : 23
+ *  Cues             : 28
  *  CueSheet Comment : 
- *  Stream Awb Path  : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound/Public/WorkUnit_0/CueSheet_0.awb
+ *  Stream Awb Path  : C:/Users/ynk04/Downloads/HEW_sound 1/HEW_sound/Public/WorkUnit_0/CueSheet_0.awb
  *===========================================================================*/
 
-#define CRI_CUESHEET_0_CUENUM (23)
+#define CRI_CUESHEET_0_CUENUM (28)
 
 /* AISAC Control List (AISAC Control ID) */
 
@@ -41,6 +41,11 @@
 #define CRI_CUESHEET_0_コインを取る音 (20) /*  */
 #define CRI_CUESHEET_0_敵を倒す音      (21) /*  */
 #define CRI_CUESHEET_0_プレイヤーの足音 (22) /*  */
+#define CRI_CUESHEET_0_ボスジャンプ時 (23) /*  */
+#define CRI_CUESHEET_0_ボス衝撃波発生中 (24) /*  */
+#define CRI_CUESHEET_0_ボス足音         (25) /*  */
+#define CRI_CUESHEET_0_ボス溜め攻撃   (26) /*  */
+#define CRI_CUESHEET_0_ボス溜め攻撃衝撃時 (27) /*  */
 
 /* Block List (Block Index) */
 
