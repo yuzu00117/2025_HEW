@@ -31,6 +31,13 @@ enum SCENE_NAME
    SCENE_RESULT,
 };
 
+enum STAGE_NAME
+{
+    STAGE_NULL,
+    STAGE_TUTORIAL,
+    STAGE_1_1
+};
+
 
 
 // シーン基底クラス
@@ -111,6 +118,9 @@ private:
 
     // 現在のシーン
     std::unique_ptr<Scene> currentScene;
+    
+
+
 
     // コンストラクタを private にして外部からのインスタンス化を防ぐ
     SceneManager() = default;

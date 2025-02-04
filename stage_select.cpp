@@ -203,7 +203,6 @@ void StageSelectScene::Update()
 			{
 			case 0:
 				break;
-
 			case 1:
 				sceneManager.ChangeScene(SCENE_GAME);
 				break;

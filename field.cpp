@@ -70,6 +70,7 @@ void Field::Initialize()
 
 
 
+
 	// csvからマップチップを読み込む
 	Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
 	//読み込んだデータをfield_mapに格納
