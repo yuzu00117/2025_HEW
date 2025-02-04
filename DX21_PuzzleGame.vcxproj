@@ -144,6 +144,8 @@
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="camera_shake.cpp" />
+    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
+    <ClCompile Include="blown_away_effect.cpp" />
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
     <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
@@ -211,7 +213,9 @@
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="anchor_spirit.h" />
     <ClInclude Include="bg.h" />
+    <ClInclude Include="blown_away_effect.h" />
     <ClInclude Include="camera_shake.h" />
+    <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="create_filter.h" />

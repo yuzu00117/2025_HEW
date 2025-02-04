@@ -30,6 +30,7 @@
 #include"1_1_boss_pillar.h"
 #include"geyser.h"
 #include"1_1_boss_carry_object_enemy_spawner.h"
+#include"Change_Enemy_Filter_and_Body.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -95,7 +96,7 @@ public:
 
     void AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size, int object_type, int anchor_level);
 
-  
+    void AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Textur, int texture_x, int texture_y,b2Vec2 vec);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -130,6 +131,8 @@ public:
     boss_carry_object_spawner* FindBossCarryEnemySpawner(int id);
 
     boss_carry_object_enemy* FindBossCarryObjectEnemy(int id);
+
+    change_enemy_filter_and_body* FindChangeEnemyFilterAndBody(int id);
 
     
 
@@ -185,6 +188,8 @@ private:
 
     std::vector<std::unique_ptr<boss_carry_object_enemy>> boss_carry_object_enemyList;//ボスの部屋で出現するエネミーのスポナー
 
+
+    std::vector<std::unique_ptr<change_enemy_filter_and_body>>change_filter_boidy_enemy_list ;//
 
    
     //ここにオブジェクトごとにリストを追加していく感じ

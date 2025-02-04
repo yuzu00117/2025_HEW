@@ -23,6 +23,7 @@ enum ColliderTypeList
     collider_player_body,
     collider_player_leg,
     collider_player_sensor,
+    collider_effect_sensor,
 
     collider_anchor,
     collider_anchor_chain,
@@ -58,6 +59,9 @@ enum ColliderTypeList
     collider_mini_golem,
     collider_shock_wave,
     collider_chage_attack,
+
+
+    collider_blown_away_enemy,
 };
 
 
