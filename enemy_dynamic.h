@@ -50,6 +50,8 @@ private:
 	int m_attack_counter = 0;
 	const int m_attack_birth = 30;
 	const int m_attack_finish = 50;
+	const int m_attack_cooltime = 60;
+	int m_attack_cooltime_counter = 60;
 
 	int m_anim_id = 0;
 

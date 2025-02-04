@@ -219,11 +219,6 @@ void EnemyDynamic::Draw()
 	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	if (GetState() != m_old_state)
-	{
-		m_anim_id = 0;
-	}
-
 	switch (GetState())
 	{
 	case ENEMY_STATE_MOVE:
@@ -271,7 +266,6 @@ void EnemyDynamic::Draw()
 		);
 		m_anim_id++;
 		break;
-		break;
 	default:
 		//貼るテクスチャを指定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Move);
@@ -290,13 +284,13 @@ void EnemyDynamic::Draw()
 	//============================================================
 	//テスト:センサー描画
 	//============================================================
-	/*GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
 	DrawSprite(
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
 		{ m_size_sensor.x * scale , m_size_sensor.y * scale }
-	);*/
+	);
 }
 
 //移動
@@ -316,7 +310,8 @@ void EnemyDynamic::Move()
 	}
 
 	//崖で反転
-	if (m_ground_cnt == m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground && (GetBody()->GetLinearVelocity() != b2Vec2(0.0,0.0)))
+	if ((m_ground_cnt <= m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground && (GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))) || 
+		(!m_is_ground && GetBody()->GetLinearVelocity().x == 0))
 	{
 		SetDirection(!GetDirection());
 	}
@@ -327,7 +322,15 @@ void EnemyDynamic::Move()
 		//移動していないかつ、前回移動中だった場合ジャンプ
 		if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
 		{
-			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0, m_jump_force * m_move_force), true);
+			GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
+			if (GetDirection())
+			{
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, m_jump_force * m_move_force), true);
+			}
+			else if (!GetDirection())
+			{
+				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed * m_move_force, m_jump_force * m_move_force), true);
+			}
 		}
 		else
 		{
@@ -345,11 +348,14 @@ void EnemyDynamic::Move()
 	else
 	{
 		//画面外に出ていた場合、ステータスを変え移動用関数を呼び出さない
+		m_anim_id = 0;
 		SetState(ENEMY_STATE_NULL);
 	}
 
 	//接触中の地面の数を記憶
 	m_old_ground_cnt = m_ground_cnt;
+	//攻撃クールタイム
+	m_attack_cooltime_counter++;
 }
 
 //攻撃
@@ -381,6 +387,8 @@ void EnemyDynamic::Attack()
 		m_attack_counter = 0;
 		GetBody()->SetType(b2_dynamicBody);
 		SetState(ENEMY_STATE_NULL);
+		m_anim_id = 0;
+		m_attack_cooltime_counter = 0;
 		return;
 	}
 }
@@ -395,10 +403,10 @@ void EnemyDynamic::Destroyed()
 void EnemyDynamic::CollisionSensorPlayer()
 {
 	//エネミーが攻撃中なら何もしない
-	if ((GetState() != ENEMY_STATE_ATTACK) && (m_is_ground))
+	if ((GetState() != ENEMY_STATE_ATTACK) && (m_is_ground) && m_attack_cooltime_counter >= m_attack_cooltime)
 	{
 		SetDirectionBasedOnPlayer();
-
+		m_anim_id = 0;
 		//攻撃状態に移行
 		SetState(ENEMY_STATE_ATTACK);
 	}
