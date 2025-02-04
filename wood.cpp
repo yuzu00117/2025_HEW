@@ -19,6 +19,7 @@
 #include"player_position.h"
 #include"create_filter.h"
 
+
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Wood_Texture = NULL;//木のテクスチャ１
@@ -26,6 +27,19 @@ static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//木のテクスチャ�
 static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチャ３
 static ID3D11ShaderResourceView* g_Stump_Texture = NULL;//木の切り株のテクスチャ
 
+
+
+static ID3D11ShaderResourceView* g_leaf_Texture1 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture2 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture3 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture4 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture5 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture6 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture7 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture8 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture9 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture10 = NULL;//葉っぱのテクスチャ
+static ID3D11ShaderResourceView* g_leaf_Texture11 = NULL;//葉っぱのテクスチャ
 
 int ObjectData::current_id = 0;
 
@@ -127,6 +141,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
 	object_wood_data->object_name = Object_Wood;
+	object_wood_data->need_anchor_level = need_level;
 	object_anchorpoint_data->object_name = Object_Wood;
 
 
@@ -224,8 +239,51 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 	auto joint = world->CreateJoint(&jointDef2);						  //ワールドにジョイントを追加
 	SetWoodStumpJoint(joint);	//木を引っ張ったらこのjointを消せるように保存しておく
+
+
+
 	//-------------------------------------------------------------------------------------------
-	//木を倒す為に必要な挙動
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	//ここからボディを１１こ作って
+	leaf_size = GetWoodSize();
+
+
+	leaf_bodies.reserve(NUM_BODIES);//事前に容量を確保
+
+
+	// ボディの定義
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody; // 動的ボディ
+	bodyDef.gravityScale = (0.4);
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(leaf_size.x/100, leaf_size.y/100); // 1x1 の四角形
+
+	b2FixtureDef fixtureDef;
+	fixtureDef.shape = &boxShape;
+	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.0f;
+	fixtureDef.isSensor = false;
+	fixtureDef.filter = createFilterExclude("texture_body_filter", {"texture_body_filter","object_filter","ground_filter","enemy_filter","Player_filter" });
+
+
+	// 11個のボディを作成してワールドに追加
+	for (int i = 0; i < NUM_BODIES; i++) {
+		bodyDef.position.Set(Position.x,Position.y + (wood_size.y / 2)); // 適当な位置に配置
+		b2Body* body = world->CreateBody(&bodyDef);
+		body->CreateFixture(&fixtureDef);
+		leaf_bodies.push_back(body); // ベクターに追加
+
+		b2WeldJointDef leafjointDef;
+		leafjointDef.bodyA = body;
+		leafjointDef.bodyB = m_Wood_body;
+		leafjointDef.localAnchorA.Set(0.0f, 0.0f);
+		leafjointDef.localAnchorB.Set(0.0f, -wood_size.y*0.3);
+		leafjointDef.collideConnected = true;					  //ジョイントした物体同士の接触を消す
+
+		world->CreateJoint(&leafjointDef);						  //ワールドにジョイントを追加
+
+	}
 
 };
 
@@ -242,25 +300,79 @@ void wood::Initialize()
 		g_Wood_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
 		g_Stump_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood_stump.png");
+
+
+		g_leaf_Texture1 = InitTexture(L"asset\\texture\\wood_texture\\three_happa1.png");
+		g_leaf_Texture2 = InitTexture(L"asset\\texture\\wood_texture\\three_happa2.png");
+		g_leaf_Texture3 = InitTexture(L"asset\\texture\\wood_texture\\three_happa3.png");
+		g_leaf_Texture4 = InitTexture(L"asset\\texture\\wood_texture\\three_happa4.png");
+		g_leaf_Texture5 = InitTexture(L"asset\\texture\\wood_texture\\three_happa5.png");
+		g_leaf_Texture6 = InitTexture(L"asset\\texture\\wood_texture\\three_happa6.png");
+		g_leaf_Texture7 = InitTexture(L"asset\\texture\\wood_texture\\three_happa7.png");
+		g_leaf_Texture8 = InitTexture(L"asset\\texture\\wood_texture\\three_happa_tama8.png");
+		g_leaf_Texture9 = InitTexture(L"asset\\texture\\wood_texture\\three_happa9.png");
+		g_leaf_Texture10 = InitTexture(L"asset\\texture\\wood_texture\\three_happa_tama10.png");
+		g_leaf_Texture11 = InitTexture(L"asset\\texture\\wood_texture\\three_happa11.png");
 	}
 }
 
 void wood::Update()
 {
-	//切り株と本体のジョイントを消すフラグがオンになってる場合
-	if (m_destory_joint)
-	{
-		b2Joint* joint = GetWoodStumpJoint();
-		if (joint != nullptr)
+
+		
+
+		// 切り株と本体のジョイントを消すフラグがオンになってる場合
+		if (m_destory_joint)
 		{
-			//ワールドのインスタンスを持ってくる
-			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-			b2World* world = box2d_world.GetBox2dWorldPointer();
-			world->DestroyJoint(joint);		//	ワールドからジョイントを消す
-			SetWoodStumpJoint(nullptr);		//	自分が保持してるジョイントの情報を消す
+			b2Joint* joint = GetWoodStumpJoint();
+			if (joint != nullptr)
+			{
+				// ワールドのインスタンスを持ってくる
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+				world->DestroyJoint(joint); // ワールドからジョイントを消す
+				SetWoodStumpJoint(nullptr); // 自分が保持してるジョイントの情報を消す
+			}
+			m_destory_joint = false; // フラグをオフにする
+
+		
 		}
-		m_destory_joint = false;	//フラグをオフにする
-	}
+
+		if (leaf_drop_flag)
+		{
+			// 10秒後に葉っぱのボディを削除
+			if (leafDeleteCountdown > now_delete_leaf_countDown) {
+				now_delete_leaf_countDown++;
+
+				if (now_delete_leaf_countDown % 60==0)
+				{
+					// 葉っぱの物理計算を有効化 & ランダムな力を加える
+					for (b2Body* body : leaf_bodies) {
+						body->SetAwake(true);
+						body->SetAngularVelocity(0.0f);
+						body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
+
+						// ランダムな力を適用（葉っぱを散らす）
+						float forceX = ((rand() % 20) - 10) * 0.01f;
+						float forceY = (rand() % 10) * -0.01f;
+						body->ApplyForceToCenter(b2Vec2(forceX, forceY), true);
+
+						
+						
+					}
+				}
+			}
+			else {
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+
+				for (b2Body* body : leaf_bodies) {
+					world->DestroyBody(body);
+				}
+				leaf_bodies.clear();
+				leaf_drop_flag = false;
+			}
+		}
 
 	//ゲーム開始直後木が地面まで落ちる時音鳴らさないためのカウントダウン
 	if (start_stop_sound_count > 0) {
@@ -280,6 +392,45 @@ void wood::Update()
 		if (rotated > 0.5f || rotated < -0.5f)
 		{
 			SetState(Wood_HitObject);	//音鳴らす
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+			// `m_Wood_body` に関連するすべてのジョイントを削除
+			b2JointEdge* jointEdge = GetObjectWoodBody()->GetJointList();
+			while (jointEdge) {
+				b2Joint* joint = jointEdge->joint;
+				jointEdge = jointEdge->next; // 次のジョイントを先に取得
+
+				// アンカーポイントのジョイントは削除しない
+				if (joint->GetBodyA() == GetObjectAnchorPointBody() || joint->GetBodyB() == GetObjectAnchorPointBody()) {
+					continue;
+				}
+
+				world->DestroyJoint(joint); // ジョイントを削除
+			}
+
+			// 葉っぱの物理計算を有効化
+			for (b2Body* body : leaf_bodies) {
+				body->SetAwake(true);
+			}
+
+			// 葉っぱの物理計算を有効化 & ランダムな力を加える
+			for (b2Body* body : leaf_bodies) {
+				body->SetAwake(true);
+				body->SetAngularVelocity(0.0f);
+				body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
+				// ランダムな力を適用（葉っぱを散らす）
+				float forceX = ((rand() % 20) - 10) * 0.01f;
+				float forceY = (rand() % 10) * -0.01f;
+				body->ApplyForceToCenter(b2Vec2(forceX, forceY), true);
+
+				// 角速度もランダムにする
+				float angularImpulse = ((rand() % 20) - 10) * 0.000005f;
+				body->ApplyAngularImpulse(angularImpulse, true);
+			}
+
+			leaf_drop_flag = true;
 		}
 	}
 	//さっきまで落ちていて、今は静止している
@@ -425,6 +576,42 @@ void wood::Draw()
 		{ GetWoodSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
+
+	for (size_t i = 0; i < leaf_bodies.size(); i++) {
+		b2Vec2 position = leaf_bodies[i]->GetPosition();
+		float angle = leaf_bodies[i]->GetAngle(); // 修正: 各葉っぱの角度を取得
+
+		draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		// テクスチャを設定
+		ID3D11ShaderResourceView* texture = nullptr;
+		switch (i) {
+		case 0: texture = g_leaf_Texture1; break;
+		case 1: texture = g_leaf_Texture2; break;
+		case 2: texture = g_leaf_Texture3; break;
+		case 3: texture = g_leaf_Texture4; break;
+		case 4: texture = g_leaf_Texture5; break;
+		case 5: texture = g_leaf_Texture6; break;
+		case 6: texture = g_leaf_Texture7; break;
+		case 7: texture = g_leaf_Texture8; break;
+		case 8: texture = g_leaf_Texture9; break;
+		case 9: texture = g_leaf_Texture10; break;
+		case 10: texture = g_leaf_Texture11; break;
+		default: break;
+		}
+
+		if (texture) {
+			GetDeviceContext()->PSSetShaderResources(0, 1, &texture);
+		}
+
+		// 修正: 各葉っぱの角度を使用
+		DrawSprite(
+			{ draw_x, draw_y },
+			angle, // 各葉っぱの角度を適用
+			{ GetLeafSize().x * scale * 5, GetLeafSize().y * scale }
+		);
+	}
 }
 
 void wood::Finalize()

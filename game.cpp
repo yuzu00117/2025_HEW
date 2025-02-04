@@ -31,6 +31,8 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"player_UI.h"
+#include"impact_effect.h"
+#include"gokai.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -66,6 +68,10 @@ void Game::Initialize()
 
     //背景の初期化
     Bg::Initialize();
+
+    InitImpactEffect();
+
+    Gokai_UI::Initialize();
 
 
 
@@ -107,12 +113,19 @@ void Game::Finalize(void)
 	//ボスの終了処理
     boss.Finalize();
 
+    //衝突時のエフェクトの終了処理
+    FinalizeImpactEffects();
+
     //文字（絵）
     FinalizeWord();
+
+    Gokai_UI::Finalize();
 
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
 
+    //衝突時のエフェクトを描画
+    InitImpactEffect();
 
 #ifdef _DEBUG
     //デバッグ文字
@@ -146,6 +159,9 @@ void Game::Update(void)
             PlayerLife::Update();
             //プレイヤーUIの更新処理
             player_UI::Update();
+
+            
+
             //プレイヤーの更新処理
             player.Update();
 
@@ -163,6 +179,12 @@ void Game::Update(void)
 
             //ボスの更新処理
             boss.Update();
+
+
+
+
+            //衝突エフェクトの描画処理
+            UpdateImpactEffects();
 
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
@@ -238,8 +260,7 @@ void Game::Draw(void)
     //2D描画なので深度無効
     SetDepthEnable(false);
 
-    //プレイヤーの描画処理
-    player.Draw();
+ 
 
 
     //ボスの描画処理
@@ -248,19 +269,24 @@ void Game::Draw(void)
     //フィールドの描画処理
     Field::Draw();
 
+    //衝突時のエフェクト
+    DrawImpactEffects(1.0f);
 
+    //プレイヤーの描画処理
+    player.Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
+  
 
 
 
-
+    Bg::FrontDraw();
 
 
 	
-
+ 
 
 
 	//�c�@�̕`�揈��
@@ -269,6 +295,8 @@ void Game::Draw(void)
 
 
 	player_UI::Draw();
+
+    Gokai_UI::Draw();
 
   //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();

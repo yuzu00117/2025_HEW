@@ -247,6 +247,9 @@
     <ClCompile Include="teleport_block.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
+    <ClCompile Include="impact_effect.cpp">
+      <Filter>リソースファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Item_Jewel.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -520,6 +523,9 @@
     </ClInclude>
     <ClInclude Include="hit_stop.h">
       <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="impact_effect.h">
+      <Filter>リソースファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
