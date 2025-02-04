@@ -3,11 +3,11 @@
 
 #include"include/box2d/box2d.h"
 
-class teleport_block
+class contact_block
 {
 public:
-	teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Vec2 to_position);
-	~teleport_block();
+	contact_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Vec2 to_position);
+	~contact_block();
 
 
 	void Initialize();
@@ -27,48 +27,27 @@ public:
 	}
 
 	//描画用にサイズを持たせておく
-	b2Vec2 GetTeleportBlockSize() const
+	b2Vec2 GetSize() const
 	{
 		return m_size;
 	}
 
-	void SetTeleportBlockSize(b2Vec2 size) {
+	void SetSize(b2Vec2 size) {
 		m_size = size;
 	}
 
 
 	//bodyの習得
-	b2Body* GetTeleportBlockBody()
+	b2Body* GetBody()
 	{
 		return m_body;
 	}
 
-	void SetTeleportBlockBody(b2Body* body)
+	void SetBody(b2Body* body)
 	{
 		m_body = body;
 	}
 
-
-	bool GetTeleportFlag(void)
-	{
-		return teleport_flag;
-	}
-
-	void SetTeleportFlag(bool flag)
-	{
-		teleport_flag = flag;
-	}
-
-
-	void SetTeleportPoint(b2Vec2 Position)
-	{
-		teleport_point = Position;
-	}
-
-	b2Vec2 GetTeleportPoint(void)
-	{
-		return teleport_point;
-	}
 
 private:
 
@@ -76,11 +55,11 @@ private:
 
 	b2Vec2 m_size;
 
-	b2Vec2 teleport_point;
+	
 
 	int id;
 
-	bool teleport_flag = false;
+	
 
 };
 

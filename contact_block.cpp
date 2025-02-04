@@ -18,18 +18,18 @@
 #include"game.h"
 
 
-static ID3D11ShaderResourceView* g_Teleport_Block_Texture = NULL;//地面のテクスチャ
+static ID3D11ShaderResourceView* g_Texture = NULL;//地面のテクスチャ
 
 
-teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Vec2 to_position)
+contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 to_position)
 {
 	//サイズをセット
-	SetTeleportBlockSize(teleport_block_size);
+	SetSize(block_size);
 
 	b2Vec2 size;
 
-	size.x = teleport_block_size.x / BOX2D_SCALE_MANAGEMENT;
-	size.y = teleport_block_size.y / BOX2D_SCALE_MANAGEMENT;
+	size.x = block_size.x / BOX2D_SCALE_MANAGEMENT;
+	size.y = block_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -51,7 +51,7 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 
 	b2Body* m_teleport_block_body = world->CreateBody(&body);
 
-	SetTeleportBlockBody(m_teleport_block_body);
+	SetBody(m_teleport_block_body);
 
 
 	//フィクスチャを付ける
@@ -84,48 +84,37 @@ teleport_block::teleport_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Ve
 	SetID(ID);
 
 
-	//テレポートブロックの所にテレポート先を入れる
-	SetTeleportPoint(to_position);
+
 
 
 
 };
 
-teleport_block::~teleport_block()
+contact_block::~contact_block()
 {
 }
 
 
-void teleport_block::Initialize()
+void contact_block::Initialize()
 {
 	//アンカーの錨の部分（日本語）
-	g_Teleport_Block_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
-	\
+	g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");
+	
 
 }
 
-void teleport_block::Update()
+void contact_block::Update()
 {
-	if (GetTeleportFlag() == true)
-	{
-		Game instance = Game::GetInstance();
-
-		instance.Teleport_player(GetTeleportPoint());
-
-		SetTeleportFlag(false);
-	}
+	
 
 }
 
 
 
-void teleport_block::Draw()
+void contact_block::Draw()
 {
 
 	///ここから調整してね
-
-
-
 
 	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
 	float scale = SCREEN_SCALE;
@@ -135,7 +124,7 @@ void teleport_block::Draw()
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
-	b2Vec2 Pos = GetTeleportBlockBody()->GetPosition();
+	b2Vec2 Pos = GetBody()->GetPosition();
 
 
 
@@ -146,14 +135,14 @@ void teleport_block::Draw()
 	float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Teleport_Block_Texture);
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 
 	//draw
 	DrawSprite(
 		{ draw_x,
 		  draw_y },
-		GetTeleportBlockBody()->GetAngle(),
-		{ GetTeleportBlockSize().x * scale,GetTeleportBlockSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		GetBody()->GetAngle(),
+		{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
 
@@ -161,13 +150,13 @@ void teleport_block::Draw()
 
 }
 
-void teleport_block::Finalize()
+void contact_block::Finalize()
 {
 	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-	if (GetTeleportBlockBody() != nullptr)
+	if (GetBody() != nullptr)
 	{
 		//ボディの削除
 		world->DestroyBody(m_body);
@@ -175,10 +164,10 @@ void teleport_block::Finalize()
 
 	//画像の解放
 
-	if (g_Teleport_Block_Texture != NULL)
+	if (g_Texture != NULL)
 	{
-		UnInitTexture(g_Teleport_Block_Texture);
-		g_Teleport_Block_Texture = NULL;
+		UnInitTexture(g_Texture);
+		g_Texture = NULL;
 	}
 
 }
