@@ -160,5 +160,9 @@ void boss_carry_object_spawner::Finalize()
     }
     enemyList.clear();
 
-    UnInitTexture(g_Texture);
+    if (g_Texture != NULL)
+    {
+        UnInitTexture(g_Texture);
+        g_Texture = NULL;
+    }
 }

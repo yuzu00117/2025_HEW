@@ -301,11 +301,19 @@ void AnchorPoint::Finalize()
 		}
 	}
 
-	//テクスチャの解放
-	UnInitTexture(g_anchor_point_target_lev1_Texture);
-	UnInitTexture(g_anchor_point_target_lev2_Texture);
-	UnInitTexture(g_anchor_point_target_lev3_Texture);
-	UnInitTexture(g_anchor_point_target_Texture);
+	if (g_anchor_point_target_lev1_Texture != NULL)
+	{
+		//テクスチャの解放
+		UnInitTexture(g_anchor_point_target_lev1_Texture);
+		UnInitTexture(g_anchor_point_target_lev2_Texture);
+		UnInitTexture(g_anchor_point_target_lev3_Texture);
+		UnInitTexture(g_anchor_point_target_Texture);
+
+		g_anchor_point_target_lev1_Texture = NULL;
+		g_anchor_point_target_lev2_Texture = NULL;
+		g_anchor_point_target_lev3_Texture = NULL;
+		g_anchor_point_target_Texture = NULL;
+	}
 }
 
 void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)

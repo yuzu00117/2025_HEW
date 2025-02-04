@@ -141,11 +141,22 @@ void EnemyDynamic::Initialize()
 
 void EnemyDynamic::Finalize()
 {
-	UnInitTexture(g_EnemyDynamic_Texture);
-	UnInitTexture(g_EnemyDynamic_Texture_Move);
-	UnInitTexture(g_EnemyDynamic_Texture_Attack);
-	UnInitTexture(g_EnemyDynamic_Texture_Destroyed);
-	UnInitTexture(g_EnemySensor_Texture);
+
+	if (g_EnemyDynamic_Texture != NULL)
+	{
+		UnInitTexture(g_EnemyDynamic_Texture);
+		UnInitTexture(g_EnemyDynamic_Texture_Move);
+		UnInitTexture(g_EnemyDynamic_Texture_Attack);
+		UnInitTexture(g_EnemyDynamic_Texture_Destroyed);
+		UnInitTexture(g_EnemySensor_Texture);
+
+		g_EnemyDynamic_Texture = NULL;
+		g_EnemyDynamic_Texture_Move = NULL;
+		g_EnemyDynamic_Texture_Attack = NULL;
+		g_EnemyDynamic_Texture_Destroyed = NULL;
+		g_EnemySensor_Texture = NULL;
+
+	}
 
 	//ワールドに登録したbodyの削除
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -438,3 +449,4 @@ void EnemyDynamic::SetDirectionBasedOnPlayer()
 		SetDirection(true);
 	}
 }
+

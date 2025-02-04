@@ -370,6 +370,15 @@ void Field::Finalize()
 	objectManager.FinalizeAll();
 	itemManager.FinalizeAll();
 
+	if (g_Ground_Texture != NULL)
+	{
+		UnInitTexture(g_AnchorPoint_Texture);
+		UnInitTexture(g_Ground_Texture);
+
+		g_Ground_Texture = NULL;
+		g_AnchorPoint_Texture = NULL;
+	}
+
 }
 
 

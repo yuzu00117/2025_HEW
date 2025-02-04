@@ -129,8 +129,11 @@ void    ItemCoin::Function()
 void ItemCoin::Initialize()
 {
 
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
-    g_coin_effect=InitTexture(L"asset\\texture\\sample_texture\\coin_effect.png");
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
+        g_coin_effect = InitTexture(L"asset\\texture\\sample_texture\\coin_effect.png");
+    }
 }
 
 
@@ -247,10 +250,18 @@ void ItemCoin::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
-    if (g_Texture != nullptr)
+
+    if (g_Texture!=NULL)
     {
         UnInitTexture(g_Texture);
+        UnInitTexture(g_coin_effect);
+        g_Texture = NULL;
+        g_coin_effect = NULL;
     }
+
+ 
+       
+    
 }
 
 ItemCoin::~ItemCoin()
