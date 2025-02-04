@@ -27,26 +27,35 @@ ID3D11ShaderResourceView* total_score_texture = NULL;		//ƒg[ƒ^ƒ‹ƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ
 ID3D11ShaderResourceView* coin_score_texture = NULL;		//ƒRƒCƒ“ƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ`ƒƒŠi”[—p
 ID3D11ShaderResourceView* clear_time_score_texture = NULL;	//ƒRƒCƒ“ƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ`ƒƒŠi”[—p
 ID3D11ShaderResourceView* gokai_score_texture = NULL;       //‹‰õƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ`ƒƒŠi”[—p
-ID3D11ShaderResourceView* g_score_rank_C_Texture = NULL;	//Cƒ‰ƒ“ƒN
-ID3D11ShaderResourceView* g_score_rank_B_Texture = NULL;	//Bƒ‰ƒ“ƒN
-ID3D11ShaderResourceView* g_score_rank_A_Texture = NULL;	//Aƒ‰ƒ“ƒN
-ID3D11ShaderResourceView* g_score_rank_S_Texture = NULL;	//Sƒ‰ƒ“ƒN
+ID3D11ShaderResourceView* g_score_rank_C_stamp_Texture = NULL;	//Cƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_B_stamp_Texture = NULL;	//Bƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_A_stamp_Texture = NULL;	//Aƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_S_stamp_Texture = NULL;	//Sƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_C_Texture = NULL;	//Cƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_B_Texture = NULL;	//Cƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_A_Texture = NULL;	//Cƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
+ID3D11ShaderResourceView* g_score_rank_S_Texture = NULL;	//Cƒ‰ƒ“ƒNiƒXƒ^ƒ“ƒvj
 
 //ƒXƒRƒAƒ‰ƒ“ƒN‚Ì•`‰æƒTƒCƒY
-#define RANK_SIZE (110)
+#define RANK_SIZE (150)
 #define TOTAL_RANK_SIZE (200)
 
 void ResulttScene::Initialize()
 {
 	//ƒŠƒUƒ‹ƒg‰æ–Ê‚Ì”wŒiƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
 	g_result_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_result.png");
-	
 
-	//ƒXƒRƒAƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
-	g_score_rank_C_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_c.png");
-	g_score_rank_B_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_b.png");
-	g_score_rank_A_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_a.png");
-	g_score_rank_S_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_s.png");
+    //ƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+    g_score_rank_C_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_c.png");
+    g_score_rank_B_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_b.png");
+    g_score_rank_A_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_a.png");
+    g_score_rank_S_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_s.png");
+	//ƒg[ƒ^ƒ‹ƒ‰ƒ“ƒN‚ÌƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İiƒXƒ^ƒ“ƒvj
+	g_score_rank_C_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_c.png");
+	g_score_rank_B_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_b.png");
+	g_score_rank_A_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_a.png");
+	g_score_rank_S_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_s.png");
+
 }
 
 void ResulttScene::Update()
@@ -126,17 +135,17 @@ void ResulttScene::Update()
     //ƒg[ƒ^ƒ‹‚ÌƒXƒRƒAƒ|ƒCƒ“ƒg‚É‰‚¶‚Äƒ‰ƒ“ƒN‚ğİ’è
     if (total_score_points >= 300)
     { //300ˆÈã‚È‚çSƒ‰ƒ“ƒN
-        total_score_texture = g_score_rank_S_Texture;
+        total_score_texture = g_score_rank_S_stamp_Texture;
     }
     else if (total_score_points >= 250)
     { //250ˆÈã‚È‚çAƒ‰ƒ“ƒN
-        total_score_texture = g_score_rank_A_Texture;
+        total_score_texture = g_score_rank_A_stamp_Texture;
     }
     else if (total_score_points >= 200)
     { //200ˆÈã‚È‚çBƒ‰ƒ“ƒN
-        total_score_texture = g_score_rank_B_Texture;
+        total_score_texture = g_score_rank_B_stamp_Texture;
     } else { //200ˆÈ‰º‚È‚çCƒ‰ƒ“ƒN
-        total_score_texture = g_score_rank_C_Texture;
+        total_score_texture = g_score_rank_C_stamp_Texture;
     }
 
     if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
@@ -198,7 +207,7 @@ void ResulttScene::Draw()
 
     if (clear_time_score_texture != NULL) {
         DrawSpriteOld(
-			XMFLOAT2(600, 320), //ˆê’Uƒ}ƒWƒbƒNƒiƒ“ƒo[‚ÅŠÇ—BŒã‚Å•Ï‚¦‚é
+			XMFLOAT2(600, 330), //ˆê’Uƒ}ƒWƒbƒNƒiƒ“ƒo[‚ÅŠÇ—BŒã‚Å•Ï‚¦‚é
 			0.0f,
 			XMFLOAT2(RANK_SIZE, RANK_SIZE)
 		);
