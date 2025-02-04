@@ -30,7 +30,7 @@
 #include"1_1_boss_pillar.h"
 #include"geyser.h"
 #include"1_1_boss_carry_object_enemy_spawner.h"
-#include"Chage_Enemy_Filter_and_Body.h"
+#include"Change_Enemy_Filter_and_Body.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {

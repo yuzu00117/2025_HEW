@@ -37,7 +37,7 @@
 #include<vector>
 #include"gokai.h"
 #include"blown_away_effect.h"
-#include"Chage_Enemy_Filter_and_Body.h"
+#include"Change_Enemy_Filter_and_Body.h"
 
 class MyContactListener : public b2ContactListener {
 private:

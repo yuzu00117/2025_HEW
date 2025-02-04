@@ -8,7 +8,7 @@
 //          
 //----------------------------------------------------------------------------------------------------
 
-#include"Chage_Enemy_Filter_and_Body.h"
+#include"Change_Enemy_Filter_and_Body.h"
 #include"texture.h"
 #include"sprite.h"
 #include"world_box2d.h"
