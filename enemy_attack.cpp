@@ -68,20 +68,20 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 	data->id = id;
 	SetID(id);
 
-	Initialize();
+	//Initialize();
 }
 
 void EnemyAttack::Initialize()
 {
-	if (g_EnemyAttack_Texture == NULL)
-	{
-		g_EnemyAttack_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_attack.png");//エネミーのセンサーのテクスチャ
-	}
+	//if (g_EnemyAttack_Texture == NULL)
+	//{
+	//	g_EnemyAttack_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_attack.png");//エネミーのセンサーのテクスチャ
+	//}
 }
 
 void EnemyAttack::Finalize()
 {
-	UnInitTexture(g_EnemyAttack_Texture);
+	//UnInitTexture(g_EnemyAttack_Texture);
 
 	//ワールドに登録したbodyの削除
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -99,7 +99,7 @@ void EnemyAttack::Update()
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 		world->DestroyBody(GetBody());
 		SetBody(nullptr);
-		//オブジェクトマネージャー内のエネミー削除
+		//オブジェクトマネージャー内の攻撃削除
 		ObjectManager& object_manager = ObjectManager::GetInstance();
 		object_manager.DestroyEnemyAttack(GetID());
 		return;
@@ -114,7 +114,7 @@ void EnemyAttack::Update()
 		world->DestroyBody(GetBody());
 		SetBody(nullptr);
 
-		//オブジェクトマネージャー内のエネミー削除
+		//オブジェクトマネージャー内の攻撃削除
 		ObjectManager& object_manager = ObjectManager::GetInstance();
 		object_manager.DestroyEnemyAttack(GetID());
 	}
@@ -122,31 +122,31 @@ void EnemyAttack::Update()
 
 void EnemyAttack::Draw()
 {
-	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	float scale = SCREEN_SCALE;
+	//// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	//float scale = SCREEN_SCALE;
 
-	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
+	//// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	//b2Vec2 screen_center;
+	//screen_center.x = SCREEN_CENTER_X;
+	//screen_center.y = SCREEN_CENTER_Y;
 
-	b2Vec2 position = GetBody()->GetPosition();
+	//b2Vec2 position = GetBody()->GetPosition();
 
-	// プレイヤー位置を考慮してスクロール補正を加える
-	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	//// プレイヤー位置を考慮してスクロール補正を加える
+	////取得したbodyのポジションに対してBox2dスケールの補正を加える
+	//float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+	//float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	//貼るテクスチャを指定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyAttack_Texture);
+	////貼るテクスチャを指定
+	//GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyAttack_Texture);
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ GetSize().x * scale , GetSize().y * scale }
-	);
+	////draw
+	//DrawSprite(
+	//	{ draw_x,
+	//	  draw_y },
+	//	GetBody()->GetAngle(),
+	//	{ GetSize().x * scale , GetSize().y * scale }
+	//);
 }
 
 //攻撃がプレイヤーに触れた時の処理

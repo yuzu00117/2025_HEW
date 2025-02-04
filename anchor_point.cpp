@@ -16,6 +16,7 @@
 #include"player.h"
 #include"player_position.h"
 #include"anchor_spirit.h"
+#include <chrono>
 
 #define MAX_ANCHOR_POINT_IN_SENSOR (40)//センサー内に存在できる最大のアンカーポイントの数
 
@@ -24,6 +25,8 @@ b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR];//アンカーポイントのボデ
 
 b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 
+std::chrono::steady_clock::time_point lastChangeTime = std::chrono::steady_clock::now();
+const std::chrono::duration<float> changeCooldown(0.5f);
 
 
 //センサーの画像
@@ -298,11 +301,19 @@ void AnchorPoint::Finalize()
 		}
 	}
 
-	//テクスチャの解放
-	UnInitTexture(g_anchor_point_target_lev1_Texture);
-	UnInitTexture(g_anchor_point_target_lev2_Texture);
-	UnInitTexture(g_anchor_point_target_lev3_Texture);
-	UnInitTexture(g_anchor_point_target_Texture);
+	if (g_anchor_point_target_lev1_Texture != NULL)
+	{
+		//テクスチャの解放
+		UnInitTexture(g_anchor_point_target_lev1_Texture);
+		UnInitTexture(g_anchor_point_target_lev2_Texture);
+		UnInitTexture(g_anchor_point_target_lev3_Texture);
+		UnInitTexture(g_anchor_point_target_Texture);
+
+		g_anchor_point_target_lev1_Texture = NULL;
+		g_anchor_point_target_lev2_Texture = NULL;
+		g_anchor_point_target_lev3_Texture = NULL;
+		g_anchor_point_target_Texture = NULL;
+	}
 }
 
 void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
@@ -323,6 +334,10 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 	// スティック方向のベクトル
 	b2Vec2 stick = { stick_x, -stick_y }; // Box2D の Y 軸方向に対応
 	stick.Normalize(); // 正規化して単位ベクトルにする
+
+	// 一度基準点を変更したら0.5秒間変更できないようにする
+	auto now = std::chrono::steady_clock::now();
+	if (now - lastChangeTime < changeCooldown) return;
 
 	b2Vec2 currentPosition = g_select_anchor_point_body->GetPosition();//基準点の値をいれる
 
@@ -360,9 +375,9 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 		}
 	}
 
-	// 最も近いアンカーポイントを選択
 	if (closestBody != nullptr) {
-		g_select_anchor_point_body = closestBody;//基準点を変更
+		g_select_anchor_point_body = closestBody;
+		lastChangeTime = std::chrono::steady_clock::now(); // 基準点変更時間を更新
 	}
 }
 

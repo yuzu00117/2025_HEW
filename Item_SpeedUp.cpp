@@ -175,9 +175,12 @@ void ItemSpeedUp::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
-    if (g_Texture != nullptr)
+   
+
+    if (g_Texture != NULL)
     {
         UnInitTexture(g_Texture);
+        g_Texture = NULL;
     }
 }
 

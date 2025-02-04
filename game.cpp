@@ -31,6 +31,9 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"player_UI.h"
+#include"impact_effect.h"
+#include"gokai.h"
+#include"blown_away_effect.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -66,6 +69,12 @@ void Game::Initialize()
 
     //背景の初期化
     Bg::Initialize();
+    //衝撃エフェクト
+    InitImpactEffect();
+    //撃墜演出エフェクト
+    InitBlownAwayEffect();
+
+    Gokai_UI::Initialize();
 
 
 
@@ -107,11 +116,21 @@ void Game::Finalize(void)
 	//ボスの終了処理
     boss.Finalize();
 
+    //衝突時のエフェクトの終了処理
+    FinalizeImpactEffects();
+
     //文字（絵）
     FinalizeWord();
 
+    Gokai_UI::Finalize();
+
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
+
+    //衝突時のエフェクトを
+    FinalizeImpactEffects();
+    //撃墜演出エフェクト
+    FinalizeBlownAwayEffects();
 
 
 #ifdef _DEBUG
@@ -146,6 +165,9 @@ void Game::Update(void)
             PlayerLife::Update();
             //プレイヤーUIの更新処理
             player_UI::Update();
+
+            
+
             //プレイヤーの更新処理
             player.Update();
 
@@ -163,6 +185,15 @@ void Game::Update(void)
 
             //ボスの更新処理
             boss.Update();
+
+
+
+
+            //衝突エフェクトの描画処理
+            UpdateImpactEffects();
+
+            //撃墜演出エフェクト
+            UpdateBlownAwayEffects();
 
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
@@ -238,8 +269,7 @@ void Game::Draw(void)
     //2D描画なので深度無効
     SetDepthEnable(false);
 
-    //プレイヤーの描画処理
-    player.Draw();
+ 
 
 
     //ボスの描画処理
@@ -248,19 +278,30 @@ void Game::Draw(void)
     //フィールドの描画処理
     Field::Draw();
 
+   
 
+    //プレイヤーの描画処理
+    player.Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
 
 
+    //衝突時のエフェクト
+    DrawImpactEffects(1.0f);
+    DrawBlownAwayEffects(1.0f);
 
 
+  
+
+
+
+    Bg::FrontDraw();
 
 
 	
-
+ 
 
 
 	//�c�@�̕`�揈��
@@ -269,6 +310,8 @@ void Game::Draw(void)
 
 
 	player_UI::Draw();
+
+    Gokai_UI::Draw();
 
   //体力ソウルゲージUIの描画処理
 	stamina_spirit_gauge.Draw();
@@ -312,3 +355,5 @@ void Game::Teleport_player(b2Vec2 position)
     player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
 
 }
+
+

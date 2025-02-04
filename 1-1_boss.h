@@ -13,6 +13,8 @@
 #include"include/box2d/box2d.h"
 
 
+#define BOSS_SIZE_SCALE (1.5)
+#define ENEMY_GOLEM_SOULGAGE (100)
 
 enum boss_state
 {
@@ -240,6 +242,18 @@ public:
 	{
 		CoreDeleteFlag = flag;
 	}
+	
+	// ボス戦の経過時間を設定
+    void SetBossElapsedTime(float time) 
+    {
+        elapsed_time = time;
+    }
+
+    // ボス戦の経過時間を取得
+    float GetBossElapsedTime() const
+    {
+        return elapsed_time;
+    }
 
 	
 
@@ -250,7 +264,7 @@ private:
 
 	int boss_hp=3;		   //bossのHP
 
-	int boss_field_level=1;//ボスの床の崩壊を管理する関数
+	int boss_field_level=0;//ボスの床の崩壊を管理する関数
 
 
 	b2Body* m_body;//ボスのボディ
@@ -277,7 +291,7 @@ private:
 	bool destroy_mini_golem_flag=false;
 
 	
-
+	int debug_flag = 0;
 
 
 	float sheet_cnt;//シートの管理で使っている
@@ -291,6 +305,9 @@ private:
 
 
 	boss_state now_boss_state;//ボスのステート管理
+
+	bool time_count_flag = false;//時間をカウントするかのフラグ
+	float elapsed_time = 0;//経過時間
 
 	//-------------------------------------------------------------------------------------------
 	//クールタイムの管理
@@ -341,7 +358,9 @@ private:
 
 	bool Shock_Wave_Fly_flag=false;
 	static constexpr int Shock_Wave_time_Frame = 180;
-	int Now_Shock_Wave_time_Frame = 0;
+	int Now_Shock_Wave_time_Frame = 0;//ショックウェーブの現在の管理
+	bool ShockWaveLeftFlag = true;
+
 
 
 	//-------------------------------------------------------------------------------------------
@@ -376,9 +395,9 @@ private:
 
 	//-------------------------------------------------------------------------------------------
 	//怯みのモーションの最大フレーム
-	static constexpr int Max_Panic_Sheet = 49;
+	static constexpr int Max_Panic_Sheet = 255;
 
-	static constexpr int Max_Panic_Stun_Frame = 600;//今は１０秒
+	static constexpr int Max_Panic_Stun_Frame = 255;//やく５秒間
 	//-------------------------------------------------------------------------------------------
 
 	//-------------------------------------------------------------------------------------------

@@ -50,6 +50,8 @@ public:
 	void Draw();
 	void Finalize();
 
+	void DrawEffect();
+
 private:
 	// 各インスタンス固有の ID
 	int m_ID;
@@ -65,6 +67,17 @@ private:
 
 	//消す予定なのかどうか
 	bool	m_destory = false;
+
+	//スプライトシートのカウントに使ってる
+	int coin_effect_sheet_cnt = 0;
+
+
+	//コインの発生条件に使っている
+	int coin_effect_start_cnt = 0;
+
+
+	b2Vec2 coin_effect_pos;
+
 
 };
 

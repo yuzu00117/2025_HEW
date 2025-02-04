@@ -20,6 +20,7 @@
 #include"tool.h"
 #include"display.h"
 #include"world_box2d.h"
+#include<vector>
 
 
 enum player_draw_state
@@ -32,6 +33,17 @@ enum player_draw_state
 	player_walk_state,
 	player_normal_attack_state,
 
+};
+
+
+// **土煙のデータを管理**
+struct DustEffect {
+	b2Vec2 pos;   // 土煙の発生位置
+	int lifeTime; // 残りフレーム数（30フレームで消滅）
+
+	
+
+	DustEffect(b2Vec2 position) : pos(position), lifeTime(30){}
 };
 
 class Player
@@ -77,6 +89,26 @@ public:
 
 
 	static b2Body* GetOutSidePlayerBody();
+
+
+
+	void DrawAnchorLevel3Frame(void);
+
+	//土煙の描画
+
+	 // 土煙の寿命を減らし、30フレーム経過したものを削除**
+	void UpdateDustEffect();
+
+	// **プレイヤーが走った際に土煙を記録
+	void CreateDustEffect(b2Vec2 playerPos);
+
+	void DrawDustEffect();
+
+
+	void StartAnchorEffect();
+
+	void DrawAnchorEffect();
+
 
 	//描画用にサイズを持たせておく
 	b2Vec2 GetSize() const 
@@ -196,6 +228,9 @@ private:
 
 	int player_alpha = 3.0f;
 
+
+	 b2Vec2 Walk_effect_size = b2Vec2{ 1.0f,1.0f };
+
 	//レベルに応じたセンサーの大きさを記述したもの	displayの変更に伴って　センサーのサイズも自動で変わるようにした
 	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40*calculateScale(DISPLAY_RANGE_TO_SCALE), 34 * calculateScale(DISPLAY_RANGE_TO_SCALE));
 	b2Vec2 Sensor_size_Lev3 = b2Vec2(60*calculateScale(DISPLAY_RANGE_TO_SCALE), 51* calculateScale(DISPLAY_RANGE_TO_SCALE));
@@ -203,6 +238,21 @@ private:
 	//センサーの管理に使う
 	bool sensor_flag;
 	int old_anchor_Lev;
+
+
+	float Anchor_level3_Frame_Sheet_cnt = 0;
+
+	int Anchor_Effect_Type = 0;
+
+	int Max_Anchor_effect_sheet = 0;
+
+	float Anchor_effect_sheet = 0;
+
+
+	// **土煙エフェクトのリスト**
+	std::vector<DustEffect> dustEffects;
+
+	int dustFrameCnt;
 };
 
 #endif // !PLAYER_H

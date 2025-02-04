@@ -80,6 +80,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 	BossRoomLevel = level;
 
+	
 
 
 }
@@ -195,5 +196,9 @@ void boss_field_block::Draw()
 
 void boss_field_block::Finalize()
 {
-	UnInitTexture(g_Texture);
+	if (g_Texture != NULL)
+	{
+		UnInitTexture(g_Texture);
+		g_Texture = NULL;
+	}
 }
