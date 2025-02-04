@@ -45,6 +45,23 @@ ID3D11ShaderResourceView* g_player_walk_effect = NULL;
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
 
+//レベル３で
+ID3D11ShaderResourceView* g_anachor_level_3_Frame1_Texture = NULL;
+ID3D11ShaderResourceView* g_anachor_level_3_Frame2_Texture = NULL;
+
+static ID3D11ShaderResourceView* g_Anchor_Effect_S1 =   NULL;//アンカーのエフェクト
+static ID3D11ShaderResourceView* g_Anchor_Effect_S2=    NULL;//アンカーのエフェクト
+static ID3D11ShaderResourceView* g_Anchor_Effect_S3 =   NULL;//アンカーのエフェクト
+
+static ID3D11ShaderResourceView* g_Anchor_Effect_M1 = NULL;//アンカーのエフェクト
+static ID3D11ShaderResourceView* g_Anchor_Effect_M2 = NULL;//アンカーのエフェクト
+static ID3D11ShaderResourceView* g_Anchor_Effect_M3 = NULL;//アンカーのエフェクト
+
+
+static ID3D11ShaderResourceView* g_Anchor_Effect_L1 = NULL;//アンカーのエフェクト
+static ID3D11ShaderResourceView* g_Anchor_Effect_L2 = NULL;//アンカーのエフェクト
+static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//アンカーのエフェクト
+
 //staticメンバー変数の初期化
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
@@ -101,6 +118,23 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         g_player_walk_effect = InitTexture(L"asset\\texture\\player_texture\\player_walk_effect.png");
 
+
+        g_anachor_level_3_Frame1_Texture = InitTexture(L"asset\\texture\\anchor_point\\soul_frame1.png");
+
+        g_anachor_level_3_Frame2_Texture = InitTexture(L"asset\\texture\\anchor_point\\soul_frame2.png");
+
+        g_Anchor_Effect_S1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_1_3_2.png");
+        g_Anchor_Effect_S2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_2_3_2.png");
+        g_Anchor_Effect_S3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_3_4_2.png");
+
+
+        g_Anchor_Effect_M1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_M_1_5_2.png");
+        g_Anchor_Effect_M2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_M_2_5_2.png");
+        g_Anchor_Effect_M3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_M_3_4_2.png");
+
+        g_Anchor_Effect_L1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_1_4_2.png");
+        g_Anchor_Effect_L2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_2_5_2.png");
+        g_Anchor_Effect_L3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_3_5_2.png");
     }
 
 
@@ -524,8 +558,17 @@ void Player::Update()
         
         app_atomex_start(Anchor_Thorw_Sound);
         Anchor::SetAnchorState(Throwing_state);
+
+        if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition().x < m_body->GetPosition().x)
+        {
+            m_direction = 0;
+        }
+        else
+        {
+            m_direction = 1;
+        }
     
-   
+        StartAnchorEffect();
         break;
 
     case Throwing_state://錨が飛んでいる状態
@@ -790,11 +833,234 @@ void Player::Player_sensor_size_change(int anchor_level)
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
             SetSensorSize(GetSensorSizeLev3());
             sensor_flag = true;
+            Anchor_level3_Frame_Sheet_cnt = 0;
         }
     }
 }
 
+void Player::StartAnchorEffect()
+{
+    int rand=GetRandomInt(1, 3);
 
+    int anchorlevel=AnchorSpirit::GetAnchorLevel();
+
+    Anchor_effect_sheet = 0;
+    switch (anchorlevel)
+    {
+    //アンカーレベル１
+    case 1:
+        switch (rand)
+        {
+        case 1:
+            Anchor_Effect_Type = 1;
+            Max_Anchor_effect_sheet = 6;
+
+            break;
+        case 2:
+            Anchor_Effect_Type = 2;
+            Max_Anchor_effect_sheet = 6;
+            break;
+        case 3:
+            Anchor_Effect_Type = 3;
+            Max_Anchor_effect_sheet = 8;
+            break;
+            
+
+        default:
+            break;
+        }
+        break;
+    //アンカーレベル2
+    case 2:
+        switch (rand)
+        {
+        case 1:
+            Anchor_Effect_Type = 4;
+            Max_Anchor_effect_sheet = 10;
+
+            break;
+        case 2:
+            Anchor_Effect_Type = 5;
+            Max_Anchor_effect_sheet = 10;
+            break;
+        case 3:
+            Anchor_Effect_Type = 6;
+            Max_Anchor_effect_sheet = 8;
+            break;
+
+
+        default:
+            break;
+        }
+        break;
+    //アンカーレベル3
+    case 3:
+        switch (rand)
+        {
+        case 1:
+            Anchor_Effect_Type = 7;
+            Max_Anchor_effect_sheet = 8;
+
+            break;
+        case 2:
+            Anchor_Effect_Type = 8;
+            Max_Anchor_effect_sheet = 10;
+            break;
+        case 3:
+            Anchor_Effect_Type = 9;
+            Max_Anchor_effect_sheet = 10;
+            break;
+
+
+        default:
+            break;
+        }
+        break;
+
+    default:
+        break;
+    }
+}
+
+void Player::DrawAnchorEffect()
+{
+    if (Anchor_effect_sheet < Max_Anchor_effect_sheet)
+    {
+
+       
+        float scale = SCREEN_SCALE;
+
+        // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+        int player_scale_x = 3.0f;
+        int player_scale_y = 2.0f;
+
+        // コライダーの位置の取得（プレイヤーの位置）
+        b2Vec2 player_position;
+        player_position.x = m_body->GetPosition().x;
+        player_position.y = m_body->GetPosition().y;
+        switch (Anchor_Effect_Type)
+        {
+        case 1:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S1);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                3, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 2:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S2);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                3, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 3:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S3);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                4, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 4:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M1);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 5:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M2);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                4, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 6:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M3);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                4, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 7:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L1);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                4, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        case 8:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L2);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+
+        case 9:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L3);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
+                5, 2, Anchor_effect_sheet / 4, player_alpha, m_direction
+            );
+            break;
+        default:
+            break;
+        }
+
+
+        Anchor_effect_sheet+=0.5;
+    }
+}
 
 
 void Player::Draw()
@@ -1032,6 +1298,8 @@ void Player::Draw()
         DrawDustEffect();
       
 
+        DrawAnchorEffect();
+
         //----------------------------------------------------------------------------------------
         //センサー描画
 
@@ -1047,6 +1315,9 @@ void Player::Draw()
         );
         float size_sensor = GetSensorSize().x * scale;
         float size = GetSize().x * scale;
+
+
+        DrawAnchorLevel3Frame();
 
     }
 }
@@ -1154,3 +1425,38 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
     
 
 
+void Player::DrawAnchorLevel3Frame()
+{
+    if (AnchorSpirit::GetAnchorLevel() == 3)
+    {
+
+        if (Anchor_level3_Frame_Sheet_cnt < 50)
+        {
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame1_Texture);
+            DrawDividedSprite(
+                { SCREEN_WIDTH / 2,
+                 SCREEN_HEIGHT / 2 },
+                0,
+                { 1280 ,720 }
+                , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
+            );
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame2_Texture);
+            DrawDividedSprite(
+                { SCREEN_WIDTH / 2,
+                 SCREEN_HEIGHT / 2 },
+                0,
+                { 1280 ,720 }
+                , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
+            );
+
+            //フレームのカウントを加算
+            Anchor_level3_Frame_Sheet_cnt += 0.5;
+        }
+
+      
+    }
+ 
+}

@@ -102,6 +102,10 @@ void	ItemCoin::Update()
 {
     if (m_destory && m_body != nullptr)
     {
+
+        coin_effect_sheet_cnt = 1;
+        coin_effect_pos = m_body->GetPosition();
+
         //ボディの情報を消す
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
@@ -110,6 +114,8 @@ void	ItemCoin::Update()
         Item_Coin_UI::SetDrawCount(180);
         Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetNowCoinCount()+1);
         app_atomex_start(Object_Get_Coin_Sound);
+
+
     }
 }
 
@@ -167,17 +173,19 @@ void ItemCoin::Draw()
 
         if (60 < coin_effect_start_cnt)
         {
-            //エフェクトの呼び出し
-            DrawEffect();
+          
         }
 
         coin_effect_start_cnt++;
     }
+    //エフェクトの呼び出し
+    DrawEffect();
 }
 
 void ItemCoin::DrawEffect()
 {
-    if (m_body != nullptr)
+  
+    if (coin_effect_sheet_cnt!=0)
     {
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_coin_effect);
@@ -191,27 +199,26 @@ void ItemCoin::DrawEffect()
 
 
         // コライダーの位置の取得（アイテムーの位置）
-        b2Vec2 position;
-        position.x = m_body->GetPosition().x;
-        position.y = m_body->GetPosition().y;
+
+
 
 
         // プレイヤー位置を考慮してスクロール補正を加える
         //取得したbodyのポジションに対してBox2dスケールの補正を加える
-        float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-        float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+        float draw_x = ((coin_effect_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((coin_effect_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
         //描画
         DrawSplittingSprite(
             { draw_x,
              draw_y },
-            m_body->GetAngle(),
+            0.0,
             { GetSize().x * scale * 1.5f,GetSize().y * scale * 1.5f },
             4, 3,
-            coin_effect_sheet_cnt/4,
+            coin_effect_sheet_cnt / 4,
             3.0
-            );
+        );
 
 
         coin_effect_sheet_cnt++;
@@ -222,8 +229,9 @@ void ItemCoin::DrawEffect()
             coin_effect_start_cnt = 0;
         }
 
-       
     }
+       
+    
 
 }
 

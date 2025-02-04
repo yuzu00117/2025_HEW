@@ -269,8 +269,7 @@ void Game::Draw(void)
     //2D描画なので深度無効
     SetDepthEnable(false);
 
-    //プレイヤーの描画処理
-    player.Draw();
+ 
 
 
     //ボスの描画処理
@@ -279,19 +278,26 @@ void Game::Draw(void)
     //フィールドの描画処理
     Field::Draw();
 
+   
 
+    //プレイヤーの描画処理
+    player.Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
-    //衝突時のエフェクト
-    DrawImpactEffects(1.0f); 
 
+
+    //衝突時のエフェクト
+    DrawImpactEffects(1.0f);
     DrawBlownAwayEffects(1.0f);
 
 
+  
 
 
+
+    Bg::FrontDraw();
 
 
 	

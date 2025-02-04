@@ -24,6 +24,8 @@ public:
 	static void Draw();
 	static void Finalize();
 
+	static void FrontDraw();
+
 	XMFLOAT2 GetPosition()
 	{
 		return m_bg_position;
@@ -37,10 +39,7 @@ private:
 	XMFLOAT2 m_bg_position;
 
 
-	XMFLOAT2 texture_1_pos[4];
-	XMFLOAT2 texture_2_pos[4];
-	XMFLOAT2 texture_3_pos[4];
-	XMFLOAT2 texture_4_pos[4];
+	XMFLOAT2 texture_pos[5][4]; // 5レイヤー×4テクスチャ
 	XMFLOAT2 texture_5_pos[4];
 };
 

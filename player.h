@@ -91,6 +91,9 @@ public:
 	static b2Body* GetOutSidePlayerBody();
 
 
+
+	void DrawAnchorLevel3Frame(void);
+
 	//土煙の描画
 
 	 // 土煙の寿命を減らし、30フレーム経過したものを削除**
@@ -100,6 +103,11 @@ public:
 	void CreateDustEffect(b2Vec2 playerPos);
 
 	void DrawDustEffect();
+
+
+	void StartAnchorEffect();
+
+	void DrawAnchorEffect();
 
 
 	//描画用にサイズを持たせておく
@@ -232,7 +240,13 @@ private:
 	int old_anchor_Lev;
 
 
+	float Anchor_level3_Frame_Sheet_cnt = 0;
 
+	int Anchor_Effect_Type = 0;
+
+	int Max_Anchor_effect_sheet = 0;
+
+	float Anchor_effect_sheet = 0;
 
 
 	// **土煙エフェクトのリスト**
