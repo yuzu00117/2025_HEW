@@ -22,6 +22,7 @@
 #include"anchor_spirit.h"
 #include"Item_Manager.h"
 #include"create_filter.h"
+#include"object_manager.h"
 
 
 static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;		  //動的エネミーのテクスチャ
@@ -140,11 +141,22 @@ void EnemyDynamic::Initialize()
 
 void EnemyDynamic::Finalize()
 {
-	UnInitTexture(g_EnemyDynamic_Texture);
-	UnInitTexture(g_EnemyDynamic_Texture_Move);
-	UnInitTexture(g_EnemyDynamic_Texture_Attack);
-	UnInitTexture(g_EnemyDynamic_Texture_Destroyed);
-	UnInitTexture(g_EnemySensor_Texture);
+
+	if (g_EnemyDynamic_Texture != NULL)
+	{
+		UnInitTexture(g_EnemyDynamic_Texture);
+		UnInitTexture(g_EnemyDynamic_Texture_Move);
+		UnInitTexture(g_EnemyDynamic_Texture_Attack);
+		UnInitTexture(g_EnemyDynamic_Texture_Destroyed);
+		UnInitTexture(g_EnemySensor_Texture);
+
+		g_EnemyDynamic_Texture = NULL;
+		g_EnemyDynamic_Texture_Move = NULL;
+		g_EnemyDynamic_Texture_Attack = NULL;
+		g_EnemyDynamic_Texture_Destroyed = NULL;
+		g_EnemySensor_Texture = NULL;
+
+	}
 
 	//ワールドに登録したbodyの削除
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -184,6 +196,12 @@ void EnemyDynamic::Update()
 		ItemManager& item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
 
+
+
+		b2Vec2 now_positon = GetBody()->GetPosition();
+		b2Vec2 now_size = GetSize();
+		b2Vec2 now_vec = GetBody()->GetLinearVelocity();
+
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -199,6 +217,8 @@ void EnemyDynamic::Update()
 		}
 
 		object_manager.DestroyEnemyDynamic(GetID());
+
+		object_manager.AddChangeEnemyFilterAndBody(now_positon,b2Vec2(now_size.x*2,now_size.y*2),b2Vec2_zero, g_EnemyDynamic_Texture_Destroyed,4,4,now_vec);
 	}
 }
 
@@ -429,3 +449,4 @@ void EnemyDynamic::SetDirectionBasedOnPlayer()
 		SetDirection(true);
 	}
 }
+

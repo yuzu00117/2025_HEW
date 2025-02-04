@@ -104,7 +104,12 @@ void EnemyFloating::Finalize()
 	{
 		world->DestroyBody(GetBody());
 	}
-	UnInitTexture(g_EnemyFloating_Texture);
+
+	if (g_EnemyFloating_Texture != NULL)
+	{
+		UnInitTexture(g_EnemyFloating_Texture);
+		g_EnemyFloating_Texture = NULL;
+	}
 }
 
 void EnemyFloating::Update()

@@ -36,6 +36,8 @@
 #include"impact_effect.h"
 #include<vector>
 #include"gokai.h"
+#include"blown_away_effect.h"
+#include"Change_Enemy_Filter_and_Body.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -1194,12 +1196,14 @@ public:
         b2Fixture* fixtureB = contact->GetFixtureB();
         if (!fixtureA || !fixtureB) return; // NULLチェック
 
+        
 
         // それぞれのボディからユーザーデータを取得
           // ボディのユーザーデータを取得
         auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
         auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
         if (!objectA || !objectB)return;//NULLチェック
+
 
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
@@ -1474,6 +1478,47 @@ public:
             {
                 boss.SetPlayerisNearbyFlag(false);
             }
+        }
+
+
+
+        //------------------------------------------------------------------------------------------------------------------------
+        if ((objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_effect_sensor) ||
+            (objectA->collider_type == collider_effect_sensor && objectB->collider_type == collider_blown_away_enemy)||
+            (objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_player_sensor) ||
+            (objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_blown_away_enemy))
+        {
+          
+
+            change_enemy_filter_and_body* body_instance;
+            // 速度ベクトルを取得
+            b2Vec2 velocity;
+            b2Vec2 effect_pos;
+            if (objectA->collider_type == collider_blown_away_enemy)
+            {
+                body_instance = object_manager.FindChangeEnemyFilterAndBody(objectA->id);
+                effect_pos=fixtureA->GetBody()->GetPosition();
+                velocity = fixtureA->GetBody()->GetLinearVelocity();
+            }
+            else
+            {
+                body_instance = object_manager.FindChangeEnemyFilterAndBody(objectB->id);
+                effect_pos = fixtureB->GetBody()->GetPosition();
+                velocity = fixtureB->GetBody()->GetLinearVelocity();
+            }
+
+            body_instance->SetDestoryFlag(true);
+
+            // 速度ベクトルから角度（ラジアン）を求める
+            float angle_rad = atan2(velocity.y, velocity.x);
+            // 90度補正（Y軸基準にする場合）
+            angle_rad -= M_PI / 2;
+
+
+            int  rand = GetRandomInt(1, 3);
+
+            // エフェクトリストに追加
+            blown_away_Effects.emplace_back(Blown_Away_Effect(effect_pos, angle_rad, 2, rand));
         }
     }
 

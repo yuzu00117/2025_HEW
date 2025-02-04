@@ -255,7 +255,13 @@ void movable_ground::Finalize()
 	world->DestroyBody(AnchorPoint_body);
 
 	//テクスチャの解放
-	UnInitTexture(g_Ground_Texture);
+
+	if (g_Ground_Texture != NULL)
+	{
+		UnInitTexture(g_Ground_Texture);
+		g_Ground_Texture = NULL;
+
+	}
 
 
 }

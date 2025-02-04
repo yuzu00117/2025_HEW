@@ -22,6 +22,7 @@
 #include"anchor.h"
 #include"camera_shake.h"
 #include"hit_stop.h"
+#include"Item_Spirit.h"
 
 
 // �g�p����e�N�X�`���t�@�C�����i�[
@@ -84,6 +85,9 @@ Boss_1_1::~Boss_1_1()
 
 void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 {
+	//ボディのサイズ
+	bodysize.x=bodysize.x* BOSS_SIZE_SCALE;
+	bodysize.y=bodysize.y * BOSS_SIZE_SCALE;
 
 	if (g_mini_boss_create_sheet1_Texture == NULL)
 	{
@@ -221,7 +225,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
 
-
+	boss_field_level = 1;
 }
 
 void Boss_1_1::Update()
@@ -307,7 +311,7 @@ void Boss_1_1::Update()
 
 
 
-			CreateBossCore(b2Vec2(2.0f, 2.0f));
+			CreateBossCore(b2Vec2(2.0f*BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE));
 
 			sheet_cnt += 0.5;
 
@@ -378,7 +382,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Shock_Wave_Start_Frame)
 			{
-				CreateShockWave(b2Vec2(5.0f, 6.0f), left_flag);
+				CreateShockWave(b2Vec2(5.0f * BOSS_SIZE_SCALE, 6.0f * BOSS_SIZE_SCALE), left_flag);
 				Shock_Wave_Fly_flag = true;
 
 				//�G�t�F�N�g�X�^�[�g
@@ -403,7 +407,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
-				CreateMiniGolem(b2Vec2(3.0f, 2.0f), left_flag);//�摜�����ɋ󔒂����邽�߁@���������L�΂��@���ۂ̔��a�ŎQ�Ƃ��Ă���̂͂���
+				CreateMiniGolem(b2Vec2(3.0f * BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE), left_flag);//�摜�����ɋ󔒂����邽�߁@���������L�΂��@���ۂ̔��a�ŎQ�Ƃ��Ă���̂͂���
 
 
 			}
@@ -430,7 +434,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_Start_Frame)
 			{
-				CreateChargeAttack(b2Vec2(4.0f, 4.0f), left_flag);
+				CreateChargeAttack(b2Vec2(4.0f * BOSS_SIZE_SCALE, 4.0f * BOSS_SIZE_SCALE), left_flag);
 				//�G�t�F�N�g�X�^�[�g
 				charge_attack_effect_sheet_cnt = 1;
 			}
@@ -985,6 +989,10 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 
 		b2Body* m_mini_golem_body = destroy_mini_golem_body;
 
+		//ソウルを落とす
+		ItemManager& item_manager = ItemManager::GetInstance();
+		item_manager.AddSpirit(m_mini_golem_body->GetPosition(), { 1.0f,2.0f }, 0.0f, ENEMY_GOLEM_SOULGAGE);
+
 
 		//�쐬�G�t�F�N�g�p�̊Ǘ�
 		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();
@@ -1033,7 +1041,7 @@ void Boss_1_1::Draw()
 
 		//�����̕\��
 		DrawBossDebug();
-		/*	debugDraw();*/
+		/*debugDraw();*/
 
 		float scale = SCREEN_SCALE;
 

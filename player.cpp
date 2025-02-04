@@ -249,6 +249,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         fixture_sensor.friction = 0.0f;//摩擦
         fixture_sensor.restitution = 0.0f;//反発係数
         fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+        fixture_sensor.filter = createFilterExclude("player_sensor_filter", {});
 
 
 
@@ -260,6 +261,48 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
        // プレーヤーにユーザーデータを登録
         ObjectData* player_sensor_data = new ObjectData{ collider_player_sensor };
         player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
+
+        //---------------------------------------------------------------------------------------------------------------------------
+
+        //エフェクト用のセンサー　撃墜演出のね
+        float sencor_x_Scale=0.6;
+
+        float sensor_y_Scale_over = 0.8;
+        float sencor_y_Scale_under =0.4;
+
+        b2PolygonShape effect_sensor;
+
+
+        b2Vec2 effect_vertices[4] = { b2Vec2(0.0f,0.0f) };
+
+        // 反時計回りで頂点を設定
+        effect_vertices[0].Set(-size_sensor.x / 2* sencor_x_Scale, size_sensor.y / 2 / 3 * sencor_y_Scale_under);  // 左下
+        effect_vertices[1].Set(size_sensor.x / 2 * sencor_x_Scale, size_sensor.y / 2 / 3 * sencor_y_Scale_under);   // 右下
+        effect_vertices[2].Set(size_sensor.x / 2 * sencor_x_Scale, -size_sensor.y / 2 * sensor_y_Scale_over);    // 右上
+        effect_vertices[3].Set(-size_sensor.x / 2 * sencor_x_Scale, -size_sensor.y / 2 * sensor_y_Scale_over);   // 左上
+
+
+        effect_sensor.Set(effect_vertices, 4);
+
+
+
+        b2FixtureDef effect_fixture_sensor;
+        effect_fixture_sensor.shape = &effect_sensor;
+        effect_fixture_sensor.density = 0.0f;//密度
+        effect_fixture_sensor.friction = 0.0f;//摩擦
+        effect_fixture_sensor.restitution = 0.0f;//反発係数
+        effect_fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+        effect_fixture_sensor.filter = createFilterExclude("player_sensor_filter", {});
+
+
+        b2Fixture* effect_player_sensor_fixture = m_body->CreateFixture(&effect_fixture_sensor);
+
+
+        // カスタムデータを作成して設定
+       // プレイヤーに値を登録
+       // プレーヤーにユーザーデータを登録
+        ObjectData* effect_player_sensor_data = new ObjectData{ collider_effect_sensor };
+        effect_player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(effect_player_sensor_data);
 
         //---------------------------------------------------------------------------------------------------
 
@@ -1347,6 +1390,45 @@ void Player::Finalize()
     if (g_player_Texture != nullptr)
     {
         UnInitTexture(g_player_Texture);
+        UnInitTexture(g_player_jump_sheet);
+        UnInitTexture(g_player_throw_anchor_sheet);
+        UnInitTexture(g_player_walk_sheet);
+        UnInitTexture(g_player_normal_attack_sheet);
+        UnInitTexture(g_player_normal_attack_anchor_sheet);
+        UnInitTexture(g_player_damaged_sheet);
+        UnInitTexture(g_player_walk_effect);
+        UnInitTexture(g_player_sensor_Texture);
+        UnInitTexture(g_anachor_level_3_Frame1_Texture);
+        UnInitTexture(g_anachor_level_3_Frame2_Texture);
+        UnInitTexture(g_Anchor_Effect_S1);
+        UnInitTexture(g_Anchor_Effect_S2);
+        UnInitTexture(g_Anchor_Effect_S3);
+        UnInitTexture(g_Anchor_Effect_M1);
+        UnInitTexture(g_Anchor_Effect_M2);
+        UnInitTexture(g_Anchor_Effect_M3);
+        UnInitTexture(g_Anchor_Effect_L1);
+        UnInitTexture(g_Anchor_Effect_L2);
+        UnInitTexture(g_Anchor_Effect_L3);
+
+        g_player_Texture = NULL;
+        g_player_jump_sheet = NULL;
+        g_player_throw_anchor_sheet = NULL;
+        g_player_walk_sheet = NULL;
+        g_player_normal_attack_sheet = NULL;
+        g_player_normal_attack_anchor_sheet = NULL;
+        g_player_damaged_sheet = NULL;
+        g_player_sensor_Texture = NULL;
+        g_anachor_level_3_Frame1_Texture = NULL;
+        g_anachor_level_3_Frame2_Texture = NULL;
+        g_Anchor_Effect_S1 = NULL;
+        g_Anchor_Effect_S2 = NULL;
+        g_Anchor_Effect_S3 = NULL;
+        g_Anchor_Effect_M1 = NULL;
+        g_Anchor_Effect_M2 = NULL;
+        g_Anchor_Effect_M3 = NULL;
+        g_Anchor_Effect_L1 = NULL;
+        g_Anchor_Effect_L2 = NULL;
+        g_Anchor_Effect_L3 = NULL;
     }
 
 }
