@@ -13,6 +13,8 @@
 #include "texture.h"
 #include "sprite.h"
 #include "player_position.h"
+#include "anchor_spirit.h"
+#include "player_stamina.h"
 
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
@@ -84,7 +86,7 @@ ItemSavePoint::ItemSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, boo
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
 
-    data->Item_name = ITEM_COIN;
+    data->Item_name = ITEM_SAVEPOINT;
     int ID = data->GenerateID();
     data->id = ID;
     SetID(ID);
@@ -99,7 +101,22 @@ void	ItemSavePoint::Update()
 
 void    ItemSavePoint::Function()
 {
+    int level = AnchorSpirit::GetAnchorLevel();
+    if (level < 2) {
 
+        float stamina = PlayerStamina::GetPlayerStaminaValue();
+        //体力がまだマックスじゃない
+        if (stamina < MAX_STAMINA)
+        {
+            PlayerStamina::EditPlayerStaminaValue(MAX_STAMINA - stamina);
+            AnchorSpirit::EditAnchorSpiritValue(100);
+        }
+        else
+        {
+            float spirit = AnchorSpirit::GetAnchorSpiritValue();
+            AnchorSpirit::EditAnchorSpiritValue(100 - spirit);
+        }
+    }
 }
 
 

@@ -37,6 +37,14 @@ public:
 	//描画サイズセット
 	void SetSize(b2Vec2 size) { m_size = size; }
 
+	bool	GetIfPlayerPassed() { return m_player_passed; }
+	void	SetPlayerPassed() { 
+		if (!m_player_passed) {
+			Function();
+		}
+		m_player_passed = true;
+	}
+
 	//セーブポイントに到達した時の処理
 	void	Function();
 
@@ -58,6 +66,9 @@ private:
 
 	//セーブポイントの透明度
 	float m_Alpha;
+
+	//プレイヤーが一回通過したか
+	bool m_player_passed = false;
 };
 
 #endif // !ITEM_SAVEPOINT_H
