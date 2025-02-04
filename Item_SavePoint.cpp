@@ -15,6 +15,7 @@
 #include "player_position.h"
 #include "anchor_spirit.h"
 #include "player_stamina.h"
+#include "sound.h"
 
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
@@ -117,6 +118,9 @@ void    ItemSavePoint::Function()
             AnchorSpirit::EditAnchorSpiritValue(100 - spirit);
         }
     }
+
+    app_atomex_start(Object_Get_Coin_Sound);
+
 }
 
 
