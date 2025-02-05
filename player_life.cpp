@@ -14,9 +14,11 @@
 #include "player_life.h"
 #include "player_stamina.h"
 
+#define PLAYER_LIFE (3) //プレイヤーの残機の初期値
 
 static ID3D11ShaderResourceView* g_life_Texture = NULL;//残機のテクスチャ
-float PlayerLife::m_life  = 9;//プレイヤーの残機
+
+float PlayerLife::m_life  = PLAYER_LIFE;//プレイヤーの残機
 
 
 
