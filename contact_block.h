@@ -1,10 +1,19 @@
+// #name　contact_block.cpp
+// #description 接触したらなにかのアクションを行う　今追加しているのは触れたら死亡する処理
+// #make 2025/02/06
+// #update 2025/02/06
+// #comment 追加・修正予定  接触に関してなにか追加があるのであればEnumがたに処理をたす
+//         
+//          
+//----------------------------------------------------------------------------------------------------
+
 #ifndef CONTACT_BLOCK_H
 #define CONTACT_BLOCK_H
 
 #include"include/box2d/box2d.h"
 
 
-
+//触れたら何をするのかの処理を
 enum Contact_Block_Type
 {
 	NULL_TYPE,		//なにもないやつ

@@ -279,7 +279,7 @@ void Field::Initialize()
 
 	
 
-			if (field_map[y][x] == 55) {//ボスの地面ブロック破壊できる
+			if (field_map[y][x] == 55) {//接触したら死ぬ
 				objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(195.f, 1.f), DEAD_BLOCK_TYPE,b2Vec2_zero);
 			}
 

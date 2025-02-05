@@ -1,8 +1,8 @@
-// #name　接触したら
-// #description 接触したら指定した場所に飛ぶブロック
-// #make 2024/01/02
-// #update 2024/01/02
-// #comment 追加・修正予定
+// #name　contact_block.cpp
+// #description 接触したらなにかのアクションを行う　今追加しているのは触れたら死亡する処理
+// #make 2025/02/06
+// #update 2025/02/06
+// #comment 追加・修正予定  接触に関してなにか追加があるのであればEnumがたに処理をたす
 //         
 //          
 //----------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@
 #include"player.h"
 
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//地面のテクスチャ
+static ID3D11ShaderResourceView* g_Texture = NULL;//センサーの
 
 //接触した時に様々な出来事を起こす
 contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type,b2Vec2 num)
