@@ -348,8 +348,7 @@ void Field::Draw()
 		}
 	}
 
-	itemManager.DrawAll();
-	objectManager.DrawAll();
+
 	
 
 

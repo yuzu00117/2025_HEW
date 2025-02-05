@@ -63,6 +63,9 @@ public:
 	// 全てのアイテムを描画
 	void DrawAll();
 
+	//全面の描画処理　エフェクトなど
+	void DrawFront();
+
 	// 全てのアイテムを破棄
 	void FinalizeAll();
 
