@@ -11,7 +11,7 @@ ID3D11ShaderResourceView* g_red_jewel_Texture = NULL;	//宝石　赤
 ID3D11ShaderResourceView* g_blue_jewel_Texture = NULL;	//宝石　青
 ID3D11ShaderResourceView* g_yellow_jewel_Texture = NULL;//宝石　黄
 
-ID3D11ShaderResourceView* g_soul_gage_background_Texture = NULL;//ソウルゲージの背景
+
 ID3D11ShaderResourceView* g_soul_gage_Texture = NULL;           //ソウルゲージのテクスチャ
 ID3D11ShaderResourceView* g_soul_gage_HP_Texture = NULL;		//ソウルゲージのHP部分
 ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ソウルゲージの外枠
@@ -56,8 +56,7 @@ void player_UI::Initialize()
 	g_blue_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\blue_jewel.png");
 	g_yellow_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\yellow_jewel.png");
 
-	//ソウルゲージ達
-	/*g_soul_gage_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_back_ground.png");*/
+	
 	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul .png");
 	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP.png");
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
@@ -306,24 +305,53 @@ void player_UI::Draw()
 
 void player_UI::Finalize()
 {
-	//本体ぽいやつ
-	UnInitTexture(g_ring_Texture);
-	//宝石
-	UnInitTexture(g_red_jewel_Texture);
-	UnInitTexture(g_blue_jewel_Texture);
-	UnInitTexture(g_yellow_jewel_Texture);
 
-	//ソウルゲージ達
-	UnInitTexture(g_soul_gage_background_Texture);
-	UnInitTexture(g_soul_gage_border_Texture);
-	UnInitTexture(g_soul_gage_HP_Texture);
-	UnInitTexture(g_soul_gage_border_Texture);
+	if (g_ring_Texture != NULL)
+	{
+		//本体ぽいやつ
+		UnInitTexture(g_ring_Texture);
+		//宝石
+		UnInitTexture(g_red_jewel_Texture);
+		UnInitTexture(g_blue_jewel_Texture);
+		UnInitTexture(g_yellow_jewel_Texture);
 
-	//アンカーレベルのテクスチャたち
-	UnInitTexture(g_anchor_level_background_Texture);
-	UnInitTexture(g_anchor_level_1_Texture);
-	UnInitTexture(g_anchor_level_2_Texture);
-	UnInitTexture(g_anchor_level_3_Texture);
-	UnInitTexture(g_anchor_level_border_Texture);
+		//ソウルゲージ達
+	
+		UnInitTexture(g_soul_gage_Texture);
+		UnInitTexture(g_soul_gage_HP_Texture);
+		UnInitTexture(g_soul_gage_border_Texture);
+
+		//アンカーレベルのテクスチャたち
+		UnInitTexture(g_anchor_level_background_Texture);
+		UnInitTexture(g_anchor_level_1_Texture);
+		UnInitTexture(g_anchor_level_2_Texture);
+		UnInitTexture(g_anchor_level_3_Texture);
+		UnInitTexture(g_anchor_level_border_Texture);
+
+		UnInitTexture(g_anchor_level_division_Texture);
+		UnInitTexture(g_anchor_level_outline_Texture);
+
+		g_ring_Texture = NULL;
+
+		g_red_jewel_Texture = NULL;
+		g_blue_jewel_Texture = NULL;
+		g_yellow_jewel_Texture = NULL;
+
+	
+		g_soul_gage_Texture = NULL;
+		g_soul_gage_HP_Texture = NULL;
+		g_soul_gage_border_Texture = NULL;
+
+		g_anchor_level_background_Texture = NULL;
+		g_anchor_level_1_Texture = NULL;
+		g_anchor_level_2_Texture = NULL;
+		g_anchor_level_3_Texture = NULL;
+		g_anchor_level_border_Texture = NULL;
+
+
+		g_anchor_level_division_Texture = NULL;
+		g_anchor_level_outline_Texture = NULL;
+		
+	}
 }
 

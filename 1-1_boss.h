@@ -13,6 +13,8 @@
 #include"include/box2d/box2d.h"
 
 
+#define BOSS_SIZE_SCALE (1.5)
+#define ENEMY_GOLEM_SOULGAGE (100)
 
 enum boss_state
 {

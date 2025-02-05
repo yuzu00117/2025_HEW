@@ -168,18 +168,28 @@ bool StagePoint::IsPlayerColliding(b2Body* playerBody) {
 
 void StagePoint::Finalize() {
     
-    UnInitTexture(g_stage_select_stage_point_tutorial_Texture);
-    g_stage_select_stage_point_tutorial_Texture = nullptr;
 
-    UnInitTexture(g_stage_select_stage_point_1_1_Texture);
-    g_stage_select_stage_point_1_1_Texture = nullptr;
-
-
-    UnInitTexture(g_stage_select_stage_point_unknow_Texture);
-    g_stage_select_stage_point_unknow_Texture = nullptr;
     
     if (m_world && m_body) {
         m_world->DestroyBody(m_body);
         m_body = nullptr;
     }
+    
+
+    if (g_stage_select_stage_point_1_1_Texture != NULL)
+    {
+        UnInitTexture(g_stage_select_stage_point_tutorial_Texture);
+        g_stage_select_stage_point_tutorial_Texture = NULL;
+
+        UnInitTexture(g_stage_select_stage_point_1_1_Texture);
+        g_stage_select_stage_point_1_1_Texture = NULL;
+
+
+        UnInitTexture(g_stage_select_stage_point_unknow_Texture);
+        g_stage_select_stage_point_unknow_Texture = NULL;
+
+        UnInitTexture(g_stage_select_stage_point_effect_Texture);
+        g_stage_select_stage_point_effect_Texture = NULL;
+    }
+    
 }

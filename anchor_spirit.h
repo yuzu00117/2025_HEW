@@ -44,11 +44,11 @@ public:
 		if (spirit < 100) {
 			anchor_level = 1;
 		}
-		else if (100 <= spirit && spirit < 200)
+		else if (spirit < 300)
 		{
 			anchor_level = 2;
 		}
-		else if (200 <= spirit)
+		else
 		{
 			anchor_level = 3;
 		}

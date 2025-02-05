@@ -21,7 +21,7 @@ static ID3D11ShaderResourceView* g_Object_Texture = NULL;//エネミーのテクスチャ
 boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_size,bool left, float Enemy_speed,b2Vec2 Object_size, int Object_type,int anchor_level)
 {
 
-	if (g_Enemy_Texture == nullptr)
+	if (g_Enemy_Texture == NULL)
 	{
 		g_Enemy_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating .png");
 		g_Object_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//オブジェクトのテクスチャ
@@ -75,7 +75,7 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 	b2Fixture* enemy_fixture = enemyBody->CreateFixture(&enemyFixtureDef);
 
 	// カスタムデータを作成して設定
-	ObjectData* enemy_data = new ObjectData{ collider_object };
+	ObjectData* enemy_data = new ObjectData{ collider_object_carry_enemy };
 	enemy_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemy_data);
 
 	int ID = enemy_data->GenerateID();
@@ -488,8 +488,14 @@ void boss_carry_object_enemy::DestroySplittedBodies(std::vector<b2Body*>& bodyLi
 
 void boss_carry_object_enemy::Finalize()
 {
-	UnInitTexture(g_Enemy_Texture);
-	UnInitTexture(g_Object_Texture);
+	if (g_Enemy_Texture != NULL)
+	{
+		UnInitTexture(g_Enemy_Texture);
+		UnInitTexture(g_Object_Texture);
+
+		g_Enemy_Texture = NULL;
+		g_Object_Texture = NULL;
+	}
 }
 
 void boss_carry_object_enemy::Destroy_Body()

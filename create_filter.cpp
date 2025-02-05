@@ -15,7 +15,10 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"MiniGolem_filter",        0x0080}, // 1 << 7
     {"Shockwave_filter",        0x0100},  // 1 << 8
     {"Boss_field_filter",       0x0120 },  // 1 << 8
-    {"texture_body_filter",     0x0140 }  // 1 << 9　　描画の際にボディを使いたいが落下させたいから、
+    {"blown_away_enemy_filter", 0x0140},
+    {"player_sensor_filter",    0x0160 },
+    {"texture_body_filter",     0x0180 }  // 1 << 9　　描画の際にボディを使いたいが落下させたいから、
+
 
 };
 

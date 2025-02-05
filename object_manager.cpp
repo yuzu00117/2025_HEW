@@ -111,6 +111,12 @@ void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, 
 }
 
 
+void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Texture, int texture_x,int texture_y,b2Vec2 vec)
+{
+    change_filter_boidy_enemy_list.emplace_back(std::make_unique<change_enemy_filter_and_body>(position, size, velocity, Texture, texture_x, texture_y,vec));
+}
+
+
 
 // ID を使って木を検索
 wood* ObjectManager::FindWoodByID(int id) {
@@ -285,6 +291,19 @@ boss_carry_object_enemy* ObjectManager::FindBossCarryObjectEnemy(int id)
 }
 
 
+//IDを使って撃墜演出用の
+change_enemy_filter_and_body* ObjectManager::FindChangeEnemyFilterAndBody(int id)
+{
+    for (auto& w : change_filter_boidy_enemy_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
+
 
 
 
@@ -433,6 +452,10 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+
+    for (auto& w : change_filter_boidy_enemy_list) {
+        w->Initialize();
+    }
     Item_Coin_UI::Initialize();
 }
 
@@ -521,6 +544,10 @@ void ObjectManager::UpdateAll() {
     for (auto& w : boss_carry_object_spawnerList) {
         w->Update();
     }
+
+    for (auto& w : change_filter_boidy_enemy_list) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -597,7 +624,18 @@ void ObjectManager::DrawAll() {
     for (auto& w : boss_carry_object_spawnerList) {
         w->Draw();
     }
+
+  
     Item_Coin_UI::Draw();
+}
+
+
+//オブジェクトのエフェクトなどを最前列にしたい
+void ObjectManager::DrawFront()
+{
+    for (auto& w : change_filter_boidy_enemy_list) {
+        w->DrawFront();
+    }
 }
 
 // 全ての木を破棄
@@ -664,6 +702,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : change_filter_boidy_enemy_list) {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -692,6 +734,7 @@ void ObjectManager::FinalizeAll() {
 
     boss_carry_object_spawnerList.clear();
 
+    change_filter_boidy_enemy_list.clear();
 
 
 }

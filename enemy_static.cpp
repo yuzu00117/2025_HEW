@@ -92,7 +92,11 @@ void EnemyStatic::Finalize()
 		world->DestroyBody(GetBody());
 	}
 
-	UnInitTexture(g_EnemyStatic_Texture);
+	if (g_EnemyStatic_Texture != NULL)
+	{
+		UnInitTexture(g_EnemyStatic_Texture);
+		g_EnemyStatic_Texture = NULL;
+	}
 }
 
 void EnemyStatic::Update()

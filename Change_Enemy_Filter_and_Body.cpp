@@ -1,13 +1,14 @@
+
 //-----------------------------------------------------------------------------------------------------
-// #name boss_field_block.cpp
-// #description ボス戦部屋のフィールドを生成するCPP
-// #make 2025/01/14　永野義也
-// #update 2025/01/14
+// #name Chage_Enemy_filter_and_body.cpp
+// #description 敵のボディとフィルターを新しくする
+// #make 2025/02/03　永野義也
+// #update 2024/02/03
 // #comment 追加・修正予定
 //          
 //----------------------------------------------------------------------------------------------------
 
-#include"1-1_boss_field_block.h"
+#include"Change_Enemy_Filter_and_Body.h"
 #include"texture.h"
 #include"sprite.h"
 #include"world_box2d.h"
@@ -17,11 +18,14 @@
 #include"create_filter.h"
 #include"tool.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
-boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, Boss_Room_Level level)
+change_enemy_filter_and_body::change_enemy_filter_and_body(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Texture, int texture_x, int texture_y,b2Vec2 vec)
 {
 	SetSize(size);//描画用のサイズを保存
+	g_Texture = Texture;
+
+	Splitting_x = texture_x;//分割数をほじ
+	Splitting_y = texture_y;//分割数をほじ
 
 	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -35,19 +39,18 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 	//ボディを作成する
 	b2BodyDef body;
-	body.type = b2_staticBody;
+	body.type = b2_dynamicBody;
 	body.position.Set(position.x, position.y);
 	body.fixedRotation = false;
 
 	b2Body* m_Body = world->CreateBody(&body);
 
 	SetBody(m_Body);
-
+	
 
 	//形の定義
 	b2PolygonShape shape;
 	shape.SetAsBox(body_size.x * 0.5, body_size.y * 0.5);
-
 
 	//-----------------------------------------------------
 	//	fixtureを作る
@@ -58,7 +61,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 	fixture.friction = 0.01f;
 	fixture.restitution = 0.3f;
 	fixture.isSensor = false;
-	fixture.filter = createFilterExclude("ground_filter",{});
+	fixture.filter = createFilterExclude("blown_away_enemy_filter", {"Player_filter", "ground_filter","enemy_filter","one-way_platform_filter","object_filter","item_filter","Boss_filter" });
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 
@@ -66,7 +69,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 
 	//カスタムデータを作成
-	ObjectData* object_data = new ObjectData{ collider_ground};
+	ObjectData* object_data = new ObjectData{ collider_blown_away_enemy };
 	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
 	int ID = object_data->GenerateID();
@@ -75,92 +78,88 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 	SetID(ID);
 
 
-	//各種特殊な変数をセット
-	Block_Hp = block_hp;
+	//初期に力を加える
 
-	BossRoomLevel = level;
+	b2Vec2 Vec = vec;
+	float angle;
 
-	
-
-
-}
-
-boss_field_block::~boss_field_block()
-{
-}
-
-
-
-void boss_field_block::Initialize()
-{
-	if (g_Texture == NULL) {
-		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
-	}
-}
-
-void boss_field_block::Update()
-{
-	Boss_1_1& boss = Boss_1_1::GetInstance();
-	if (boss.GetBossFieldLevel() > BossRoomLevel&& break_flag==false)
+	if (0,2>ReturnAbsoluteValue(Vec.x))
 	{
-		m_body->SetType(b2_dynamicBody);
-
-		// フィルターを変更
-		b2Fixture* fixture = m_body->GetFixtureList();
-	
-		// フィクスチャが存在しない場合は早期リターン
-		if (!fixture) {
-			return;
-		}
-
-		// 新しいフィルターを作成
-		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter" });
-		fixture->SetFilterData(newFilter);
-
-		break_flag = true;
-
-		int x=GetRandomInt(1, 10);
-	
-
-		int minus = GetRandomInt(0, 1);
-
-		if (minus==1)
+		if (m_body->GetPosition().x < PlayerPosition::GetPlayerPosition().x)
 		{
-			minus = -1;
+			Vec = b2Vec2(-0.3f, -0.5f);
 		}
 		else
 		{
-			minus = 1;
+			Vec = b2Vec2(0.3f, -0.5f);
 		}
-
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(x/5*minus, 0.0f), true);
-		
 	}
 
-	if (break_flag == true)
+
+	if (Vec.y > 0)
 	{
-		body_delete_cnt++;
+		Vec.y = -0.5f;
 	}
 
-	//３秒間たったらボディをけす
-	if (body_delete_cnt > 180)
+
+	
+
+	if (m_body->GetPosition().x < PlayerPosition::GetPlayerPosition().x)
 	{
-		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-		b2World* world = box2d_world.GetBox2dWorldPointer();
-
-		if (m_body == nullptr)
-		{
-			world->DestroyBody(m_body);
-		}
-
+		angle = -5.0;
+	}
+	else
+	{
+		angle = 5.0;
 	}
 
+	m_body->ApplyLinearImpulseToCenter(b2Vec2(Vec.x, Vec.y),true);
 
+	m_body->ApplyTorque(angle,true);
+	
 
 
 }
 
-void boss_field_block::Draw()
+change_enemy_filter_and_body::~change_enemy_filter_and_body()
+{
+}
+
+
+
+void change_enemy_filter_and_body::Initialize()
+{
+
+}
+
+void change_enemy_filter_and_body::Update()
+{
+	
+	if (sheet_cnt_now < max_sheet_cnt)
+	{
+		sheet_cnt_now += 0.5;
+	}
+
+
+	if (Destory_Flag == true)
+	{
+		// ワールドのインスタンスを取得
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+
+		if (m_body != nullptr)
+		{
+			world->DestroyBody(m_body); // ボディを削除
+			m_body = nullptr; // ポインタを無効化して安全にする
+		}
+	}
+	
+
+	
+
+}
+
+void change_enemy_filter_and_body::DrawFront()
 {
 
 
@@ -184,21 +183,18 @@ void boss_field_block::Draw()
 
 
 		//draw
-		DrawSprite(
+		DrawSplittingSprite(
 			{ draw_x,
 			  draw_y },
 			GetBody()->GetAngle(),
-			{ GetSize().x * scale ,GetSize().y * scale }
+			{ GetSize().x * scale ,GetSize().y * scale },
+			Splitting_x,Splitting_y, sheet_cnt_now,3.0f
 		);
 	}
 
 }
 
-void boss_field_block::Finalize()
+void change_enemy_filter_and_body::Finalize()
 {
-	if (g_Texture != NULL)
-	{
-		UnInitTexture(g_Texture);
-		g_Texture = NULL;
-	}
+	UnInitTexture(g_Texture);
 }

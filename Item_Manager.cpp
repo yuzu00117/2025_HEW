@@ -43,6 +43,12 @@ void ItemManager::AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel
     m_Jewel_List.emplace_back(std::make_unique<ItemJewel>(position, body_size, angle, type, shape_polygon, Alpha));
 }
 
+void ItemManager::AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+{
+    // 既存の引数コンストラクタを利用して生成
+    m_SavePoint_List.emplace_back(std::make_unique<ItemSavePoint>(position, body_size, angle, shape_polygon, Alpha));
+}
+
 void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
 {
     // 既存の引数コンストラクタを利用して生成
@@ -83,6 +89,16 @@ ItemJewel* ItemManager::FindItem_Jewel_ByID(int ID)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+ItemSavePoint* ItemManager::FindItem_SavePoint_ByID(int ID)
+{
+    for (const auto& w : m_SavePoint_List) {
+        if (w->GetID() == ID) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
 
 ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 {
@@ -106,6 +122,9 @@ void ItemManager::InitializeAll() {
 	for (auto& w : m_Coin_List) {
 		w->Initialize();
 	}
+    for (auto& w : m_SavePoint_List) {
+        w->Initialize();
+    }
 	Item_Coin_UI::Initialize();
     for (auto& w : m_Jewel_List) {
         w->Initialize();
@@ -126,6 +145,10 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_Jewel_List) {
         w->Update();
     }
+ 
+    for (auto& w : m_SavePoint_List) {
+        w->Update();
+    }
 }
 
 // 全てのアイテムを描画
@@ -133,17 +156,35 @@ void ItemManager::DrawAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Draw();
     }
-    for (auto& w : m_Spirit_List) {
-        w->Draw();
-    }
+   
 	for (auto& w : m_Coin_List) {
 		w->Draw();
 	}
-	Item_Coin_UI::Draw();
+	
+}
+
+// 全てのアイテムを描画
+void ItemManager::DrawFront() {
+ 
+    //魂も前列に描画
+    for (auto& w : m_Spirit_List) {
+        w->Draw();
+    }
+
     for (auto& w : m_Jewel_List) {
         w->Draw();
     }
+
+    for (auto& w : m_SavePoint_List) {
+        w->Draw();
+    }
+
+    for (auto& w : m_Coin_List) {
+        w->DrawEffect();
+    }
+    Item_Coin_UI::Draw();
 }
+
 
 // 全てのアイテムを破棄
 void ItemManager::FinalizeAll() {
@@ -162,9 +203,13 @@ void ItemManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : m_SavePoint_List) {
+        w->Finalize();
+    }
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Jewel_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
 void ItemManager::SetCollectSpirit(bool flag)
