@@ -102,13 +102,17 @@ public:
 	// **プレイヤーが走った際に土煙を記録
 	void CreateDustEffect(b2Vec2 playerPos);
 
+	//プレイヤーが歩いた時の土埃
 	void DrawDustEffect();
 
-
+	//アンカーを投げた時に発光するエフェクトを呼び出す関数
 	void StartAnchorEffect();
 
+
+	//アンカーを投げた時にプレイヤーが発光するエフェクト
 	void DrawAnchorEffect();
 
+	//アンカーのレベル変動があった際のエフェクト
 	void DrawAnchorLevelUpDownEffect();
 
 

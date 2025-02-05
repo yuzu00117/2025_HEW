@@ -64,10 +64,10 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//アンカーのエ�
 
 
 
-//アンカーレベルが変わった際に表示するエフェクト
-static ID3D11ShaderResourceView* g_Anchor_LevelUp_1to2_Effect = NULL;//アンカーのエフェクト
-static ID3D11ShaderResourceView* g_Anchor_LevelUp_2to3_Effect = NULL;//アンカーのエフェクト
-static ID3D11ShaderResourceView* g_Anchor_LevelDown_Effect = NULL;//アンカーのエフェクト
+//アンカーレベルが変わった際に表示するエフェクト プレイヤーの背景として表示する
+static ID3D11ShaderResourceView* g_Anchor_LevelUp_1to2_Effect = NULL;//アンカーがレベル１から２になった場合のエフェクト
+static ID3D11ShaderResourceView* g_Anchor_LevelUp_2to3_Effect = NULL;//アンカーがレベル2から３になった場合のエフェクト
+static ID3D11ShaderResourceView* g_Anchor_LevelDown_Effect = NULL;  //アンカーがレベルが下がったひと
 
 
 
@@ -1587,9 +1587,9 @@ void Player::DrawAnchorLevelUpDownEffect()
 
       
 
-        float player_pos_y = 20;
+        float player_pos_y = 20;//少しプレイヤーの下の方に座標を調整している
 
-        float effect_alpha = 1.0f;
+        float effect_alpha = 1.0f;//アルファ値の管理
 
         float effect_size = 3.0f;
      
