@@ -975,6 +975,14 @@ public:
                 }
             }
             break;
+            case ITEM_SAVEPOINT:
+            {
+                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                if (savepoint_instance != nullptr) {
+                    savepoint_instance->SetPlayerPassed();
+                }
+            }
+            break;
             }
       
         }

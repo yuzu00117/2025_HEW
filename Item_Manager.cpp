@@ -36,6 +36,12 @@ void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool s
 	m_Coin_List.emplace_back(std::make_unique<ItemCoin>(position, body_size, angle, shape_polygon, Alpha));
 }
 
+void ItemManager::AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+{
+    // 既存の引数コンストラクタを利用して生成
+    m_SavePoint_List.emplace_back(std::make_unique<ItemSavePoint>(position, body_size, angle, shape_polygon, Alpha));
+}
+
 void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
 {
     // 既存の引数コンストラクタを利用して生成
@@ -66,6 +72,16 @@ ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
 	return nullptr; // 見つからない場合は nullptr を返す
 }
 
+ItemSavePoint* ItemManager::FindItem_SavePoint_ByID(int ID)
+{
+    for (const auto& w : m_SavePoint_List) {
+        if (w->GetID() == ID) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
 
 ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 {
@@ -89,6 +105,9 @@ void ItemManager::InitializeAll() {
 	for (auto& w : m_Coin_List) {
 		w->Initialize();
 	}
+    for (auto& w : m_SavePoint_List) {
+        w->Initialize();
+    }
 	Item_Coin_UI::Initialize();
 }
 
@@ -101,6 +120,9 @@ void ItemManager::UpdateAll() {
         w->Update();
     }
     for (auto& w : m_Coin_List) {
+        w->Update();
+    }  
+    for (auto& w : m_SavePoint_List) {
         w->Update();
     }
 }
@@ -125,6 +147,10 @@ void ItemManager::DrawFront() {
         w->Draw();
     }
 
+    for (auto& w : m_SavePoint_List) {
+        w->Draw();
+    }
+
     for (auto& w : m_Coin_List) {
         w->DrawEffect();
     }
@@ -145,8 +171,12 @@ void ItemManager::FinalizeAll() {
     for (auto& w : m_Spirit_List) {
         w->Finalize();
     }
+    for (auto& w : m_SavePoint_List) {
+        w->Finalize();
+    }
     m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
 void ItemManager::SetCollectSpirit(bool flag)
