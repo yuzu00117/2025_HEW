@@ -276,13 +276,13 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->Pulling_ground(objectA->add_force);
+                ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->Pulling_ground(objectB->add_force);
+                ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
 
@@ -313,14 +313,9 @@ public:
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
 
-
             //状態が投げてる時にのみ以降する
             if (Anchor::GetAnchorState() == Connected_state)
             {
-             
-
-                 
-                
                 //木のオブジェクトの引っ張る処理
                 if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
                 {
@@ -328,12 +323,32 @@ public:
                     if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
                     {
                         wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                        wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
+                        wood_instance->Pulling_wood();//木を引っ張る処理を呼び出す
                     }
                     else
                     {
                         wood* wood_instance = object_manager.FindWoodByID(objectB->id);
-                        wood_instance->Pulling_wood(objectB->add_force);
+                        wood_instance->Pulling_wood();
+                    }
+
+                }
+
+                //引っ張れる床のオブジェクトの引っ張る処理
+                if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
+                    (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
+                {
+                    //どちらが床のオブジェクトか特定
+                    if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
+                    {
+                        movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                        ground_instance->Pulling_ground();
+                        ground_instance->SetIfPulling(true);
+                    }
+                    else
+                    {
+                        movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                        ground_instance->Pulling_ground();
+                        ground_instance->SetIfPulling(true);
                     }
 
                 }
@@ -345,12 +360,12 @@ public:
                     if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
                     {
                         rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                        rock_instance->Pulling_rock(objectA->add_force);//木を引っ張る処理を呼び出す
+                        rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
                     }
                     else
                     {
                         rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                        rock_instance->Pulling_rock(objectB->add_force);//木を引っ張る処理を呼び出す
+                        rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
                     }
 
                 }
@@ -397,12 +412,12 @@ public:
                     if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
                     {
                         boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                        pillar_instance->Pulling_pillar(objectA->add_force);//木を引っ張る処理を呼び出す
+                        pillar_instance->Pulling_pillar();//木を引っ張る処理を呼び出す
                     }
                     else
                     {
                         boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
-                        pillar_instance->Pulling_pillar(objectB->add_force);
+                        pillar_instance->Pulling_pillar();
                     }
                 }
 
@@ -413,7 +428,7 @@ public:
                     //どちらがボスの部屋の柱
                     if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
                     {
-                        boss_carry_object_enemy*enemy_instance= object_manager.FindBossCarryObjectEnemy(objectA->id);
+                        boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectA->id);
                         enemy_instance->SetAnchorHItFlag(true);
 
                     }
@@ -423,8 +438,12 @@ public:
                         enemy_instance->SetAnchorHItFlag(true);
                     }
                 }
+
+            }//end_if( Anchor::GetAnchorState() == Connected_state)
+
         
-            }
+           
+
        
              
         }
@@ -972,6 +991,14 @@ public:
                 if (coin_instance != nullptr) {
                     coin_instance->Function();
                     coin_instance->SetDestory(true);//削除を呼び出す
+                }
+            }
+            break;
+            case ITEM_JEWEL:
+            {
+                ItemJewel* jewel_instance = item_manager.FindItem_Jewel_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                if (jewel_instance != nullptr) {
+                    jewel_instance->SetIfCollecting(true);//削除を呼び出す
                 }
             }
             break;

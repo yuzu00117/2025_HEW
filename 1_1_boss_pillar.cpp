@@ -129,6 +129,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 
 	object_anchorpoint_data->add_force = need_power;
+	m_pulling_power = need_power;
 
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = m_Body;
@@ -334,9 +335,11 @@ void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 	
 }
 
-void boss_pillar::Pulling_pillar(b2Vec2 pulling_power)
+void boss_pillar::Pulling_pillar()
 {
 	b2Body* body = GetObjectAnchorPointBody();
+	b2Vec2 pulling_power = m_pulling_power;
+
 	//プレイヤー側に倒す
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
 	{

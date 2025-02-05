@@ -2,6 +2,7 @@
 #define PLAYER_UI_H
 
 #include <DirectXMath.h> // 必要なヘッダーをインクルード
+#include "Item_Jewel.h"
 
 class player_UI {
 public:
@@ -14,11 +15,35 @@ public:
     static void Draw();
     static void Finalize();
 
+    static DirectX::XMFLOAT2 GetRingPosition() { return m_ring_position; }
+
+    static  void    SetJewelCollected(Jewel_Type type, bool flag) {
+        switch (type)
+        {
+        case BLUE:
+            m_blue_jewel_collected = flag;
+            break;
+        case RED:
+            m_red_jewel_collected = flag;
+            break;
+        case YELLOW:
+            m_yellow_jewel_collected = flag;
+            break;
+        }
+    }
+
+
 private:
     // 静的メンバー変数の型を正しく指定
     static DirectX::XMFLOAT2 player_ui_position;
     static DirectX::XMFLOAT2 player_ui_size;
     static float player_ui_alpha;
+
+    static bool    m_blue_jewel_collected;
+    static bool    m_red_jewel_collected;
+    static bool    m_yellow_jewel_collected;
+
+    static DirectX::XMFLOAT2 m_ring_position;
 };
 
 #endif // PLAYER_UI_H

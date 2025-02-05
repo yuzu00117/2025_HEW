@@ -250,6 +250,7 @@
     <ClCompile Include="impact_effect.cpp">
       <Filter>リソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Item_Jewel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -453,6 +454,7 @@
     <ClInclude Include="1_1_boss_pillar.h">
       <Filter>ヘッダーファイル\boss</Filter>
     </ClInclude>
+    <ClInclude Include="Item_Jewel.h" />
     <ClInclude Include="camera_shake.h">
       <Filter>ヘッダーファイル\camera</Filter>
     </ClInclude>
