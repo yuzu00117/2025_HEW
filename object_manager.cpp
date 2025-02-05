@@ -117,6 +117,12 @@ void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2
 }
 
 
+void ObjectManager::AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num)
+{
+    contact_block_list.emplace_back(std::make_unique<contact_block>(Position, block_size, type, num));
+}
+
+
 
 // ID を使って木を検索
 wood* ObjectManager::FindWoodByID(int id) {
@@ -304,6 +310,20 @@ change_enemy_filter_and_body* ObjectManager::FindChangeEnemyFilterAndBody(int id
 
 
 
+//IDを使ってコンタクトブロックの
+contact_block* ObjectManager::FindContactBlock(int id)
+{
+    for (auto& w : contact_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
+
+
 
 
 
@@ -456,6 +476,11 @@ void ObjectManager::InitializeAll() {
     for (auto& w : change_filter_boidy_enemy_list) {
         w->Initialize();
     }
+
+
+    for (auto& w : contact_block_list) {
+        w->Initialize();
+    }
     Item_Coin_UI::Initialize();
 }
 
@@ -548,6 +573,10 @@ void ObjectManager::UpdateAll() {
     for (auto& w : change_filter_boidy_enemy_list) {
         w->Update();
     }
+
+    for (auto& w : contact_block_list) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -625,6 +654,10 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+
+    for (auto& w : contact_block_list) {
+        w->Draw();
+    }
   
     Item_Coin_UI::Draw();
 }
@@ -706,6 +739,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : contact_block_list) {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -735,6 +772,8 @@ void ObjectManager::FinalizeAll() {
     boss_carry_object_spawnerList.clear();
 
     change_filter_boidy_enemy_list.clear();
+    
+    contact_block_list.clear();
 
 
 }

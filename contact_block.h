@@ -78,14 +78,12 @@ private:
 
 	b2Vec2 m_size;
 
-	
-
 	int id;
 
-
+	//ŠÇ—‚Ég‚¤ŠÖ”
 	bool m_flag = false;
 
-	
+	Contact_Block_Type m_contact_type;
 
 };
 

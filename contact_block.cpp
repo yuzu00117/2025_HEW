@@ -16,11 +16,12 @@
 #include"create_filter.h"
 #include"collider_type.h"
 #include"game.h"
+#include"player.h"
 
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//地面のテクスチャ
 
-
+//接触した時に様々な出来事を起こす
 contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type,b2Vec2 num)
 {
 	//サイズをセット
@@ -71,21 +72,19 @@ contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_T
 	b2Fixture* object_teleport_fixture = m_body->CreateFixture(&teleport_block_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_teleport_data = new ObjectData{ collider_teleport_block };//一旦壁判定
+	ObjectData* object_teleport_data = new ObjectData{ collider_contact_block };//一旦壁判定
 	object_teleport_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_teleport_data);
-
 
 
 
 
 	int ID = object_teleport_data->GenerateID();
 	object_teleport_data->id = ID;
-	object_teleport_data->object_name = Object_teleport_block;
+
 	SetID(ID);
 
 
-
-
+	m_contact_type = type;
 
 
 };
@@ -105,8 +104,33 @@ void contact_block::Initialize()
 
 void contact_block::Update()
 {
-	
+	if (m_body != nullptr)
+	{
+		if (m_flag==true)
+		{
+			Player& player = Player::GetInstance();
+			switch (m_contact_type)
+			{
+			case NULL_TYPE:
+				break;
+			case DEAD_BLOCK_TYPE:
 
+				
+
+				//プレイヤーが即死する
+				player.Player_Damaged(-1000, 0);
+
+				break;
+			default:
+				break;
+			}
+
+
+			//フラグをリセット
+			m_flag = false;
+		}
+
+	}
 }
 
 
