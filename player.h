@@ -102,12 +102,18 @@ public:
 	// **プレイヤーが走った際に土煙を記録
 	void CreateDustEffect(b2Vec2 playerPos);
 
+	//プレイヤーが歩いた時の土埃
 	void DrawDustEffect();
 
-
+	//アンカーを投げた時に発光するエフェクトを呼び出す関数
 	void StartAnchorEffect();
 
+
+	//アンカーを投げた時にプレイヤーが発光するエフェクト
 	void DrawAnchorEffect();
+
+	//アンカーのレベル変動があった際のエフェクト
+	void DrawAnchorLevelUpDownEffect();
 
 
 	//描画用にサイズを持たせておく
@@ -154,6 +160,22 @@ public:
 		if (m_speed < 0)
 		{
 			m_speed = 0.001f;
+		}
+	}
+
+	//今のジャンプ力を取得
+	b2Vec2	GetJumpForce()
+	{
+		return m_jump_force;
+	}
+	//今のジャンプ力を加算
+	void	SetJumpForce(b2Vec2 value)
+	{
+		m_jump_force.x += value.x;
+		m_jump_force.y += value.y;
+		if (m_jump_force.y > 0)
+		{
+			m_jump_force.y = -0.001f;
 		}
 	}
 
@@ -205,10 +227,10 @@ private:
 	//ジャンプ中かどうか
 	static bool    m_is_jumping;
 	//ジャンプする時の力（ジャンプできる高さに影響）
-	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.40f);
+	static b2Vec2  m_jump_force;
 
 	//横移動スピード
-	float   m_speed = 0.04f;
+	static float   m_speed;
 
 	//プレイヤーの向き
 	// 右向き：1    左向き：-1
@@ -239,15 +261,25 @@ private:
 	bool sensor_flag;
 	int old_anchor_Lev;
 
-
+	//アンカーのフレームで使っている
 	float Anchor_level3_Frame_Sheet_cnt = 0;
 
+	//アンカーを投げた時に光るエフェクト
 	int Anchor_Effect_Type = 0;
-
+	//アンカーを投げる時に管理するシートのマックス
 	int Max_Anchor_effect_sheet = 0;
-
+	//アンカーを投げる時にプレイヤーが発光する際の現在のシートカウントを管理する関数
 	float Anchor_effect_sheet = 0;
 
+
+	//レベルが変わるたびに発光するエフェクトのタイプの管理
+	int Anchor_level_up_down_sheet_type = 0;
+
+	//アンカーのレベルが変わった時に管理する最大シート数
+	int Max_Anchor_level_up_Down_effect_sheet = 0;
+
+	//アンカーレベル変わった時のエフェクトを管理する現在のシート数
+	float Now_Anchor_level_up_Down_effect_sheet = 0;
 
 	// **土煙エフェクトのリスト**
 	std::vector<DustEffect> dustEffects;
