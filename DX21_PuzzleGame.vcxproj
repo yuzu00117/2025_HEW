@@ -169,7 +169,9 @@
     <ClCompile Include="impact_effect.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
+    <ClCompile Include="Item_Jewel.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
+    <ClCompile Include="Item_SavePoint.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
     <ClCompile Include="Item_Spirit.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -243,7 +245,9 @@
     <ClInclude Include="impact_effect.h" />
     <ClInclude Include="Item_Coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />
+    <ClInclude Include="Item_Jewel.h" />
     <ClInclude Include="Item_Manager.h" />
+    <ClInclude Include="Item_SavePoint.h" />
     <ClInclude Include="Item_SpeedUp.h" />
     <ClInclude Include="Item_Spirit.h" />
     <ClInclude Include="keyboard.h" />

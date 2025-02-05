@@ -237,6 +237,17 @@ void Field::Initialize()
 				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_6);
 			}
 
+			if (field_map[y][x] == 32) {//青宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE);
+			}
+
+			if (field_map[y][x] == 33) {//赤宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, RED);
+			}
+
+			if (field_map[y][x] == 34) {//黄色宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, YELLOW);
+			}
 
 
 			//ステージの間欠泉
@@ -275,7 +286,12 @@ void Field::Initialize()
 			if (field_map[y][x] == 49) {//ボスの地面ブロック破壊できる
 				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_5, false);
 			}
-			
+
+			if (field_map[y][x] == 50) {//中間地点
+				itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
+
+
 
 	
 
