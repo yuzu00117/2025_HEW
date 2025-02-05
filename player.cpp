@@ -62,6 +62,15 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L1 = NULL;//アンカーのエ�
 static ID3D11ShaderResourceView* g_Anchor_Effect_L2 = NULL;//アンカーのエフェクト
 static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//アンカーのエフェクト
 
+
+
+//アンカーレベルが変わった際に表示するエフェクト プレイヤーの背景として表示する
+static ID3D11ShaderResourceView* g_Anchor_LevelUp_1to2_Effect = NULL;//アンカーがレベル１から２になった場合のエフェクト
+static ID3D11ShaderResourceView* g_Anchor_LevelUp_2to3_Effect = NULL;//アンカーがレベル2から３になった場合のエフェクト
+static ID3D11ShaderResourceView* g_Anchor_LevelDown_Effect = NULL;  //アンカーがレベルが下がったひと
+
+
+
 //staticメンバー変数の初期化
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
@@ -137,6 +146,11 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         g_Anchor_Effect_L1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_1_4_2.png");
         g_Anchor_Effect_L2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_2_5_2.png");
         g_Anchor_Effect_L3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_3_5_2.png");
+
+
+        g_Anchor_LevelUp_1to2_Effect = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Up_1to2_Effect.png");
+        g_Anchor_LevelUp_2to3_Effect = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Up_2to3_Effect.png");
+        g_Anchor_LevelDown_Effect =    InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Domn_Effect.png");
     }
 
 
@@ -321,6 +335,57 @@ void Player::Update()
     //モーションのDrawカウントを加算
     draw_cnt++;
     
+
+    // Sensorの変更フラグの管理とエフェクトのトリガー
+    int current_level = AnchorSpirit::GetAnchorLevel();
+
+    if (old_anchor_Lev != current_level)
+    {
+        // レベルの変化を詳細にチェック
+        switch (old_anchor_Lev)
+        {
+        case 1: // 過去がレベル1だった
+            if (current_level == 2)
+            {
+                Anchor_level_up_down_sheet_type = 1;
+            }
+            else if (current_level == 3)
+            {
+                Anchor_level_up_down_sheet_type = 2;
+            }
+            break;
+
+        case 2:
+            if (current_level == 1)
+            {
+                Anchor_level_up_down_sheet_type = 3;
+            }
+            else if (current_level == 3)
+            {
+                Anchor_level_up_down_sheet_type = 2;
+            }
+            break;
+
+        case 3:
+            if (current_level == 1)
+            {
+                Anchor_level_up_down_sheet_type = 3;
+            }
+            else if (current_level == 2)
+            {
+                Anchor_level_up_down_sheet_type = 3;
+            }
+            break;
+
+        default:
+            // 予期しないレベルのとき
+            break;
+        }
+
+        // エフェクトシートを更新
+        Now_Anchor_level_up_Down_effect_sheet = 1;
+    }
+
 
     //Sensorの変更フラグの管理
     if (old_anchor_Lev != AnchorSpirit::GetAnchorLevel())
@@ -1088,6 +1153,11 @@ void Player::DrawAnchorEffect()
 void Player::Draw()
 {
     if (m_body != nullptr) {
+
+
+        //レベルが変わった時にエフェクトを発生させる
+        DrawAnchorLevelUpDownEffect();
+
         // コライダーと位置情報の補正をするため
         float scale = SCREEN_SCALE;
 
@@ -1319,8 +1389,11 @@ void Player::Draw()
         // **土煙を描画**
         DrawDustEffect();
       
-
+        //アンカーを投げる時にエフェクトを発生させる
         DrawAnchorEffect();
+
+
+       
 
         //----------------------------------------------------------------------------------------
         //センサー描画
@@ -1520,4 +1593,78 @@ void Player::DrawAnchorLevel3Frame()
       
     }
  
+}
+
+void Player::DrawAnchorLevelUpDownEffect()
+{
+    if (Now_Anchor_level_up_Down_effect_sheet != 0)
+    {
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
+
+        // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+      
+
+        float player_pos_y = 20;//少しプレイヤーの下の方に座標を調整している
+
+        float effect_alpha = 1.0f;//アルファ値の管理
+
+        float effect_size = 3.0f;
+     
+        switch (Anchor_level_up_down_sheet_type)
+        {
+        case 1:
+            Max_Anchor_level_up_Down_effect_sheet = 5;
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_LevelUp_1to2_Effect);
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y+ player_pos_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale*2 * effect_size ,GetSize().y * scale* effect_size },
+                5, 1, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
+            );
+            break;
+        case 2:
+            Max_Anchor_level_up_Down_effect_sheet = 6;
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_LevelUp_2to3_Effect);
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y + player_pos_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale*2* effect_size*1.2f  ,GetSize().y * scale* effect_size*1.2f },
+                3, 2, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
+            );
+
+            break;
+        case 3:
+            Max_Anchor_level_up_Down_effect_sheet = 12;
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_LevelDown_Effect);
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y + player_pos_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale*2 * effect_size ,GetSize().y * scale* effect_size },
+                6, 2, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
+            );
+
+            break;
+        default:
+            break;
+        }
+
+        Now_Anchor_level_up_Down_effect_sheet += 0.3;
+        if (Now_Anchor_level_up_Down_effect_sheet > Max_Anchor_level_up_Down_effect_sheet)
+        {
+            Now_Anchor_level_up_Down_effect_sheet = 0;
+        }
+     
+       
+    }
 }
