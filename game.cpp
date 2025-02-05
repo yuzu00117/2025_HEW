@@ -275,10 +275,15 @@ void Game::Draw(void)
     //ボスの描画処理
     boss.Draw();
 
+
+
+    //描画の順番を調整するためにDrawのみ、外に出す
+    itemManager.DrawAll();
+    objectManager.DrawAll();
     //フィールドの描画処理
     Field::Draw();
 
-   
+ 
 
     //プレイヤーの描画処理
     player.Draw();
@@ -286,6 +291,10 @@ void Game::Draw(void)
     //アンカーの描画処理
     Anchor::Draw();
 
+
+
+    itemManager.DrawFront();
+    objectManager.DrawFront();
 
 
     //衝突時のエフェクト

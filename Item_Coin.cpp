@@ -217,7 +217,7 @@ void ItemCoin::DrawEffect()
             { draw_x,
              draw_y },
             0.0,
-            { GetSize().x * scale * 1.5f,GetSize().y * scale * 1.5f },
+            { GetSize().x * scale * 2.5f,GetSize().y * scale * 2.5f },
             4, 3,
             coin_effect_sheet_cnt / 4,
             3.0

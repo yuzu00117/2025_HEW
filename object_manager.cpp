@@ -625,10 +625,17 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
-    for (auto& w : change_filter_boidy_enemy_list) {
-        w->Draw();
-    }
+  
     Item_Coin_UI::Draw();
+}
+
+
+//オブジェクトのエフェクトなどを最前列にしたい
+void ObjectManager::DrawFront()
+{
+    for (auto& w : change_filter_boidy_enemy_list) {
+        w->DrawFront();
+    }
 }
 
 // 全ての木を破棄
