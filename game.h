@@ -16,6 +16,8 @@
 #include"directx_controller.h"
 #include"UI_StaminaSpirit_Gauge.h"
 #include"1-1_boss.h"
+#include"object_manager.h"
+#include"Item_Manager.h"
 
 
 class Game
@@ -47,6 +49,11 @@ private:
 	Player player;
 	StaminaSpiritGauge stamina_spirit_gauge;
 	Boss_1_1 &boss =Boss_1_1::GetInstance();
+
+
+
+	ObjectManager& objectManager = ObjectManager::GetInstance();
+	ItemManager& itemManager = ItemManager::GetInstance();
 };
 
 

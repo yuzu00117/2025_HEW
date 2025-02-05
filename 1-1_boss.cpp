@@ -22,6 +22,7 @@
 #include"anchor.h"
 #include"camera_shake.h"
 #include"hit_stop.h"
+#include"Item_Spirit.h"
 
 
 // �g�p����e�N�X�`���t�@�C�����i�[
@@ -987,6 +988,10 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 
 		b2Body* m_mini_golem_body = destroy_mini_golem_body;
+
+		//ソウルを落とす
+		ItemManager& item_manager = ItemManager::GetInstance();
+		item_manager.AddSpirit(m_mini_golem_body->GetPosition(), { 1.0f,2.0f }, 0.0f, ENEMY_GOLEM_SOULGAGE);
 
 
 		//�쐬�G�t�F�N�g�p�̊Ǘ�

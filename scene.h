@@ -32,6 +32,15 @@ enum SCENE_NAME
 };
 
 
+//ステージセレクト
+enum STAGE_NAME
+{
+    STAGE_NULL,
+    STAGE_TUTORIAL,
+    STAGE_1_1,
+};
+
+
 
 // シーン基底クラス
 class Scene {
@@ -76,6 +85,9 @@ public:
     void Draw()override;
 
     void Finalize() override;
+
+private:
+    int total_score_points = 0;
 };
 
 class GameScene : public Scene {
@@ -111,6 +123,9 @@ private:
 
     // 現在のシーン
     std::unique_ptr<Scene> currentScene;
+    
+
+    STAGE_NAME stage_name;
 
     // コンストラクタを private にして外部からのインスタンス化を防ぐ
     SceneManager() = default;
@@ -147,6 +162,19 @@ public:
            
         }
     }
+
+    void SetStageName(STAGE_NAME name)
+    {
+        stage_name = name;
+    }
+
+    STAGE_NAME GetStageName(void)
+    {
+        return stage_name;
+    }
+
+
+
 
     // 更新処理
     void Update() {
