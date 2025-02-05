@@ -198,6 +198,7 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
+                
                 SceneManager& sceneManager = SceneManager::GetInstance();
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
@@ -215,8 +216,20 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);
+                //プレイヤーの残機が残っていたら最初からスタート
+                if (PlayerLife::GetLife() > 0)
+                {
+                    PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_GAME);
+                }
+                else
+                {
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_RESULT);
+                }
+
+
             }
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
