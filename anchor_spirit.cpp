@@ -22,7 +22,7 @@ void AnchorSpirit::Update()
 {
 	if (m_auto_heal)
 	{
-		EditAnchorSpiritValue(MAX_STAMINA);
+		EditAnchorSpiritValue(MAX_ANCHOR_SPIRIT);
 	}
 }
 
