@@ -18,6 +18,9 @@ public:
 	static void Draw();
 	static void Finalize();
 
+	static float GetLife() { return m_life; }
+	static void SetLife(float life) { m_life = life; }
+
 private:
 
 	static float m_life;

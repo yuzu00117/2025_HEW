@@ -157,6 +157,22 @@ public:
 		}
 	}
 
+	//今のジャンプ力を取得
+	b2Vec2	GetJumpForce()
+	{
+		return m_jump_force;
+	}
+	//今のジャンプ力を加算
+	void	SetJumpForce(b2Vec2 value)
+	{
+		m_jump_force.x += value.x;
+		m_jump_force.y += value.y;
+		if (m_jump_force.y > 0)
+		{
+			m_jump_force.y = -0.001f;
+		}
+	}
+
 
 	//今のプレイヤーの向きを取得
 	// 右向き：1    左向き：0
@@ -205,10 +221,10 @@ private:
 	//ジャンプ中かどうか
 	static bool    m_is_jumping;
 	//ジャンプする時の力（ジャンプできる高さに影響）
-	b2Vec2  m_jump_force = b2Vec2(0.0f, -0.40f);
+	static b2Vec2  m_jump_force;
 
 	//横移動スピード
-	float   m_speed = 0.04f;
+	static float   m_speed;
 
 	//プレイヤーの向き
 	// 右向き：1    左向き：-1

@@ -39,7 +39,7 @@ public:
 	void Draw();
 	void Finalize();
 
-	void Pulling_wood(b2Vec2 pullingpower);
+	void Pulling_wood();
 
 
 	
@@ -97,6 +97,14 @@ public:
 	void SetObjectStumpBody(b2Body* body)
 	{
 		Stump_body = body;
+	}
+
+
+
+	b2Vec2	GetPullingPower() { return m_pulling_power; }
+	void	SetPullingPower_With_Multiple(b2Vec2 multiple) {
+		m_pulling_power.x *= multiple.x;
+		m_pulling_power.y *= multiple.y;	
 	}
 
 	//木本体と切り株の間の溶接ジョイント取得
@@ -166,6 +174,8 @@ public:
 	
 private:
 	int id; // 各インスタンス固有の ID
+
+	b2Vec2 m_pulling_power;
 
 	b2Body* Wood_body;
 

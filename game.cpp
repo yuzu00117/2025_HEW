@@ -166,7 +166,7 @@ void Game::Update(void)
             //プレイヤーUIの更新処理
             player_UI::Update();
 
-            
+            AnchorSpirit::Update();
 
             //プレイヤーの更新処理
             player.Update();

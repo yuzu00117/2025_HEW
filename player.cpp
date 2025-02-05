@@ -66,6 +66,8 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//アンカーのエ�
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
+b2Vec2  Player::m_jump_force = b2Vec2(0.0f, -0.40f);
+float   Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;
 
@@ -199,7 +201,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         b2FixtureDef fixture_circle_bottom;
         fixture_circle_bottom.shape = &circle_bottom;
         fixture_circle_bottom.density = 1.3f;
-        fixture_circle_bottom.friction = 1.0f;//摩擦
+        fixture_circle_bottom.friction = 2.5f;//摩擦
         fixture_circle_bottom.restitution = 0.0f;//反発係数
         fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
         fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
@@ -383,11 +385,12 @@ void Player::Update()
 
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
             }
             if (Anchor::GetAnchorState() != Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ (GetSpeed() + adjust_speed)/3 , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
+
             }
 
 
@@ -410,11 +413,11 @@ void Player::Update()
         {
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({-(GetSpeed()) + adjust_speed, 0.0f},true);
             }
             if (Anchor::GetAnchorState() != Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ ((GetSpeed()) + adjust_speed)/-3 , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
             }
 
             //使用中は左右反転できないようにした
@@ -429,6 +432,13 @@ void Player::Update()
             }
             //app_atomex_start(Player_Walk_Sound);
 
+        }
+
+        //宝石による移動速度アップした時滑るので、プレイヤーの足の摩擦力を上げたのと以下の処理を一応
+        if (!(stick.x < 0 || Keyboard_IsKeyDown(KK_LEFT) || stick.x>0 || Keyboard_IsKeyDown(KK_RIGHT))||draw_state == player_nomal_state)
+        {
+            m_body->SetLinearVelocity({ 0.0f, 0.0f });
+            draw_state = player_nomal_state;
         }
 
         //playerのスピード上昇
@@ -505,6 +515,18 @@ void Player::Update()
         app_atomex_start(Player_Soul_Colect_Sound);
     }
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
+
+
+//宝石使う処理(テスト用)
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J)))
+    {
+        ItemManager& itemManager = ItemManager::GetInstance();
+        itemManager.UseAllJewel();
+
+        app_atomex_start(Player_Soul_Colect_Sound);
+    }
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B));
 
 
 
