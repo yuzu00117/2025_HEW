@@ -3,10 +3,21 @@
 
 #include"include/box2d/box2d.h"
 
+
+
+enum Contact_Block_Type
+{
+	NULL_TYPE,		//Ç»Ç…Ç‡Ç»Ç¢Ç‚Ç¬
+	DEAD_BLOCK_TYPE,//êGÇÍÇΩÇÁéÄÇ 
+
+};
+
+
+
 class contact_block
 {
 public:
-	contact_block(b2Vec2 Position, b2Vec2 teleport_block_size, b2Vec2 to_position);
+	contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num);
 	~contact_block();
 
 
@@ -49,6 +60,18 @@ public:
 	}
 
 
+
+	bool GetFlag(void)
+	{
+		return m_flag;
+	}
+
+
+	void SetFlag(bool flag)
+	{
+		m_flag = flag;
+	}
+
 private:
 
 	b2Body* m_body;
@@ -58,6 +81,9 @@ private:
 	
 
 	int id;
+
+
+	bool m_flag = false;
 
 	
 

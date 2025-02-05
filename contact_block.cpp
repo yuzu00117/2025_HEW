@@ -1,4 +1,4 @@
-// #name teleport_block.cpp
+// #name　接触したら
 // #description 接触したら指定した場所に飛ぶブロック
 // #make 2024/01/02
 // #update 2024/01/02
@@ -21,7 +21,7 @@
 static ID3D11ShaderResourceView* g_Texture = NULL;//地面のテクスチャ
 
 
-contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 to_position)
+contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type,b2Vec2 num)
 {
 	//サイズをセット
 	SetSize(block_size);
