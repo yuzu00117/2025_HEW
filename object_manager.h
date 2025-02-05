@@ -159,6 +159,10 @@ public:
     // 全てのオブジェクトを描画
     void DrawAll();
 
+
+    //全面に表示する　UI　エフェクトなど
+    void DrawFront();
+
     // 全てのオブジェクトを破棄
     void FinalizeAll();
 

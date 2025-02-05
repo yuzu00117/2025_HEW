@@ -159,7 +159,7 @@ void change_enemy_filter_and_body::Update()
 
 }
 
-void change_enemy_filter_and_body::Draw()
+void change_enemy_filter_and_body::DrawFront()
 {
 
 

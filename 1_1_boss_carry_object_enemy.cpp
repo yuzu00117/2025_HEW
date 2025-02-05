@@ -75,7 +75,7 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 	b2Fixture* enemy_fixture = enemyBody->CreateFixture(&enemyFixtureDef);
 
 	// カスタムデータを作成して設定
-	ObjectData* enemy_data = new ObjectData{ collider_object };
+	ObjectData* enemy_data = new ObjectData{ collider_object_carry_enemy };
 	enemy_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemy_data);
 
 	int ID = enemy_data->GenerateID();

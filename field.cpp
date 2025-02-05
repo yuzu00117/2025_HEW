@@ -25,6 +25,7 @@
 #include"object_manager.h"
 #include"Item_Manager.h"
 #include"1_1_boss_carry_object_enemy.h"
+#include"scene.h"
 
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
@@ -69,9 +70,25 @@ void Field::Initialize()
 	AnchorPoint::Initialize();
 
 
+	SceneManager& sceneManager = SceneManager::GetInstance();
+	switch (sceneManager.GetStageName())
+	{
+	case STAGE_NULL:
+		break;
+	case STAGE_TUTORIAL:
+		// csvからマップチップを読み込む
+		Field::LoadCSV("asset/mapchip_tutorial.csv");
+		break;
+	case STAGE_1_1:
+		// csvからマップチップを読み込む
+		Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
+		break;
 
-	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
+	default:
+		break;
+	}
+
+	
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 
@@ -336,8 +353,7 @@ void Field::Draw()
 		}
 	}
 
-	itemManager.DrawAll();
-	objectManager.DrawAll();
+
 	
 
 

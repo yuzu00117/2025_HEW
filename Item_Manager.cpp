@@ -132,17 +132,31 @@ void ItemManager::DrawAll() {
     for (auto& w : m_SpeedUp_List) {
         w->Draw();
     }
-    for (auto& w : m_Spirit_List) {
-        w->Draw();
-    }
+   
 	for (auto& w : m_Coin_List) {
 		w->Draw();
 	}
+	
+}
+
+// 全てのアイテムを描画
+void ItemManager::DrawFront() {
+ 
+    //魂も前列に描画
+    for (auto& w : m_Spirit_List) {
+        w->Draw();
+    }
+
     for (auto& w : m_SavePoint_List) {
         w->Draw();
     }
-	Item_Coin_UI::Draw();
+
+    for (auto& w : m_Coin_List) {
+        w->DrawEffect();
+    }
+    Item_Coin_UI::Draw();
 }
+
 
 // 全てのアイテムを破棄
 void ItemManager::FinalizeAll() {
