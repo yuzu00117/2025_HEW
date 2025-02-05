@@ -1591,7 +1591,7 @@ void Player::DrawAnchorLevelUpDownEffect()
 
         float effect_alpha = 1.0f;
 
-        float effect_size = 2.0f;
+        float effect_size = 3.0f;
      
         switch (Anchor_level_up_down_sheet_type)
         {
@@ -1615,7 +1615,7 @@ void Player::DrawAnchorLevelUpDownEffect()
                 { screen_center.x,
                   screen_center.y + player_pos_y },
                 m_body->GetAngle(),
-                { GetSize().x * scale*2* effect_size  ,GetSize().y * scale* effect_size },
+                { GetSize().x * scale*2* effect_size*1.2f  ,GetSize().y * scale* effect_size*1.2f },
                 3, 2, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
             );
 
