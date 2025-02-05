@@ -31,6 +31,14 @@ static ID3D11ShaderResourceView* g_Anchor_Chain_Texture = NULL;//ƒAƒ“ƒJ[‚Ì½‚Ìƒ
 
 static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Texture = NULL;//ƒAƒ“ƒJ[‚ÌƒqƒbƒgŽž‚ÌƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ
 
+
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level1_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½Žž‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level2_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½Žž‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level3_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½Žž‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
+
+
+
+
 //ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ð‚à‚Á‚Æ‚­
 b2Body* Player_body;
 
@@ -73,7 +81,18 @@ void Anchor::Initialize()
 	//ƒAƒ“ƒJ[‚Ì½
 	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
 
+
+	//’ÊíUŒ‚‚ÌƒGƒtƒFƒNƒg
 	g_Anchor_Hit_Effect_Texture=InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect.png");
+
+	//ƒŒƒxƒ‹•Ê‚Ì
+	g_Anchor_Hit_Effect_Level1_Texture = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect_Level1.png");
+	g_Anchor_Hit_Effect_Level2_Texture = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect_Level2.png");
+	g_Anchor_Hit_Effect_Level3_Texture = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect_Level3.png");
+
+
+
+
 }
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
@@ -541,43 +560,110 @@ void Anchor::DrawAnchorHitEffect(void)
 	{
 		// ƒXƒP[ƒ‹Ý’è
 		float scale = SCREEN_SCALE;
-
 		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u
 		b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
 		b2Body* anchor = g_anchor_instance->GetAnchorBody();
 
+		//ƒAƒ“ƒJ[‚Ì‘I‘ð
+		if (g_anchor_instance->now_anchor_hit_effect_sheet_cnt == 0)
+		{
+			switch (AnchorSpirit::GetAnchorLevel())
+			{
+			case 1:
+				g_anchor_instance->anchor_hit_effect_type = 1;
+				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 6;
+				break;
+			case 2:
+				g_anchor_instance->anchor_hit_effect_type = 2;
+				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 9;
+				break;
+			case 3:
+				g_anchor_instance->anchor_hit_effect_type = 3;
+				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 16;
+				break;
+			default:
+				break;
+			};
+		}
+
+
 		if (anchor != nullptr)
 		{
+		
+			// Šp“x‚Æ‹——£‚ÉŠî‚Ã‚¢‚ÄƒIƒtƒZƒbƒg‚ðŒvŽZ
+			float angle = anchor->GetAngle();  // ƒ‰ƒWƒAƒ“Šp
+			float distance = 50.0f;  // ‚¸‚ç‚·‹——£i“K‹X’²®j
+
+			// ‹ÉÀ•W•ÏŠ·‚É‚æ‚éƒIƒtƒZƒbƒg
+			float offset_x = cos(angle) * distance;
+			float offset_y = sin(angle) * distance;
+
 			b2Vec2 position;
 			position.x = anchor->GetPosition().x;
 			position.y = anchor->GetPosition().y;
 
 			// ƒvƒŒƒCƒ„[ˆÊ’u‚ðl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ð‰Á‚¦‚é
-			//Žæ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ð‰Á‚¦‚é
-			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x + offset_x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y + offset_y;
 
+		
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+			switch (g_anchor_instance->anchor_hit_effect_type)
+			{
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level1_Texture);
 
-			DrawSplittingSprite(
-				{ draw_x+ g_anchor_instance->GetSize().x*scale*0.5f,
-				draw_y- g_anchor_instance->GetSize().y*scale*0.5f },
-				anchor->GetAngle(),
-				{ g_anchor_instance->GetSize().x * scale*3  ,g_anchor_instance->GetSize().y * scale*3 },
-				4,2,
-				g_anchor_instance->anchor_hit_effect_sheet_cnt/2,
-				1.0f
+				DrawSplittingSprite(
+					{ draw_x,
+					draw_y },
+					anchor->GetAngle(),
+					{ g_anchor_instance->GetSize().x * scale*1.5f  ,g_anchor_instance->GetSize().y * scale *1.5f },
+					3, 2,
+					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					1.0f
 				);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level2_Texture);
+
+				DrawSplittingSprite(
+					{ draw_x ,
+					draw_y  },
+					anchor->GetAngle(),
+					{ g_anchor_instance->GetSize().x * scale *2.5f  ,g_anchor_instance->GetSize().y * scale * 2.5f },
+					3, 3,
+					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					1.0f
+				);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level3_Texture);
+
+				DrawSplittingSprite(
+					{ draw_x ,
+					draw_y },
+					anchor->GetAngle(),
+					{ g_anchor_instance->GetSize().x * scale * 3  ,g_anchor_instance->GetSize().y * scale * 3 },
+					4, 4,
+					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					1.0f
+				);
+				break;
+
+			default:
+				break;
+			}
+			
 		}
 
-		g_anchor_instance->anchor_hit_effect_sheet_cnt++;
+		g_anchor_instance->now_anchor_hit_effect_sheet_cnt++;
 
-		if (32<g_anchor_instance->anchor_hit_effect_sheet_cnt)
+		if (g_anchor_instance->max_anchor_hit_effect_sheet_cnt <g_anchor_instance->now_anchor_hit_effect_sheet_cnt)
 		{
 			g_anchor_instance->anchor_hit_effect_flag = false;
-			g_anchor_instance->anchor_hit_effect_sheet_cnt = 0;
+			g_anchor_instance->now_anchor_hit_effect_sheet_cnt = 0;
+			g_anchor_instance->anchor_create_joint_flag = 0;
 		}
 
 	}

@@ -187,9 +187,14 @@ private:
 
 	static AnchorState now_anchor_state;
 
-	bool anchor_hit_effect_flag=false;
 
-	int anchor_hit_effect_sheet_cnt;
+	int anchor_hit_effect_type = 0;//アンカーのタイプの管理レベル別の
+
+	bool anchor_hit_effect_flag=false;//アンカーがのエフェクトがオンになっているか
+
+	int now_anchor_hit_effect_sheet_cnt;//現在のシートすう
+
+	int max_anchor_hit_effect_sheet_cnt;//最大のシートすう
 };
 
 
