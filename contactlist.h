@@ -474,6 +474,8 @@ public:
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_normal_attack_anchor) ||
             (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_dynamic))
         {
+
+            //カメラシェイクとヒットストップを追加しました
             CameraShake::StartCameraShake(0, 5, 10);
             HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_dynamic)
