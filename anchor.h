@@ -1,33 +1,33 @@
 //-----------------------------------------------------------------------------------------------------
 // #name anchor.h
-// #description ƒAƒ“ƒJ[‚Ìˆ—
-// #make 2024/11/22 ‰i–ì‹`–ç
+// #description ã‚¢ãƒ³ã‚«ãƒ¼ã®å‡¦ç†
+// #make 2024/11/22 æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/22
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒAƒ“ƒJ[‚Ìˆ—‚Í‚Ğ‚Æ‚Ü‚¸‚¨‚‹
-//			Eƒ`ƒF[ƒ“‚Ìˆ—‚Í‹““®‚Í‚¢‚¢‚¯‚Ç@•`‰æ—p‚É•ÏX‚ª•K—v
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚¢ãƒ³ã‚«ãƒ¼ã®å‡¦ç†ã¯ã²ã¨ã¾ãšãŠï½‹
+//			ãƒ»ãƒã‚§ãƒ¼ãƒ³ã®å‡¦ç†ã¯æŒ™å‹•ã¯ã„ã„ã‘ã©ã€€æç”»ç”¨ã«å¤‰æ›´ãŒå¿…è¦
 //----------------------------------------------------------------------------------------------------
 #ifndef ANCHOR_H
 #define ANCHOR_H
 
 
-enum AnchorState        //player.cpp‚È‚¢‚Ìupdate‚ÅŠÇ—‚·‚éÛ‚É—˜—p‚µ‚Ä‚¢‚é
+enum AnchorState        //player.cppãªã„ã®updateã§ç®¡ç†ã™ã‚‹éš›ã«åˆ©ç”¨ã—ã¦ã„ã‚‹
 {
-	Nonexistent_state,	//‘¶İ‚µ‚È‚¢ó‘Ô
-	Create_wait_draw_cnt_state,//draw_cnt—p‚Ì’²®
-	Create_wait_state, //ì¬‚·‚é‚Æ‚«‚Ìƒ‚[ƒVƒ‡ƒ“‚Ü‚¿
-	Create_state,		//ì¬‚µ‚Ä‚¢‚éó‘Ô
-	Throwing_state,		//“Š‚°‚Ä‚¢‚éó‘Ô@ Throw‚ğŒÄ‚Ño‚·
-	Connected_state,	//‚­‚Á‚Â‚¢‚Ä‚¢‚éó‘Ô
-	Pulling_state,		//ˆø‚Á’£‚Á‚Ä‚¢‚éó‘Ô
+	Nonexistent_state,	//å­˜åœ¨ã—ãªã„çŠ¶æ…‹
+	Create_wait_draw_cnt_state,//draw_cntç”¨ã®èª¿æ•´
+	Create_wait_state, //ä½œæˆã™ã‚‹ã¨ãã®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã¾ã¡
+	Create_state,		//ä½œæˆã—ã¦ã„ã‚‹çŠ¶æ…‹
+	Throwing_state,		//æŠ•ã’ã¦ã„ã‚‹çŠ¶æ…‹ã€€ Throwã‚’å‘¼ã³å‡ºã™
+	Connected_state,	//ãã£ã¤ã„ã¦ã„ã‚‹çŠ¶æ…‹
+	Pulling_state,		//å¼•ã£å¼µã£ã¦ã„ã‚‹çŠ¶æ…‹
 	Deleting_state,
 
 
-	WaitCreateNormalAttackDraw_cnt_state,//’ÊíUŒ‚‚ÌDrawstateŠÇ——p
-	WaitCraateNormalAttack_state,//’ÊíUŒ‚‚Ì”­¶‘OƒtƒŒ[ƒ€Á”ï‚Ì‚½‚ß@45ƒtƒŒ[ƒ€
-	CreateNormalAttack_state,//’ÊíUŒ‚‚ğì¬‚·‚éó‘Ô
-	NowAttackngNormalAttack,//’ÊíUŒ‚‚ÌUŒ‚’†
-	DeletingNormaklAttack_state,//íœ‚µ‚½
+	WaitCreateNormalAttackDraw_cnt_state,//é€šå¸¸æ”»æ’ƒã®Drawstateç®¡ç†ç”¨
+	WaitCraateNormalAttack_state,//é€šå¸¸æ”»æ’ƒã®ç™ºç”Ÿå‰ãƒ•ãƒ¬ãƒ¼ãƒ æ¶ˆè²»ã®ãŸã‚ã€€45ãƒ•ãƒ¬ãƒ¼ãƒ 
+	CreateNormalAttack_state,//é€šå¸¸æ”»æ’ƒã‚’ä½œæˆã™ã‚‹çŠ¶æ…‹
+	NowAttackngNormalAttack,//é€šå¸¸æ”»æ’ƒã®æ”»æ’ƒä¸­
+	DeletingNormaklAttack_state,//å‰Šé™¤ã—ãŸæ™‚
 
 };
 
@@ -35,7 +35,7 @@ enum AnchorState        //player.cpp‚È‚¢‚Ìupdate‚ÅŠÇ—‚·‚éÛ‚É—˜—p‚µ‚Ä‚¢‚é
 class Anchor
 {
 public:
-	Anchor();//ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚Í¶¬‚µ‚È‚¢
+	Anchor();//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ç”Ÿæˆã—ãªã„
 	~Anchor();
 
 	static void Initialize();
@@ -47,43 +47,43 @@ public:
 	static void DrawChain();
 
 	/**
-	* @brief ƒAƒ“ƒJ[‚ğ“Š‚°‚éˆ—
-	* ƒAƒ“ƒJ[©g‚Æ–Ú•W‚Æ‚È‚éÀ•W‚ğæ“¾‚µ‚ÄA–Ú•W‚ÌÀ•W‚É”ò‚Î‚·
+	* @brief ã‚¢ãƒ³ã‚«ãƒ¼ã‚’æŠ•ã’ã‚‹å‡¦ç†
+	* ã‚¢ãƒ³ã‚«ãƒ¼è‡ªèº«ã¨ç›®æ¨™ã¨ãªã‚‹åº§æ¨™ã‚’å–å¾—ã—ã¦ã€ç›®æ¨™ã®åº§æ¨™ã«é£›ã°ã™
 	*/
 	static void ThrowAnchorToAP();
 
 	/**
-	 * @brief ƒAƒ“ƒJ[‚ğˆø‚Á’£‚é
+	 * @brief ã‚¢ãƒ³ã‚«ãƒ¼ã‚’å¼•ã£å¼µã‚‹
 	 */
 	static void PullingAnchor(void);
 
 	/**
-	 * @brief ƒAƒ“ƒJ[‚ğ¶¬‚·‚é
-	 * @param size ¶¬‚·‚éƒAƒ“ƒJ[‚Ì‘å‚«‚³
+	 * @brief ã‚¢ãƒ³ã‚«ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
+	 * @param size ç”Ÿæˆã™ã‚‹ã‚¢ãƒ³ã‚«ãƒ¼ã®å¤§ãã•
 	 */
 	static void CreateAnchor(b2Vec2 size);
 
 
 
 	/**
-	 * @brief ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğ¶¬‚·‚é
-	 * @param anchor_size ¶¬‚·‚é‚·‚éƒAƒ“ƒJ[‘å‚«‚³
+	 * @brief ã‚¢ãƒ³ã‚«ãƒ¼ã®ãƒœãƒ‡ã‚£ã‚’ç”Ÿæˆã™ã‚‹
+	 * @param anchor_size ç”Ÿæˆã™ã‚‹ã™ã‚‹ã‚¢ãƒ³ã‚«ãƒ¼å¤§ãã•
 	 */
 	void CreateAnchorBody(b2Vec2 anchor_size);
 
 
 	/**
-	 * @brief ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğíœ‚·‚é
+	 * @brief ã‚¢ãƒ³ã‚«ãƒ¼ã®ãƒœãƒ‡ã‚£ã‚’å‰Šé™¤ã™ã‚‹
 	 */
-	void DestroyAnchorBody();//Body‚ğíœ‚·‚é
+	void DestroyAnchorBody();//Bodyã‚’å‰Šé™¤ã™ã‚‹
 
 	/**
-	 * @brief ƒAƒ“ƒJ[‚ğíœ‚·‚é
+	 * @brief ã‚¢ãƒ³ã‚«ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹
 	 */
 	static void DeleteAnchor();
 
 	/**
-	 * @brief  ‚Ô‚Â‚©‚Á‚½‚ç‰ñ“]ƒWƒ‡ƒCƒ“ƒg‚ğ•t‚¯‚é
+	 * @brief  ã¶ã¤ã‹ã£ãŸã‚‰å›è»¢ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã‚’ä»˜ã‘ã‚‹
 	 */
 	static void CreateRotateJoint();
 
@@ -96,9 +96,9 @@ public:
 	static void CreateNormalAttack(b2Vec2 anchor_size, bool right);
 
 	/**
-	 * @brief  ’ÊíUŒ‚‚ğ‚·‚é‚½‚ß‚Ìƒ{ƒfƒB‚ğ‚Â‚­‚é
-	 * @param anchor_size @UŒ‚”ÍˆÍ
-	 * @param right @•W€‚µ‚½‚¢Œü‚«
+	 * @brief  é€šå¸¸æ”»æ’ƒã‚’ã™ã‚‹ãŸã‚ã®ãƒœãƒ‡ã‚£ã‚’ã¤ãã‚‹
+	 * @param anchor_size ã€€æ”»æ’ƒç¯„å›²
+	 * @param right ã€€æ¨™æº–ã—ãŸã„å‘ã
 	 */
 	void CreateNormalAttackAnchorBody(b2Vec2 anchor_size,bool right);
 
@@ -140,7 +140,7 @@ public:
 		m_normal_attack_body = anchor_normal_attack_body;
 	}
 
-	//•`‰æ—p‚ÉƒTƒCƒY‚ğ‚½‚¹‚Ä‚¨‚­
+	//æç”»ç”¨ã«ã‚µã‚¤ã‚ºã‚’æŒãŸã›ã¦ãŠã
 	b2Vec2 GetSize() const
 	{
 		return m_anchor_size;
@@ -153,7 +153,7 @@ public:
 
 
 
-	//chain‚Ì•`‰æ—p‚ÌƒTƒCƒY
+	//chainã®æç”»ç”¨ã®ã‚µã‚¤ã‚º
 	b2Vec2 GetChainSize()const
 	{
 		return m_chain_size;
@@ -171,7 +171,7 @@ public:
 	static AnchorState GetAnchorState();
 
 private:
-	//ƒvƒŒƒCƒ„[‚ÌBody‚ğ‚à‚Â
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Bodyã‚’ã‚‚ã¤
 	b2Body* m_body;
 
 	b2Body* m_normal_attack_body;
@@ -180,21 +180,24 @@ private:
 
 	b2Vec2 m_chain_size;
 
-	bool m_isAnchorCreated = false; // ƒ{ƒfƒB‚ª¶¬‚³‚ê‚Ä‚¢‚é‚©ŠÇ—
+	bool m_isAnchorCreated = false; // ãƒœãƒ‡ã‚£ãŒç”Ÿæˆã•ã‚Œã¦ã„ã‚‹ã‹ç®¡ç†
 
 	static bool anchor_create_joint_flag;
 
 
 	static AnchorState now_anchor_state;
 
+	int anchor_hit_effect_type = 0;//ã‚¢ãƒ³ã‚«ãƒ¼ã®ã‚¿ã‚¤ãƒ—ã®ç®¡ç†ãƒ¬ãƒ™ãƒ«åˆ¥ã®
 
-	int anchor_hit_effect_type = 0;//ƒAƒ“ƒJ[‚Ìƒ^ƒCƒv‚ÌŠÇ—ƒŒƒxƒ‹•Ê‚Ì
+	bool anchor_hit_effect_flag=false;//ã‚¢ãƒ³ã‚«ãƒ¼ãŒã®ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒã‚ªãƒ³ã«ãªã£ã¦ã„ã‚‹ã‹
 
-	bool anchor_hit_effect_flag=false;//ƒAƒ“ƒJ[‚ª‚ÌƒGƒtƒFƒNƒg‚ªƒIƒ“‚É‚È‚Á‚Ä‚¢‚é‚©
+	int now_anchor_hit_effect_sheet_cnt;//ç¾åœ¨ã®ã‚·ãƒ¼ãƒˆã™ã†
 
-	int now_anchor_hit_effect_sheet_cnt;//Œ»İ‚ÌƒV[ƒg‚·‚¤
+	int max_anchor_hit_effect_sheet_cnt;//æœ€å¤§ã®ã‚·ãƒ¼ãƒˆã™ã†
 
-	int max_anchor_hit_effect_sheet_cnt;//Å‘å‚ÌƒV[ƒg‚·‚¤
+	int anchor_hit_effect_sheet_cnt;
+
+	float anchor_nomal_attack_effect = 0;
 };
 
 

@@ -121,8 +121,7 @@ void	ItemCoin::Update()
 
 void    ItemCoin::Function()
 {
-    Player player = Player::GetInstance();
-    player.SetSpeed(0.04f);
+
 }
 
 

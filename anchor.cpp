@@ -703,16 +703,17 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 	b2BodyDef body;
 
 	body.type = b2_dynamicBody;
+	body.gravityScale = (0.0f);
 
 
 	if (right)//右かどうか
 	{
 		//プレイヤーのサイズの情報を貰ってきてないから　プレイヤーのサイズに変更あったときだるい
-		body.position.Set(player_body->GetPosition().x + (1/2 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの右側に生成
+		body.position.Set(player_body->GetPosition().x + (1 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの右側に生成
 	}
 	else
 	{
-		body.position.Set(player_body->GetPosition().x - (1/2 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの左側に生成
+		body.position.Set(player_body->GetPosition().x - (1 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの左側に生成
 	}
 	body.fixedRotation = false;//回転する
 
@@ -746,28 +747,28 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 
 	
 
-	//プレイヤーとジョイントする
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = Player::GetOutSidePlayerBody();//プレイヤーのボディ
-	jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//通常攻撃のアンカーのボディ
+	////プレイヤーとジョイントする
+	//b2WeldJointDef jointDef;
+	//jointDef.bodyA = Player::GetOutSidePlayerBody();//プレイヤーのボディ
+	//jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//通常攻撃のアンカーのボディ
 
-	if (right)//右かどうか
-	{
-		//プレイヤー側
-		jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
-		//通常攻撃側
-		jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
-	}
-	else//左側
-	{
-		//プレイヤー側
-		jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
-		//通常攻撃側
-		jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
-	}
-	jointDef.collideConnected = false;//ジョイントした物体同士の接触を消す
+	//if (right)//右かどうか
+	//{
+	//	//プレイヤー側
+	//	jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+	//	//通常攻撃側
+	//	jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
+	//}
+	//else//左側
+	//{
+	//	//プレイヤー側
+	//	jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+	//	//通常攻撃側
+	//	jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
+	//}
+	//jointDef.collideConnected = false;//ジョイントした物体同士の接触を消す
 
-	world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+	//world->CreateJoint(&jointDef); //ワールドにジョイントを追加
 
 	//エフェクトスタート
 	g_anchor_instance->anchor_hit_effect_flag = true;
@@ -780,45 +781,50 @@ void Anchor::UpdateNormalAttack()
 
 void Anchor::DrawNormalAttack()
 {
-	//// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	//float scale = SCREEN_SCALE;
+	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	float scale = SCREEN_SCALE;
 
-	//// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	//b2Vec2 screen_center;
-	//screen_center.x = SCREEN_CENTER_X;
-	//screen_center.y = SCREEN_CENTER_Y;
-
-
-	//if (g_anchor_instance == nullptr)
-	//{
-	//	return;
-	//}
-
-	//b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
-
-	//if (anchor != nullptr)
-	//{
-	//	b2Vec2 position;
-	//	position.x = anchor->GetPosition().x;
-	//	position.y = anchor->GetPosition().y;
-
-	//	// プレイヤー位置を考慮してスクロール補正を加える
-	//	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	//	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	//	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
 
 
-	//	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
+	if (g_anchor_instance == nullptr)
+	{
+		return;
+	}
 
-	//	//draw
-	//	DrawSprite(
-	//		{ draw_x,
-	//		  draw_y },
-	//		0.0	,
-	//		{ 2 * scale, 2 * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-	//	);
+	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
 
-	//}
+	if (anchor != nullptr)
+	{
+		b2Vec2 position;
+		position.x = anchor->GetPosition().x;
+		position.y = anchor->GetPosition().y;
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+
+		//draw
+		DrawSplittingSprite(
+			{ draw_x,
+			  draw_y },
+			0.0	,
+			{ 6 * scale, 6 * scale },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			4,2,g_anchor_instance->anchor_nomal_attack_effect,1.0f
+		);
+		g_anchor_instance->anchor_nomal_attack_effect +=0.4;
+	}
+	else
+	{
+		g_anchor_instance->anchor_nomal_attack_effect = 0;
+	}
 }
 
 void Anchor::DeleteNormalAttackAnchorBody()
