@@ -763,7 +763,7 @@ void Player::Update()
     case NowAttackngNormalAttack:
         //攻撃中
         g_anchor_frame_management_number++;
-        if (g_anchor_frame_management_number < 15)
+        if (g_anchor_frame_management_number > 8)
         {
             g_anchor_frame_management_number = 0;
             Anchor::SetAnchorState(DeletingNormaklAttack_state);

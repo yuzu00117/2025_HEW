@@ -190,6 +190,9 @@ private:
 	bool anchor_hit_effect_flag=false;
 
 	int anchor_hit_effect_sheet_cnt;
+
+
+	float anchor_nomal_attack_effect = 0;
 };
 
 
