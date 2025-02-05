@@ -135,27 +135,30 @@ void change_enemy_filter_and_body::Initialize()
 void change_enemy_filter_and_body::Update()
 {
 	
-	if (sheet_cnt_now < max_sheet_cnt)
+	if (m_body != nullptr)
 	{
-		sheet_cnt_now += 0.5;
-	}
-
-
-	if (Destory_Flag == true)
-	{
-		// ワールドのインスタンスを取得
-		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-		b2World* world = box2d_world.GetBox2dWorldPointer();
-
-		if (m_body != nullptr)
+		if (sheet_cnt_now < max_sheet_cnt)
 		{
-			world->DestroyBody(m_body); // ボディを削除
-			m_body = nullptr; // ポインタを無効化して安全にする
+			sheet_cnt_now += 0.5;
 		}
-	}
-	
 
-	
+
+		if (Destory_Flag == true)
+		{
+			// ワールドのインスタンスを取得
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+			if (m_body != nullptr)
+			{
+				world->DestroyBody(m_body); // ボディを削除
+				m_body = nullptr; // ポインタを無効化して安全にする
+			}
+		}
+
+
+		enemy_size_scale+=0.02;
+	}
 
 }
 
@@ -187,7 +190,7 @@ void change_enemy_filter_and_body::Draw()
 			{ draw_x,
 			  draw_y },
 			GetBody()->GetAngle(),
-			{ GetSize().x * scale ,GetSize().y * scale },
+			{ GetSize().x * scale *enemy_size_scale,GetSize().y * scale* enemy_size_scale },
 			Splitting_x,Splitting_y, sheet_cnt_now,3.0f
 		);
 	}
