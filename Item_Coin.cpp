@@ -19,7 +19,9 @@
 #include"Item_Coin_UI.h"
 #include"sound.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Texture = NULL;//コインのテクスチャ
+static ID3D11ShaderResourceView* g_coin_effect = NULL;//コインのテクスチャ
+
 
 ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
     :m_size(body_size), m_Alpha(Alpha)
@@ -100,6 +102,10 @@ void	ItemCoin::Update()
 {
     if (m_destory && m_body != nullptr)
     {
+
+        coin_effect_sheet_cnt = 1;
+        coin_effect_pos = m_body->GetPosition();
+
         //ボディの情報を消す
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
@@ -108,21 +114,25 @@ void	ItemCoin::Update()
         Item_Coin_UI::SetDrawCount(180);
         Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetNowCoinCount()+1);
         app_atomex_start(Object_Get_Coin_Sound);
+
+
     }
 }
 
 void    ItemCoin::Function()
 {
-    Player player = Player::GetInstance();
-    player.SetSpeed(0.04f);
+
 }
 
 
 void ItemCoin::Initialize()
 {
 
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
-
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
+        g_coin_effect = InitTexture(L"asset\\texture\\sample_texture\\coin_effect.png");
+    }
 }
 
 
@@ -163,7 +173,68 @@ void ItemCoin::Draw()
             m_Alpha
         );
 
+        if (60 < coin_effect_start_cnt)
+        {
+          
+        }
+
+        coin_effect_start_cnt++;
     }
+    //エフェクトの呼び出し
+    DrawEffect();
+}
+
+void ItemCoin::DrawEffect()
+{
+  
+    if (coin_effect_sheet_cnt!=0)
+    {
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_coin_effect);
+
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
+
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+
+        // コライダーの位置の取得（アイテムーの位置）
+
+
+
+
+        // プレイヤー位置を考慮してスクロール補正を加える
+        //取得したbodyのポジションに対してBox2dスケールの補正を加える
+        float draw_x = ((coin_effect_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((coin_effect_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+        //描画
+        DrawSplittingSprite(
+            { draw_x,
+             draw_y },
+            0.0,
+            { GetSize().x * scale * 2.5f,GetSize().y * scale * 2.5f },
+            4, 3,
+            coin_effect_sheet_cnt / 4,
+            3.0
+        );
+
+
+        coin_effect_sheet_cnt++;
+
+        if (48 <= coin_effect_sheet_cnt)
+        {
+            coin_effect_sheet_cnt = 0;
+            coin_effect_start_cnt = 0;
+        }
+
+    }
+       
+    
+
 }
 
 
@@ -178,10 +249,18 @@ void ItemCoin::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
-    if (g_Texture != nullptr)
+
+    if (g_Texture!=NULL)
     {
         UnInitTexture(g_Texture);
+        UnInitTexture(g_coin_effect);
+        g_Texture = NULL;
+        g_coin_effect = NULL;
     }
+
+ 
+       
+    
 }
 
 ItemCoin::~ItemCoin()

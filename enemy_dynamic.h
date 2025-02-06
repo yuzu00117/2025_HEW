@@ -18,7 +18,7 @@
 //==========マクロ定義==========//
 #define ENEMY_DYNAMIC_LIFE (100)
 #define ENEMY_DYNAMIC_DAMAGE (MAX_STAMINA/2)
-#define ENEMY_DYNAMIC_SOULGAGE (100)
+#define ENEMY_DYNAMIC_SOULGAGE (25)
 #define ENEMY_DYNAMIC_SCORE (200)
 
 enum ENEMY_DYNAMIC_STATE
@@ -49,11 +49,12 @@ private:
 	int m_attack_ID = -999;
 	int m_attack_counter = 0;
 	const int m_attack_birth = 30;
-	const int m_attack_finish = 45;
+	const int m_attack_finish = 50;
+
+	int m_anim_id = 0;
 
 	//テスト用
 	b2Vec2 m_size_sensor = b2Vec2(0.0, 0.0);
-	b2Vec2 m_size_sensor_2 = b2Vec2(0.0, 0.0);
 public:
 	EnemyDynamic() = default;
 	EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle);
@@ -88,6 +89,8 @@ public:
 	void Move();
 	//攻撃
 	void Attack();
+	//死亡
+	void Destroyed();
 
 	//センサーとプレイヤーが触れた時の処理
 	void CollisionSensorPlayer();

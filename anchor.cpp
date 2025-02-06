@@ -29,6 +29,8 @@ static ID3D11ShaderResourceView* g_Anchor_Texture_Lev2 = NULL;//アンカーのテクス
 static ID3D11ShaderResourceView* g_Anchor_Texture_Lev3 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Anchor_Chain_Texture = NULL;//アンカーの鎖のテクスチャ
 
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Texture = NULL;//アンカーのヒット時のエフェクトのテクスチャ
+
 //アンカーの一端のプレイヤーのボディをもっとく
 b2Body* Player_body;
 
@@ -70,6 +72,8 @@ void Anchor::Initialize()
 
 	//アンカーの鎖
 	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
+
+	g_Anchor_Hit_Effect_Texture=InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect.png");
 }
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
@@ -286,6 +290,7 @@ void Anchor::Draw()
 
 	DrawChain();//チェーンの描画処理
 	DrawNormalAttack();//通常攻撃の描写
+	DrawAnchorHitEffect();//ヒットエフェクト
 }
 
 
@@ -302,10 +307,19 @@ void Anchor::Finalize()
 	if(g_anchor_instance!=nullptr)
 	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
 
-	UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture_Lev1);	  //アンカーのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture_Lev2);	  //アンカーのテクスチャの解放
-	UnInitTexture(g_Anchor_Texture_Lev3);	  //アンカーのテクスチャの解放
+	if (g_Anchor_Texture_Lev1 != NULL)
+	{
+		UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
+		UnInitTexture(g_Anchor_Texture_Lev1);	  //アンカーのテクスチャの解放
+		UnInitTexture(g_Anchor_Texture_Lev2);	  //アンカーのテクスチャの解放
+		UnInitTexture(g_Anchor_Texture_Lev3);	  //アンカーのテクスチャの解放
+
+
+		g_Anchor_Chain_Texture = NULL;
+		g_Anchor_Texture_Lev1 = NULL;
+		g_Anchor_Texture_Lev2 = NULL;
+		g_Anchor_Texture_Lev3 = NULL;
+	}
 	
 }
 
@@ -327,21 +341,23 @@ void Anchor::ThrowAnchorToAP()
 	b2Body* body=AnchorPoint::GetTargetAnchorPointBody();
 
 	
+	if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+	{
+		b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
 
-	b2Vec2 to_pos = AnchorPoint::GetTargetAnchorPointBody()->GetPosition();
+		// 値が異常かチェック
+		if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
+			// 異常値の場合、エラーログを出力するか処理をスキップ
+			std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
+			SetAnchorState(Pulling_state);
+			return; // 処理を中断
+		}
+		b2Vec2 velocity = to_pos - anchor_pos;
+		velocity.Normalize(); // 単位ベクトル化して方向を決定
+		velocity *= 20; // 投擲速度を設定	
 
-	// 値が異常かチェック
-	if (std::abs(to_pos.x) > 1e6 || std::abs(to_pos.y) > 1e6) {
-		// 異常値の場合、エラーログを出力するか処理をスキップ
-		std::cerr << "Error: to_pos has invalid values. x=" << to_pos.x << ", y=" << to_pos.y << std::endl;
-		SetAnchorState(Pulling_state);
-		return; // 処理を中断
+		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 	}
-	b2Vec2 velocity = to_pos - anchor_pos;
-	velocity.Normalize(); // 単位ベクトル化して方向を決定
-	velocity *= 20; // 投擲速度を設定	
-
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 
 }
 	
@@ -356,6 +372,59 @@ void Anchor::CreateRotateJoint()
 
 	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
 	b2Body* targetBody = AnchorPoint::GetTargetAnchorPointBody();
+
+
+	//くっついたアンカーポイントをフィクスチャを変更する
+
+	// まず現在のフィクスチャのサイズを取得する
+	b2Fixture* fixture = targetBody->GetFixtureList();
+	if (fixture != nullptr) {
+		bool sensor_on_off = fixture->IsSensor();
+		float m_density=fixture->GetDensity();
+		float m_friction = fixture->GetFriction();
+		float m_restitution = fixture->GetRestitution();
+		// 形状を取得し、ポリゴンであることを確認
+		b2Shape* baseShape = fixture->GetShape();
+		if (baseShape->GetType() != b2Shape::e_polygon) {
+			return; // ポリゴン形状でなければ処理しない
+		}
+		// 元の b2PolygonShapeをコピー
+		b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
+		if (originalShape == nullptr) {
+			
+			return;
+		}
+
+		b2PolygonShape newShape;
+		b2Vec2 vertices[b2_maxPolygonVertices];
+		int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+
+		for (int i = 0; i < vertexCount; ++i) {
+			vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
+		}
+
+		newShape.Set(vertices, vertexCount);
+
+
+		// 既存のフィクスチャを削除
+		targetBody->DestroyFixture(fixture);
+
+		// 新しいフィクスチャを作成
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &newShape;
+		fixtureDef.density = m_density;     // 密度
+		fixtureDef.friction = m_friction;   // 摩擦
+		fixtureDef.restitution = m_restitution; // 反発係数
+		fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
+
+		b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
+
+		// カスタムデータを作成して設定
+		ObjectData* anchordata = new ObjectData{ collider_object };
+		anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+	}
+	
+
 
 	if (anchorBody == nullptr || targetBody == nullptr) {
 		return; // ターゲットが存在しない場合は何もしない
@@ -376,6 +445,9 @@ void Anchor::CreateRotateJoint()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 	world->CreateJoint(&jointDef);
+
+	//エフェクトスタート
+	g_anchor_instance->anchor_hit_effect_flag = true;
 }
 
 /**
@@ -405,6 +477,8 @@ void Anchor::DeleteRotateJoint(void)
 		}
 	}
 }
+
+
 
 
 
@@ -475,8 +549,6 @@ void Anchor::DrawChain()
 
 	
 
-	
-
 	// 距離を計算
 	float distance = b2Distance(anchor_position, player_position);
 
@@ -514,6 +586,56 @@ void Anchor::DrawChain()
 
 }
 
+void Anchor::DrawAnchorHitEffect(void)
+{
+
+	//描画の表示が
+	if (g_anchor_instance->anchor_hit_effect_flag == true)
+	{
+		// スケール設定
+		float scale = SCREEN_SCALE;
+
+		// スクリーン中央位置
+		b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
+
+		b2Body* anchor = g_anchor_instance->GetAnchorBody();
+
+		if (anchor != nullptr)
+		{
+			b2Vec2 position;
+			position.x = anchor->GetPosition().x;
+			position.y = anchor->GetPosition().y;
+
+			// プレイヤー位置を考慮してスクロール補正を加える
+			//取得したbodyのポジションに対してBox2dスケールの補正を加える
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+
+			DrawSplittingSprite(
+				{ draw_x+ g_anchor_instance->GetSize().x*scale*0.5f,
+				draw_y- g_anchor_instance->GetSize().y*scale*0.5f },
+				anchor->GetAngle(),
+				{ g_anchor_instance->GetSize().x * scale*3  ,g_anchor_instance->GetSize().y * scale*3 },
+				4,2,
+				g_anchor_instance->anchor_hit_effect_sheet_cnt/2,
+				1.0f
+				);
+		}
+
+		g_anchor_instance->anchor_hit_effect_sheet_cnt++;
+
+		if (32<g_anchor_instance->anchor_hit_effect_sheet_cnt)
+		{
+			g_anchor_instance->anchor_hit_effect_flag = false;
+			g_anchor_instance->anchor_hit_effect_sheet_cnt = 0;
+		}
+
+	}
+}
+
 
 void Anchor::CreateNormalAttack(b2Vec2 anchor_size, bool right)
 {
@@ -548,16 +670,17 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 	b2BodyDef body;
 
 	body.type = b2_dynamicBody;
+	body.gravityScale = (0.0f);
 
 
 	if (right)//右かどうか
 	{
 		//プレイヤーのサイズの情報を貰ってきてないから　プレイヤーのサイズに変更あったときだるい
-		body.position.Set(player_body->GetPosition().x + (1/2 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの右側に生成
+		body.position.Set(player_body->GetPosition().x + (1 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの右側に生成
 	}
 	else
 	{
-		body.position.Set(player_body->GetPosition().x - (1/2 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの左側に生成
+		body.position.Set(player_body->GetPosition().x - (1 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//プレイヤーの左側に生成
 	}
 	body.fixedRotation = false;//回転する
 
@@ -591,28 +714,31 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 
 	
 
-	//プレイヤーとジョイントする
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = Player::GetOutSidePlayerBody();//プレイヤーのボディ
-	jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//通常攻撃のアンカーのボディ
+	////プレイヤーとジョイントする
+	//b2WeldJointDef jointDef;
+	//jointDef.bodyA = Player::GetOutSidePlayerBody();//プレイヤーのボディ
+	//jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//通常攻撃のアンカーのボディ
 
-	if (right)//右かどうか
-	{
-		//プレイヤー側
-		jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
-		//通常攻撃側
-		jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
-	}
-	else//左側
-	{
-		//プレイヤー側
-		jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
-		//通常攻撃側
-		jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
-	}
-	jointDef.collideConnected = false;//ジョイントした物体同士の接触を消す
+	//if (right)//右かどうか
+	//{
+	//	//プレイヤー側
+	//	jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+	//	//通常攻撃側
+	//	jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
+	//}
+	//else//左側
+	//{
+	//	//プレイヤー側
+	//	jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+	//	//通常攻撃側
+	//	jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
+	//}
+	//jointDef.collideConnected = false;//ジョイントした物体同士の接触を消す
 
-	world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+	//world->CreateJoint(&jointDef); //ワールドにジョイントを追加
+
+	//エフェクトスタート
+	g_anchor_instance->anchor_hit_effect_flag = true;
 }
 
 void Anchor::UpdateNormalAttack()
@@ -622,45 +748,50 @@ void Anchor::UpdateNormalAttack()
 
 void Anchor::DrawNormalAttack()
 {
-	//// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	//float scale = SCREEN_SCALE;
+	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+	float scale = SCREEN_SCALE;
 
-	//// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	//b2Vec2 screen_center;
-	//screen_center.x = SCREEN_CENTER_X;
-	//screen_center.y = SCREEN_CENTER_Y;
-
-
-	//if (g_anchor_instance == nullptr)
-	//{
-	//	return;
-	//}
-
-	//b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
-
-	//if (anchor != nullptr)
-	//{
-	//	b2Vec2 position;
-	//	position.x = anchor->GetPosition().x;
-	//	position.y = anchor->GetPosition().y;
-
-	//	// プレイヤー位置を考慮してスクロール補正を加える
-	//	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	//	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	//	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
 
 
-	//	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
+	if (g_anchor_instance == nullptr)
+	{
+		return;
+	}
 
-	//	//draw
-	//	DrawSprite(
-	//		{ draw_x,
-	//		  draw_y },
-	//		0.0	,
-	//		{ 2 * scale, 2 * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-	//	);
+	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
 
-	//}
+	if (anchor != nullptr)
+	{
+		b2Vec2 position;
+		position.x = anchor->GetPosition().x;
+		position.y = anchor->GetPosition().y;
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+
+		//draw
+		DrawSplittingSprite(
+			{ draw_x,
+			  draw_y },
+			0.0	,
+			{ 6 * scale, 6 * scale },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			4,2,g_anchor_instance->anchor_nomal_attack_effect,1.0f
+		);
+		g_anchor_instance->anchor_nomal_attack_effect +=0.4;
+	}
+	else
+	{
+		g_anchor_instance->anchor_nomal_attack_effect = 0;
+	}
 }
 
 void Anchor::DeleteNormalAttackAnchorBody()

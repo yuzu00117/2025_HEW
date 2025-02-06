@@ -33,6 +33,11 @@
 #include"sound.h"
 #include"1-1_boss.h"
 #include"1_1_boss_pillar.h"
+#include"impact_effect.h"
+#include<vector>
+#include"gokai.h"
+#include"blown_away_effect.h"
+#include"Change_Enemy_Filter_and_Body.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -51,7 +56,55 @@ public:
     }
 
   
+    float impactThreshold = 1.0f; // エフェクトを発生させる衝撃の下限？　まあーこれ以上ならエフェクト発生させるよ
 
+    void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) override {
+        float maxImpulse = 0.0f;
+
+        // 衝撃の最大値を取得
+        for (int i = 0; i < impulse->count; i++) {
+            if (impulse->normalImpulses[i] > maxImpulse) {
+                maxImpulse = impulse->normalImpulses[i];
+            }
+        }
+
+        // 衝撃が閾値を超えたらエフェクトを記録
+        if (maxImpulse > impactThreshold) {
+
+            // ワールド座標の衝突位置を取得
+            b2WorldManifold worldManifold;
+            contact->GetWorldManifold(&worldManifold);
+            b2Vec2 worldPoint = worldManifold.points[0]; // **ワールド座標の衝突位置**
+
+            // エフェクトの角度を法線ベクトルから計算（90度補正）
+            b2Vec2 normal = worldManifold.normal;
+            float effectAngle = atan2(normal.y, normal.x) + (b2_pi / 2.0f); // **90度補正**
+
+            // **衝撃の大きさに基づいてサイズを決定**
+            float minScale = 0.5f;  // 最小サイズ
+            float maxScale = 2.0f;  // 最大サイズ
+            float effectScale = minScale + (maxImpulse / 10.0f); // 衝撃が大きいほどサイズを拡大
+
+            // サイズの上限を設定
+            if (effectScale > maxScale) effectScale = maxScale;
+
+            //エフェクトの種類を設定できる
+            int effectType;
+
+
+            if (effectScale < 0.5f)
+            {
+                effectType = 1;
+            }
+            else
+            {
+                effectType = 2;
+            }
+
+            // エフェクトリストに追加
+            impactEffects.emplace_back(ImpactEffect(worldPoint, effectAngle, effectScale, effectType));
+        }
+    }
   
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突開始時
@@ -93,6 +146,28 @@ public:
 
         }
 
+
+        // プレーヤーとコンタクトブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理
+
+            if (objectA->collider_type == collider_contact_block)//Aがコンタクトブロックのオブジェクト
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectA->id);
+                contact_block_instance->SetFlag(true);
+            }
+            if (objectB->collider_type == collider_contact_block)
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectB->id);
+                contact_block_instance->SetFlag(true);
+            }
+
+        }
+
         // プレーヤーとテレポートブロックが衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_teleport_block) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_teleport_block) ||
@@ -102,7 +177,7 @@ public:
             // 衝突処理（プレーヤーと地面が接触した時）
 
                      //どちらが木のオブジェクトか特定
-            if (objectA->collider_type== collider_teleport_block)//Aが木のオブジェクト
+            if (objectA->collider_type== collider_teleport_block)//Aがテレポートブロックのオブジェクト
             {
                 teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectA->id);
                 teleport_block_instance->SetTeleportFlag(true);
@@ -179,6 +254,11 @@ public:
                 Anchor::SetAnchorState(Deleting_state);
             }
 
+            if (Anchor::GetAnchorState() == Throwing_state)
+            {
+                Anchor::SetAnchorState(Deleting_state);
+            }
+
 
         }
 
@@ -218,13 +298,13 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->Pulling_ground(objectA->add_force);
+                ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
-                ground_instance->Pulling_ground(objectB->add_force);
+                ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
 
@@ -255,91 +335,137 @@ public:
             contact->GetWorldManifold(&worldManifold);
             contactPoint = worldManifold.points[0];
 
-
-
-            //木のオブジェクトの引っ張る処理
-            if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
+            //状態が投げてる時にのみ以降する
+            if (Anchor::GetAnchorState() == Connected_state)
             {
-                //どちらが木のオブジェクトか特定
-                if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
+                //木のオブジェクトの引っ張る処理
+                if (objectA->object_name == Object_Wood || objectB->object_name == Object_Wood)
                 {
-                    wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    wood_instance->Pulling_wood(objectA->add_force);//木を引っ張る処理を呼び出す
-                }
-                else
-                {
-                    wood* wood_instance = object_manager.FindWoodByID(objectB->id);
-                    wood_instance->Pulling_wood(objectB->add_force);
+                    //どちらが木のオブジェクトか特定
+                    if (objectA->object_name == Object_Wood)//Aが木のオブジェクト
+                    {
+                        wood* wood_instance = object_manager.FindWoodByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        wood_instance->Pulling_wood();//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        wood* wood_instance = object_manager.FindWoodByID(objectB->id);
+                        wood_instance->Pulling_wood();
+                    }
+
                 }
 
-            }
+                //引っ張れる床のオブジェクトの引っ張る処理
+                if ((objectA->object_name == Object_Movable_Ground && objectB->collider_type == collider_anchor) ||
+                    (objectA->collider_type == collider_anchor && objectB->object_name == Object_Movable_Ground))
+                {
+                    //どちらが床のオブジェクトか特定
+                    if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
+                    {
+                        movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                        ground_instance->Pulling_ground();
+                        ground_instance->SetIfPulling(true);
+                    }
+                    else
+                    {
+                        movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                        ground_instance->Pulling_ground();
+                        ground_instance->SetIfPulling(true);
+                    }
 
-            //岩のオブジェクトの引っ張る処理
-            if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
-            {
-                //どちらが岩のオブジェクトか特定
-                if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
-                {
-                    rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    rock_instance->Pulling_rock(objectA->add_force);//木を引っ張る処理を呼び出す
-                }
-                else
-                {
-                    rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                    rock_instance->Pulling_rock(objectB->add_force);//木を引っ張る処理を呼び出す
                 }
 
-            }
+                //岩のオブジェクトの引っ張る処理
+                if (objectA->object_name == Object_Rock || objectB->object_name == Object_Rock)
+                {
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Object_Rock)//Aが岩のオブジェクト
+                    {
+                        rock* rock_instance = object_manager.FindRockByID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                        rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
+                    }
+
+                }
 
 
-            //静的動的のオブジェクトの
-            if (objectA->object_name == Object_Static_to_Dynamic || objectB->object_name == Object_Static_to_Dynamic)
-            {
-                //どちらが岩のオブジェクトか特定
-                if (objectA->object_name == Object_Static_to_Dynamic)//Aが静的動的のオブジェクト
+                //静的動的のオブジェクトの
+                if (objectA->object_name == Object_Static_to_Dynamic || objectB->object_name == Object_Static_to_Dynamic)
                 {
-                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Object_Static_to_Dynamic)//Aが静的動的のオブジェクト
+                    {
+                        static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                    }
+                    else
+                    {
+                        static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                        static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
+                    }
                 }
-                else
-                {
-                    static_to_dynamic_block* static_to_dynamic_block_instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                    static_to_dynamic_block_instance->Change_dynamic();//静的を動的にする
-                }
-            }
 
-            //ボスのコア
-            if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
-            {
-                //どちらが岩のオブジェクトか特定
-                if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
+                //ボスのコア
+                if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
                 {
-                    boss.BossDamaged();
-                    boss.SetCoreDeleteFlag(true);
-              
-                }
-                else
-                {
-                    boss.BossDamaged();
-                    boss.SetCoreDeleteFlag(true);
-                  
-                }
-            }
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
+                    {
+                        boss.BossDamaged();
+                        boss.SetCoreDeleteFlag(true);
 
-            if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
-            {
-                //どちらがボスの部屋の柱
-                if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
-                {
-                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                    pillar_instance->Pulling_pillar(objectA->add_force);//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        boss.BossDamaged();
+                        boss.SetCoreDeleteFlag(true);
+
+                    }
                 }
-                else
+
+                //ボスの部屋の柱
+                if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar)
                 {
-                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
-                    pillar_instance->Pulling_pillar(objectB->add_force);
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
+                    {
+                        boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                        pillar_instance->Pulling_pillar();//木を引っ張る処理を呼び出す
+                    }
+                    else
+                    {
+                        boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
+                        pillar_instance->Pulling_pillar();
+                    }
                 }
-            }
+
+
+                //ボスのオブジェクト
+                if (objectA->object_name == Boss_Carry_Object_Enemy || objectB->object_name == Boss_Carry_Object_Enemy)
+                {
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
+                    {
+                        boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectA->id);
+                        enemy_instance->SetAnchorHItFlag(true);
+
+                    }
+                    else
+                    {
+                        boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
+                        enemy_instance->SetAnchorHItFlag(true);
+                    }
+                }
+
+            }//end_if( Anchor::GetAnchorState() == Connected_state)
+
+        
+           
+
        
              
         }
@@ -389,6 +515,10 @@ public:
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_normal_attack_anchor) ||
             (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_dynamic))
         {
+
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(0, 5, 10);
+            HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
@@ -544,9 +674,7 @@ public:
 
 
 
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
+            
  
 
             EnemyDynamic* enemy_instance;
@@ -568,7 +696,38 @@ public:
 
             if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
+
+
+                //豪快ゲージの加算処理-------------------------------------------------------------------------------------------
+                int needlevel=0;
+                if (objectA->collider_type == collider_enemy_dynamic)
+                {
+                    needlevel = objectB->need_anchor_level;
+                }
+                else
+                {
+                    needlevel = objectA->need_anchor_level;
+                }
+                switch (needlevel)
+                {
+                case 1:
+                    Gokai_UI::AddGokaiCount(100);
+                    break;
+                case 2:
+                    Gokai_UI::AddGokaiCount(500);
+                    break;
+                case 3:
+                    Gokai_UI::AddGokaiCount(1000);
+                    break;
+                default:
+                    break;
+                }
+                //--------------------------------------------------------------------------------------------
                 enemy_instance->CollisionPulledObject();
+
+                app_atomex_start(Player_Dead_Sound);
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
             }
            
        
@@ -861,6 +1020,22 @@ public:
                 }
             }
             break;
+            case ITEM_JEWEL:
+            {
+                ItemJewel* jewel_instance = item_manager.FindItem_Jewel_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                if (jewel_instance != nullptr) {
+                    jewel_instance->SetIfCollecting(true);//削除を呼び出す
+                }
+            }
+            break;
+            case ITEM_SAVEPOINT:
+            {
+                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                if (savepoint_instance != nullptr) {
+                    savepoint_instance->SetPlayerPassed();
+                }
+            }
+            break;
             }
       
         }
@@ -973,14 +1148,6 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_boss))
         {
 
-
-
-          
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-
-
-          
             b2Vec2 GetObjectVelocity;
 
             if (objectA->collider_type == collider_boss)
@@ -1014,9 +1181,65 @@ public:
                    
                 }
 
+
+                if (objectA->object_name == Boss_Carry_Object_Enemy)
+                {
+                 
+                }
+                if (objectB->object_name == Boss_Carry_Object_Enemy)
+                {
+
+                }
+
             }
 
+           
 
+
+        }
+
+        //ボスのオブジェクト
+        if (objectA->object_name == Boss_Carry_Object_Enemy || objectB->object_name == Boss_Carry_Object_Enemy)
+        {
+            //どちらがボスの部屋の柱
+            if (objectA->object_name == Boss_Carry_Object_Enemy)//Aが木のオブジェクト
+            {
+
+                if (fixtureA->IsSensor() == false && fixtureB->IsSensor() == false)
+                {
+                    if (objectB->collider_type == collider_anchor) { return; } 
+                    if (objectB->object_name == Boss_Carry_Object_Enemy) { return; }
+ 
+                    boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectA->id);
+                    enemy_instance->SetSplittingDestroyFlag(true);
+
+                    if (objectB->collider_type == collider_boss)
+                    {
+                        boss.SetNowBossState(panic_state);
+                    }
+                }
+
+              
+              
+            }
+            if (objectB->object_name == Boss_Carry_Object_Enemy)
+            {
+                if (fixtureB->IsSensor() == false&&fixtureA->IsSensor()==false)
+                {
+                    if (objectA->collider_type == collider_anchor) { return; }
+                    if (objectA->object_name == Boss_Carry_Object_Enemy) { return; }
+
+                    boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
+                    enemy_instance->SetSplittingDestroyFlag(true);
+                    if (objectA->collider_type == collider_boss)
+                    {
+                        boss.SetNowBossState(panic_state);
+                    }
+                }
+
+              
+            }
+     
         }
 
         
@@ -1034,12 +1257,14 @@ public:
         b2Fixture* fixtureB = contact->GetFixtureB();
         if (!fixtureA || !fixtureB) return; // NULLチェック
 
+        
 
         // それぞれのボディからユーザーデータを取得
           // ボディのユーザーデータを取得
         auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
         auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
         if (!objectA || !objectB)return;//NULLチェック
+
 
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
@@ -1314,6 +1539,47 @@ public:
             {
                 boss.SetPlayerisNearbyFlag(false);
             }
+        }
+
+
+
+        //------------------------------------------------------------------------------------------------------------------------
+        if ((objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_effect_sensor) ||
+            (objectA->collider_type == collider_effect_sensor && objectB->collider_type == collider_blown_away_enemy)||
+            (objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_player_sensor) ||
+            (objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_blown_away_enemy))
+        {
+          
+
+            change_enemy_filter_and_body* body_instance;
+            // 速度ベクトルを取得
+            b2Vec2 velocity;
+            b2Vec2 effect_pos;
+            if (objectA->collider_type == collider_blown_away_enemy)
+            {
+                body_instance = object_manager.FindChangeEnemyFilterAndBody(objectA->id);
+                effect_pos=fixtureA->GetBody()->GetPosition();
+                velocity = fixtureA->GetBody()->GetLinearVelocity();
+            }
+            else
+            {
+                body_instance = object_manager.FindChangeEnemyFilterAndBody(objectB->id);
+                effect_pos = fixtureB->GetBody()->GetPosition();
+                velocity = fixtureB->GetBody()->GetLinearVelocity();
+            }
+
+            body_instance->SetDestoryFlag(true);
+
+            // 速度ベクトルから角度（ラジアン）を求める
+            float angle_rad = atan2(velocity.y, velocity.x);
+            // 90度補正（Y軸基準にする場合）
+            angle_rad -= M_PI / 2;
+
+
+            int  rand = GetRandomInt(1, 3);
+
+            // エフェクトリストに追加
+            blown_away_Effects.emplace_back(Blown_Away_Effect(effect_pos, angle_rad, 2, rand));
         }
     }
 

@@ -85,9 +85,6 @@
     <ClCompile Include="result.cpp">
       <Filter>ソースファイル\scene</Filter>
     </ClCompile>
-    <ClCompile Include="stage_select.cpp">
-      <Filter>ソースファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="title.cpp">
       <Filter>ソースファイル\scene</Filter>
     </ClCompile>
@@ -109,25 +106,6 @@
     <ClCompile Include="ground.cpp">
       <Filter>ソースファイル\field</Filter>
     </ClCompile>
-    <ClCompile Include="easing.cpp" />
-    <ClCompile Include="Item_Manager.cpp" />
-    <ClCompile Include="Item_SpeedUp.cpp" />
-    <ClCompile Include="Item_Spirit.cpp" />
-    <ClCompile Include="movable_ground.cpp" />
-    <ClCompile Include="stage_point.cpp" />
-    <ClCompile Include="stage_point_factory.cpp" />
-    <ClCompile Include="stage_select_player.cpp" />
-    <ClCompile Include="FixtureSizeCalculate.cpp" />
-    <ClCompile Include="camera_shake.cpp" />
-    <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
-    <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
-    <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp" />
-    <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp" />
-    <ClCompile Include="enemy_floating.cpp" />
-    <ClCompile Include="Item_Coin.cpp" />
-    <ClCompile Include="Item_Coin_UI.cpp" />
-    <ClCompile Include="player_UI.cpp" />
-    <ClCompile Include="teleport_block.cpp" />
     <ClCompile Include="enemy_attack.cpp">
       <Filter>ソースファイル\enemy</Filter>
     </ClCompile>
@@ -203,6 +181,84 @@
     <ClCompile Include="1_1boss_state_debug.cpp">
       <Filter>ソースファイル\boss</Filter>
     </ClCompile>
+    <ClCompile Include="1_1_boss_pillar.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="camera_shake.cpp">
+      <Filter>ソースファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp">
+      <Filter>ソースファイル\CRI</Filter>
+    </ClCompile>
+    <ClCompile Include="easing.cpp">
+      <Filter>ソースファイル\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy_floating.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="FixtureSizeCalculate.cpp">
+      <Filter>ソースファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Coin.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Coin_UI.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Manager.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_SpeedUp.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Spirit.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="geyser.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="movable_ground.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="player_UI.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_point.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_point_factory.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_select.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="stage_select_player.cpp">
+      <Filter>ソースファイル\scene\stage_select</Filter>
+    </ClCompile>
+    <ClCompile Include="teleport_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="impact_effect.cpp">
+      <Filter>リソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="1_1_boss_carry_object_enemy.cpp" />
+    <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp" />
+    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
+    <ClCompile Include="blown_away_effect.cpp" />
+    <ClCompile Include="gokai.cpp" />
+    <ClCompile Include="contact_block.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Jewel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -319,28 +375,6 @@
     <ClInclude Include="ground.h">
       <Filter>ヘッダーファイル\field</Filter>
     </ClInclude>
-    <ClInclude Include="easing.h" />
-    <ClInclude Include="Item_Manager.h" />
-    <ClInclude Include="Item_SpeedUp.h" />
-    <ClInclude Include="Item_Spirit.h" />
-    <ClInclude Include="movable_ground.h" />
-    <ClInclude Include="stage_point.h" />
-    <ClInclude Include="stage_point_factory.h" />
-    <ClInclude Include="stage_select.h" />
-    <ClInclude Include="stage_select_contact_list.h" />
-    <ClInclude Include="stage_select_player.h" />
-    <ClInclude Include="FixtureSizeCalculate.h" />
-    <ClInclude Include="camera_shake.h" />
-    <ClInclude Include="cri\common\include\CriSmpFramework.h" />
-    <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
-    <ClInclude Include="cri\common\include\CriSmpTimer.h" />
-    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h" />
-    <ClInclude Include="enemy_floating.h" />
-    <ClInclude Include="hit_stop.h" />
-    <ClInclude Include="Item_Coin.h" />
-    <ClInclude Include="Item_Coin_UI.h" />
-    <ClInclude Include="player_UI.h" />
-    <ClInclude Include="teleport_block.h" />
     <ClInclude Include="enemy_attack.h">
       <Filter>ヘッダーファイル\enemy</Filter>
     </ClInclude>
@@ -424,6 +458,90 @@
     </ClInclude>
     <ClInclude Include="1_1boss_state_debug.h">
       <Filter>ヘッダーファイル\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="1_1_boss_pillar.h">
+      <Filter>ヘッダーファイル\boss</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Jewel.h" />
+    <ClInclude Include="camera_shake.h">
+      <Filter>ヘッダーファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpFramework.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpInputDevice.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpTimer.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="cri\common\include\CriSmpVideoOutput.h">
+      <Filter>ヘッダーファイル\CRI</Filter>
+    </ClInclude>
+    <ClInclude Include="easing.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Coin.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Coin_UI.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Manager.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_SpeedUp.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Spirit.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_point.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_point_factory.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select_contact_list.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="stage_select_player.h">
+      <Filter>ヘッダーファイル\scene\stage_select</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy_floating.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="FixtureSizeCalculate.h">
+      <Filter>ヘッダーファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="geyser.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="movable_ground.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="player_UI.h">
+      <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="teleport_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="hit_stop.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="impact_effect.h">
+      <Filter>リソースファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="1_1_boss_carry_object_enemy.h" />
+    <ClInclude Include="1_1_boss_carry_object_enemy_spawner.h" />
+    <ClInclude Include="blown_away_effect.h" />
+    <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
+    <ClInclude Include="gokai.h" />
+    <ClInclude Include="contact_block.h">
+      <Filter>ソースファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

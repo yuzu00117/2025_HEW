@@ -31,6 +31,9 @@
 #include"hit_stop.h"
 #include"camera_shake.h"
 #include"player_UI.h"
+#include"impact_effect.h"
+#include"gokai.h"
+#include"blown_away_effect.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -63,9 +66,14 @@ void Game::Initialize()
 
     //背景の初期化
     Bg::Initialize();
+    //衝撃エフェクト
+    InitImpactEffect();
+    //撃墜演出エフェクト
+    InitBlownAwayEffect();
 
-	//criの初期化
-    CRIInitialize();
+    Gokai_UI::Initialize();
+
+
 
     b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
     // 衝突リスナーをワールドに登録
@@ -82,6 +90,8 @@ void Game::Initialize()
 void Game::Finalize(void)
 {
 
+
+ 
     //プレイヤーライフの終了処理
     PlayerLife::Finalize();
 	//プレイヤーUIの終了処理
@@ -89,8 +99,7 @@ void Game::Finalize(void)
 	//プレイヤーの終了処理
     player.Finalize();
 
-	//criの終了処理
-    CRIFinalize();
+	
 
     //アンカー終了処理
     Anchor::Finalize();
@@ -104,16 +113,30 @@ void Game::Finalize(void)
 	//ボスの終了処理
     boss.Finalize();
 
+    //衝突時のエフェクトの終了処理
+    FinalizeImpactEffects();
+
     //文字（絵）
     FinalizeWord();
 
+    Gokai_UI::Finalize();
+
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
+
+    //衝突時のエフェクトを
+    FinalizeImpactEffects();
+    //撃墜演出エフェクト
+    FinalizeBlownAwayEffects();
+
 
 #ifdef _DEBUG
     //デバッグ文字
     FinalizeDebug();
 #endif // _DEBUG
+
+
+    Box2dWorld::GetInstance().RecreateWorld();
 
 }
 
@@ -128,75 +151,107 @@ void Game::Update(void)
         HitStop::CountHitStop();
     }
     else {
-        world->Step(1.0f / 60.0f, 6, 2);
-
-		//ディスプレイの更新処理
-        display::Update();
-
-        //プレイヤーライフの更新処理
-        PlayerLife::Update();
-		//プレイヤーUIの更新処理
-        player_UI::Update();
-        //プレイヤーの更新処理
-        player.Update();
-
-        //アンカーの更新処理
-        Anchor::Update();
-
-		//criの更新処理
-        CRIUpdate();
-
-		//背景の更新処理
-        Bg::Update();
-
-        //フィールドの更新処理
-        Field::Update();
-
-		//ボスの更新処理
-        boss.Update();
-
-        //プレイヤーが死亡したらリザルト画面に遷移
-        if (PlayerStamina::IsPlayerDead())
+       if(world->GetBodyCount() > 0)
         {
-            SceneManager& sceneManager = SceneManager::GetInstance();
-            sceneManager.ChangeScene(SCENE_RESULT);
+            world->Step(1.0f / 60.0f, 6, 2);
+
+            //ディスプレイの更新処理
+            display::Update();
+
+            //プレイヤーライフの更新処理
+            PlayerLife::Update();
+            //プレイヤーUIの更新処理
+            player_UI::Update();
+
+            AnchorSpirit::Update();
+
+            //プレイヤーの更新処理
+            player.Update();
+
+            //アンカーの更新処理
+            Anchor::Update();
+
+            //criの更新処理
+            CRIUpdate();
+
+            //背景の更新処理
+            Bg::Update();
+
+            //フィールドの更新処理
+            Field::Update();
+
+            //ボスの更新処理
+            boss.Update();
+
+
+
+
+            //衝突エフェクトの描画処理
+            UpdateImpactEffects();
+
+            //撃墜演出エフェクト
+            UpdateBlownAwayEffects();
+
+            //プレイヤーが死亡したらリザルト画面に遷移
+            if (PlayerStamina::IsPlayerDead())
+            {
+                
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_RESULT);
+            }
+
+            //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
+            if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
+            {
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_RESULT);
+            }
+
+
+
+
+            //プレイヤーが死亡したらリザルト画面に遷移
+            if (PlayerStamina::IsPlayerDead())
+            {
+                //プレイヤーの残機が残っていたら最初からスタート
+                if (PlayerLife::GetLife() > 0)
+                {
+                    PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_GAME);
+                }
+                else
+                {
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_RESULT);
+                }
+
+
+            }
+
+            //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
+            if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
+            {
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_RESULT);
+            }
+
+            if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
+            {
+                b2Vec2 size = player.GetSensorSize();
+
+                player.Finalize();
+
+                player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
+
+                boss.Initialize(b2Vec2(53, 0), b2Vec2(18, 24), true);
+
+            }
         }
-
-        //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
-        if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
-        {
-            SceneManager& sceneManager = SceneManager::GetInstance();
-            sceneManager.ChangeScene(SCENE_RESULT);
-        }
-
-  
-
-
-	  //プレイヤーが死亡したらリザルト画面に遷移
-	  if (PlayerStamina::IsPlayerDead())
-	  {
-		  SceneManager& sceneManager = SceneManager::GetInstance();
-		  sceneManager.ChangeScene(SCENE_RESULT);
-	  }
-
-		//シーン遷移の確認よう　　アンカーのstateが待ち状態の時
-		if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
-		{
-			SceneManager& sceneManager = SceneManager::GetInstance();
-			sceneManager.ChangeScene(SCENE_RESULT);
-		}
-
-		if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
-		{
-			b2Vec2 size = player.GetSensorSize();
-
-			player.Finalize();
-
-			player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
-
-			boss.Initialize(b2Vec2(53, 0), b2Vec2(18, 24),true);
-
-		}
+       else
+       {
+           std::cerr << "[Error] No bodies exist in the Box2D world!" << std::endl;
+       }
 
 
 
@@ -224,34 +279,61 @@ void Game::Draw(void)
     //2D描画なので深度無効
     SetDepthEnable(false);
 
-    //プレイヤーの描画処理
-    player.Draw();
+ 
 
 
     //ボスの描画処理
     boss.Draw();
 
+
+
+    //描画の順番を調整するためにDrawのみ、外に出す
+    itemManager.DrawAll();
+    objectManager.DrawAll();
     //フィールドの描画処理
     Field::Draw();
 
+ 
 
+    //プレイヤーの描画処理
+    player.Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
 
 
+    itemManager.DrawFront();
+    objectManager.DrawFront();
 
 
+    //衝突時のエフェクト
+    DrawImpactEffects(1.0f);
+    DrawBlownAwayEffects(1.0f);
+
+
+  
+
+
+
+    Bg::FrontDraw();
 
 
 	
-
+ 
 
 
 	//�c�@�̕`�揈��
 	PlayerLife::Draw();
 
+
+
+	player_UI::Draw();
+
+    Gokai_UI::Draw();
+
+  //体力ソウルゲージUIの描画処理
+	stamina_spirit_gauge.Draw();
 
 
 	player_UI::Draw();
@@ -289,3 +371,5 @@ void Game::Teleport_player(b2Vec2 position)
     player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
 
 }
+
+

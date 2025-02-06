@@ -31,7 +31,7 @@ public:
 	void Draw();
 	void Finalize();
 
-	void Pulling_rock(b2Vec2 pullingpower);
+	void Pulling_rock();
 
 
 	// ID を取得する
@@ -69,6 +69,11 @@ public:
 	bool	GetIfPulling() { return m_pulling; }
 	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
+	b2Vec2	GetPullingPower() { return m_pulling_power; }
+	void	SetPullingPower_With_Multiple(b2Vec2 multiple) {
+		m_pulling_power.x *= multiple.x;
+		m_pulling_power.y *= multiple.y;
+	}
 
 
 	///-----------------------------------------------------------------------------
@@ -98,6 +103,9 @@ public:
 
 private:
 	int id; // 各インスタンス固有の ID
+
+	//引っ張る時の力
+	b2Vec2 m_pulling_power;
 
 	b2Body* Rock_body;
 

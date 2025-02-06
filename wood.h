@@ -15,6 +15,7 @@
 #include"include/box2d/box2d.h"
 #include"sound.h"
 #include<list>
+#include<vector>
 
 enum Wood_State
 {
@@ -38,7 +39,10 @@ public:
 	void Draw();
 	void Finalize();
 
-	void Pulling_wood(b2Vec2 pullingpower);
+	void Pulling_wood();
+
+
+	
 
 
 	// ID を取得する
@@ -95,6 +99,14 @@ public:
 		Stump_body = body;
 	}
 
+
+
+	b2Vec2	GetPullingPower() { return m_pulling_power; }
+	void	SetPullingPower_With_Multiple(b2Vec2 multiple) {
+		m_pulling_power.x *= multiple.x;
+		m_pulling_power.y *= multiple.y;	
+	}
+
 	//木本体と切り株の間の溶接ジョイント取得
 	b2Joint* GetWoodStumpJoint() 
 	{
@@ -148,8 +160,22 @@ public:
 		AnchorPoint_body = body;
 	}
 
+
+
+	void SetLeafSize(b2Vec2 size)
+	{
+		leaf_size = size;
+	}
+
+	b2Vec2 GetLeafSize(void)
+	{
+		return leaf_size;
+	}
+	
 private:
 	int id; // 各インスタンス固有の ID
+
+	b2Vec2 m_pulling_power;
 
 	b2Body* Wood_body;
 
@@ -174,8 +200,21 @@ private:
   
 	float	angle_when_pulling_start = 0;	//引っ張り始める時や音鳴らされた直後の木の回転角度を保持
 
+	bool leaf_drop_flag = false;
+
+	static constexpr int  leafDeleteCountdown = 600; // 10秒後に削除 (60FPS x 10秒 = 600フレーム)
+
+	int now_delete_leaf_countDown=0;
+
 	//音源
 	//----------------------------------------
 	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//倒れた時の音
+
+
+	b2Vec2 leaf_size;
+
+	std::vector<b2Body*> leaf_bodies; // b2Body* のベクター
+
+	const int NUM_BODIES = 11;
 };
 #endif // !WOOD_H

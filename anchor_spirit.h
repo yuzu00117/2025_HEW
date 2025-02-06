@@ -23,6 +23,13 @@ public:
 
 	static void	Initialize();
 
+	static	void Update();
+
+	//今自動回復中か取得
+	static	bool	GetIfAutoHeal() { return m_auto_heal; }
+	//今自動回復中かセット
+	static	void	SetIfAutoHeal(bool flag) { m_auto_heal = flag; }
+
 	//今のソウルゲージの値をもらう
 	static float	GetAnchorSpiritValue();
 
@@ -37,11 +44,11 @@ public:
 		if (spirit < 100) {
 			anchor_level = 1;
 		}
-		else if (100 <= spirit && spirit < 200)
+		else if (spirit < 300)
 		{
 			anchor_level = 2;
 		}
-		else if (200 <= spirit)
+		else
 		{
 			anchor_level = 3;
 		}
@@ -55,6 +62,9 @@ private:
 
 	//ソールゲージ（後でアンカーに移動するかも）
 	static float	m_spirit;
+
+	//自動回復のフラグ
+	static bool		m_auto_heal;
 };
 
 

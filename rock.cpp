@@ -123,6 +123,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 	need_power.y = 10.0f;//縦に必要な力はない
 
 	object_rock_anchorpoint_data->add_force = need_power;
+	m_pulling_power = need_power;
 
 };
 
@@ -146,9 +147,11 @@ void rock::Update()
 
 }
 
-void rock::Pulling_rock(b2Vec2 pulling_power)
+void rock::Pulling_rock()
 {
 	b2Body* body = GetObjectAnchorPointBody();
+	b2Vec2 pulling_power = m_pulling_power;
+
 	//プレイヤー側に倒す
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
 	{
@@ -221,4 +224,10 @@ void rock::Finalize()
 	UnInitTexture(g_Rock_Texture);
 	UnInitTexture(g_Rock_Texture1);
 	UnInitTexture(g_Rock_Texture2);
+
+	
+	//なんかいるみたい
+	g_Rock_Texture = NULL;
+	g_Rock_Texture1 = NULL;
+	g_Rock_Texture2 = NULL;
 }

@@ -182,8 +182,9 @@ void StageSelectScene::Update()
 		if (m_player.GetTouchStageSelectNum() != 0)
 		{
 			
-			if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+			if ((Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))&& (Stage_select_flag==false))
 			{
+				Stage_select_flag = true;
 				fade_rate = 0.01;
 				app_atomex_start(Select_Sound);
 			}
@@ -202,12 +203,12 @@ void StageSelectScene::Update()
 			{
 			case 0:
 				break;
-
 			case 1:
+				sceneManager.SetStageName(STAGE_TUTORIAL);
 				sceneManager.ChangeScene(SCENE_GAME);
 				break;
 			case 2:
-
+				sceneManager.SetStageName(STAGE_1_1);
 				sceneManager.ChangeScene(SCENE_GAME);
 				break;
 
@@ -841,9 +842,9 @@ void StageSelectScene::Draw()
 
 
 		
-			DrawDividedSprite(XMFLOAT2((pos.x*SCALE)-20, (pos.y*SCALE)-20),g_tap_effect_angle, XMFLOAT2(100, 100), 3, 3 ,g_tap_addition/3, 1.0);
+			DrawDividedSprite(XMFLOAT2((pos.x*SCALE)-20, (pos.y*SCALE)-20),g_tap_effect_angle, XMFLOAT2(100, 100), 6, 3 ,g_tap_addition/2, 2.0);
 
-			if (20 < g_tap_addition)
+			if (32 < g_tap_addition)
 			{
 				g_tap_addition = 0;
 				m_player.SetTapTextureFlag(false);

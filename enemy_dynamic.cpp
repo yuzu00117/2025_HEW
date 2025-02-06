@@ -22,11 +22,14 @@
 #include"anchor_spirit.h"
 #include"Item_Manager.h"
 #include"create_filter.h"
+#include"object_manager.h"
 
 
-static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;//動的エネミーのテクスチャ
-static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	//エネミーのセンサーのテクスチャ
-static ID3D11ShaderResourceView* g_EnemySensor2_Texture = NULL;	//エネミーのセンサーのテクスチャ
+static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;		  //動的エネミーのテクスチャ
+static ID3D11ShaderResourceView* g_EnemyDynamic_Texture_Move;	  //動的エネミーの移動テクスチャ
+static ID3D11ShaderResourceView* g_EnemyDynamic_Texture_Attack;	  //動的エネミーの攻撃テクスチャ
+static ID3D11ShaderResourceView* g_EnemyDynamic_Texture_Destroyed;//動的エネミーの死亡テクスチャ
+static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	  //エネミーのセンサーのテクスチャ
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true, false)
@@ -88,7 +91,6 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 	b2PolygonShape shape_sensor2;
 	shape_sensor2.SetAsBox(size_sensor2.x * 0.5, size_sensor2.y * 0.5);
-	m_size_sensor_2 = b2Vec2(body_size.x * 2, body_size.y);
 
 	b2FixtureDef fixture_sensor2;
 	fixture_sensor2.shape = &shape_sensor2;
@@ -130,16 +132,31 @@ void EnemyDynamic::Initialize()
 {
 	if (g_EnemyDynamic_Texture == NULL) {
 		g_EnemyDynamic_Texture = InitTexture(L"asset\\texture\\sample_texture\\enemy_1.png");//動的エネミーのテクスチャ
+		g_EnemyDynamic_Texture_Move=InitTexture(L"asset\\texture\\enemy_texture\\enemy_move.png");//動的エネミーの移動テクスチャ
+		g_EnemyDynamic_Texture_Attack = InitTexture(L"asset\\texture\\enemy_texture\\enemy_attack.png");//動的エネミーの攻撃テクスチャ
+		g_EnemyDynamic_Texture_Destroyed = InitTexture(L"asset\\texture\\enemy_texture\\enemy_destroyed.png");//動的エネミーの死亡テクスチャ
 		g_EnemySensor_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor.png");//エネミーのセンサーのテクスチャ
-    g_EnemySensor2_Texture = InitTexture(L"asset\\texture\\sample_texture\\xxx_enemy_sensor_left.png");//エネミーの移動用センサーのテクスチャ
 	}
 }
 
 void EnemyDynamic::Finalize()
 {
-	UnInitTexture(g_EnemyDynamic_Texture);
-	UnInitTexture(g_EnemySensor_Texture);
-	UnInitTexture(g_EnemySensor2_Texture);
+
+	if (g_EnemyDynamic_Texture != NULL)
+	{
+		UnInitTexture(g_EnemyDynamic_Texture);
+		UnInitTexture(g_EnemyDynamic_Texture_Move);
+		UnInitTexture(g_EnemyDynamic_Texture_Attack);
+		UnInitTexture(g_EnemyDynamic_Texture_Destroyed);
+		UnInitTexture(g_EnemySensor_Texture);
+
+		g_EnemyDynamic_Texture = NULL;
+		g_EnemyDynamic_Texture_Move = NULL;
+		g_EnemyDynamic_Texture_Attack = NULL;
+		g_EnemyDynamic_Texture_Destroyed = NULL;
+		g_EnemySensor_Texture = NULL;
+
+	}
 
 	//ワールドに登録したbodyの削除
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -179,6 +196,12 @@ void EnemyDynamic::Update()
 		ItemManager& item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
 
+
+
+		b2Vec2 now_positon = GetBody()->GetPosition();
+		b2Vec2 now_size = GetSize();
+		b2Vec2 now_vec = GetBody()->GetLinearVelocity();
+
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -194,6 +217,8 @@ void EnemyDynamic::Update()
 		}
 
 		object_manager.DestroyEnemyDynamic(GetID());
+
+		object_manager.AddChangeEnemyFilterAndBody(now_positon,b2Vec2(now_size.x*2,now_size.y*2),b2Vec2_zero, g_EnemyDynamic_Texture_Destroyed,4,4,now_vec);
 	}
 }
 
@@ -214,37 +239,84 @@ void EnemyDynamic::Draw()
 	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	//貼るテクスチャを指定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture);
+	if (GetState() != m_old_state)
+	{
+		m_anim_id = 0;
+	}
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ GetSize().x * scale*2.0f , GetSize().y * scale*2.0f }
-	);
+	switch (GetState())
+	{
+	case ENEMY_STATE_MOVE:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Move);
+
+		DrawDividedSpritePlayer(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
+			5, 5, m_anim_id, 3.0, m_direction
+		);
+		m_anim_id++;
+		m_anim_id = m_anim_id % 25;
+		break;
+	case ENEMY_STATE_ATTACK:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Attack);
+
+		//draw
+		DrawDividedSpritePlayer(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale * 3.0f ,GetSize().y * scale * 2.0f },
+			5, 5, m_anim_id, 3.0, m_direction
+		);
+		if (m_attack_counter % 2 == 0)
+		{
+			m_anim_id++;
+		}
+		m_anim_id = m_anim_id % 25;
+		break;
+	case ENEMY_STATE_DESTROYED:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Destroyed);
+
+		DrawDividedSpritePlayer(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
+			4, 4, m_anim_id, 3.0, m_direction
+		);
+		m_anim_id++;
+		break;
+		break;
+	default:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Move);
+
+		DrawDividedSpritePlayer(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
+			5, 5, 0, 3.0, m_direction
+		);
+		break;
+	}
 
 
 	//============================================================
 	//テスト:センサー描画
 	//============================================================
-	//貼るテクスチャを指定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor2_Texture);
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ m_size_sensor_2.x * scale , m_size_sensor_2.y * scale }
-	);
-
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	/*GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
 	DrawSprite(
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
 		{ m_size_sensor.x * scale , m_size_sensor.y * scale }
-	);
+	);*/
 }
 
 //移動
@@ -331,6 +403,11 @@ void EnemyDynamic::Attack()
 		SetState(ENEMY_STATE_NULL);
 		return;
 	}
+}
+
+//死亡
+void EnemyDynamic::Destroyed()
+{
 
 }
 
@@ -372,3 +449,4 @@ void EnemyDynamic::SetDirectionBasedOnPlayer()
 		SetDirection(true);
 	}
 }
+

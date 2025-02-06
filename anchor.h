@@ -111,6 +111,11 @@ public:
 	static void DeleteNormalAttackAnchor();
 
 	void DeleteNormalAttackAnchorBody();
+	 
+
+	static void DrawAnchorHitEffect(void);
+
+
 
 
 
@@ -181,6 +186,13 @@ private:
 
 
 	static AnchorState now_anchor_state;
+
+	bool anchor_hit_effect_flag=false;
+
+	int anchor_hit_effect_sheet_cnt;
+
+
+	float anchor_nomal_attack_effect = 0;
 };
 
 

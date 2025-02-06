@@ -19,6 +19,8 @@
 #include"Item_SpeedUp.h"
 #include"Item_coin.h"
 #include"Item_Spirit.h"
+#include"Item_Jewel.h"
+#include"Item_SavePoint.h"
 
 //アイテムの種類
 enum ItemType
@@ -27,6 +29,8 @@ enum ItemType
 	ITEM_SPIRIT,	//ソウル（敵が落とすアイテム）
 	ITEM_SPEED_UP,	//スピードアップ
 	ITEM_COIN,//コイン
+	ITEM_JEWEL,	//宝石
+	ITEM_SAVEPOINT,	//セーブポイント
 };
 
 
@@ -44,16 +48,18 @@ public:
 	void	AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 	//recovery引数はプレイヤーがアイテムを取るときのソウルの回復値
 	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha = 1.0f);
-
-	
 	void	AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
-
+	//Jewel_Type型のtype引数は BLUE, RED, YELLOW のどれかを渡す
+	void	AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon = true, float Alpha = 1.0f);
+	void	AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 
 	// ID を使ってアイテムを検索
 	ItemSpeedUp* FindItem_SpeedUp_ByID(int ID);
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
-	
 	ItemCoin* FindItem_Coin_ByID(int ID);
+	ItemJewel* FindItem_Jewel_ByID(int ID);
+	ItemSavePoint* FindItem_SavePoint_ByID(int ID);
+
 	// 全てのアイテムを初期化
 	void InitializeAll();
 
@@ -63,18 +69,26 @@ public:
 	// 全てのアイテムを描画
 	void DrawAll();
 
+	//全面の描画処理　エフェクトなど
+	void DrawFront();
+
 	// 全てのアイテムを破棄
 	void FinalizeAll();
 
 	//　全てのソウルアイテムが回収される予定だと設定する
 	void	SetCollectSpirit(bool flag);
 
+	//全ての宝石を使う
+	void	UseAllJewel();
+
 
 private:
 
 	std::vector<std::unique_ptr<ItemSpeedUp>> m_SpeedUp_List; // スピードアップアイテムのリスト
 	std::vector<std::unique_ptr<ItemSpirit>> m_Spirit_List; // ソウルアイテムのリスト
-	std::vector<std::unique_ptr<ItemCoin>> m_Coin_List; // のリスト
+	std::vector<std::unique_ptr<ItemCoin>> m_Coin_List; // コインのリスト
+	std::list<std::unique_ptr<ItemJewel>> m_Jewel_List; // 宝石のリスト
+	std::vector<std::unique_ptr<ItemSavePoint>> m_SavePoint_List; // セーブポイントのリスト
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;
