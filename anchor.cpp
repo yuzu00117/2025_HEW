@@ -388,7 +388,7 @@ void Anchor::CreateRotateJoint()
 		if (baseShape->GetType() != b2Shape::e_polygon) {
 			return; // ポリゴン形状でなければ処理しない
 		}
-		// 元の `b2PolygonShape` をコピー
+		// 元の b2PolygonShapeをコピー
 		b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
 		if (originalShape == nullptr) {
 			
