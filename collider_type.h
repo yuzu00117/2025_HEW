@@ -63,6 +63,8 @@ enum ColliderTypeList
     collider_object_carry_enemy,
 
     collider_blown_away_enemy,
+
+    collider_bound_block
 };
 
 

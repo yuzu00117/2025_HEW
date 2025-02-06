@@ -251,6 +251,15 @@
       <Filter>リソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Item_Jewel.cpp" />
+    <ClCompile Include="1_1_boss_carry_object_enemy.cpp" />
+    <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp" />
+    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
+    <ClCompile Include="blown_away_effect.cpp" />
+    <ClCompile Include="gokai.cpp" />
+    <ClCompile Include="Item_SavePoint.cpp" />
+    <ClCompile Include="bound_block.cpp">
+      <Filter>リソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -525,6 +534,15 @@
       <Filter>ヘッダーファイル\tool</Filter>
     </ClInclude>
     <ClInclude Include="impact_effect.h">
+      <Filter>リソースファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="1_1_boss_carry_object_enemy.h" />
+    <ClInclude Include="1_1_boss_carry_object_enemy_spawner.h" />
+    <ClInclude Include="blown_away_effect.h" />
+    <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
+    <ClInclude Include="gokai.h" />
+    <ClInclude Include="Item_SavePoint.h" />
+    <ClInclude Include="bound_block.h">
       <Filter>リソースファイル</Filter>
     </ClInclude>
   </ItemGroup>

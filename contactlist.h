@@ -38,6 +38,7 @@
 #include"gokai.h"
 #include"blown_away_effect.h"
 #include"Change_Enemy_Filter_and_Body.h"
+#include"bound_block.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -184,6 +185,26 @@ public:
             {
                 geyser* geyser_instance = object_manager.FindGeyserID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                 geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+            }
+        }
+
+
+
+        //プレイヤーとバウンドブロックが触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block) ||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_bound_block)
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
+                bound_block_instance->SetJumpFlag(true);
+            }
+            else
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
+                bound_block_instance->SetJumpFlag(true);
             }
         }
 
