@@ -129,6 +129,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 
 	object_anchorpoint_data->add_force = need_power;
+	m_pulling_power = need_power;
 
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = m_Body;
@@ -193,15 +194,20 @@ void boss_pillar::Update()
 		if (m_body != nullptr)
 		{
 			float angle = m_body->GetAngle();  // ラジアンで取得
-			float angleDeg = angle * 57.2958f; // 度数法に変換
+			float angleDeg = angle * 57.2958f; // 度数法に変換 (180 / π)
 
-			// 85°以上275°以下を判定
-			if (angleDeg >= 85.0f && angleDeg <= 275.0f)
+			// 角度を -180° ~ 180° の範囲に正規化
+			while (angleDeg > 180.0f) angleDeg -= 360.0f;
+			while (angleDeg < -180.0f) angleDeg += 360.0f;
+
+			// 横倒しを判定（85°以上 or -85°以下で壊れる）
+			if (angleDeg >= 85.0f || angleDeg <= -85.0f)
 			{
-				//角度がそうなったら壊す
+				// 角度が閾値を超えたら壊す
 				Splitting_Destroy_Flag = true;
 			}
 		}
+
 
 
 
@@ -329,9 +335,11 @@ void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 	
 }
 
-void boss_pillar::Pulling_pillar(b2Vec2 pulling_power)
+void boss_pillar::Pulling_pillar()
 {
 	b2Body* body = GetObjectAnchorPointBody();
+	b2Vec2 pulling_power = m_pulling_power;
+
 	//プレイヤー側に倒す
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
 	{
@@ -414,5 +422,9 @@ void boss_pillar::Draw()
 
 void boss_pillar::Finalize()
 {
-	UnInitTexture(g_Texture);
+	if (g_Texture != NULL)
+	{
+		UnInitTexture(g_Texture);
+		g_Texture = NULL;
+	}
 }

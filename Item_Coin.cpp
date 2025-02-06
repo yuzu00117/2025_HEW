@@ -121,16 +121,18 @@ void	ItemCoin::Update()
 
 void    ItemCoin::Function()
 {
-    Player player = Player::GetInstance();
-    player.SetSpeed(0.04f);
+
 }
 
 
 void ItemCoin::Initialize()
 {
 
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
-    g_coin_effect=InitTexture(L"asset\\texture\\sample_texture\\coin_effect.png");
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coin.png");
+        g_coin_effect = InitTexture(L"asset\\texture\\sample_texture\\coin_effect.png");
+    }
 }
 
 
@@ -214,7 +216,7 @@ void ItemCoin::DrawEffect()
             { draw_x,
              draw_y },
             0.0,
-            { GetSize().x * scale * 1.5f,GetSize().y * scale * 1.5f },
+            { GetSize().x * scale * 2.5f,GetSize().y * scale * 2.5f },
             4, 3,
             coin_effect_sheet_cnt / 4,
             3.0
@@ -247,10 +249,18 @@ void ItemCoin::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
-    if (g_Texture != nullptr)
+
+    if (g_Texture!=NULL)
     {
         UnInitTexture(g_Texture);
+        UnInitTexture(g_coin_effect);
+        g_Texture = NULL;
+        g_coin_effect = NULL;
     }
+
+ 
+       
+    
 }
 
 ItemCoin::~ItemCoin()

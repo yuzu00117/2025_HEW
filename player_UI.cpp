@@ -11,7 +11,7 @@ ID3D11ShaderResourceView* g_red_jewel_Texture = NULL;	//宝石　赤
 ID3D11ShaderResourceView* g_blue_jewel_Texture = NULL;	//宝石　青
 ID3D11ShaderResourceView* g_yellow_jewel_Texture = NULL;//宝石　黄
 
-ID3D11ShaderResourceView* g_soul_gage_background_Texture = NULL;//ソウルゲージの背景
+
 ID3D11ShaderResourceView* g_soul_gage_Texture = NULL;           //ソウルゲージのテクスチャ
 ID3D11ShaderResourceView* g_soul_gage_HP_Texture = NULL;		//ソウルゲージのHP部分
 ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ソウルゲージの外枠
@@ -29,6 +29,12 @@ ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベ
 DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(130.f, 450.f);
 DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(250.f, 500.f);
 float player_UI::player_ui_alpha = 1.0f;
+
+bool	player_UI::m_blue_jewel_collected = false;
+bool	player_UI::m_red_jewel_collected = false;
+bool	player_UI::m_yellow_jewel_collected = false;
+
+DirectX::XMFLOAT2 player_UI::m_ring_position = player_ui_position;
 
 player_UI::player_UI()
 {
@@ -50,8 +56,7 @@ void player_UI::Initialize()
 	g_blue_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\blue_jewel.png");
 	g_yellow_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\yellow_jewel.png");
 
-	//ソウルゲージ達
-	/*g_soul_gage_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_back_ground.png");*/
+	
 	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul .png");
 	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP.png");
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
@@ -188,7 +193,7 @@ void player_UI::Draw()
 	//-------------------------------------------------------------------------------------------
 	//宝石の描画
 
-	if (true)//赤の宝石
+	if (m_red_jewel_collected)//赤の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_red_jewel_Texture);
@@ -201,7 +206,7 @@ void player_UI::Draw()
 		);
 	}
 
-	if (true)//青の宝石
+	if (m_blue_jewel_collected)//青の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_blue_jewel_Texture);
@@ -214,7 +219,7 @@ void player_UI::Draw()
 		);
 	}
 
-	if (true)//黄色の宝石
+	if (m_yellow_jewel_collected)//黄色の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_yellow_jewel_Texture);
@@ -300,24 +305,53 @@ void player_UI::Draw()
 
 void player_UI::Finalize()
 {
-	//本体ぽいやつ
-	UnInitTexture(g_ring_Texture);
-	//宝石
-	UnInitTexture(g_red_jewel_Texture);
-	UnInitTexture(g_blue_jewel_Texture);
-	UnInitTexture(g_yellow_jewel_Texture);
 
-	//ソウルゲージ達
-	UnInitTexture(g_soul_gage_background_Texture);
-	UnInitTexture(g_soul_gage_border_Texture);
-	UnInitTexture(g_soul_gage_HP_Texture);
-	UnInitTexture(g_soul_gage_border_Texture);
+	if (g_ring_Texture != NULL)
+	{
+		//本体ぽいやつ
+		UnInitTexture(g_ring_Texture);
+		//宝石
+		UnInitTexture(g_red_jewel_Texture);
+		UnInitTexture(g_blue_jewel_Texture);
+		UnInitTexture(g_yellow_jewel_Texture);
 
-	//アンカーレベルのテクスチャたち
-	UnInitTexture(g_anchor_level_background_Texture);
-	UnInitTexture(g_anchor_level_1_Texture);
-	UnInitTexture(g_anchor_level_2_Texture);
-	UnInitTexture(g_anchor_level_3_Texture);
-	UnInitTexture(g_anchor_level_border_Texture);
+		//ソウルゲージ達
+	
+		UnInitTexture(g_soul_gage_Texture);
+		UnInitTexture(g_soul_gage_HP_Texture);
+		UnInitTexture(g_soul_gage_border_Texture);
+
+		//アンカーレベルのテクスチャたち
+		UnInitTexture(g_anchor_level_background_Texture);
+		UnInitTexture(g_anchor_level_1_Texture);
+		UnInitTexture(g_anchor_level_2_Texture);
+		UnInitTexture(g_anchor_level_3_Texture);
+		UnInitTexture(g_anchor_level_border_Texture);
+
+		UnInitTexture(g_anchor_level_division_Texture);
+		UnInitTexture(g_anchor_level_outline_Texture);
+
+		g_ring_Texture = NULL;
+
+		g_red_jewel_Texture = NULL;
+		g_blue_jewel_Texture = NULL;
+		g_yellow_jewel_Texture = NULL;
+
+	
+		g_soul_gage_Texture = NULL;
+		g_soul_gage_HP_Texture = NULL;
+		g_soul_gage_border_Texture = NULL;
+
+		g_anchor_level_background_Texture = NULL;
+		g_anchor_level_1_Texture = NULL;
+		g_anchor_level_2_Texture = NULL;
+		g_anchor_level_3_Texture = NULL;
+		g_anchor_level_border_Texture = NULL;
+
+
+		g_anchor_level_division_Texture = NULL;
+		g_anchor_level_outline_Texture = NULL;
+		
+	}
 }
 

@@ -33,6 +33,7 @@
 #include"player_UI.h"
 #include"impact_effect.h"
 #include"gokai.h"
+#include"blown_away_effect.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -68,8 +69,10 @@ void Game::Initialize()
 
     //背景の初期化
     Bg::Initialize();
-
+    //衝撃エフェクト
     InitImpactEffect();
+    //撃墜演出エフェクト
+    InitBlownAwayEffect();
 
     Gokai_UI::Initialize();
 
@@ -124,8 +127,11 @@ void Game::Finalize(void)
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
 
-    //衝突時のエフェクトを描画
-    InitImpactEffect();
+    //衝突時のエフェクトを
+    FinalizeImpactEffects();
+    //撃墜演出エフェクト
+    FinalizeBlownAwayEffects();
+
 
 #ifdef _DEBUG
     //デバッグ文字
@@ -160,7 +166,7 @@ void Game::Update(void)
             //プレイヤーUIの更新処理
             player_UI::Update();
 
-            
+            AnchorSpirit::Update();
 
             //プレイヤーの更新処理
             player.Update();
@@ -186,9 +192,13 @@ void Game::Update(void)
             //衝突エフェクトの描画処理
             UpdateImpactEffects();
 
+            //撃墜演出エフェクト
+            UpdateBlownAwayEffects();
+
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
+                
                 SceneManager& sceneManager = SceneManager::GetInstance();
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
@@ -206,8 +216,20 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);
+                //プレイヤーの残機が残っていたら最初からスタート
+                if (PlayerLife::GetLife() > 0)
+                {
+                    PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_GAME);
+                }
+                else
+                {
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_RESULT);
+                }
+
+
             }
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
@@ -266,17 +288,32 @@ void Game::Draw(void)
     //ボスの描画処理
     boss.Draw();
 
+
+
+    //描画の順番を調整するためにDrawのみ、外に出す
+    itemManager.DrawAll();
+    objectManager.DrawAll();
     //フィールドの描画処理
     Field::Draw();
 
-    //衝突時のエフェクト
-    DrawImpactEffects(1.0f);
+ 
 
     //プレイヤーの描画処理
     player.Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
+
+
+
+    itemManager.DrawFront();
+    objectManager.DrawFront();
+
+
+    //衝突時のエフェクト
+    DrawImpactEffects(1.0f);
+    DrawBlownAwayEffects(1.0f);
+
 
   
 
@@ -340,3 +377,5 @@ void Game::Teleport_player(b2Vec2 position)
     player.Initialize(position, b2Vec2(1.f, 2.f), size_sensor);
 
 }
+
+

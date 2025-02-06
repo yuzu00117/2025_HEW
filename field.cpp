@@ -25,6 +25,7 @@
 #include"object_manager.h"
 #include"Item_Manager.h"
 #include"1_1_boss_carry_object_enemy.h"
+#include"scene.h"
 
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
@@ -69,9 +70,25 @@ void Field::Initialize()
 	AnchorPoint::Initialize();
 
 
+	SceneManager& sceneManager = SceneManager::GetInstance();
+	switch (sceneManager.GetStageName())
+	{
+	case STAGE_NULL:
+		break;
+	case STAGE_TUTORIAL:
+		// csvからマップチップを読み込む
+		Field::LoadCSV("asset/mapchip_tutorial.csv");
+		break;
+	case STAGE_1_1:
+		// csvからマップチップを読み込む
+		Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
+		break;
 
-	// csvからマップチップを読み込む
-	Field::LoadCSV("asset/mapchip_stage_1_1_test.csv");
+	default:
+		break;
+	}
+
+	
 	//読み込んだデータをfield_mapに格納
 	std::vector<std::vector<int>> field_map = m_field_data;
 
@@ -229,6 +246,17 @@ void Field::Initialize()
 				objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 9.f), 1, 6, boss_room_level_6);
 			}
 
+			if (field_map[y][x] == 32) {//青宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE);
+			}
+
+			if (field_map[y][x] == 33) {//赤宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, RED);
+			}
+
+			if (field_map[y][x] == 34) {//黄色宝石
+				itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, YELLOW);
+			}
 
 
 			//ステージの間欠泉
@@ -267,10 +295,18 @@ void Field::Initialize()
 			if (field_map[y][x] == 49) {//ボスの地面ブロック破壊できる
 				objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), boss_room_level_5, false);
 			}
-			
+
+			if (field_map[y][x] == 50) {//中間地点
+				itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+			}
+
+
 
 	
 
+			if (field_map[y][x] == 55) {//接触したら死ぬ
+				objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(195.f, 1.f), DEAD_BLOCK_TYPE,b2Vec2_zero);
+			}
 
 
 		}
@@ -340,8 +376,7 @@ void Field::Draw()
 		}
 	}
 
-	itemManager.DrawAll();
-	objectManager.DrawAll();
+
 	
 
 
@@ -378,6 +413,15 @@ void Field::Finalize()
 	AnchorPoint::Finalize();
 	objectManager.FinalizeAll();
 	itemManager.FinalizeAll();
+
+	if (g_Ground_Texture != NULL)
+	{
+		UnInitTexture(g_AnchorPoint_Texture);
+		UnInitTexture(g_Ground_Texture);
+
+		g_Ground_Texture = NULL;
+		g_AnchorPoint_Texture = NULL;
+	}
 
 }
 

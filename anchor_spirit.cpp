@@ -16,6 +16,15 @@
 
 
 float AnchorSpirit::m_spirit = 50.0f;
+bool AnchorSpirit::m_auto_heal = false;
+
+void AnchorSpirit::Update()
+{
+	if (m_auto_heal)
+	{
+		EditAnchorSpiritValue(MAX_ANCHOR_SPIRIT);
+	}
+}
 
 void AnchorSpirit::Initialize()
 {

@@ -150,7 +150,8 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 
 
 	object_anchorpoint_data->add_force = need_power;
-	add_force = object_anchorpoint_data->add_force;
+	m_pulling_power = object_anchorpoint_data->add_force;
+	m_pulling_power = need_power;
 
 
 	//アンカーレベルの設定
@@ -187,7 +188,7 @@ void movable_ground::Update()
 {
 	if (pulling)
 	{
-		Pulling_ground(add_force);
+		Pulling_ground();
 
 		for (auto w : enemy_static)
 		{
@@ -255,14 +256,22 @@ void movable_ground::Finalize()
 	world->DestroyBody(AnchorPoint_body);
 
 	//テクスチャの解放
-	UnInitTexture(g_Ground_Texture);
+
+	if (g_Ground_Texture != NULL)
+	{
+		UnInitTexture(g_Ground_Texture);
+		g_Ground_Texture = NULL;
+
+	}
 
 
 }
 
-void movable_ground::Pulling_ground(b2Vec2 pulling_power)
+void movable_ground::Pulling_ground()
 {
 	b2Body* body = GetObjectAnchorPointBody();
+	b2Vec2 pulling_power = m_pulling_power;
+
 	//プレイヤー側に引っ張る
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x )//プレイヤーが左側
 	{

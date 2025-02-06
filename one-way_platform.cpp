@@ -172,10 +172,15 @@ void one_way_platform::Finalize()
 		world->DestroyBody(one_way_platform_body);
 	}
 
+	if (g_one_way_platform_Texture != NULL)
+	{
+		//テクスチャの解放
+		UnInitTexture(g_one_way_platform_Texture);
+		UnInitTexture(g_one_way_platform1_Texture);
 
-	//テクスチャの解放
-	UnInitTexture(g_one_way_platform_Texture);
-	UnInitTexture(g_one_way_platform1_Texture);
+		g_one_way_platform1_Texture = NULL;
+		g_one_way_platform_Texture = NULL;
+	}
 
 
 }

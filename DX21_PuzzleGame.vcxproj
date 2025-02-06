@@ -144,6 +144,9 @@
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="camera_shake.cpp" />
+    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
+    <ClCompile Include="blown_away_effect.cpp" />
+    <ClCompile Include="contact_block.cpp" />
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
     <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
@@ -167,7 +170,9 @@
     <ClCompile Include="impact_effect.cpp" />
     <ClCompile Include="Item_Coin.cpp" />
     <ClCompile Include="Item_Coin_UI.cpp" />
+    <ClCompile Include="Item_Jewel.cpp" />
     <ClCompile Include="Item_Manager.cpp" />
+    <ClCompile Include="Item_SavePoint.cpp" />
     <ClCompile Include="Item_SpeedUp.cpp" />
     <ClCompile Include="Item_Spirit.cpp" />
     <ClCompile Include="keyboard.cpp" />
@@ -211,9 +216,12 @@
     <ClInclude Include="anchor_point.h" />
     <ClInclude Include="anchor_spirit.h" />
     <ClInclude Include="bg.h" />
+    <ClInclude Include="blown_away_effect.h" />
     <ClInclude Include="camera_shake.h" />
+    <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
+    <ClInclude Include="contact_block.h" />
     <ClInclude Include="create_filter.h" />
     <ClInclude Include="cri\common\include\CriSmpFramework.h" />
     <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
@@ -239,7 +247,9 @@
     <ClInclude Include="impact_effect.h" />
     <ClInclude Include="Item_Coin.h" />
     <ClInclude Include="Item_Coin_UI.h" />
+    <ClInclude Include="Item_Jewel.h" />
     <ClInclude Include="Item_Manager.h" />
+    <ClInclude Include="Item_SavePoint.h" />
     <ClInclude Include="Item_SpeedUp.h" />
     <ClInclude Include="Item_Spirit.h" />
     <ClInclude Include="keyboard.h" />

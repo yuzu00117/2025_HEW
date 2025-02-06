@@ -175,6 +175,11 @@ void teleport_block::Finalize()
 	}
 
 	//‰æ‘œ‚Ì‰ð•ú
-	UnInitTexture(g_Teleport_Block_Texture);
+
+	if (g_Teleport_Block_Texture != NULL)
+	{
+		UnInitTexture(g_Teleport_Block_Texture);
+		g_Teleport_Block_Texture = NULL;
+	}
 	
 }

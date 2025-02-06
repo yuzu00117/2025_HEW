@@ -62,10 +62,21 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L1 = NULL;//アンカーのエ�
 static ID3D11ShaderResourceView* g_Anchor_Effect_L2 = NULL;//アンカーのエフェクト
 static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//アンカーのエフェクト
 
+
+
+//アンカーレベルが変わった際に表示するエフェクト プレイヤーの背景として表示する
+static ID3D11ShaderResourceView* g_Anchor_LevelUp_1to2_Effect = NULL;//アンカーがレベル１から２になった場合のエフェクト
+static ID3D11ShaderResourceView* g_Anchor_LevelUp_2to3_Effect = NULL;//アンカーがレベル2から３になった場合のエフェクト
+static ID3D11ShaderResourceView* g_Anchor_LevelDown_Effect = NULL;  //アンカーがレベルが下がったひと
+
+
+
 //staticメンバー変数の初期化
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
+b2Vec2  Player::m_jump_force = b2Vec2(0.0f, -0.40f);
+float   Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;
 
@@ -135,6 +146,11 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         g_Anchor_Effect_L1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_1_4_2.png");
         g_Anchor_Effect_L2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_2_5_2.png");
         g_Anchor_Effect_L3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_3_5_2.png");
+
+
+        g_Anchor_LevelUp_1to2_Effect = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Up_1to2_Effect.png");
+        g_Anchor_LevelUp_2to3_Effect = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Up_2to3_Effect.png");
+        g_Anchor_LevelDown_Effect =    InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Domn_Effect.png");
     }
 
 
@@ -199,7 +215,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         b2FixtureDef fixture_circle_bottom;
         fixture_circle_bottom.shape = &circle_bottom;
         fixture_circle_bottom.density = 1.3f;
-        fixture_circle_bottom.friction = 1.0f;//摩擦
+        fixture_circle_bottom.friction = 2.5f;//摩擦
         fixture_circle_bottom.restitution = 0.0f;//反発係数
         fixture_circle_bottom.isSensor = false;//センサーかどうか、trueならあたり判定は消える
         fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
@@ -249,6 +265,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         fixture_sensor.friction = 0.0f;//摩擦
         fixture_sensor.restitution = 0.0f;//反発係数
         fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+        fixture_sensor.filter = createFilterExclude("player_sensor_filter", {});
 
 
 
@@ -260,6 +277,48 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
        // プレーヤーにユーザーデータを登録
         ObjectData* player_sensor_data = new ObjectData{ collider_player_sensor };
         player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
+
+        //---------------------------------------------------------------------------------------------------------------------------
+
+        //エフェクト用のセンサー　撃墜演出のね
+        float sencor_x_Scale=0.6;
+
+        float sensor_y_Scale_over = 0.8;
+        float sencor_y_Scale_under =0.4;
+
+        b2PolygonShape effect_sensor;
+
+
+        b2Vec2 effect_vertices[4] = { b2Vec2(0.0f,0.0f) };
+
+        // 反時計回りで頂点を設定
+        effect_vertices[0].Set(-size_sensor.x / 2* sencor_x_Scale, size_sensor.y / 2 / 3 * sencor_y_Scale_under);  // 左下
+        effect_vertices[1].Set(size_sensor.x / 2 * sencor_x_Scale, size_sensor.y / 2 / 3 * sencor_y_Scale_under);   // 右下
+        effect_vertices[2].Set(size_sensor.x / 2 * sencor_x_Scale, -size_sensor.y / 2 * sensor_y_Scale_over);    // 右上
+        effect_vertices[3].Set(-size_sensor.x / 2 * sencor_x_Scale, -size_sensor.y / 2 * sensor_y_Scale_over);   // 左上
+
+
+        effect_sensor.Set(effect_vertices, 4);
+
+
+
+        b2FixtureDef effect_fixture_sensor;
+        effect_fixture_sensor.shape = &effect_sensor;
+        effect_fixture_sensor.density = 0.0f;//密度
+        effect_fixture_sensor.friction = 0.0f;//摩擦
+        effect_fixture_sensor.restitution = 0.0f;//反発係数
+        effect_fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+        effect_fixture_sensor.filter = createFilterExclude("player_sensor_filter", {});
+
+
+        b2Fixture* effect_player_sensor_fixture = m_body->CreateFixture(&effect_fixture_sensor);
+
+
+        // カスタムデータを作成して設定
+       // プレイヤーに値を登録
+       // プレーヤーにユーザーデータを登録
+        ObjectData* effect_player_sensor_data = new ObjectData{ collider_effect_sensor };
+        effect_player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(effect_player_sensor_data);
 
         //---------------------------------------------------------------------------------------------------
 
@@ -276,6 +335,57 @@ void Player::Update()
     //モーションのDrawカウントを加算
     draw_cnt++;
     
+
+    // Sensorの変更フラグの管理とエフェクトのトリガー
+    int current_level = AnchorSpirit::GetAnchorLevel();
+
+    if (old_anchor_Lev != current_level)
+    {
+        // レベルの変化を詳細にチェック
+        switch (old_anchor_Lev)
+        {
+        case 1: // 過去がレベル1だった
+            if (current_level == 2)
+            {
+                Anchor_level_up_down_sheet_type = 1;
+            }
+            else if (current_level == 3)
+            {
+                Anchor_level_up_down_sheet_type = 2;
+            }
+            break;
+
+        case 2:
+            if (current_level == 1)
+            {
+                Anchor_level_up_down_sheet_type = 3;
+            }
+            else if (current_level == 3)
+            {
+                Anchor_level_up_down_sheet_type = 2;
+            }
+            break;
+
+        case 3:
+            if (current_level == 1)
+            {
+                Anchor_level_up_down_sheet_type = 3;
+            }
+            else if (current_level == 2)
+            {
+                Anchor_level_up_down_sheet_type = 3;
+            }
+            break;
+
+        default:
+            // 予期しないレベルのとき
+            break;
+        }
+
+        // エフェクトシートを更新
+        Now_Anchor_level_up_Down_effect_sheet = 1;
+    }
+
 
     //Sensorの変更フラグの管理
     if (old_anchor_Lev != AnchorSpirit::GetAnchorLevel())
@@ -340,11 +450,12 @@ void Player::Update()
 
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ GetSpeed() + adjust_speed , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
             }
             if (Anchor::GetAnchorState() != Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ (GetSpeed() + adjust_speed)/3 , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
+
             }
 
 
@@ -367,11 +478,11 @@ void Player::Update()
         {
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ -(GetSpeed()) + adjust_speed , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({-(GetSpeed()) + adjust_speed, 0.0f},true);
             }
             if (Anchor::GetAnchorState() != Nonexistent_state)
             {
-                m_body->ApplyLinearImpulse({ ((GetSpeed()) + adjust_speed)/-3 , 0.0f }, player_point, true);
+                m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
             }
 
             //使用中は左右反転できないようにした
@@ -386,6 +497,13 @@ void Player::Update()
             }
             //app_atomex_start(Player_Walk_Sound);
 
+        }
+
+        //宝石による移動速度アップした時滑るので、プレイヤーの足の摩擦力を上げたのと以下の処理を一応
+        if (!(stick.x < 0 || Keyboard_IsKeyDown(KK_LEFT) || stick.x>0 || Keyboard_IsKeyDown(KK_RIGHT))||draw_state == player_nomal_state)
+        {
+            m_body->SetLinearVelocity({ 0.0f, 0.0f });
+            draw_state = player_nomal_state;
         }
 
         //playerのスピード上昇
@@ -462,6 +580,18 @@ void Player::Update()
         app_atomex_start(Player_Soul_Colect_Sound);
     }
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
+
+
+//宝石使う処理(テスト用)
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J)))
+    {
+        ItemManager& itemManager = ItemManager::GetInstance();
+        itemManager.UseAllJewel();
+
+        app_atomex_start(Player_Soul_Colect_Sound);
+    }
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B));
 
 
 
@@ -633,7 +763,7 @@ void Player::Update()
     case NowAttackngNormalAttack:
         //攻撃中
         g_anchor_frame_management_number++;
-        if (g_anchor_frame_management_number < 15)
+        if (g_anchor_frame_management_number > 8)
         {
             g_anchor_frame_management_number = 0;
             Anchor::SetAnchorState(DeletingNormaklAttack_state);
@@ -1023,6 +1153,11 @@ void Player::DrawAnchorEffect()
 void Player::Draw()
 {
     if (m_body != nullptr) {
+
+
+        //レベルが変わった時にエフェクトを発生させる
+        DrawAnchorLevelUpDownEffect();
+
         // コライダーと位置情報の補正をするため
         float scale = SCREEN_SCALE;
 
@@ -1254,8 +1389,11 @@ void Player::Draw()
         // **土煙を描画**
         DrawDustEffect();
       
-
+        //アンカーを投げる時にエフェクトを発生させる
         DrawAnchorEffect();
+
+
+       
 
         //----------------------------------------------------------------------------------------
         //センサー描画
@@ -1347,6 +1485,45 @@ void Player::Finalize()
     if (g_player_Texture != nullptr)
     {
         UnInitTexture(g_player_Texture);
+        UnInitTexture(g_player_jump_sheet);
+        UnInitTexture(g_player_throw_anchor_sheet);
+        UnInitTexture(g_player_walk_sheet);
+        UnInitTexture(g_player_normal_attack_sheet);
+        UnInitTexture(g_player_normal_attack_anchor_sheet);
+        UnInitTexture(g_player_damaged_sheet);
+        UnInitTexture(g_player_walk_effect);
+        UnInitTexture(g_player_sensor_Texture);
+        UnInitTexture(g_anachor_level_3_Frame1_Texture);
+        UnInitTexture(g_anachor_level_3_Frame2_Texture);
+        UnInitTexture(g_Anchor_Effect_S1);
+        UnInitTexture(g_Anchor_Effect_S2);
+        UnInitTexture(g_Anchor_Effect_S3);
+        UnInitTexture(g_Anchor_Effect_M1);
+        UnInitTexture(g_Anchor_Effect_M2);
+        UnInitTexture(g_Anchor_Effect_M3);
+        UnInitTexture(g_Anchor_Effect_L1);
+        UnInitTexture(g_Anchor_Effect_L2);
+        UnInitTexture(g_Anchor_Effect_L3);
+
+        g_player_Texture = NULL;
+        g_player_jump_sheet = NULL;
+        g_player_throw_anchor_sheet = NULL;
+        g_player_walk_sheet = NULL;
+        g_player_normal_attack_sheet = NULL;
+        g_player_normal_attack_anchor_sheet = NULL;
+        g_player_damaged_sheet = NULL;
+        g_player_sensor_Texture = NULL;
+        g_anachor_level_3_Frame1_Texture = NULL;
+        g_anachor_level_3_Frame2_Texture = NULL;
+        g_Anchor_Effect_S1 = NULL;
+        g_Anchor_Effect_S2 = NULL;
+        g_Anchor_Effect_S3 = NULL;
+        g_Anchor_Effect_M1 = NULL;
+        g_Anchor_Effect_M2 = NULL;
+        g_Anchor_Effect_M3 = NULL;
+        g_Anchor_Effect_L1 = NULL;
+        g_Anchor_Effect_L2 = NULL;
+        g_Anchor_Effect_L3 = NULL;
     }
 
 }
@@ -1416,4 +1593,78 @@ void Player::DrawAnchorLevel3Frame()
       
     }
  
+}
+
+void Player::DrawAnchorLevelUpDownEffect()
+{
+    if (Now_Anchor_level_up_Down_effect_sheet != 0)
+    {
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
+
+        // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+      
+
+        float player_pos_y = 20;//少しプレイヤーの下の方に座標を調整している
+
+        float effect_alpha = 1.0f;//アルファ値の管理
+
+        float effect_size = 3.0f;
+     
+        switch (Anchor_level_up_down_sheet_type)
+        {
+        case 1:
+            Max_Anchor_level_up_Down_effect_sheet = 5;
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_LevelUp_1to2_Effect);
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y+ player_pos_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale*2 * effect_size ,GetSize().y * scale* effect_size },
+                5, 1, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
+            );
+            break;
+        case 2:
+            Max_Anchor_level_up_Down_effect_sheet = 6;
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_LevelUp_2to3_Effect);
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y + player_pos_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale*2* effect_size*1.2f  ,GetSize().y * scale* effect_size*1.2f },
+                3, 2, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
+            );
+
+            break;
+        case 3:
+            Max_Anchor_level_up_Down_effect_sheet = 12;
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_LevelDown_Effect);
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y + player_pos_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale*2 * effect_size ,GetSize().y * scale* effect_size },
+                6, 2, Now_Anchor_level_up_Down_effect_sheet, effect_alpha, m_direction
+            );
+
+            break;
+        default:
+            break;
+        }
+
+        Now_Anchor_level_up_Down_effect_sheet += 0.3;
+        if (Now_Anchor_level_up_Down_effect_sheet > Max_Anchor_level_up_Down_effect_sheet)
+        {
+            Now_Anchor_level_up_Down_effect_sheet = 0;
+        }
+     
+       
+    }
 }
