@@ -342,7 +342,7 @@ void Boss_1_1::Update()
 				}
 
 				//�J�����V�F�C�N�X�^�[�g
-				CameraShake::StartCameraShake(3, 00, 10);
+				CameraShake::StartCameraShake(1, 0, 10);
 
 			}
 			sheet_cnt += 0.5;

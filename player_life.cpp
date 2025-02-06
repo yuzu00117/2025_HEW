@@ -18,7 +18,7 @@
 
 static ID3D11ShaderResourceView* g_life_Texture = NULL;//残機のテクスチャ
 
-float PlayerLife::m_life  = PLAYER_LIFE;//プレイヤーの残機
+float PlayerLife::m_life = PLAYER_LIFE;//プレイヤーの残機
 
 
 

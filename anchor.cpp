@@ -392,6 +392,59 @@ void Anchor::CreateRotateJoint()
 	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
 	b2Body* targetBody = AnchorPoint::GetTargetAnchorPointBody();
 
+
+	//くっついたアンカーポイントをフィクスチャを変更する
+
+	// まず現在のフィクスチャのサイズを取得する
+	b2Fixture* fixture = targetBody->GetFixtureList();
+	if (fixture != nullptr) {
+		bool sensor_on_off = fixture->IsSensor();
+		float m_density=fixture->GetDensity();
+		float m_friction = fixture->GetFriction();
+		float m_restitution = fixture->GetRestitution();
+		// 形状を取得し、ポリゴンであることを確認
+		b2Shape* baseShape = fixture->GetShape();
+		if (baseShape->GetType() != b2Shape::e_polygon) {
+			return; // ポリゴン形状でなければ処理しない
+		}
+		// 元の b2PolygonShapeをコピー
+		b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
+		if (originalShape == nullptr) {
+			
+			return;
+		}
+
+		b2PolygonShape newShape;
+		b2Vec2 vertices[b2_maxPolygonVertices];
+		int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+
+		for (int i = 0; i < vertexCount; ++i) {
+			vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
+		}
+
+		newShape.Set(vertices, vertexCount);
+
+
+		// 既存のフィクスチャを削除
+		targetBody->DestroyFixture(fixture);
+
+		// 新しいフィクスチャを作成
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &newShape;
+		fixtureDef.density = m_density;     // 密度
+		fixtureDef.friction = m_friction;   // 摩擦
+		fixtureDef.restitution = m_restitution; // 反発係数
+		fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
+
+		b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
+
+		// カスタムデータを作成して設定
+		ObjectData* anchordata = new ObjectData{ collider_object };
+		anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+	}
+	
+
+
 	if (anchorBody == nullptr || targetBody == nullptr) {
 		return; // ターゲットが存在しない場合は何もしない
 	}

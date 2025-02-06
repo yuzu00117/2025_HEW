@@ -146,6 +146,28 @@ public:
 
         }
 
+
+        // プレーヤーとコンタクトブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理
+
+            if (objectA->collider_type == collider_contact_block)//Aがコンタクトブロックのオブジェクト
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectA->id);
+                contact_block_instance->SetFlag(true);
+            }
+            if (objectB->collider_type == collider_contact_block)
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectB->id);
+                contact_block_instance->SetFlag(true);
+            }
+
+        }
+
         // プレーヤーとテレポートブロックが衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_teleport_block) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_teleport_block) ||
@@ -155,7 +177,7 @@ public:
             // 衝突処理（プレーヤーと地面が接触した時）
 
                      //どちらが木のオブジェクトか特定
-            if (objectA->collider_type== collider_teleport_block)//Aが木のオブジェクト
+            if (objectA->collider_type== collider_teleport_block)//Aがテレポートブロックのオブジェクト
             {
                 teleport_block* teleport_block_instance = object_manager.FindTeleportBlock(objectA->id);
                 teleport_block_instance->SetTeleportFlag(true);
@@ -493,6 +515,10 @@ public:
         if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_normal_attack_anchor) ||
             (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_dynamic))
         {
+
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(0, 5, 10);
+            HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
