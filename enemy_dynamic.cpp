@@ -267,13 +267,13 @@ void EnemyDynamic::Draw()
 	//============================================================
 	//テスト:センサー描画
 	//============================================================
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
+	/*GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemySensor_Texture);
 	DrawSprite(
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
 		{ m_size_sensor.x * scale , m_size_sensor.y * scale }
-	);
+	);*/
 }
 
 //移動
