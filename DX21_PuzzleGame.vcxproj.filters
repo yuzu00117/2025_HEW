@@ -250,6 +250,14 @@
     <ClCompile Include="impact_effect.cpp">
       <Filter>リソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="1_1_boss_carry_object_enemy.cpp" />
+    <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp" />
+    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
+    <ClCompile Include="blown_away_effect.cpp" />
+    <ClCompile Include="gokai.cpp" />
+    <ClCompile Include="contact_block.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
     <ClCompile Include="Item_Jewel.cpp" />
     <ClCompile Include="1_1_boss_carry_object_enemy.cpp" />
     <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp" />
@@ -541,9 +549,14 @@
     <ClInclude Include="blown_away_effect.h" />
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
     <ClInclude Include="gokai.h" />
+<<<<<<< HEAD
     <ClInclude Include="Item_SavePoint.h" />
     <ClInclude Include="bound_block.h">
       <Filter>リソースファイル</Filter>
+=======
+    <ClInclude Include="contact_block.h">
+      <Filter>ソースファイル</Filter>
+>>>>>>> main
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

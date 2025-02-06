@@ -35,6 +35,8 @@ enum ColliderTypeList
     collider_object_destroyer_of_enemy, 
     collider_teleport_block,
 
+    collider_contact_block,
+
     collider_item,
 
     collider_geyser_water,
