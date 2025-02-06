@@ -1054,6 +1054,7 @@ public:
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
             player.Player_Damaged(-50, 120);
+            
 
         }
 
@@ -1215,6 +1216,7 @@ public:
 
                     if (objectB->collider_type == collider_boss)
                     {
+                        boss.set
                         boss.SetNowBossState(panic_state);
                     }
                 }

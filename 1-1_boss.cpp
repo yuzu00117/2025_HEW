@@ -310,9 +310,10 @@ void Boss_1_1::Update()
 		case panic_state:
 
 
-
-			CreateBossCore(b2Vec2(2.0f*BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE));
-
+			if (50 < sheet_cnt)
+			{
+				CreateBossCore(b2Vec2(2.0f * BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE));
+			}
 			sheet_cnt += 0.5;
 
 			if (Max_Panic_Stun_Frame <= sheet_cnt)
@@ -571,12 +572,23 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		anchorpoint_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
 
 
+		int left = -1;
+		if (left_flag==true)//右だったら加算する
+		{
+			left = 1;
+		}
+
+		//ボスの大きさを把握
+		b2Vec2 boss_size;
+		boss_size.x = reality_boss_size.x / BOX2D_SCALE_MANAGEMENT;
+		boss_size.y = reality_boss_size.y / BOX2D_SCALE_MANAGEMENT;
+
 
 		b2Vec2 position = m_body->GetPosition();
 
 		b2BodyDef anchor_point_body;
 		anchor_point_body.type = b2_dynamicBody;//�ÓI�ȃI�u�W�F�N�g�ɂ���Ȃ�true
-		anchor_point_body.position.Set(position.x, position.y);			//�|�W�V�������Z�b�g
+		anchor_point_body.position.Set(position.x+(boss_size.x*left*0.2), position.y+ (boss_size.y*0.2));			//�|�W�V�������Z�b�g
 		anchor_point_body.angle = 0;									//�p�x�̒�`
 		anchor_point_body.userData.pointer = (uintptr_t)this;			//userData�̃|�C���^���` 
 		anchor_point_body.fixedRotation = true;							//��]���Œ肷��A�@������I���ɂ���Ɖ�]���Ȃ�
@@ -621,7 +633,7 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		jointDef.bodyB = GetAnchorPointBody();//boss�̍U���̃{�f�B
 
 		//boss��
-		jointDef.localAnchorA.Set(0.0f, 0.0f);
+		jointDef.localAnchorA.Set(boss_size.x*0.2*left, boss_size.y*0.2);
 		//�U����
 		jointDef.localAnchorB.Set(0.0f, 0.0f);
 
