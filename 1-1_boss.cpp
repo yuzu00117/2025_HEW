@@ -654,7 +654,7 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 
 		m_body->SetLinearVelocity(b2Vec2(0.0f, vec.y));
 
-		sheet_cnt = 0;
+		
 	}
 }
 
@@ -1172,18 +1172,20 @@ void Boss_1_1::Draw()
 		//�R�A���̕`��
 		if (GetAnchorPointBody() != nullptr)
 		{
-			//�V�F�[�_���\�[�X��ݒ�
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
+			//コアの描画を削除
 
-			// �R���C�_�[�̈ʒu�̎擾�i�v���C���[�̈ʒu�j
-			b2Vec2 anchorpoint_pos = GetAnchorPointBody()->GetPosition();
+			////�V�F�[�_���\�[�X��ݒ�
+			//GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
 
-			// �v���C���[�ʒu���l�����ăX�N���[���␳��������
-			//�擾����body�̃|�W�V�����ɑ΂���Box2d�X�P�[���̕␳��������
-			float anchor_point_draw_x = ((anchorpoint_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-			float anchor_point_draw_y = ((anchorpoint_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			//// �R���C�_�[�̈ʒu�̎擾�i�v���C���[�̈ʒu�j
+			//b2Vec2 anchorpoint_pos = GetAnchorPointBody()->GetPosition();
 
-			DrawSprite(XMFLOAT2(anchor_point_draw_x, anchor_point_draw_y), 0.0f, XMFLOAT2(GetAnchorPointSize().x * scale, GetAnchorPointSize().y * scale));
+			//// �v���C���[�ʒu���l�����ăX�N���[���␳��������
+			////�擾����body�̃|�W�V�����ɑ΂���Box2d�X�P�[���̕␳��������
+			//float anchor_point_draw_x = ((anchorpoint_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			//float anchor_point_draw_y = ((anchorpoint_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			//DrawSprite(XMFLOAT2(anchor_point_draw_x, anchor_point_draw_y), 0.0f, XMFLOAT2(GetAnchorPointSize().x * scale, GetAnchorPointSize().y * scale));
 
 		}
 
