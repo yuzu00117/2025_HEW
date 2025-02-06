@@ -89,6 +89,8 @@ private:
 
 	float enemy_size_scale = 1.0f;
 
+	float enemy_eising_rate = 1;
+
 
 	float Destory_Flag=false;
 

@@ -157,7 +157,11 @@ void change_enemy_filter_and_body::Update()
 		}
 
 
-		enemy_size_scale+=0.02;
+		enemy_eising_rate+=0.02;
+
+		
+	;
+		enemy_size_scale = Ease::InCubic(enemy_eising_rate);
 	}
 
 }
