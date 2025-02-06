@@ -2,7 +2,7 @@
 // #name enemyDynamic.h
 // #description 動的エネミー(プレイヤー追従)のcppファイル
 // #make 2024/11/20
-// #update 2024/12/20
+// #update 2025/02/05
 // #comment 追加・修正予定
 //          ・ステータス調整
 //           
@@ -83,26 +83,11 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture_sensor.friction = 0.0f;//摩擦
 	fixture_sensor.restitution = 0.0f;//反発係数
 	fixture_sensor.isSensor = true;//センサーかどうか、trueならあたり判定は消える
-	//----------------------------------------------------------------------------------------------------
-	b2Vec2 size_sensor2;
-	size_sensor2.x = body_size.x / BOX2D_SCALE_MANAGEMENT * (2);
-	size_sensor2.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
-
-	b2PolygonShape shape_sensor2;
-	shape_sensor2.SetAsBox(size_sensor2.x * 0.5, size_sensor2.y * 0.5);
-
-	b2FixtureDef fixture_sensor2;
-	fixture_sensor2.shape = &shape_sensor2;
-	fixture_sensor2.density = 0.0f;//密度
-	fixture_sensor2.friction = 0.0f;//摩擦
-	fixture_sensor2.restitution = 0.0f;//反発係数
-	fixture_sensor2.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 	//====================================================================================================
 
 	//Bodyにフィクスチャを登録する
 	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture2);
 	b2Fixture* enemy_sensor_fixture = GetBody()->CreateFixture(&fixture_sensor);
-	b2Fixture* enemy_sensor_fixture2 = GetBody()->CreateFixture(&fixture_sensor2);
 
 	// カスタムデータを作成して設定
 	// 動的エネミーに値を登録
@@ -111,15 +96,13 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 	ObjectData* sensor_data = new ObjectData{ collider_enemy_sensor };
 	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data);
-	ObjectData* sensor_data2 = new ObjectData{ collider_enemy_sensor_move };
-	enemy_sensor_fixture2->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data2);
 
 	//ID登録(センサーのデータにもエネミーと同じIDを入れる)
 	data->object_name = Object_Enemy_Dynamic;
 	int ID = data->GenerateID();
 	data->id = ID;
 	sensor_data->id = ID;
-	sensor_data2->id = ID;
+	//sensor_data2->id = ID;
 	SetID(ID);
 
 	m_state = ENEMY_STATE_NULL;
@@ -309,9 +292,10 @@ void EnemyDynamic::Move()
 		m_is_ground = true;
 	}
 
+	
 	//崖で反転
-	if ((m_ground_cnt <= m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground && (GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))) || 
-		(!m_is_ground && GetBody()->GetLinearVelocity().x == 0))
+	if ((m_ground_cnt == m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground ) ||
+		(!m_is_ground && GetBody()->GetLinearVelocity().x == 0 && m_ground_cnt > 0))
 	{
 		SetDirection(!GetDirection());
 	}
@@ -320,9 +304,10 @@ void EnemyDynamic::Move()
 	if(GetInScreen())
 	{
 		//移動していないかつ、前回移動中だった場合ジャンプ
-		if (liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE)
+		GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
+		if (((liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE) && m_is_ground) ||
+			((m_ground_cnt > m_sensor_move_size + 3 && m_old_state == ENEMY_STATE_MOVE) && m_is_ground))
 		{
-			GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
 			if (GetDirection())
 			{
 				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, m_jump_force * m_move_force), true);
@@ -334,7 +319,6 @@ void EnemyDynamic::Move()
 		}
 		else
 		{
-			GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
 			if (GetDirection())
 			{
 				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, 0.0), true);
@@ -350,6 +334,11 @@ void EnemyDynamic::Move()
 		//画面外に出ていた場合、ステータスを変え移動用関数を呼び出さない
 		m_anim_id = 0;
 		SetState(ENEMY_STATE_NULL);
+	}
+
+	if (m_ground_cnt < m_sensor_move_size && m_old_ground_cnt < m_sensor_move_size && m_is_ground)
+	{
+		GetBody()->SetLinearVelocity(b2Vec2(0.0, 0.0));
 	}
 
 	//接触中の地面の数を記憶
