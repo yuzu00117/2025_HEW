@@ -59,6 +59,8 @@ enum ObjectType {
     Boss_core,//ボスのこあ
     Boss_pillar,//ボスの柱
     Boss_Carry_Object_Enemy,//ボス部屋のエネミーがオブジェクトを運ぶやつ
+
+    Boss_field_block,
 };
 
 class Object{};

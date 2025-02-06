@@ -71,7 +71,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 	int ID = object_data->GenerateID();
 	object_data->id = ID;
-	object_data->object_name = NULL_object;
+	object_data->object_name = Boss_field_block;
 	SetID(ID);
 
 
