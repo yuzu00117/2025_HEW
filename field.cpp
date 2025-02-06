@@ -135,6 +135,15 @@ void Field::Initialize()
 			if (field_map[y][x] == 6) {//動的なエネミー
 				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),0.0f);
 			}
+			if (field_map[y][x] == 66) {//動的なエネミー
+				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 2.0f), 0.0f);
+			}
+			if (field_map[y][x] == 666) {//動的なエネミー
+				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), 0.0f);
+			}
+			if (field_map[y][x] == 6666) {//動的なエネミー
+				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), 0.0f);
+			}
 
 
 			if(field_map[y][x] == 7) {//小さな木のオブジェクト 必要アンカーレベル１

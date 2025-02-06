@@ -845,15 +845,15 @@ public:
         }
 
         //動的エネミーに付属しているセンサーと地面が触れた場合
-        if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor))
         {
-            if (objectA->collider_type == collider_enemy_sensor_move)
+            if (objectA->collider_type == collider_enemy_sensor)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
                 enemy_instance->SetIsGround(true);
             }
-            else if (objectB->collider_type == collider_enemy_sensor_move)
+            else if (objectB->collider_type == collider_enemy_sensor)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
                 enemy_instance->SetIsGround(true);
@@ -1453,15 +1453,15 @@ public:
 
 
          //動的エネミーに付属しているセンサーと地面が離れた時
-        if ((objectA->collider_type == collider_enemy_sensor_move && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor_move))
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor))
         {
-            if (objectA->collider_type == collider_enemy_sensor_move)
+            if (objectA->collider_type == collider_enemy_sensor)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
                 enemy_instance->SetIsGround(false);
             }
-            else if (objectB->collider_type == collider_enemy_sensor_move)
+            else if (objectB->collider_type == collider_enemy_sensor)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
                 enemy_instance->SetIsGround(false);
