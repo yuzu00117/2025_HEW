@@ -466,62 +466,69 @@ void Boss_1_1::UpdateCoolTime(void)
 	Now_Charge_Attack_CoolTime++;	//�`���[�W�U���̃C���N�������g
 	Now_Max_Walk_CoolTime++;		//�������[�V����
 
-	//�ߋ�������������
-	if (now_boss_state == wait_state)
+
+	if (Wait_time == 0)
 	{
-		if (Player_is_Nearby == true)
+		//�ߋ�������������
+		if (now_boss_state == wait_state)
 		{
-			//�ߋ����ɂ���
-
-			//�`���[�W�U��
-			if (Now_Charge_Attack_CoolTime > Max_Charge_Attack_CoolTime)
+			if (Player_is_Nearby == true)
 			{
-				now_boss_state = charge_attack_state;
-				Now_Charge_Attack_CoolTime = 0;
-				return;
-			}
+				//�ߋ����ɂ���
 
-			//�W�����v
-			if (Now_Jump_CoolTime > Max_Jump_CoolTime)
+				//�`���[�W�U��
+				if (Now_Charge_Attack_CoolTime > Max_Charge_Attack_CoolTime)
+				{
+					now_boss_state = charge_attack_state;
+					Now_Charge_Attack_CoolTime = 0;
+					return;
+				}
+
+				//�W�����v
+				if (Now_Jump_CoolTime > Max_Jump_CoolTime)
+				{
+					now_boss_state = jump_state;
+					Now_Jump_CoolTime = 0;
+					return;
+				}
+
+			}
+			else
 			{
-				now_boss_state = jump_state;
-				Now_Jump_CoolTime = 0;
-				return;
-			}
+			
 
+
+				//�Ռ��g�U��
+				if (Now_Shock_Wave_CoolTime > Max_Shock_Wave_CoolTime)
+				{
+					now_boss_state = shock_wave_state;
+					Now_Shock_Wave_CoolTime = 0;
+					return;
+				}
+
+				//���␶��
+				if (Now_Create_MiniGolem_CoolTime > Max_Create_MiniGolem_CoolTime)
+				{
+					now_boss_state = create_mini_golem_state;
+					Now_Create_MiniGolem_CoolTime = 0;
+					return;
+				}
+
+
+				//�����Ȃ�������������[�V����
+				if (wait_state == now_boss_state)
+				{
+					now_boss_state = walk_state;
+				}
+
+
+
+			}
 		}
-		else
-		{
-			//�������ɂ���
-
-
-
-			//�Ռ��g�U��
-			if (Now_Shock_Wave_CoolTime > Max_Shock_Wave_CoolTime)
-			{
-				now_boss_state = shock_wave_state;
-				Now_Shock_Wave_CoolTime = 0;
-				return;
-			}
-
-			//���␶��
-			if (Now_Create_MiniGolem_CoolTime > Max_Create_MiniGolem_CoolTime)
-			{
-				now_boss_state = create_mini_golem_state;
-				Now_Create_MiniGolem_CoolTime = 0;
-				return;
-			}
-
-
-			//�����Ȃ�������������[�V����
-			if (wait_state == now_boss_state)
-			{
-				now_boss_state = walk_state;
-			}
-
-
-
-		}
+	}
+	else
+	{
+		Wait_time--;
 	}
 }
 
@@ -529,7 +536,7 @@ void Boss_1_1::BossDamaged(void)
 {
 	//�{�X��HP�����炷����ɂ��`�ԕύX����
 	SetBossHP(GetBossHP() - 1);
-
+	SetWaitCoolTime(120);
 
 }
 
@@ -549,8 +556,7 @@ void Boss_1_1::BossCoreUpdate()
 	{
 		DestroyBossCore();//�{�X�̃R�A��j��
 
-		sheet_cnt = 0;//�V�[�g�J�E���g�����Z�b�g
-		now_boss_state = charge_attack_state;
+		sheet_cnt = 0;//�V�[�g�J�E���g�����Z�b�
 		CoreDeleteFlag = false;
 
 	}
@@ -660,6 +666,11 @@ void Boss_1_1::DestroyBossCore(void)
 
 		//�e�N�X�`�����I��
 		panic_effect_sheet_cnt = 0;
+
+		//最初の行動はチャージ攻撃にしたい
+		Now_Charge_Attack_CoolTime += 1500;
+
+		now_boss_state = wait_state;
 
 		//null���Z�b�g
 		SetAnchorPointBody(nullptr);
