@@ -47,6 +47,8 @@ enum ObjectType {
     Object_Enemy_Attack, //エネミーの攻撃
     Object_Enemy_Floating,//浮遊エネミー
 
+    Object_Geyser,//間欠泉
+
     Object_teleport_block,//テレポートブロック
 
     Object_contact_block,//接触ブロック
