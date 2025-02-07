@@ -119,7 +119,7 @@ void    ItemSavePoint::Function()
         }
     }
 
-    app_atomex_start(Object_Get_Coin_Sound);
+    app_atomex_start(Player_Coin_Colect_Sound);
 
 }
 

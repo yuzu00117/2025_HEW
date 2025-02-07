@@ -530,7 +530,7 @@ void Player::Update()
             m_body->ApplyLinearImpulse(m_jump_force, { 0.0f,1.0f }, true);
             draw_state = player_jumping_state;
             draw_cnt = 0;
-            app_atomex_start(Player_Jump_Sound);
+            app_atomex_start(Player_Jump_Start_Sound);
         }
         // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
         m_is_jumping = true;
@@ -577,7 +577,7 @@ void Player::Update()
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
 
-        app_atomex_start(Player_Soul_Colect_Sound);
+        app_atomex_start(Player_Soul_Colect1_Sound);
     }
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
 
@@ -589,7 +589,7 @@ void Player::Update()
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.UseAllJewel();
 
-        app_atomex_start(Player_Soul_Colect_Sound);
+        app_atomex_start(Player_Soul_Colect1_Sound);
     }
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B));
 
