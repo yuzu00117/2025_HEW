@@ -215,11 +215,12 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	//木を倒しす時に必要になるForce とりあえずサイズに依存でつくる
 	b2Vec2 need_power;
 
-	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 3;//１は必要に応じて変更して
+	need_power.x = ((GetWoodSize().x * GetWoodSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//１は必要に応じて変更して
 	need_power.y = 10.0f;//縦に必要な力はない
 	
 
 	object_anchorpoint_data->add_force = need_power;
+	m_pulling_power = need_power;
 
 
 	//アンカーレベルの設定
@@ -256,12 +257,13 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	bodyDef.type = b2_dynamicBody; // 動的ボディ
 	bodyDef.gravityScale = (0.4);
 	b2PolygonShape boxShape;
-	boxShape.SetAsBox(leaf_size.x/100, leaf_size.y/100); // 1x1 の四角形
+	boxShape.SetAsBox(leaf_size.x/200, leaf_size.y/200); // 1x1 の四角形
 
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &boxShape;
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.0f;
+	fixtureDef.restitution = 0.0f;
 	fixtureDef.isSensor = false;
 	fixtureDef.filter = createFilterExclude("texture_body_filter", {"texture_body_filter","object_filter","ground_filter","enemy_filter","Player_filter" });
 
@@ -352,8 +354,8 @@ void wood::Update()
 						body->SetLinearVelocity(b2Vec2(0.0f, body->GetLinearVelocity().y));
 
 						// ランダムな力を適用（葉っぱを散らす）
-						float forceX = ((rand() % 20) - 10) * 0.01f;
-						float forceY = (rand() % 10) * -0.01f;
+						float forceX = ((rand() % 20) - 10) * 0.0025f;
+						float forceY = (rand() % 10) * -0.0025f;
 						body->ApplyForceToCenter(b2Vec2(forceX, forceY), true);
 
 						
@@ -424,9 +426,7 @@ void wood::Update()
 				float forceY = (rand() % 10) * -0.01f;
 				body->ApplyForceToCenter(b2Vec2(forceX, forceY), true);
 
-				// 角速度もランダムにする
-				float angularImpulse = ((rand() % 20) - 10) * 0.000005f;
-				body->ApplyAngularImpulse(angularImpulse, true);
+			
 			}
 
 			leaf_drop_flag = true;
@@ -445,9 +445,10 @@ void wood::Update()
 
 }
 
-void wood::Pulling_wood(b2Vec2 pulling_power)
+void wood::Pulling_wood()
 {
 	b2Body*body=GetObjectAnchorPointBody();
+	b2Vec2 pulling_power = m_pulling_power;
 	//プレイヤー側に倒す
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
 	{
@@ -631,8 +632,46 @@ void wood::Finalize()
 		world->DestroyBody(AnchorPoint_body);
 	}
 
-	//テクスチャの解放
-	UnInitTexture(g_Wood_Texture);
-	UnInitTexture(g_Wood_Texture1);
-	UnInitTexture(g_Wood_Texture2);
+
+	if (g_Wood_Texture != NULL)
+	{
+		//テクスチャの解放
+		UnInitTexture(g_Wood_Texture);
+		UnInitTexture(g_Wood_Texture1);
+		UnInitTexture(g_Wood_Texture2);
+		UnInitTexture(g_Stump_Texture);
+
+		UnInitTexture(g_leaf_Texture1);
+		UnInitTexture(g_leaf_Texture2);
+		UnInitTexture(g_leaf_Texture3);
+		UnInitTexture(g_leaf_Texture4);
+		UnInitTexture(g_leaf_Texture5);
+		UnInitTexture(g_leaf_Texture6);
+		UnInitTexture(g_leaf_Texture7);
+		UnInitTexture(g_leaf_Texture8);
+		UnInitTexture(g_leaf_Texture9);
+		UnInitTexture(g_leaf_Texture10);
+		UnInitTexture(g_leaf_Texture11);
+
+		g_Wood_Texture = NULL;
+		g_Wood_Texture1 = NULL;
+		g_Wood_Texture2 = NULL;
+		g_Stump_Texture = NULL;
+
+		g_leaf_Texture1 = NULL;
+		g_leaf_Texture2 = NULL;
+		g_leaf_Texture3 = NULL;
+		g_leaf_Texture4 = NULL;
+		g_leaf_Texture5 = NULL;
+		g_leaf_Texture6 = NULL;
+		g_leaf_Texture7 = NULL;
+		g_leaf_Texture8 = NULL;
+		g_leaf_Texture9 = NULL;
+		g_leaf_Texture10 = NULL;
+		g_leaf_Texture11 = NULL;
+	}
+	
+
+
+
 }

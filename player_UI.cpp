@@ -2,6 +2,7 @@
 #include"texture.h"
 #include"sprite.h"
 #include"anchor_spirit.h"
+#include"player_stamina.h"
 
 
 //テクスチャのダウンロード グローバル変数にしてる
@@ -28,7 +29,17 @@ ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベ
 // 静的メンバー変数の初期化
 DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(130.f, 450.f);
 DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(250.f, 500.f);
+
+DirectX::XMFLOAT2 player_UI::gauge_only_position = DirectX::XMFLOAT2(92.f, 422.f);
+DirectX::XMFLOAT2 player_UI::gauge_only_size = DirectX::XMFLOAT2(55.f, 340.f);
+
 float player_UI::player_ui_alpha = 1.0f;
+
+bool	player_UI::m_blue_jewel_collected = false;
+bool	player_UI::m_red_jewel_collected = false;
+bool	player_UI::m_yellow_jewel_collected = false;
+
+DirectX::XMFLOAT2 player_UI::m_ring_position = player_ui_position;
 
 player_UI::player_UI()
 {
@@ -50,9 +61,10 @@ void player_UI::Initialize()
 	g_blue_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\blue_jewel.png");
 	g_yellow_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\yellow_jewel.png");
 
-	
-	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul .png");
-	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP.png");
+	//ソウルゲージ達
+	/*g_soul_gage_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_back_ground.png");*/
+	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul_no_white.png");
+	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP_no_white.png");
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
 
 	//アンカーレベルのテクスチャたち
@@ -77,8 +89,14 @@ void player_UI::Update()
 }
 
 void player_UI::Draw()
-{
+{	
+	float temp_stamina_position_y;	//体力ゲージが移動した後の座標
+	float temp_stamina_scale_y;		//体力ゲージの今の大きさ
+	float temp_spirit_position_y;  //ソウルゲージが移動した後の座標　
+	float temp_spirit_scale_y;	   //ソウルゲージの今の大きさ
+	XMFLOAT2	scale;
 
+	
 
 
 
@@ -98,6 +116,7 @@ void player_UI::Draw()
 		{ player_ui_size },
 		player_ui_alpha
 	);
+
 	
 	//// シェーダリソースを設定
 	//GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_background_Texture);
@@ -110,35 +129,47 @@ void player_UI::Draw()
 	//);
 
 
+	if (true) //ここはアンカーゲージのHP　数値によって変更が必要
+	{
+		//今のアンカーのソウル値を取る
+		float stamina = PlayerStamina::GetPlayerStaminaValue();
+
+		//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
+		//Max状態の時の長さに比例して、今のソウル値の長さを調整
+		temp_stamina_scale_y = (stamina / (MAX_ANCHOR_SPIRIT + MAX_STAMINA)) * gauge_only_size.y;
+		scale = XMFLOAT2(gauge_only_size.x, temp_stamina_scale_y);
+		//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
+		//temp_position_x = (stamina / (MAX_ANCHOR_SPIRIT + MAX_STAMINA)) * m_position.x;
+		temp_stamina_position_y = (gauge_only_size.y / 2) - (temp_stamina_scale_y / 2) + gauge_only_position.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_HP_Texture);
+		DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_stamina_position_y), 0.0f, scale, (int)MAX_STAMINA + (int)MAX_ANCHOR_SPIRIT, 1, (int)MAX_STAMINA + 1, (int)stamina);
+
+	}
 
 
 
 	if (true) //ここはアンカーゲージの　数値によって変更が必要
 	{
+
+		//今のアンカーのソウル値を取る
+		float spirit = AnchorSpirit::GetAnchorSpiritValue();
+
+		//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
+		//Max状態の時の長さに比例して、今のソウル値の長さを調整
+		temp_spirit_scale_y = (spirit / (MAX_ANCHOR_SPIRIT + MAX_STAMINA)) * gauge_only_size.y;
+		scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
+		//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
+		temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
+
+
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_Texture);
 
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	
+		DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, (int)MAX_STAMINA + (int)MAX_ANCHOR_SPIRIT, 1, (int)MAX_STAMINA + 1, (int)spirit);
 	}
 
-	if (true) //ここはアンカーゲージのHP　数値によって変更が必要
-	{
-		//シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_HP_Texture);
-
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	}
 
 
 	//枠を表示
@@ -187,7 +218,7 @@ void player_UI::Draw()
 	//-------------------------------------------------------------------------------------------
 	//宝石の描画
 
-	if (true)//赤の宝石
+	if (m_red_jewel_collected)//赤の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_red_jewel_Texture);
@@ -200,7 +231,7 @@ void player_UI::Draw()
 		);
 	}
 
-	if (true)//青の宝石
+	if (m_blue_jewel_collected)//青の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_blue_jewel_Texture);
@@ -213,7 +244,7 @@ void player_UI::Draw()
 		);
 	}
 
-	if (true)//黄色の宝石
+	if (m_yellow_jewel_collected)//黄色の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_yellow_jewel_Texture);

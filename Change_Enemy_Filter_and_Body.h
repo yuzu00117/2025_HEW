@@ -87,6 +87,10 @@ private:
 
 	float sheet_cnt_now=0;
 
+	float enemy_size_scale = 1.0f;
+
+	float enemy_eising_rate = 1;
+
 
 	float Destory_Flag=false;
 

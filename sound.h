@@ -82,30 +82,63 @@ enum Sound_Manager
 	TITLE_BGM,
 	STAGESELECT_BGM,
 	RESULT_BGM,
+	BOSS1_BGM,
+	STAGE1_BGM,
+	POP_BGM,
+	ADVENTURE_BGM,
+	STAGE2_BGM,
+	BOSS2_BGM,
 
 	Select_Sound,
 	Decision_Sound,
 	Cancel_Sound,
 	Pose_Sound,
+	Result_Sound,
 
 	Anchor_Hit_Sound,
 	Anchor_Hit_Miss_Sound,
 	Anchor_Pulling_Sound,
 	Anchor_Thorw_Sound,
+	Anchor_Mark_Sound,
 
-	Player_Jump_Sound,
-	Player_Soul_Colect_Sound,
-	Player_Dameged_Sound,
+	Player_Soul_Colect1_Sound,
+	Player_Damege_Sound,
 	Player_Dead_Sound,
+	Player_Coin_Colect_Sound,
+	Player_Walk_Sound,
+	Player_Jump_Start_Sound,
+	Player_Jump_End_Sound,
+	Player_Attack_Sound,
+	Player_Jewelry_Colect_Sound,
+	Player_GameOver_Sound,
+	Player_Soul_Colect2_Sound,
+	Player_Fall_Sound,
+	Player_Warp_Sound,
+	Player_Frame_Up_Sound,
 
 	Object_Rock_Fall_Sound,
 	Object_Get_Treasure_Sound,
 	Object_Wood_Fall_Sound,
 	Object_Rock_Roll_Sound,
-	Object_Get_Coin_Sound,
+	Object_Geyser_Sound,
+	Object_Pillar_Break_Sound,
+	Object_Pillar_Hit_Sound,
 
-	Enemy_Dead_Sound,
-	Player_Walk_Sound
+	Boss_Charge_Attack_Sound,
+	Boss_Jump_Sound,
+	Boss_Attack_Wave_Sound,
+	Boss_Walk_Sound,
+	Boss_Charge_Sound,
+	Boss_Core_Damege_Sound,
+	Boss_Damege_Sound,
+	Boss_Stun_Sound,
+
+	Enemy_Knock_Down1_Sound,
+	Enemy_MiniGolem_Create_Sound,
+	Enemy_MiniGolem_Explosion_Sound,
+	Enemy_Attack_Sound,
+	Enemy_Knock_Down2_Sound,
+	Enemy_Shot_Down_Sound
 
 };
 /***************************************************************************
@@ -130,29 +163,61 @@ CriBool app_atomex_stop_cue();
 
  /* キュー一覧 */
 static AppCueListItem g_cue_list[] = {
-CRI_CUESHEET_0_1_1BGM,					//0
-CRI_CUESHEET_0_タイトルBGM,				//1
-CRI_CUESHEET_0_BGM_STAGESELECT,			//2
-CRI_CUESHEET_0_リザルトBGM,				//3
-CRI_CUESHEET_0_選択音,					//4
-CRI_CUESHEET_0_決定音,					//5
-CRI_CUESHEET_0_キャンセル音,			//6
-CRI_CUESHEET_0_一時停止音_メニュー音_,	//7
-CRI_CUESHEET_0_アンカーヒットポイント,	//8
-CRI_CUESHEET_0_アンカーポイントミス,	//9
-CRI_CUESHEET_0_アンカーを引っ張る音,	//10
-CRI_CUESHEET_0_アンカー投げる音,		//11
-CRI_CUESHEET_0_ジャンプ,				//12
-CRI_CUESHEET_0_ソウル吸収,				//13
-CRI_CUESHEET_0_ダメージを受ける音,		//14
-CRI_CUESHEET_0_やられた音,				//15
-CRI_CUESHEET_0_岩が落ちる音,			//16
-CRI_CUESHEET_0_宝を取る音,				//17
-CRI_CUESHEET_0_木が倒れる音,			//18
-CRI_CUESHEET_0_岩が転がる音,			//19
-CRI_CUESHEET_0_コインを取る音,			//20
-CRI_CUESHEET_0_敵を倒す音,				//21
-CRI_CUESHEET_0_プレイヤーの足音			//22
+	CRI_CUESHEET_0_1_1BGM,
+	CRI_CUESHEET_0_タイトルBGM,
+	CRI_CUESHEET_0_BGM_STAGESELECT,
+	CRI_CUESHEET_0_リザルトBGM,
+	CRI_CUESHEET_0_BGM_ボス,
+	CRI_CUESHEET_0_BGM_ジャングル,
+	CRI_CUESHEET_0_BGM_ポップ,
+	CRI_CUESHEET_0_BGM_探検,
+	CRI_CUESHEET_0_BGM_ジャングル2,
+	CRI_CUESHEET_0_BGM_ボス2,
+	CRI_CUESHEET_0_選択音,
+	CRI_CUESHEET_0_決定音,
+	CRI_CUESHEET_0_キャンセル音,
+	CRI_CUESHEET_0_一時停止音_メニュー音_,
+	CRI_CUESHEET_0_リザルト発表,
+	CRI_CUESHEET_0_アンカーヒットポイント,
+	CRI_CUESHEET_0_アンカーポイントミス,
+	CRI_CUESHEET_0_アンカーを引っ張る音,
+	CRI_CUESHEET_0_アンカー投げる音,
+	CRI_CUESHEET_0_アンカーポイントマークした時の音,
+	CRI_CUESHEET_0_ソウル吸収1,
+	CRI_CUESHEET_0_ダメージを受ける音,
+	CRI_CUESHEET_0_やられた音,
+	CRI_CUESHEET_0_コイン取得音,
+	CRI_CUESHEET_0_プレイヤーの足音,
+	CRI_CUESHEET_0_ジャンプ,
+	CRI_CUESHEET_0_着地音,
+	CRI_CUESHEET_0_打撃音,
+	CRI_CUESHEET_0_宝石取得,
+	CRI_CUESHEET_0_死亡音,
+	CRI_CUESHEET_0_ソウル吸収2,
+	CRI_CUESHEET_0_落下,
+	CRI_CUESHEET_0_ワープ音,
+	CRI_CUESHEET_0_フレームアップ,
+	CRI_CUESHEET_0_岩が落ちる音,
+	CRI_CUESHEET_0_宝を取る音,
+	CRI_CUESHEET_0_木が倒れる音,
+	CRI_CUESHEET_0_岩が転がる音,
+	CRI_CUESHEET_0_間欠泉,
+	CRI_CUESHEET_0_柱倒してバラバラ音,
+	CRI_CUESHEET_0_柱とボスがぶつかる音,
+	CRI_CUESHEET_0_ボス溜め攻撃衝撃時,
+	CRI_CUESHEET_0_ボスジャンプ着地音,
+	CRI_CUESHEET_0_ボス衝撃波発生中,
+	CRI_CUESHEET_0_ボス足音,
+	CRI_CUESHEET_0_ボス貯め攻撃,
+	CRI_CUESHEET_0_コアダメージ時,
+	CRI_CUESHEET_0_ボスに対するダメージ,
+	CRI_CUESHEET_0_ボススタン音,
+	CRI_CUESHEET_0_敵を倒す音,
+	CRI_CUESHEET_0_ちびゴーレム生成音,
+	CRI_CUESHEET_0_ちびゴーレム爆発音,
+	CRI_CUESHEET_0_エネミー攻撃,
+	CRI_CUESHEET_0_エネミーダウン,
+	CRI_CUESHEET_0_エネミー撃墜音
 };
 
 

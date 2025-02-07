@@ -32,6 +32,11 @@
 #include"1_1_boss_carry_object_enemy_spawner.h"
 #include"Change_Enemy_Filter_and_Body.h"
 
+#include"bound_block.h"
+
+#include"contact_block.h"
+
+
 // オブジェクトの種類を定義
 enum ObjectType {
     NULL_object,
@@ -46,12 +51,18 @@ enum ObjectType {
     Object_Enemy_Attack, //エネミーの攻撃
     Object_Enemy_Floating,//浮遊エネミー
 
+    Object_Geyser,//間欠泉
+
     Object_teleport_block,//テレポートブロック
+
+    Object_contact_block,//接触ブロック
 
     Object_Geyser_Water,
     Boss_core,//ボスのこあ
     Boss_pillar,//ボスの柱
     Boss_Carry_Object_Enemy,//ボス部屋のエネミーがオブジェクトを運ぶやつ
+
+    Boss_field_block,
 };
 
 class Object{};
@@ -98,6 +109,12 @@ public:
 
     void AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Textur, int texture_x, int texture_y,b2Vec2 vec);
 
+
+    void AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level);
+
+    void AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num);
+
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -134,6 +151,13 @@ public:
 
     change_enemy_filter_and_body* FindChangeEnemyFilterAndBody(int id);
 
+
+    boss_bound_block* FindBossBoundBlock(int id);
+
+
+    contact_block* FindContactBlock(int id);
+
+
     
 
     
@@ -166,6 +190,9 @@ public:
     // 全てのオブジェクトを破棄
     void FinalizeAll();
 
+    //  引っ張る強さを更新
+    void    SetPullingPower_With_Multiple(b2Vec2 multiple);
+
 private:
     std::vector<std::unique_ptr<wood>> woodList;//木のリスト
     std::vector < std::unique_ptr<rock>>rockList;//岩のリスト
@@ -193,8 +220,13 @@ private:
     std::vector<std::unique_ptr<boss_carry_object_enemy>> boss_carry_object_enemyList;//ボスの部屋で出現するエネミーのスポナー
 
 
-    std::vector<std::unique_ptr<change_enemy_filter_and_body>>change_filter_boidy_enemy_list ;//
 
+    std::vector<std::unique_ptr<change_enemy_filter_and_body>>change_filter_boidy_enemy_list ;//撃墜演出されたエネミーのリスト
+
+    std::vector<std::unique_ptr<boss_bound_block>>boss_bound_block_list;//バウンドブロックのリスト
+
+
+    std::vector<std::unique_ptr<contact_block>>contact_block_list;
    
     //ここにオブジェクトごとにリストを追加していく感じ
 

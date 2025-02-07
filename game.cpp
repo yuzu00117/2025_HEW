@@ -64,9 +64,6 @@ void Game::Initialize()
     //フィールドの初期化
     Field::Initialize();
 
-    //体力ソウルゲージUIの初期化
-    stamina_spirit_gauge.Initialize();
-
     //背景の初期化
     Bg::Initialize();
     //衝撃エフェクト
@@ -166,7 +163,7 @@ void Game::Update(void)
             //プレイヤーUIの更新処理
             player_UI::Update();
 
-            
+            AnchorSpirit::Update();
 
             //プレイヤーの更新処理
             player.Update();
@@ -198,6 +195,7 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
+                
                 SceneManager& sceneManager = SceneManager::GetInstance();
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
@@ -215,8 +213,20 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);
+                //プレイヤーの残機が残っていたら最初からスタート
+                if (PlayerLife::GetLife() > 0)
+                {
+                    PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_GAME);
+                }
+                else
+                {
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_RESULT);
+                }
+
+
             }
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
@@ -326,11 +336,8 @@ void Game::Draw(void)
 	stamina_spirit_gauge.Draw();
 
 
-	//プレイヤーUIの描画処理
-    player_UI::Draw();
+	player_UI::Draw();
 
-    //体力ソウルゲージUIの描画処理
-    stamina_spirit_gauge.Draw();
 
 #ifdef _DEBUG
     //デバッグ文字

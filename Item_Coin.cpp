@@ -113,7 +113,7 @@ void	ItemCoin::Update()
 
         Item_Coin_UI::SetDrawCount(180);
         Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetNowCoinCount()+1);
-        app_atomex_start(Object_Get_Coin_Sound);
+        app_atomex_start(Player_Coin_Colect_Sound);
 
 
     }
@@ -121,8 +121,7 @@ void	ItemCoin::Update()
 
 void    ItemCoin::Function()
 {
-    Player player = Player::GetInstance();
-    player.SetSpeed(0.04f);
+
 }
 
 

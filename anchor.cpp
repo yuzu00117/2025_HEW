@@ -31,6 +31,14 @@ static ID3D11ShaderResourceView* g_Anchor_Chain_Texture = NULL;//ƒAƒ“ƒJ[‚Ì½‚Ìƒ
 
 static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Texture = NULL;//ƒAƒ“ƒJ[‚Ìƒqƒbƒg‚ÌƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ
 
+
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level1_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level2_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level3_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
+
+
+
+
 //ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğ‚à‚Á‚Æ‚­
 b2Body* Player_body;
 
@@ -73,7 +81,18 @@ void Anchor::Initialize()
 	//ƒAƒ“ƒJ[‚Ì½
 	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
 
+
+	//’ÊíUŒ‚‚ÌƒGƒtƒFƒNƒg
 	g_Anchor_Hit_Effect_Texture=InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect.png");
+
+	//ƒŒƒxƒ‹•Ê‚Ì
+	g_Anchor_Hit_Effect_Level1_Texture = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect_Level1.png");
+	g_Anchor_Hit_Effect_Level2_Texture = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect_Level2.png");
+	g_Anchor_Hit_Effect_Level3_Texture = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Hit_Effect_Level3.png");
+
+
+
+
 }
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
@@ -373,6 +392,59 @@ void Anchor::CreateRotateJoint()
 	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
 	b2Body* targetBody = AnchorPoint::GetTargetAnchorPointBody();
 
+
+	//‚­‚Á‚Â‚¢‚½ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğƒtƒBƒNƒXƒ`ƒƒ‚ğ•ÏX‚·‚é
+
+	// ‚Ü‚¸Œ»İ‚ÌƒtƒBƒNƒXƒ`ƒƒ‚ÌƒTƒCƒY‚ğæ“¾‚·‚é
+	b2Fixture* fixture = targetBody->GetFixtureList();
+	if (fixture != nullptr) {
+		bool sensor_on_off = fixture->IsSensor();
+		float m_density=fixture->GetDensity();
+		float m_friction = fixture->GetFriction();
+		float m_restitution = fixture->GetRestitution();
+		// Œ`ó‚ğæ“¾‚µAƒ|ƒŠƒSƒ“‚Å‚ ‚é‚±‚Æ‚ğŠm”F
+		b2Shape* baseShape = fixture->GetShape();
+		if (baseShape->GetType() != b2Shape::e_polygon) {
+			return; // ƒ|ƒŠƒSƒ“Œ`ó‚Å‚È‚¯‚ê‚Îˆ—‚µ‚È‚¢
+		}
+		// Œ³‚Ì b2PolygonShape‚ğƒRƒs[
+		b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
+		if (originalShape == nullptr) {
+			
+			return;
+		}
+
+		b2PolygonShape newShape;
+		b2Vec2 vertices[b2_maxPolygonVertices];
+		int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+
+		for (int i = 0; i < vertexCount; ++i) {
+			vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) ‚Í–³‚¢‚Ì‚Å `m_vertices` ‚ğg—p
+		}
+
+		newShape.Set(vertices, vertexCount);
+
+
+		// Šù‘¶‚ÌƒtƒBƒNƒXƒ`ƒƒ‚ğíœ
+		targetBody->DestroyFixture(fixture);
+
+		// V‚µ‚¢ƒtƒBƒNƒXƒ`ƒƒ‚ğì¬
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &newShape;
+		fixtureDef.density = m_density;     // –§“x
+		fixtureDef.friction = m_friction;   // –€C
+		fixtureDef.restitution = m_restitution; // ”½”­ŒW”
+		fixtureDef.isSensor = sensor_on_off;    // ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç“–‚½‚è”»’è‚È‚µ
+
+		b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
+
+		// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
+		ObjectData* anchordata = new ObjectData{ collider_object };
+		anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+	}
+	
+
+
 	if (anchorBody == nullptr || targetBody == nullptr) {
 		return; // ƒ^[ƒQƒbƒg‚ª‘¶İ‚µ‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
 	}
@@ -541,43 +613,110 @@ void Anchor::DrawAnchorHitEffect(void)
 	{
 		// ƒXƒP[ƒ‹İ’è
 		float scale = SCREEN_SCALE;
-
 		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u
 		b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
 		b2Body* anchor = g_anchor_instance->GetAnchorBody();
 
+		//ƒAƒ“ƒJ[‚Ì‘I‘ğ
+		if (g_anchor_instance->now_anchor_hit_effect_sheet_cnt == 0)
+		{
+			switch (AnchorSpirit::GetAnchorLevel())
+			{
+			case 1:
+				g_anchor_instance->anchor_hit_effect_type = 1;
+				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 6;
+				break;
+			case 2:
+				g_anchor_instance->anchor_hit_effect_type = 2;
+				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 9;
+				break;
+			case 3:
+				g_anchor_instance->anchor_hit_effect_type = 3;
+				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 16;
+				break;
+			default:
+				break;
+			};
+		}
+
+
 		if (anchor != nullptr)
 		{
+		
+			// Šp“x‚Æ‹——£‚ÉŠî‚Ã‚¢‚ÄƒIƒtƒZƒbƒg‚ğŒvZ
+			float angle = anchor->GetAngle();  // ƒ‰ƒWƒAƒ“Šp
+			float distance = 50.0f;  // ‚¸‚ç‚·‹——£i“K‹X’²®j
+
+			// ‹ÉÀ•W•ÏŠ·‚É‚æ‚éƒIƒtƒZƒbƒg
+			float offset_x = cos(angle) * distance;
+			float offset_y = sin(angle) * distance;
+
 			b2Vec2 position;
 			position.x = anchor->GetPosition().x;
 			position.y = anchor->GetPosition().y;
 
 			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
-			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x + offset_x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y + offset_y;
 
+		
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+			switch (g_anchor_instance->anchor_hit_effect_type)
+			{
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level1_Texture);
 
-			DrawSplittingSprite(
-				{ draw_x+ g_anchor_instance->GetSize().x*scale*0.5f,
-				draw_y- g_anchor_instance->GetSize().y*scale*0.5f },
-				anchor->GetAngle(),
-				{ g_anchor_instance->GetSize().x * scale*3  ,g_anchor_instance->GetSize().y * scale*3 },
-				4,2,
-				g_anchor_instance->anchor_hit_effect_sheet_cnt/2,
-				1.0f
+				DrawSplittingSprite(
+					{ draw_x,
+					draw_y },
+					anchor->GetAngle(),
+					{ g_anchor_instance->GetSize().x * scale*1.5f  ,g_anchor_instance->GetSize().y * scale *1.5f },
+					3, 2,
+					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					1.0f
 				);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level2_Texture);
+
+				DrawSplittingSprite(
+					{ draw_x ,
+					draw_y  },
+					anchor->GetAngle(),
+					{ g_anchor_instance->GetSize().x * scale *2.5f  ,g_anchor_instance->GetSize().y * scale * 2.5f },
+					3, 3,
+					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					1.0f
+				);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level3_Texture);
+
+				DrawSplittingSprite(
+					{ draw_x ,
+					draw_y },
+					anchor->GetAngle(),
+					{ g_anchor_instance->GetSize().x * scale * 3  ,g_anchor_instance->GetSize().y * scale * 3 },
+					4, 4,
+					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					1.0f
+				);
+				break;
+
+			default:
+				break;
+			}
+			
 		}
 
-		g_anchor_instance->anchor_hit_effect_sheet_cnt++;
+		g_anchor_instance->now_anchor_hit_effect_sheet_cnt++;
 
-		if (32<g_anchor_instance->anchor_hit_effect_sheet_cnt)
+		if (g_anchor_instance->max_anchor_hit_effect_sheet_cnt <g_anchor_instance->now_anchor_hit_effect_sheet_cnt)
 		{
 			g_anchor_instance->anchor_hit_effect_flag = false;
-			g_anchor_instance->anchor_hit_effect_sheet_cnt = 0;
+			g_anchor_instance->now_anchor_hit_effect_sheet_cnt = 0;
+			g_anchor_instance->anchor_create_joint_flag = 0;
 		}
 
 	}
@@ -617,16 +756,17 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 	b2BodyDef body;
 
 	body.type = b2_dynamicBody;
+	body.gravityScale = (0.0f);
 
 
 	if (right)//‰E‚©‚Ç‚¤‚©
 	{
 		//ƒvƒŒƒCƒ„[‚ÌƒTƒCƒY‚Ìî•ñ‚ğ–á‚Á‚Ä‚«‚Ä‚È‚¢‚©‚ç@ƒvƒŒƒCƒ„[‚ÌƒTƒCƒY‚É•ÏX‚ ‚Á‚½‚Æ‚«‚¾‚é‚¢
-		body.position.Set(player_body->GetPosition().x + (1/2 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//ƒvƒŒƒCƒ„[‚Ì‰E‘¤‚É¶¬
+		body.position.Set(player_body->GetPosition().x + (1 / BOX2D_SCALE_MANAGEMENT) + (anchor_size.x / 2), player_body->GetPosition().y);//ƒvƒŒƒCƒ„[‚Ì‰E‘¤‚É¶¬
 	}
 	else
 	{
-		body.position.Set(player_body->GetPosition().x - (1/2 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//ƒvƒŒƒCƒ„[‚Ì¶‘¤‚É¶¬
+		body.position.Set(player_body->GetPosition().x - (1 / BOX2D_SCALE_MANAGEMENT) - (anchor_size.x / 2), player_body->GetPosition().y);//ƒvƒŒƒCƒ„[‚Ì¶‘¤‚É¶¬
 	}
 	body.fixedRotation = false;//‰ñ“]‚·‚é
 
@@ -660,28 +800,28 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 
 	
 
-	//ƒvƒŒƒCƒ„[‚ÆƒWƒ‡ƒCƒ“ƒg‚·‚é
-	b2WeldJointDef jointDef;
-	jointDef.bodyA = Player::GetOutSidePlayerBody();//ƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB
-	jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//’ÊíUŒ‚‚ÌƒAƒ“ƒJ[‚Ìƒ{ƒfƒB
+	////ƒvƒŒƒCƒ„[‚ÆƒWƒ‡ƒCƒ“ƒg‚·‚é
+	//b2WeldJointDef jointDef;
+	//jointDef.bodyA = Player::GetOutSidePlayerBody();//ƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB
+	//jointDef.bodyB = g_anchor_instance->GetNormalAttackAnchorBody();//’ÊíUŒ‚‚ÌƒAƒ“ƒJ[‚Ìƒ{ƒfƒB
 
-	if (right)//‰E‚©‚Ç‚¤‚©
-	{
-		//ƒvƒŒƒCƒ„[‘¤
-		jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
-		//’ÊíUŒ‚‘¤
-		jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
-	}
-	else//¶‘¤
-	{
-		//ƒvƒŒƒCƒ„[‘¤
-		jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
-		//’ÊíUŒ‚‘¤
-		jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
-	}
-	jointDef.collideConnected = false;//ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
+	//if (right)//‰E‚©‚Ç‚¤‚©
+	//{
+	//	//ƒvƒŒƒCƒ„[‘¤
+	//	jointDef.localAnchorA.Set(((1 / BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+	//	//’ÊíUŒ‚‘¤
+	//	jointDef.localAnchorB.Set((-anchor_size.x * 0.5), 0.0f);
+	//}
+	//else//¶‘¤
+	//{
+	//	//ƒvƒŒƒCƒ„[‘¤
+	//	jointDef.localAnchorA.Set(((-1/ BOX2D_SCALE_MANAGEMENT) * 0.5), 0.0f);
+	//	//’ÊíUŒ‚‘¤
+	//	jointDef.localAnchorB.Set((anchor_size.x * 0.5), 0.0f);
+	//}
+	//jointDef.collideConnected = false;//ƒWƒ‡ƒCƒ“ƒg‚µ‚½•¨‘Ì“¯m‚ÌÚG‚ğÁ‚·
 
-	world->CreateJoint(&jointDef); //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
+	//world->CreateJoint(&jointDef); //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
 
 	//ƒGƒtƒFƒNƒgƒXƒ^[ƒg
 	g_anchor_instance->anchor_hit_effect_flag = true;
@@ -694,45 +834,50 @@ void Anchor::UpdateNormalAttack()
 
 void Anchor::DrawNormalAttack()
 {
-	//// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
-	//float scale = SCREEN_SCALE;
+	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+	float scale = SCREEN_SCALE;
 
-	//// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
-	//b2Vec2 screen_center;
-	//screen_center.x = SCREEN_CENTER_X;
-	//screen_center.y = SCREEN_CENTER_Y;
-
-
-	//if (g_anchor_instance == nullptr)
-	//{
-	//	return;
-	//}
-
-	//b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
-
-	//if (anchor != nullptr)
-	//{
-	//	b2Vec2 position;
-	//	position.x = anchor->GetPosition().x;
-	//	position.y = anchor->GetPosition().y;
-
-	//	// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-	//	//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
-	//	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	//	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
 
 
-	//	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture);
+	if (g_anchor_instance == nullptr)
+	{
+		return;
+	}
 
-	//	//draw
-	//	DrawSprite(
-	//		{ draw_x,
-	//		  draw_y },
-	//		0.0	,
-	//		{ 2 * scale, 2 * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-	//	);
+	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
 
-	//}
+	if (anchor != nullptr)
+	{
+		b2Vec2 position;
+		position.x = anchor->GetPosition().x;
+		position.y = anchor->GetPosition().y;
+
+		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
+		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Texture);
+
+		//draw
+		DrawSplittingSprite(
+			{ draw_x,
+			  draw_y },
+			0.0	,
+			{ 6 * scale, 6 * scale },///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+			4,2,g_anchor_instance->anchor_nomal_attack_effect,1.0f
+		);
+		g_anchor_instance->anchor_nomal_attack_effect +=0.4;
+	}
+	else
+	{
+		g_anchor_instance->anchor_nomal_attack_effect = 0;
+	}
 }
 
 void Anchor::DeleteNormalAttackAnchorBody()

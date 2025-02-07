@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name 1-1_boss.h
-// #description boss‚ğ‚Â‚­‚é@‚¦‚®‚¢
-// #make 2025/01/07@@‰i–ì‹`–ç
+// #description bossã‚’ã¤ãã‚‹ã€€ãˆãã„
+// #make 2025/01/07ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2025/01/21
-// #comment ’Ç‰ÁEC³—\’è
-//          E“Á‚É‚È‚µ
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ç‰¹ã«ãªã—
 //----------------------------------------------------------------------------------------------------
 #ifndef BOSS_1_1_H
 #define BOSS_1_1_H
@@ -18,13 +18,13 @@
 
 enum boss_state
 {
-	wait_state,//‘Ò‚¿ó‘Ô
-	panic_state,//‹¯‚İó‘Ô
-	walk_state,//•à‚«ó‘Ô
-	jump_state,//ƒWƒƒƒ“ƒvó‘Ô
-	charge_attack_state,//ƒ`ƒƒ[ƒWUŒ‚’†
-	shock_wave_state,//ƒVƒ‡ƒbƒNƒEƒF[ƒu‚ğ‚¾‚µ‚Ä‚¢‚éó‘Ô
-	create_mini_golem_state,//¬‚³‚ÈƒS[ƒŒƒ€‚ğ¶¬‚µ‚Ä‚¢‚éó‘Ô
+	wait_state,//å¾…ã¡çŠ¶æ…‹
+	panic_state,//æ€¯ã¿çŠ¶æ…‹
+	walk_state,//æ­©ãçŠ¶æ…‹
+	jump_state,//ã‚¸ãƒ£ãƒ³ãƒ—çŠ¶æ…‹
+	charge_attack_state,//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒä¸­
+	shock_wave_state,//ã‚·ãƒ§ãƒƒã‚¯ã‚¦ã‚§ãƒ¼ãƒ–ã‚’ã ã—ã¦ã„ã‚‹çŠ¶æ…‹
+	create_mini_golem_state,//å°ã•ãªã‚´ãƒ¼ãƒ¬ãƒ ã‚’ç”Ÿæˆã—ã¦ã„ã‚‹çŠ¶æ…‹
 
 };
 
@@ -35,7 +35,7 @@ public:
 	~Boss_1_1();
 
 
-	// ƒVƒ“ƒOƒ‹ƒgƒ“ƒCƒ“ƒXƒ^ƒ“ƒXæ“¾
+	// ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—
 	static Boss_1_1& GetInstance() {
 		static Boss_1_1 instance;
 		return instance;
@@ -48,38 +48,38 @@ public:
 	void UpdateCoolTime();
 	void UpdateEffectSheetCnt();
 	void Draw();
-	void debugDraw();//UŒ‚”ÍˆÍ‚ğ•\¦‚µ‚½‚è‚·‚é
+	void debugDraw();//æ”»æ’ƒç¯„å›²ã‚’è¡¨ç¤ºã—ãŸã‚Šã™ã‚‹
 	void EffectDraw();
 	void Finalize();
 
-	void CreateBossCore(b2Vec2 size);//ƒ{ƒX‚Ìã“_‚ğ˜Io‚³‚¹‚½
-	void DestroyBossCore(void);//ƒ{ƒX‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğ‰ó‚·
+	void CreateBossCore(b2Vec2 size);//ãƒœã‚¹ã®å¼±ç‚¹ã‚’éœ²å‡ºã•ã›ãŸæ™‚
+	void DestroyBossCore(void);//ãƒœã‚¹ã®ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’å£Šã™
 
 	void BossCoreUpdate(void);
 
 
-	void BossDamaged(void);//ƒ{ƒX‚Ì”í’e‚µ‚½ˆ—
-	void BossDead(void);   //ƒ{ƒX‚Ì€–S”»’è
+	void BossDamaged(void);//ãƒœã‚¹ã®è¢«å¼¾ã—ãŸå‡¦ç†
+	void BossDead(void);   //ãƒœã‚¹ã®æ­»äº¡åˆ¤å®š
 
-	void CreateChargeAttack(b2Vec2 attack_size, bool left);//‚½‚ßUŒ‚‚Ì¶¬ˆ—
+	void CreateChargeAttack(b2Vec2 attack_size, bool left);//ãŸã‚æ”»æ’ƒã®ç”Ÿæˆå‡¦ç†
 
-	void CreateShockWave(b2Vec2 attack_size, bool left);//ÕŒ‚”gUŒ‚‚Ì¶¬ˆ—
-	void ShockWaveUpdate(void);//ÕŒ‚”gUŒ‚‚ÌXVˆ—
+	void CreateShockWave(b2Vec2 attack_size, bool left);//è¡æ’ƒæ³¢æ”»æ’ƒã®ç”Ÿæˆå‡¦ç†
+	void ShockWaveUpdate(void);//è¡æ’ƒæ³¢æ”»æ’ƒã®æ›´æ–°å‡¦ç†
 
 	void JumpUpdate(void);
 
-	void DeleteAttackBody();//UŒ‚‚Ì”»’è‚ğíœ‚·‚éˆ—@Œ»İ‚Ì‚Æ‚±‚ë@ÕŒ‚”gUŒ‚‚Æ‚½‚ßUŒ‚‚ÌUŒ‚”»’è‚Ìíœ
+	void DeleteAttackBody();//æ”»æ’ƒã®åˆ¤å®šã‚’å‰Šé™¤ã™ã‚‹å‡¦ç†ã€€ç¾åœ¨ã®ã¨ã“ã‚ã€€è¡æ’ƒæ³¢æ”»æ’ƒã¨ãŸã‚æ”»æ’ƒã®æ”»æ’ƒåˆ¤å®šã®å‰Šé™¤
 	
 
 
-	void CreateMiniGolem(b2Vec2 minigolem_size, bool left);//ƒ~ƒjƒS[ƒŒƒ€‚Ìì¬
-	void MiniGolemUpdate(void);//ƒ~ƒjƒS[ƒŒƒ€‚ÌXVˆ—
+	void CreateMiniGolem(b2Vec2 minigolem_size, bool left);//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ä½œæˆ
+	void MiniGolemUpdate(void);//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®æ›´æ–°å‡¦ç†
 	void DestroyMiniGolemBody(void);
 
-	b2Body* GetOutSideBody(void);//Body‚»‚Æ‚ÌCPP‚©‚ç‚Æ‚Á‚Ä‚­‚é‚æ‚¤
+	b2Body* GetOutSideBody(void);//Bodyãã¨ã®CPPã‹ã‚‰ã¨ã£ã¦ãã‚‹ã‚ˆã†
 
 	///-----------------------------------------------------------------------
-	//ƒ{ƒX–{‘Ì
+	//ãƒœã‚¹æœ¬ä½“
 	b2Vec2 GetBossDrawSize(void)
 	{
 		return boss_size;
@@ -140,7 +140,7 @@ public:
 	}
 
 	//-------------------------------------------------------------------------------------------
-	//UŒ‚‚Ì”»’è
+	//æ”»æ’ƒã®åˆ¤å®š
 	b2Vec2 GetAttackDrawSize(void)
 	{
 		return attack_size;
@@ -160,7 +160,7 @@ public:
 		m_attack_body = body;
 	}
 	//-------------------------------------------------------------------------------------------
-	//ƒ~ƒjƒS[ƒŒƒ€‚Ì
+	//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®
 	b2Body* GetMiniGolemBody(int index)
 	{
 		return m_mini_golem_body[index];
@@ -192,17 +192,17 @@ public:
 	//--------------------------------------------------------------------------------------
 	//
 
-	int GetBossFieldLevel(void)//ƒ{ƒX‚ÌƒtƒB[ƒ‹ƒh‚ÌŠÇ—
+	int GetBossFieldLevel(void)//ãƒœã‚¹ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ç®¡ç†
 	{
 		return boss_field_level;
 	}
 
-	//ƒvƒŒƒCƒ„[‚ª‹ß‚­‚É‚¢‚é‚©‚ÌŠÇ—
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¿‘ãã«ã„ã‚‹ã‹ã®ç®¡ç†
 	bool GetPlayerisNearbyFlag(void)
 	{
 		return Player_is_Nearby;
 	}
-	//ƒvƒŒƒCƒ„[‚ª‹ß‚­‚É‚¢‚é‚©‚ÌŠÇ—
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¿‘ãã«ã„ã‚‹ã‹ã®ç®¡ç†
 	void SetPlayerisNearbyFlag(bool flag)
 	{
 		Player_is_Nearby = flag;
@@ -243,39 +243,51 @@ public:
 		CoreDeleteFlag = flag;
 	}
 	
-	// ƒ{ƒXí‚ÌŒo‰ßŠÔ‚ğİ’è
-    void SetBossElapsedTime(float time) 
-    {
-        elapsed_time = time;
-    }
-
-    // ƒ{ƒXí‚ÌŒo‰ßŠÔ‚ğæ“¾
-    float GetBossElapsedTime() const
-    {
-        return elapsed_time;
-    }
-
+	// ãƒœã‚¹æˆ¦ã®çµŒéæ™‚é–“ã‚’è¨­å®š
+  void SetBossElapsedTime(float time) 
+  {
+    elapsed_time = time;
+  }
+  
+  // ãƒœã‚¹æˆ¦ã®çµŒéæ™‚é–“ã‚’å–å¾—
+  float GetBossElapsedTime() const
+  {
+    return elapsed_time;
+  }
+  
+  void SetBossSheetCnt(int i)
+	{
+		sheet_cnt = 0;
+	}
 	
 
 	//-------------------------------------------------------------------------------------------
+
+	void SetShockWaveFrame(float i)
+	{
+		Now_Shock_Wave_time_Frame = i;
+	}
+	
+
+	//-----------------------------------------------------------------------------------------
 private:
 
 	b2Vec2 Boss_size = b2Vec2(18, 24);
 
-	int boss_hp=3;		   //boss‚ÌHP
+	int boss_hp=3;		   //bossã®HP
 
-	int boss_field_level=0;//ƒ{ƒX‚Ì°‚Ì•ö‰ó‚ğŠÇ—‚·‚éŠÖ”
+	int boss_field_level=0;//ãƒœã‚¹ã®åºŠã®å´©å£Šã‚’ç®¡ç†ã™ã‚‹é–¢æ•°
 
 
-	b2Body* m_body;//ƒ{ƒX‚Ìƒ{ƒfƒB
-	b2Vec2 boss_size;//•`‰æ‚Åg‚¤ƒ{ƒX‚ÌƒTƒCƒY
+	b2Body* m_body;//ãƒœã‚¹ã®ãƒœãƒ‡ã‚£
+	b2Vec2 boss_size;//æç”»ã§ä½¿ã†ãƒœã‚¹ã®ã‚µã‚¤ã‚º
 
-	b2Vec2 reality_boss_size;//ÀÛ‚Ìƒ{ƒfƒB‚ÌƒTƒCƒY
+	b2Vec2 reality_boss_size;//å®Ÿéš›ã®ãƒœãƒ‡ã‚£ã®ã‚µã‚¤ã‚º
 
-	b2Vec2 boss_sensor_size;//ƒ{ƒX‚ÌƒZƒ“ƒT[ƒTƒCƒY
+	b2Vec2 boss_sensor_size;//ãƒœã‚¹ã®ã‚»ãƒ³ã‚µãƒ¼ã‚µã‚¤ã‚º
 
-	b2Body* m_attack_body;//UŒ‚‚Ì”»’è
-	b2Vec2 attack_size;//UŒ‚‚Ì”»’è‚ÌƒTƒCƒY
+	b2Body* m_attack_body;//æ”»æ’ƒã®åˆ¤å®š
+	b2Vec2 attack_size;//æ”»æ’ƒã®åˆ¤å®šã®ã‚µã‚¤ã‚º
 
 
 	b2Body* anchorpoint_body;
@@ -285,7 +297,7 @@ private:
 
 
 
-	b2Body* m_mini_golem_body[2];//ƒ{ƒfƒB
+	b2Body* m_mini_golem_body[2];//ãƒœãƒ‡ã‚£
 	b2Vec2 mini_golem_size;
 	b2Body* destroy_mini_golem_body;
 	bool destroy_mini_golem_flag=false;
@@ -294,47 +306,47 @@ private:
 	int debug_flag = 0;
 
 
-	float sheet_cnt;//ƒV[ƒg‚ÌŠÇ—‚Åg‚Á‚Ä‚¢‚é
+	float sheet_cnt;//ã‚·ãƒ¼ãƒˆã®ç®¡ç†ã§ä½¿ã£ã¦ã„ã‚‹
 
 
 
-	bool left_flag;//ƒvƒŒƒCƒ„[‚ª‚Ç‚¿‚ç‚É‚¢‚é‚©‚Ì•`‰æ—p
+	bool left_flag;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã©ã¡ã‚‰ã«ã„ã‚‹ã‹ã®æç”»ç”¨
 
-	bool old_left_flag;//U‚èŒü‚«‚ğ”»•Ê‚·‚é‚½‚ß
+	bool old_left_flag;//æŒ¯ã‚Šå‘ãã‚’åˆ¤åˆ¥ã™ã‚‹ãŸã‚
 
 
 
-	boss_state now_boss_state;//ƒ{ƒX‚ÌƒXƒe[ƒgŠÇ—
+	boss_state now_boss_state;//ãƒœã‚¹ã®ã‚¹ãƒ†ãƒ¼ãƒˆç®¡ç†
 
-	bool time_count_flag = false;//ŠÔ‚ğƒJƒEƒ“ƒg‚·‚é‚©‚Ìƒtƒ‰ƒO
-	float elapsed_time = 0;//Œo‰ßŠÔ
+	bool time_count_flag = false;//æ™‚é–“ã‚’ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°
+	float elapsed_time = 0;//çµŒéæ™‚é–“
 
 	//-------------------------------------------------------------------------------------------
-	//ƒN[ƒ‹ƒ^ƒCƒ€‚ÌŠÇ—
+	//ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®ç®¡ç†
 
-	//ÕŒ‚”gUŒ‚
-	static constexpr int Max_Shock_Wave_CoolTime = 600;//ÕŒ‚”gUŒ‚Å‘åƒN[ƒ‹ƒ^ƒCƒ€@
-	int					 Now_Shock_Wave_CoolTime = 0;  //Œ»İ‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	//è¡æ’ƒæ³¢æ”»æ’ƒ
+	static constexpr int Max_Shock_Wave_CoolTime = 600;//è¡æ’ƒæ³¢æ”»æ’ƒæœ€å¤§ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã€€
+	int					 Now_Shock_Wave_CoolTime = 0;  //ç¾åœ¨ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
-	//ƒWƒƒƒ“ƒv
-	static constexpr int Max_Jump_CoolTime = 600;//ƒWƒƒƒ“ƒv‚ÌÅ‘åƒN[ƒ‹ƒ^ƒCƒ€@
-	int					 Now_Jump_CoolTime = 200;  //Œ»İ‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	//ã‚¸ãƒ£ãƒ³ãƒ—
+	static constexpr int Max_Jump_CoolTime = 600;//ã‚¸ãƒ£ãƒ³ãƒ—ã®æœ€å¤§ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã€€
+	int					 Now_Jump_CoolTime = 200;  //ç¾åœ¨ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
 	b2Vec2 JumpPower = { 1,-8.0f };
 
-	//¬Šâ¶¬
-	static constexpr int Max_Create_MiniGolem_CoolTime = 1800;//¬Šâ‚ÌÅ‘åƒN[ƒ‹ƒ^ƒCƒ€@
-	int					 Now_Create_MiniGolem_CoolTime = 1500;  //Œ»İ‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	//å°å²©ç”Ÿæˆ
+	static constexpr int Max_Create_MiniGolem_CoolTime = 1800;//å°å²©ã®æœ€å¤§ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã€€
+	int					 Now_Create_MiniGolem_CoolTime = 1500;  //ç¾åœ¨ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
-	//ƒ`ƒƒ[ƒWUŒ‚
-	static constexpr int Max_Charge_Attack_CoolTime = 1500;//ƒ`ƒƒ[ƒWUŒ‚‚ÌÅ‘åƒN[ƒ‹ƒ^ƒCƒ€@
-	int					 Now_Charge_Attack_CoolTime = 1500; //Œ»İ‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒ
+	static constexpr int Max_Charge_Attack_CoolTime = 1500;//ãƒãƒ£ãƒ¼ã‚¸æ”»æ’ƒã®æœ€å¤§ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã€€
+	int					 Now_Charge_Attack_CoolTime = 1500; //ç¾åœ¨ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
-	//•à‚«ƒ‚[ƒVƒ‡ƒ“
-	static constexpr int Max_Max_Walk_CoolTime = 120;//•à‚«ƒ‚[ƒVƒ‡ƒ“‚ÌÅ‘åƒN[ƒ‹ƒ^ƒCƒ€@
-	int					 Now_Max_Walk_CoolTime = 0; //Œ»İ‚ÌƒN[ƒ‹ƒ^ƒCƒ€
+	//æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
+	static constexpr int Max_Max_Walk_CoolTime = 120;//æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®æœ€å¤§ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã€€
+	int					 Now_Max_Walk_CoolTime = 0; //ç¾åœ¨ã®ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
 
-	//•à‚«‚ÌŠÇ—
+	//æ­©ãã®ç®¡ç†
 
 	b2Vec2 walk_power = { 1.1f,0.3f };
 
@@ -342,23 +354,23 @@ private:
 	float smoothingFactor = 0;
 	float newSpeed = 0;
 	//--------------------------------------------------------------------------------------------
-	//ƒ{ƒX‚ÌŠÇ—‚ğ‚·‚é@•Ï”
-	bool Player_is_Nearby = false;//ƒvƒŒƒCƒ„[‚ª‹ß‚­‚É‚¢‚é‚©‚ÌŠÇ—
-	int Player_is_Nearby_locked;//ƒ{ƒfƒB‚ğÁ‚·ŠÖŒW‚ÅˆêƒZƒ“ƒT[‚Ì”»’è‚ğ–³Œø‚É‚µ‚½‚¢
+	//ãƒœã‚¹ã®ç®¡ç†ã‚’ã™ã‚‹ã€€å¤‰æ•°
+	bool Player_is_Nearby = false;//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒè¿‘ãã«ã„ã‚‹ã‹ã®ç®¡ç†
+	int Player_is_Nearby_locked;//ãƒœãƒ‡ã‚£ã‚’æ¶ˆã™é–¢ä¿‚ã§ä¸€æ™‚ã‚»ãƒ³ã‚µãƒ¼ã®åˆ¤å®šã‚’ç„¡åŠ¹ã«ã—ãŸã„
 
 
 	//----------------------------------------------------------------------------------------------
-	//ÕŒ‚”gUŒ‚
-	static constexpr int Max_Shock_Wave_Sheet = 98;			//ÕŒ‚”gUŒ‚‚ÌÅ‘åƒtƒŒ[ƒ€
-	static constexpr int Shock_Wave_Start_Frame = 50;		//ÕŒ‚”g‚Ì”­¶ƒtƒŒ[ƒ€
-	static constexpr int Shock_Wave_End_Frame = 71;			//ÕŒ‚”g‚ÌI—¹ƒtƒŒ[ƒ€
+	//è¡æ’ƒæ³¢æ”»æ’ƒ
+	static constexpr int Max_Shock_Wave_Sheet = 98;			//è¡æ’ƒæ³¢æ”»æ’ƒã®æœ€å¤§ãƒ•ãƒ¬ãƒ¼ãƒ 
+	static constexpr int Shock_Wave_Start_Frame = 50;		//è¡æ’ƒæ³¢ã®ç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
+	static constexpr int Shock_Wave_End_Frame = 71;			//è¡æ’ƒæ³¢ã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 
-	static constexpr float Shock_Wave_Speed = 1.5f;			//ÕŒ‚”g‚Ì”ò‚ñ‚Å‚¢‚­ƒXƒs[ƒh
+	static constexpr float Shock_Wave_Speed = 1.5f;			//è¡æ’ƒæ³¢ã®é£›ã‚“ã§ã„ãã‚¹ãƒ”ãƒ¼ãƒ‰
 
 	bool Shock_Wave_Fly_flag=false;
 	static constexpr int Shock_Wave_time_Frame = 180;
-	int Now_Shock_Wave_time_Frame = 0;//ƒVƒ‡ƒbƒNƒEƒF[ƒu‚ÌŒ»İ‚ÌŠÇ—
+	int Now_Shock_Wave_time_Frame = 0;//ã‚·ãƒ§ãƒƒã‚¯ã‚¦ã‚§ãƒ¼ãƒ–ã®ç¾åœ¨ã®ç®¡ç†
 	bool ShockWaveLeftFlag = true;
 
 
@@ -367,47 +379,47 @@ private:
 
 
 	//-------------------------------------------------------------------------------------------
-	//ƒ~ƒjƒS[ƒŒƒ€‚Ì¶¬
-	static constexpr int Max_Create_Mini_Golem_Sheet = 98;	//ƒ~ƒjƒS[ƒŒƒ€‚Ì¶¬‚·‚éÅ‘åƒtƒŒ[ƒ€
+	//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ç”Ÿæˆ
+	static constexpr int Max_Create_Mini_Golem_Sheet = 98;	//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã®ç”Ÿæˆã™ã‚‹æœ€å¤§ãƒ•ãƒ¬ãƒ¼ãƒ 
 	static constexpr int Create_Mini_Golem_Start_Frame = 46;
 
 	bool Mini_golem_Create_flag=true;
 
 	//-----------------------------------------------------------------------------------------------
-	//‚½‚ßUŒ‚‚ÌƒtƒŒ[ƒ€’B
-	static constexpr int Max_Charge_Attack_Sheet = 200;		//‚½‚ßUŒ‚‚Ì¶¬‚·‚éÅ‘åƒtƒŒ[ƒ€
-	static constexpr int Charge_Attack_Start_Frame = 67;//‚½‚ßUŒ‚‚Ìƒ‚[ƒVƒ‡ƒ“‚Ìƒ{ƒfƒB‚Ì”­¶ƒtƒŒ[ƒ€
-	static constexpr int Charge_Attack_End_Frame = 102;//‚½‚ßUŒ‚‚Ìƒ‚[ƒVƒ‡ƒ“‚Ìƒ{ƒfƒB‚ÌI—¹ƒtƒŒ[ƒ€
+	//ãŸã‚æ”»æ’ƒã®ãƒ•ãƒ¬ãƒ¼ãƒ é”
+	static constexpr int Max_Charge_Attack_Sheet = 200;		//ãŸã‚æ”»æ’ƒã®ç”Ÿæˆã™ã‚‹æœ€å¤§ãƒ•ãƒ¬ãƒ¼ãƒ 
+	static constexpr int Charge_Attack_Start_Frame = 67;//ãŸã‚æ”»æ’ƒã®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒœãƒ‡ã‚£ã®ç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
+	static constexpr int Charge_Attack_End_Frame = 102;//ãŸã‚æ”»æ’ƒã®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒœãƒ‡ã‚£ã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 	//-----------------------------------------------------------------------------------------
 	
 	//-------------------------------------------------------------------------------------------
-	//ƒWƒƒƒ“ƒvƒ‚[ƒVƒ‡ƒ“‚ÌÅ‘åƒtƒŒ[ƒ€
+	//ã‚¸ãƒ£ãƒ³ãƒ—ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®æœ€å¤§ãƒ•ãƒ¬ãƒ¼ãƒ 
 	static constexpr int Max_Jump_Sheet = 72;
-	static constexpr int Jump_Attack_Start_Frame = 52;//ƒWƒƒƒ“ƒv‚É‚æ‚Á‚Ä”­¶‚·‚éUŒ‚‚Ì”­¶ƒtƒŒ[ƒ€
-	static constexpr int Jump_Attack_End_Frame = 56;//ƒWƒƒƒ“ƒv‚É‚æ‚Á‚Ä”­¶‚·‚éUŒ‚‚ÌI—¹ƒtƒŒ[ƒ€
+	static constexpr int Jump_Attack_Start_Frame = 52;//ã‚¸ãƒ£ãƒ³ãƒ—ã«ã‚ˆã£ã¦ç™ºç”Ÿã™ã‚‹æ”»æ’ƒã®ç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
+	static constexpr int Jump_Attack_End_Frame = 56;//ã‚¸ãƒ£ãƒ³ãƒ—ã«ã‚ˆã£ã¦ç™ºç”Ÿã™ã‚‹æ”»æ’ƒã®çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 
-	static constexpr int Jump_Start_Frame = 15;//ƒWƒƒƒ“ƒv‚Ì”­¶ƒtƒŒ[ƒ€
-	static constexpr int Jump_End_Frame = 20;///ƒWƒƒƒ“ƒv‚Ìã¸I—¹ƒtƒŒ[ƒ€
+	static constexpr int Jump_Start_Frame = 15;//ã‚¸ãƒ£ãƒ³ãƒ—ã®ç™ºç”Ÿãƒ•ãƒ¬ãƒ¼ãƒ 
+	static constexpr int Jump_End_Frame = 20;///ã‚¸ãƒ£ãƒ³ãƒ—ã®ä¸Šæ˜‡çµ‚äº†ãƒ•ãƒ¬ãƒ¼ãƒ 
 
 	bool Jump_flag = false;
 	//-------------------------------------------------------------------------------------------
 
 	//-------------------------------------------------------------------------------------------
-	//‹¯‚İ‚Ìƒ‚[ƒVƒ‡ƒ“‚ÌÅ‘åƒtƒŒ[ƒ€
+	//æ€¯ã¿ã®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®æœ€å¤§ãƒ•ãƒ¬ãƒ¼ãƒ 
 	static constexpr int Max_Panic_Sheet = 255;
 
-	static constexpr int Max_Panic_Stun_Frame = 255;//‚â‚­‚T•bŠÔ
+	static constexpr int Max_Panic_Stun_Frame = 255;//ã‚„ãï¼•ç§’é–“
 	//-------------------------------------------------------------------------------------------
 
 	//-------------------------------------------------------------------------------------------
-	//•à‚«ƒ‚[ƒVƒ‡ƒ“
+	//æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 	static constexpr int Max_Walk_Sheet = 72;
 	//-------------------------------------------------------------------------------------------
 
 
 	//-------------------------------------------------------------------------------------------
-	//ƒGƒtƒFƒNƒgŠÇ——p‚Ì•Ï”
+	//ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç®¡ç†ç”¨ã®å¤‰æ•°
 
 	float panic_effect_sheet_cnt = 0;
 	b2Vec2 panic_effect_size=b2Vec2(4.f, 4.f);
@@ -417,7 +429,7 @@ private:
 	float shock_wave_effect_sheet_cnt = 0;
 
 	float mini_golem_break_effect_cnt = 0;
-	//ƒ~ƒjƒS[ƒŒƒ€‚Íƒ{ƒfƒB‚ªÁ‚¦‚é‚Ì‚ÅÀ•W‚ğ‚à‚Á‚Æ‚­
+	//ãƒŸãƒ‹ã‚´ãƒ¼ãƒ¬ãƒ ã¯ãƒœãƒ‡ã‚£ãŒæ¶ˆãˆã‚‹ã®ã§åº§æ¨™ã‚’ã‚‚ã£ã¨ã
 	b2Vec2 mini_golem_delete_effect_position;
 
 
@@ -430,8 +442,8 @@ private:
 	static constexpr int Max_mini_golem_break_effect = 16;
 
 
-	static constexpr float boss_alpha = 3.0f;//ƒ{ƒX‚ÌƒAƒ‹ƒtƒ@’l
-	static constexpr float effect_alpha = 3.0f;//ƒ{ƒX‚ÌƒAƒ‹ƒtƒ@’l
+	static constexpr float boss_alpha = 3.0f;//ãƒœã‚¹ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤
+	static constexpr float effect_alpha = 3.0f;//ãƒœã‚¹ã®ã‚¢ãƒ«ãƒ•ã‚¡å€¤
 };
 
 

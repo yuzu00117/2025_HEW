@@ -100,25 +100,37 @@ void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x,
     boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
 }
 
+//ボス戦で出現するオブジェクトをもったエネミーのスポナーを追加
 void ObjectManager::AddBossCarryEnemySpawner(b2Vec2 position, b2Vec2 Size, Boss_Room_Level level, bool left)
 {
     boss_carry_object_spawnerList.emplace_back(std::make_unique<boss_carry_object_spawner>(position, Size, level, left));
 }
-
+//ボス戦で出現するオブジェクトをもったエネミーを追加
 void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size, int object_type, int anchor_level)
 {
     boss_carry_object_enemyList.emplace_back(std::make_unique<boss_carry_object_enemy>(position, enemy_size, left, enemy_speed, object_size, object_type, anchor_level));
 }
 
-
+//敵を倒した後に出てくる　落ちていくやつを追加
 void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Texture, int texture_x,int texture_y,b2Vec2 vec)
 {
     change_filter_boidy_enemy_list.emplace_back(std::make_unique<change_enemy_filter_and_body>(position, size, velocity, Texture, texture_x, texture_y,vec));
 }
 
+//乗ったら大ジャンプするバウンドブロックの追加
+void ObjectManager::AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level)
+{
+    boss_bound_block_list.emplace_back(std::make_unique<boss_bound_block>(position, size, vec, level));
+}
+
+void ObjectManager::AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num)
+{
+    contact_block_list.emplace_back(std::make_unique<contact_block>(Position, block_size, type, num));
+}
 
 
-// ID を使って木を検索
+
+// ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
         if (w->GetID() == id) {
@@ -128,7 +140,7 @@ wood* ObjectManager::FindWoodByID(int id) {
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-// ID を使って岩を検索
+// ID を使って岩を検索インスタンスを取得できる
 rock* ObjectManager::FindRockByID(int id) {
     for (const auto& w : rockList) {
         if (w->GetID() == id) {
@@ -138,7 +150,7 @@ rock* ObjectManager::FindRockByID(int id) {
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使って木を検索
+//IDを使って足場ブロックを検索　インスタンスを取得できる
 one_way_platform* ObjectManager::Findone_way_platformByID(int id) {
     for (const auto& w : one_way_platformList) {
         if (w->GetID() == id) {
@@ -148,7 +160,7 @@ one_way_platform* ObjectManager::Findone_way_platformByID(int id) {
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使って傾斜ブロックを検索
+//IDを使って傾斜ブロックを検索　インスタンスを取得できる
 sloping_block* ObjectManager::FindSloping_BlockByID(int id) {
     for (const auto& w : sloping_blockList) {
         if (w->GetID() == id) {
@@ -158,7 +170,7 @@ sloping_block* ObjectManager::FindSloping_BlockByID(int id) {
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使って静的→動的ブロックを検索
+//IDを使って静的→動的ブロックを検索　インスタンスを取得できる
 static_to_dynamic_block* ObjectManager::FindStatic_to_Dynamic_BlcokID(int id) {
     for (const auto& w : static_to_dynamic_blockList) {
         if (w->GetID() == id) {
@@ -168,6 +180,7 @@ static_to_dynamic_block* ObjectManager::FindStatic_to_Dynamic_BlcokID(int id) {
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+//地面を動かせる大きなブロック　インスタンスを取得できる
 movable_ground* ObjectManager::FindMovable_GroundID(int id)
 {
     for (const auto& w : movable_groundList) {
@@ -178,7 +191,7 @@ movable_ground* ObjectManager::FindMovable_GroundID(int id)
     return nullptr;
 }
 
-//IDを使って静的エネミーを検索
+//IDを使って静的エネミーを検索インスタンスを取得できる
 EnemyStatic* ObjectManager::FindEnemyStaticByID(int id)
 {
     for (auto& w : enemy_staticList) {
@@ -188,7 +201,7 @@ EnemyStatic* ObjectManager::FindEnemyStaticByID(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
-//IDを使って動的エネミーを検索
+//IDを使って動的エネミーを検索インスタンスを取得できる
 EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
 {
     for (auto& w : enemy_dynamicList) {
@@ -198,7 +211,7 @@ EnemyDynamic* ObjectManager::FindEnemyDynamicByID(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
-//IDを使ってエネミーの攻撃を検索
+//IDを使ってエネミーの攻撃を検索インスタンスを取得できる
 EnemyAttack* ObjectManager::FindEnemyAttackByID(int id)
 {
     for (auto& w : enemy_attackList) {
@@ -209,7 +222,7 @@ EnemyAttack* ObjectManager::FindEnemyAttackByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使って浮遊エネミーを検索
+//IDを使って浮遊エネミーを検索インスタンスを取得できる
 EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
 {
     for (auto& w : enemy_floatingList) {
@@ -220,7 +233,7 @@ EnemyFloating* ObjectManager::FindEnemyFloatingByID(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使って使って間欠泉を検索
+//IDを使って使って間欠泉を検索インスタンスを取得できる
 geyser* ObjectManager::FindGeyserID(int id)
 {
     for (auto& w : geyserList) {
@@ -234,7 +247,7 @@ geyser* ObjectManager::FindGeyserID(int id)
 
 
 
-//IDを使って使ってテレポートブロックを検索
+//IDを使って使ってテレポートブロックを検索インスタンスを取得できる
 teleport_block* ObjectManager::FindTeleportBlock(int id)
 {
     for (auto& w : teleport_blockList) {
@@ -245,7 +258,7 @@ teleport_block* ObjectManager::FindTeleportBlock(int id)
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
-//IDを使ってボスの部屋の床を検索
+//IDを使ってボスの部屋の床を検索インスタンスを取得できる
 boss_field_block* ObjectManager::FindBossFieldBlock(int id)
 {
     for (auto& w : boss_field_blockList) {
@@ -256,7 +269,7 @@ boss_field_block* ObjectManager::FindBossFieldBlock(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使ってボスの部屋の柱を検索
+//IDを使ってボスの部屋の柱を検索インスタンスを取得できる
 boss_pillar* ObjectManager::FindBossPillar(int id)
 {
     for (auto& w : boss_pillarList) {
@@ -268,7 +281,7 @@ boss_pillar* ObjectManager::FindBossPillar(int id)
 }
 
 
-//IDを使ってボスのオブジェクトエネミーのスポナー
+//IDを使ってボスのオブジェクトエネミーのスポナーインスタンスを取得できる
 boss_carry_object_spawner* ObjectManager::FindBossCarryEnemySpawner(int id)
 {
     for (auto& w : boss_carry_object_spawnerList) {
@@ -279,7 +292,7 @@ boss_carry_object_spawner* ObjectManager::FindBossCarryEnemySpawner(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-//IDを使ってボスのオブジェクトエネミー
+//IDを使ってボスのオブジェクトエネミーインスタンスを取得できる
 boss_carry_object_enemy* ObjectManager::FindBossCarryObjectEnemy(int id)
 {
     for (auto& w : boss_carry_object_enemyList) {
@@ -291,7 +304,7 @@ boss_carry_object_enemy* ObjectManager::FindBossCarryObjectEnemy(int id)
 }
 
 
-//IDを使って撃墜演出用の
+//IDを使って撃墜演出用のインスタンスを取得できる
 change_enemy_filter_and_body* ObjectManager::FindChangeEnemyFilterAndBody(int id)
 {
     for (auto& w : change_filter_boidy_enemy_list) {
@@ -301,6 +314,31 @@ change_enemy_filter_and_body* ObjectManager::FindChangeEnemyFilterAndBody(int id
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+
+
+//IDを使ってバウンドブロックのインスタンスを特定
+boss_bound_block* ObjectManager::FindBossBoundBlock(int id)
+{
+    for (auto& w : boss_bound_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
+//IDを使ってコンタクトブロックのインスタンスを取得できる
+contact_block* ObjectManager::FindContactBlock(int id)
+{
+    for (auto& w : contact_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 
 
@@ -456,6 +494,16 @@ void ObjectManager::InitializeAll() {
     for (auto& w : change_filter_boidy_enemy_list) {
         w->Initialize();
     }
+
+
+    for (auto& w : boss_bound_block_list) {
+        w->Initialize();
+    }
+
+    for (auto& w : contact_block_list) {
+
+        w->Initialize();
+    }
     Item_Coin_UI::Initialize();
 }
 
@@ -548,6 +596,14 @@ void ObjectManager::UpdateAll() {
     for (auto& w : change_filter_boidy_enemy_list) {
         w->Update();
     }
+
+    for (auto& w : boss_bound_block_list) {
+        w->Update();
+    }
+
+    for (auto& w : contact_block_list) {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -625,6 +681,14 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : boss_bound_block_list) {
+        w->Draw();
+    }
+
+
+    for (auto& w : contact_block_list) {
+        w->Draw();
+    }
   
     Item_Coin_UI::Draw();
 }
@@ -706,6 +770,14 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+
+    for (auto& w : boss_bound_block_list) {
+        w->Finalize();
+    }
+    for (auto& w : contact_block_list) {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -735,7 +807,31 @@ void ObjectManager::FinalizeAll() {
     boss_carry_object_spawnerList.clear();
 
     change_filter_boidy_enemy_list.clear();
+    
+    contact_block_list.clear();
 
+    boss_bound_block_list.clear();
+
+
+}
+
+void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
+{
+    for (auto& w : woodList) {
+        w->SetPullingPower_With_Multiple(multiple);
+    }
+
+    for (auto& w : rockList) {
+        w->SetPullingPower_With_Multiple(multiple);
+    }
+
+    for (auto& w : movable_groundList) {
+        w->SetPullingPower_With_Multiple(multiple);
+    }  
+    
+    for (auto& w : boss_pillarList) {
+        w->SetPullingPower_With_Multiple(multiple);
+    }
 
 }
 
