@@ -64,9 +64,6 @@ void Game::Initialize()
     //フィールドの初期化
     Field::Initialize();
 
-    //体力ソウルゲージUIの初期化
-    stamina_spirit_gauge.Initialize();
-
     //背景の初期化
     Bg::Initialize();
     //衝撃エフェクト
@@ -339,11 +336,8 @@ void Game::Draw(void)
 	stamina_spirit_gauge.Draw();
 
 
-	//プレイヤーUIの描画処理
-    player_UI::Draw();
+	player_UI::Draw();
 
-    //体力ソウルゲージUIの描画処理
-    stamina_spirit_gauge.Draw();
 
 #ifdef _DEBUG
     //デバッグ文字
