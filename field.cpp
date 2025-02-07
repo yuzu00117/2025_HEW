@@ -291,9 +291,25 @@ void Field::Initialize()
 				itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 			}
 
+			if (field_map[y][x] == 55) {//接触したら死ぬ
+				objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(195.f, 1.f), DEAD_BLOCK_TYPE, b2Vec2_zero);
 
-
-
+			}
+			if (field_map[y][x] == 65) {//ボスのジャンプ台
+				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f,-1.0f),boss_room_level_1);
+			}
+			if (field_map[y][x] == 66) {//ボスのジャンプ台
+				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_2);
+			}
+			if (field_map[y][x] == 67) {//ボスのジャンプ台
+				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_3);
+			}
+			if (field_map[y][x] == 68) {//ボスのジャンプ台
+				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_4);
+			}
+			if (field_map[y][x] == 70) {//通常フィールドに置いているのジャンプ台
+				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -0.6f), boss_room_level_11);
+      }
 		}
 	}
 

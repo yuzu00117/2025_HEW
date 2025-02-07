@@ -227,11 +227,11 @@ CriBool app_atomex_stop_player()
 	return CRI_TRUE;
 }
 
-//3 “Á’è‚Ì‰¹‚Ì‚İ’â~
-CriBool app_atomex_stop_cue()
+//3 “Á’è‚Ì‰¹‚Ì‚İ’â~¦Ä¶‚µ‚Ä‚¢‚é–¼‘O‚ª‚ ‚Á‚Ä‚¢‚È‚¢‚Æ•s‹ï‡‚ª‹N‚±‚é‚»‚¤‚Å‚·
+CriBool app_atomex_stop_cue(Sound_Manager sound_name)
 {
 	/* “Á’è‚ÌÄ¶‰¹‚Ì‚İ’â~ */
-	criAtomExPlayback_Stop(app_obj.playback_id);
+	criAtomExPlayback_Stop(sound_name);
 
 	return CRI_TRUE;
 }

@@ -1,8 +1,8 @@
 ﻿/*===========================================================================*
  *  Header file for Atom Config File
  *  Project            : HEW_sound
- *  Tool Ver.          : Ver.3.52.03
- *  ACF  Ver.          : Ver.1.31.4
+ *  Tool Ver.          : Ver.3.54.02
+ *  ACF  Ver.          : Ver.1.33.0
  *  File Name          : HEW_sound_acf.h
  *  File Size          : 4896 bytes
  *  Target             : Public
