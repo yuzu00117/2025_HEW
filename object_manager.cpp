@@ -100,22 +100,28 @@ void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x,
     boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
 }
 
+//ボス戦で出現するオブジェクトをもったエネミーのスポナーを追加
 void ObjectManager::AddBossCarryEnemySpawner(b2Vec2 position, b2Vec2 Size, Boss_Room_Level level, bool left)
 {
     boss_carry_object_spawnerList.emplace_back(std::make_unique<boss_carry_object_spawner>(position, Size, level, left));
 }
-
+//ボス戦で出現するオブジェクトをもったエネミーを追加
 void ObjectManager::AddBossCarryObjectEnemy(b2Vec2 position, b2Vec2 enemy_size, bool left, float enemy_speed, b2Vec2 object_size, int object_type, int anchor_level)
 {
     boss_carry_object_enemyList.emplace_back(std::make_unique<boss_carry_object_enemy>(position, enemy_size, left, enemy_speed, object_size, object_type, anchor_level));
 }
 
-
+//敵を倒した後に出てくる　落ちていくやつを追加
 void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Texture, int texture_x,int texture_y,b2Vec2 vec)
 {
     change_filter_boidy_enemy_list.emplace_back(std::make_unique<change_enemy_filter_and_body>(position, size, velocity, Texture, texture_x, texture_y,vec));
 }
 
+//乗ったら大ジャンプするバウンドブロックの追加
+void ObjectManager::AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level)
+{
+    boss_bound_block_list.emplace_back(std::make_unique<boss_bound_block>(position, size, vec, level));
+}
 
 void ObjectManager::AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num)
 {
@@ -310,6 +316,17 @@ change_enemy_filter_and_body* ObjectManager::FindChangeEnemyFilterAndBody(int id
 }
 
 
+//IDを使ってバウンドブロックのインスタンスを特定
+boss_bound_block* ObjectManager::FindBossBoundBlock(int id)
+{
+    for (auto& w : boss_bound_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 //IDを使ってコンタクトブロックのインスタンスを取得できる
 contact_block* ObjectManager::FindContactBlock(int id)
@@ -479,7 +496,12 @@ void ObjectManager::InitializeAll() {
     }
 
 
+    for (auto& w : boss_bound_block_list) {
+        w->Initialize();
+    }
+
     for (auto& w : contact_block_list) {
+
         w->Initialize();
     }
     Item_Coin_UI::Initialize();
@@ -575,6 +597,10 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+    for (auto& w : boss_bound_block_list) {
+        w->Update();
+    }
+
     for (auto& w : contact_block_list) {
         w->Update();
     }
@@ -652,6 +678,10 @@ void ObjectManager::DrawAll() {
     }
 
     for (auto& w : boss_carry_object_spawnerList) {
+        w->Draw();
+    }
+
+    for (auto& w : boss_bound_block_list) {
         w->Draw();
     }
 
@@ -740,6 +770,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+
+    for (auto& w : boss_bound_block_list) {
+        w->Finalize();
+    }
     for (auto& w : contact_block_list) {
         w->Finalize();
     }
@@ -775,6 +809,8 @@ void ObjectManager::FinalizeAll() {
     change_filter_boidy_enemy_list.clear();
     
     contact_block_list.clear();
+
+    boss_bound_block_list.clear();
 
 
 }
