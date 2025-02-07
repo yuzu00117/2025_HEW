@@ -16,7 +16,8 @@
 
 
 static ID3D11ShaderResourceView* g_Bg_Texture[4] = { NULL };  // 背景テクスチャ（配列化）
-static ID3D11ShaderResourceView* g_Bg_Texture_light = NULL;  // ライト用テクスチャ
+static ID3D11ShaderResourceView* g_Bg_Texture_light = NULL;  // ライト用
+static ID3D11ShaderResourceView* g_Bg_Texture_Most = NULL;  // ライト用テクスチャ
 
 // プレイヤーの過去の座標
 b2Vec2 g_old_player_position;
@@ -31,13 +32,15 @@ Bg bg;
 void Bg::Initialize()
 {
     // 各背景テクスチャの読み込み（配列に統一）
-    g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background5.png");
-    g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background4.png");
-    g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background3.png");
-    g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background2.png");
+    g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
+    g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
+    g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
+    g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background_5.png");
 
     g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
 
+
+    g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
     // 背景画像の初期配置（配列化）
     for (int layer = 0; layer < 4; layer++)
     {
@@ -88,6 +91,10 @@ void Bg::Update()
 
 void Bg::Draw()
 {
+
+    // ライトテクスチャの描画（背景の影響を受ける）
+    GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture_Most);
+    DrawSpriteOld({ BACK_GROUND_SIZE_X / 2, BACK_GROUND_SIZE_Y / 2 }, 0.0f, { BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y }, 1.0f);
     // 背景テクスチャの描画
     for (int layer = 0; layer < 4; layer++)  // 4層分を描画
     {
