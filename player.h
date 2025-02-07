@@ -285,6 +285,13 @@ private:
 	std::vector<DustEffect> dustEffects;
 
 	int dustFrameCnt;
+
+
+
+	//-----------------------------------------
+	//プレイヤーのサウンドの管理
+	int walk_state_sound_cnt;
+
 };
 
 #endif // !PLAYER_H

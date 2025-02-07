@@ -101,15 +101,15 @@ enum Sound_Manager
 	Anchor_Thorw_Sound,
 	Anchor_Mark_Sound,
 
-	Player_Soul_Colect1_Sound,
-	Player_Damege_Sound,
-	Player_Dead_Sound,
-	Player_Coin_Colect_Sound,
-	Player_Walk_Sound,
+	Player_Soul_Colect1_Sound,//playercpp update
+	Player_Damege_Sound, //player.cpp Player_Damaged
+	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
+	Player_Coin_Colect_Sound,//Item_coni Update
+	Player_Walk_Sound,// player.cpp Update
 	Player_Jump_Start_Sound,
 	Player_Jump_End_Sound,
 	Player_Attack_Sound,
-	Player_Jewelry_Colect_Sound,
+	Player_Jewelry_Colect_Sound,//Item_Jewl.cpp update
 	Player_GameOver_Sound,
 	Player_Soul_Colect2_Sound,
 	Player_Fall_Sound,
@@ -154,7 +154,7 @@ static CriBool app_execute_main(AppObj* app_obj);
 
 CriBool app_atomex_start(Sound_Manager sound_name);
 CriBool app_atomex_stop_player();
-CriBool app_atomex_stop_cue();
+CriBool app_atomex_stop_cue(Sound_Manager sound_name);
 
 /**************************************************************************
  * ïœêîíËã`

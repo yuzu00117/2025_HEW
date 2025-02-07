@@ -468,9 +468,10 @@ void Player::Update()
             if (draw_state == player_nomal_state)
             {
                 draw_state = player_walk_state;
+                app_atomex_start(Player_Walk_Sound);
             }
 
-            //app_atomex_start(Player_Walk_Sound);
+            walk_state_sound_cnt++;
 
         }
         //左移動
@@ -494,10 +495,28 @@ void Player::Update()
             if (draw_state == player_nomal_state)
             {
                 draw_state = player_walk_state;
+                app_atomex_start(Player_Walk_Sound);
             }
-            //app_atomex_start(Player_Walk_Sound);
+
+            walk_state_sound_cnt++;
+          
 
         }
+
+        //歩きの後を消す
+        if (draw_state != walk_state&& walk_state_sound_cnt!=0)
+        {
+            app_atomex_stop_cue(Player_Walk_Sound);
+            walk_state_sound_cnt = 0;
+        }
+
+        if (180 < walk_state_sound_cnt)
+        {
+            app_atomex_start(Player_Walk_Sound);
+            walk_state_sound_cnt = 0;
+        }
+
+      
 
         //宝石による移動速度アップした時滑るので、プレイヤーの足の摩擦力を上げたのと以下の処理を一応
         if (!(stick.x < 0 || Keyboard_IsKeyDown(KK_LEFT) || stick.x>0 || Keyboard_IsKeyDown(KK_RIGHT))||draw_state == player_nomal_state)
@@ -513,9 +532,7 @@ void Player::Update()
             m_speed = 0.75f;
 
         }
-
-
-
+       
     }
 
 
@@ -572,14 +589,14 @@ void Player::Update()
 
 //ソウルアイテム回収処理
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB))
+    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB))
     {
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
 
         app_atomex_start(Player_Soul_Colect1_Sound);
     }
-    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB);
 
 
 //宝石使う処理(テスト用)
@@ -839,6 +856,10 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime)
 
     //無敵時間を付与
     invincible_time = invincibletime;
+
+
+    //被弾の音
+    app_atomex_start(Player_Damege_Sound);
 
     // フィルターを変更
     updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
