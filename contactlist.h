@@ -532,21 +532,7 @@ public:
             (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_dynamic))
         {
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-50, 120);
-
-            if (objectA->collider_type == collider_enemy_dynamic)
-            {
-                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                enemy_instance->CollisionPlayer();
-            }
-            else if (objectB->collider_type == collider_enemy_dynamic)
-            {
-                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                enemy_instance->CollisionPlayer();
-            }
+            
         }
 
         //プレイヤーの通常攻撃攻撃と動的エネミーの衝突
@@ -870,16 +856,22 @@ public:
             (objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_attack))
         {
+            int damage;
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
-                attack_instance->CollisionPlayer();
+                damage = attack_instance->GetDamage();
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
-                attack_instance->CollisionPlayer();
+                damage = attack_instance->GetDamage();
             }
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-damage, 120);
         }
 
         //動的エネミーに付属しているセンサーと地面が触れた場合
