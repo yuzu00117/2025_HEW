@@ -1075,6 +1075,7 @@ public:
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
             player.Player_Damaged(-50, 120);
+            
 
         }
 
@@ -1188,7 +1189,7 @@ public:
             if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
                 boss.SetNowBossState(panic_state);
-
+                boss.SetBossSheetCnt(0);
                 if (objectA->object_name == Boss_pillar)
                 {
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
@@ -1236,6 +1237,7 @@ public:
 
                     if (objectB->collider_type == collider_boss)
                     {
+                        boss.SetBossSheetCnt(0);
                         boss.SetNowBossState(panic_state);
                     }
                 }
@@ -1254,6 +1256,7 @@ public:
                     enemy_instance->SetSplittingDestroyFlag(true);
                     if (objectA->collider_type == collider_boss)
                     {
+                        boss.SetBossSheetCnt(0);
                         boss.SetNowBossState(panic_state);
                     }
                 }
