@@ -166,7 +166,7 @@ void Game::Update(void)
             //プレイヤーUIの更新処理
             player_UI::Update();
 
-            
+            AnchorSpirit::Update();
 
             //プレイヤーの更新処理
             player.Update();
@@ -198,6 +198,7 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
+                
                 SceneManager& sceneManager = SceneManager::GetInstance();
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
@@ -215,8 +216,20 @@ void Game::Update(void)
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);
+                //プレイヤーの残機が残っていたら最初からスタート
+                if (PlayerLife::GetLife() > 0)
+                {
+                    PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_GAME);
+                }
+                else
+                {
+                    SceneManager& sceneManager = SceneManager::GetInstance();
+                    sceneManager.ChangeScene(SCENE_RESULT);
+                }
+
+
             }
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
@@ -275,10 +288,15 @@ void Game::Draw(void)
     //ボスの描画処理
     boss.Draw();
 
+
+
+    //描画の順番を調整するためにDrawのみ、外に出す
+    itemManager.DrawAll();
+    objectManager.DrawAll();
     //フィールドの描画処理
     Field::Draw();
 
-   
+ 
 
     //プレイヤーの描画処理
     player.Draw();
@@ -286,6 +304,10 @@ void Game::Draw(void)
     //アンカーの描画処理
     Anchor::Draw();
 
+
+
+    itemManager.DrawFront();
+    objectManager.DrawFront();
 
 
     //衝突時のエフェクト

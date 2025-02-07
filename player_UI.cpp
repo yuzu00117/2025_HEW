@@ -30,6 +30,12 @@ DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(130.f, 450.f
 DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(250.f, 500.f);
 float player_UI::player_ui_alpha = 1.0f;
 
+bool	player_UI::m_blue_jewel_collected = false;
+bool	player_UI::m_red_jewel_collected = false;
+bool	player_UI::m_yellow_jewel_collected = false;
+
+DirectX::XMFLOAT2 player_UI::m_ring_position = player_ui_position;
+
 player_UI::player_UI()
 {
 }
@@ -187,7 +193,7 @@ void player_UI::Draw()
 	//-------------------------------------------------------------------------------------------
 	//宝石の描画
 
-	if (true)//赤の宝石
+	if (m_red_jewel_collected)//赤の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_red_jewel_Texture);
@@ -200,7 +206,7 @@ void player_UI::Draw()
 		);
 	}
 
-	if (true)//青の宝石
+	if (m_blue_jewel_collected)//青の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_blue_jewel_Texture);
@@ -213,7 +219,7 @@ void player_UI::Draw()
 		);
 	}
 
-	if (true)//黄色の宝石
+	if (m_yellow_jewel_collected)//黄色の宝石
 	{
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_yellow_jewel_Texture);

@@ -22,7 +22,7 @@ public:
 
 	void Initialize();
 	void Update();
-	void Draw();
+	void DrawFront();
 	void Finalize();
 
 

@@ -17,6 +17,7 @@
 
 // 静的メンバ変数の定義（1回だけ行う）
 float	PlayerStamina::m_stamina = 300.0f;
+bool	PlayerStamina::m_avoid_damage_once = false;	//アイテムによるダメージ回避あるかどうか
 bool PlayerStamina::m_isdead = false; // プレイヤーの死亡フラグ
 
 
@@ -33,6 +34,12 @@ float	PlayerStamina::GetPlayerStaminaValue()
 
 void	PlayerStamina::EditPlayerStaminaValue(float value)
 {
+	//アイテムによるダメージ回避
+	if (value < 0 && m_avoid_damage_once)
+	{
+		m_avoid_damage_once = false;
+		return;
+	}
 
 	float anchor_spirit = AnchorSpirit::GetAnchorSpiritValue();
 	if (value < 0 && anchor_spirit > 0)
