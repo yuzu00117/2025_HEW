@@ -20,6 +20,7 @@ enum boss_state
 {
 	wait_state,//待ち状態
 	panic_state,//怯み状態
+	down_state,	//ダウン状態
 	walk_state,//歩き状態
 	jump_state,//ジャンプ状態
 	charge_attack_state,//チャージ攻撃中
@@ -238,11 +239,20 @@ public:
 		 now_boss_state=state;
 	}
 
+	//コアが壊れるかどうか
 	void SetCoreDeleteFlag(bool flag)
 	{
 		CoreDeleteFlag = flag;
 	}
 	
+
+	//コアを引っ張ったかどうか
+	void SetCorePullingFlag(bool flag)
+	{
+		CorePullingFlag = flag;
+	}
+
+
 	// ボス戦の経過時間を設定
   void SetBossElapsedTime(float time) 
   {
@@ -270,6 +280,11 @@ public:
 	
 
 	//-----------------------------------------------------------------------------------------
+
+	void SetWaitCoolTime(int i)
+	{
+		Wait_time = i;
+	}
 private:
 
 	b2Vec2 Boss_size = b2Vec2(18, 24);
@@ -292,7 +307,10 @@ private:
 
 	b2Body* anchorpoint_body;
 	b2Vec2 anchorpoint_size;
+
 	bool CoreDeleteFlag=false;
+
+	bool CorePullingFlag = false;
 
 
 
@@ -320,6 +338,8 @@ private:
 
 	bool time_count_flag = false;//時間をカウントするかのフラグ
 	float elapsed_time = 0;//経過時間
+
+	int Wait_time = 0;//待ち状態の設定
 
 	//-------------------------------------------------------------------------------------------
 	//クールタイムの管理
@@ -411,6 +431,11 @@ private:
 
 	static constexpr int Max_Panic_Stun_Frame = 255;//やく５秒間
 	//-------------------------------------------------------------------------------------------
+	//ダウン状態の最大フレーム
+	static constexpr int Max_Down_Sheet = 64;
+
+	static constexpr int Max_Down_Frame = 64;//やく５秒間
+
 
 	//-------------------------------------------------------------------------------------------
 	//歩きモーション

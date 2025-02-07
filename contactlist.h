@@ -455,12 +455,14 @@ public:
                     {
                         boss.BossDamaged();
                         boss.SetCoreDeleteFlag(true);
+                        boss.SetCorePullingFlag(true);
 
                     }
                     else
                     {
                         boss.BossDamaged();
                         boss.SetCoreDeleteFlag(true);
+                        boss.SetCorePullingFlag(true);
 
                     }
                 }

@@ -46,7 +46,7 @@ static ID3D11ShaderResourceView *g_boss_charge_attack_effect = NULL; // ボス�
 static ID3D11ShaderResourceView *g_mini_golem_break_effect = NULL;	 // ミニゴーレムが破壊された時のエフェクト
 static ID3D11ShaderResourceView *g_boss_panic_effect = NULL;		 // ボスがパニックになった時のエフェクト
 static ID3D11ShaderResourceView *g_boss_shock_wave_effect = NULL;	 // ボスの衝撃波エフェクト
-
+static ID3D11ShaderResourceView *g_boss_down_sheet = NULL;			 // ボスのダウン状態
 //-------------------------------------------------------------------------------------------
 // デバッグ用の画像
 static ID3D11ShaderResourceView *g_debug_color = NULL; // デバッグ用
@@ -88,9 +88,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 		g_boss_jump_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet1.png");				  // ゴーレムのジャンプアニメーション1
 		g_boss_jump_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet2.png");				  // ゴーレムのジャンプアニメーション2
 		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");					  // ゴーレムのパニックアニメーション
-
+		g_boss_down_sheet			=InitTexture(L"asset\\texture\\boss_1_1\\boss_down_sheet.png");					  // ゴーレムのダウンアニメーション
+		
+		
 		// エフェクト
-
 		g_boss_charge_attack_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_attack_effect.png"); // ボスのチャージアタックエフェクト
 		g_boss_charge_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_effect.png");			   // ボスのチャージエフェクト
 		g_boss_panic_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_effect.png");				   // ボスのパニックエフェクト
@@ -273,6 +274,17 @@ void Boss_1_1::Update()
 				CoreDeleteFlag = true;
 			}
 
+			break;
+
+		case down_state:
+
+			sheet_cnt += 0.5;
+
+			if (Max_Down_Frame <= sheet_cnt)
+			{
+				sheet_cnt = 0;
+				now_boss_state = wait_state;
+			}
 			break;
 		case walk_state:
 			if (static_cast<int>(sheet_cnt) % 10 == 0)
@@ -479,7 +491,6 @@ void Boss_1_1::BossCoreUpdate()
 		DestroyBossCore(); // ボスのコアを破壊
 
 		sheet_cnt = 0; // シートカウントをリセット
-		now_boss_state = charge_attack_state;
 		CoreDeleteFlag = false;
 	}
 }
@@ -584,6 +595,26 @@ void Boss_1_1::DestroyBossCore(void)
 
 		// テクスチャをリセット
 		panic_effect_sheet_cnt = 0;
+
+		//最初の行動はチャージ攻撃にしたい
+		Now_Charge_Attack_CoolTime += 1500;
+
+		if (CorePullingFlag == true)
+		{
+			//ダウン状態に移行
+			now_boss_state = down_state;
+		}
+		else
+		{
+			//ウェイト状態に移行
+			now_boss_state = wait_state;
+		}
+
+		//フラグをリセット
+		CorePullingFlag = false;
+
+		//チャージ攻撃
+		Now_Charge_Attack_CoolTime = 1500;
 
 		// nullに設定
 		SetAnchorPointBody(nullptr);
@@ -975,6 +1006,15 @@ void Boss_1_1::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
 
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
+
+			break;
+
+
+		case down_state:
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_down_sheet);
+
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 8, 8, sheet_cnt, boss_alpha, left_flag);
 
 			break;
 		case jump_state:
