@@ -635,6 +635,7 @@ void Player::Update()
         if (30 < draw_cnt)
         {
             Anchor::SetAnchorState(Create_state);
+           
         }
         
         break;

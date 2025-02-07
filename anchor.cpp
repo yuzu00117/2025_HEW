@@ -22,6 +22,7 @@
 #include"contactlist.h"
 #include"create_filter.h"
 #include"anchor_spirit.h"
+#include"sound.h"
 
 //グローバル変数
 static ID3D11ShaderResourceView* g_Anchor_Texture_Lev1 = NULL;//アンカーのテクスチャ
