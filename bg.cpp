@@ -97,12 +97,12 @@ void Bg::Draw()
 
 void Bg::FrontDraw()
 {
-    // îwåi5ÅiëOåiÅjÇÃï`âÊ
-    for (int i = 0; i < 4; i++)
-    {
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture[4]);
-        DrawSprite(bg.texture_pos[4][i], 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X+10, BACK_GROUND_SIZE_Y),0.5);
-    }
+    //// îwåi5ÅiëOåiÅjÇÃï`âÊ
+    //for (int i = 0; i < 4; i++)
+    //{
+    //    GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture[4]);
+    //    DrawSprite(bg.texture_pos[4][i], 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X+10, BACK_GROUND_SIZE_Y),0.5);
+    //}
 }
 
 void Bg::Finalize()

@@ -143,6 +143,7 @@
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="bound_block.cpp" />
     <ClCompile Include="camera_shake.cpp" />
     <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
     <ClCompile Include="blown_away_effect.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="anchor_spirit.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="blown_away_effect.h" />
+    <ClInclude Include="bound_block.h" />
     <ClInclude Include="camera_shake.h" />
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
     <ClInclude Include="collider_type.h" />
