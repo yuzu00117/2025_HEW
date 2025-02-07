@@ -84,9 +84,11 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 	ObjectData* geyser_object_data = new ObjectData{ collider_object };
 	object_geyser_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(geyser_object_data);
 
+	int ID = geyser_object_data->GenerateID();
 
+	SetID(ID);
 	//噴き出す水のフィクスチャを付ける
-
+	geyser_object_data->id = GetID();
 
 	//間欠泉の水のサイズのスケールの調整
 	b2Vec2 range_fly_water_size;
@@ -120,9 +122,62 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 	object_range_fly_water_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(range_fly_water_object_data);
 
 	range_fly_water_object_data->object_name = Object_Geyser_Water;
-
-
 	range_fly_water_object_data->id = GetID();
+
+
+
+
+	b2BodyDef body;//アンカーポイント
+	body.type = b2_staticBody;
+	body.position.Set(GeyserPosition.x, GeyserPosition.y);
+	body.fixedRotation = true;
+
+	b2Body* m_anchor_point_body = world->CreateBody(&body);
+
+	SetAnchorPointBody(m_anchor_point_body);
+
+
+	//フィクスチャを付ける
+	b2PolygonShape anchor_point_block_shape;
+
+	anchor_point_block_shape.SetAsBox(geyser_size.x * 0.5, geyser_size.y * 0.5);
+
+	b2FixtureDef anachor_point_fixture;
+
+	anachor_point_fixture.shape = &anchor_point_block_shape;
+	anachor_point_fixture.density = 3.0f;
+	anachor_point_fixture.friction = 0.5f;//摩擦
+	anachor_point_fixture.restitution = 0.0f;//反発係数
+	anachor_point_fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+	anachor_point_fixture.filter = createFilterExclude("object_filter", {});
+
+	b2Fixture* object_anchor_point_fixture = m_anchor_point_body->CreateFixture(&anachor_point_fixture);
+
+	// カスタムデータを作成して設定
+	ObjectData* object_anchor_point_data = new ObjectData{collider_anchor_point };//一旦壁判定
+	object_anchor_point_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchor_point_data);
+
+	object_anchor_point_data->id = GetID();
+	object_anchor_point_data->need_anchor_level = 1;
+	object_anchor_point_data->object_name = Object_Geyser;
+
+
+	b2WeldJointDef jointDef;
+	jointDef.bodyA = GetGeyserBody();
+	jointDef.bodyB = GetAnchorPointBody();
+
+	
+	jointDef.localAnchorA.Set(0.0f, 0.0f);
+
+	jointDef.localAnchorB.Set(0.0f, 0.0f);
+
+	jointDef.collideConnected = true;//
+
+	world->CreateJoint(&jointDef); 
+
+
+
+
 
 	boss_room_level = level;
 
@@ -156,11 +211,12 @@ void geyser::Update()
 			Splitting_Destroy_Flag = true;
 		}
 
-
+		
 		if (geyser_body != nullptr)
 		{
 			JumpPlayer();
 		}
+		
 
 
 		if (Splitting_end == true)
@@ -188,26 +244,29 @@ void geyser::JumpPlayer()
 
 	if (GetFlag() == true)
 	{
-		//上に上げる所
-		easing_rate += 0.02;
-
-		if (1.5 < easing_rate)
+		if (open_gyeser_flag == true)
 		{
-			easing_rate = 1.5;
+			//上に上げる所
+			easing_rate += 0.02;
+
+			if (1.5 < easing_rate)
+			{
+				easing_rate = 1.5;
+			}
+
+			// イージングがかかった値を保存する変数
+			double easingRate;
+			easingRate = Ease::InCubic(easing_rate);
+
+
+			Player::GetOutSidePlayerBody()->ApplyForceToCenter(b2Vec2(0.0f, -easingRate), true);
+			//-------------------------------------------------------------------------------------------
+
+			b2Vec2 vec = Player::GetOutSidePlayerBody()->GetLinearVelocity();
+
+
+			Player::GetOutSidePlayerBody()->SetLinearVelocity(b2Vec2(vec.x / 2, vec.y));
 		}
-
-		// イージングがかかった値を保存する変数
-		double easingRate;
-		easingRate = Ease::InCubic(easing_rate);
-
-
-		Player::GetOutSidePlayerBody()->ApplyForceToCenter(b2Vec2(0.0f, -easingRate), true);
-		//-------------------------------------------------------------------------------------------
-
-		b2Vec2 vec = Player::GetOutSidePlayerBody()->GetLinearVelocity();
-
-
-		Player::GetOutSidePlayerBody()->SetLinearVelocity(b2Vec2(vec.x / 2, vec.y));
 	}
 	else
 	{
@@ -391,21 +450,25 @@ void geyser::Draw()
 			float draw_x = ((geyser_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float draw_y = ((geyser_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
 
-			//draw
-			DrawSplittingSprite(
-				{ draw_x,
-				  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale) },
-				GetGeyserBody()->GetAngle(),
-				{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale *1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-				7, 6, water_sheet_cnt / 3, 3.0f
-
-			);
-			water_sheet_cnt++;
-			if (126 < water_sheet_cnt)
+			if (open_gyeser_flag == true)
 			{
-				water_sheet_cnt = 0;
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
+
+				//draw
+				DrawSplittingSprite(
+					{ draw_x,
+					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale) },
+					GetGeyserBody()->GetAngle(),
+					{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale * 1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+					7, 6, water_sheet_cnt / 3, 3.0f
+
+				);
+				water_sheet_cnt++;
+				if (126 < water_sheet_cnt)
+				{
+					water_sheet_cnt = 0;
+				}
 			}
 
 

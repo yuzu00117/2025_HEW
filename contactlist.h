@@ -201,12 +201,12 @@ public:
             if (objectA->collider_type == collider_geyser_water)
             {
                 geyser* geyser_instance = object_manager.FindGeyserID(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+                geyser_instance->SetFlag(true);
             }
             else
             {
                 geyser* geyser_instance = object_manager.FindGeyserID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
-                geyser_instance->SetFlag(true);//木を引っ張る処理を呼び出す
+                geyser_instance->SetFlag(true);
             }
         }
 
@@ -409,6 +409,23 @@ public:
                     {
                         rock* rock_instance = object_manager.FindRockByID(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                         rock_instance->Pulling_rock();//木を引っ張る処理を呼び出す
+                    }
+
+                }
+
+                //水が噴き出す
+                if (objectA->object_name == Object_Geyser || objectB->object_name == Object_Geyser)
+                {
+                    //どちらが岩のオブジェクトか特定
+                    if (objectA->object_name == Object_Geyser)//Aが岩のオブジェクト
+                    {
+                        geyser* geyser_instance = object_manager.FindGeyserID(objectA->id);
+                        geyser_instance->SetOpenGyserFlag(true);//水が噴き出す
+                    }
+                    else
+                    {
+                        geyser* geyser_instance = object_manager.FindGeyserID(objectB->id);
+                        geyser_instance->SetOpenGyserFlag(true);//水が噴き出す
                     }
 
                 }
@@ -1086,6 +1103,18 @@ public:
             /* player.Player_Damaged(-50, 120);*/
 
         }
+
+        //壁とショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_shock_wave))
+        {
+
+            if (objectA->object_name == Boss_field_block)return; 
+            if (objectB->object_name == Boss_field_block)return;
+
+            boss.SetShockWaveFrame(300);
+        }
+
 
 
         //プレイヤーとチャージ攻撃

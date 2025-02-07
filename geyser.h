@@ -36,9 +36,10 @@ public:
 
 	void JumpPlayer();
 
+	
 	void Destroy_Splitting();
 
-
+	//ぶんかいする
 	void DestroySplittedBodies(std::vector<b2Body*>& bodyList);
 
 	// ID を取得する
@@ -63,6 +64,7 @@ public:
 		geyser_body = body;
 	}
 
+
 	//間欠泉にサイズを持たせておく
 	b2Vec2 GetGeyserSize() const
 	{
@@ -73,6 +75,18 @@ public:
 		geyser_size = size;
 	}
 
+
+
+
+	b2Body* GetAnchorPointBody()
+	{
+		return Anchor_point_body;
+	}
+
+	void SetAnchorPointBody(b2Body* body)
+	{
+		Anchor_point_body = body;
+	}
 
 
 
@@ -124,6 +138,14 @@ public:
 		water_flag = flag;
 	}
 
+
+	void SetOpenGyserFlag(bool flag)
+	{
+		open_gyeser_flag = flag;
+	}
+
+
+
 private:
 
 	bool isUse;
@@ -133,6 +155,13 @@ private:
 	b2Body* geyser_body;//間欠泉のボディ
 
 	b2Vec2 geyser_size;//間欠泉のサイズ
+
+
+
+	b2Body* Anchor_point_body;
+
+
+
 
 	b2Vec2 range_fly_water_size;//間欠泉の水が飛ぶ範囲
 
@@ -156,6 +185,8 @@ private:
 	bool Splitting_end = false;//分割終了
 
 	int Destroy_Cnt = 0;
+
+	bool open_gyeser_flag = false;
 
 
 	int water_sheet_cnt = 0;
