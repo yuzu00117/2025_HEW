@@ -135,15 +135,6 @@ void Field::Initialize()
 			if (field_map[y][x] == 6) {//動的なエネミー
 				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),0.0f);
 			}
-			if (field_map[y][x] == 66) {//動的なエネミー
-				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 2.0f), 0.0f);
-			}
-			if (field_map[y][x] == 666) {//動的なエネミー
-				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), 0.0f);
-			}
-			if (field_map[y][x] == 6666) {//動的なエネミー
-				objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), 0.0f);
-			}
 
 
 			if(field_map[y][x] == 7) {//小さな木のオブジェクト 必要アンカーレベル１
@@ -304,7 +295,6 @@ void Field::Initialize()
 				objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(195.f, 1.f), DEAD_BLOCK_TYPE, b2Vec2_zero);
 
 			}
-
 			if (field_map[y][x] == 65) {//ボスのジャンプ台
 				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f,-1.0f),boss_room_level_1);
 			}
@@ -317,14 +307,9 @@ void Field::Initialize()
 			if (field_map[y][x] == 68) {//ボスのジャンプ台
 				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_4);
 			}
-	
-
 			if (field_map[y][x] == 70) {//通常フィールドに置いているのジャンプ台
 				objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -0.6f), boss_room_level_11);
-
-			}
-
-
+      }
 		}
 	}
 
