@@ -505,7 +505,7 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		anchorpoint_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
 
 		int left = -1;
-		if (left_flag==true)//右だったら加算する
+		if (left_flag == true)//右だったら加算する
 		{
 			left = 1;
 		}
@@ -515,16 +515,14 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		boss_size.x = reality_boss_size.x / BOX2D_SCALE_MANAGEMENT;
 		boss_size.y = reality_boss_size.y / BOX2D_SCALE_MANAGEMENT;
 
-
 		b2Vec2 position = m_body->GetPosition();
 
 		b2BodyDef anchor_point_body;
-		anchor_point_body.type = b2_dynamicBody;//�ÓI�ȃI�u�W�F�N�g�ɂ���Ȃ�true
-		anchor_point_body.position.Set(position.x+(boss_size.x*left*0.2), position.y+ (boss_size.y*0.2));			//�|�W�V�������Z�b�g
-		anchor_point_body.angle = 0;									//�p�x�̒�`
-		anchor_point_body.userData.pointer = (uintptr_t)this;			//userData�̃|�C���^���` 
-		anchor_point_body.fixedRotation = true;							//��]���Œ肷��A�@������I���ɂ���Ɖ�]���Ȃ�
-
+		anchor_point_body.type = b2_dynamicBody;//動的なオブジェクトにする
+		anchor_point_body.position.Set(position.x + (boss_size.x * left * 0.2), position.y + (boss_size.y * 0.2));			//ポジションを設定
+		anchor_point_body.angle = 0;									//角度の初期化
+		anchor_point_body.userData.pointer = (uintptr_t)this;			//userDataのポインタを設定
+		anchor_point_body.fixedRotation = true;							//回転を固定する
 
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
 		b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを取得する
@@ -560,10 +558,9 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		jointDef.bodyA = m_body;//ボスのボディ
 		jointDef.bodyB = GetAnchorPointBody();//ボスのアンカーポイントのボディ
 
-		//boss��
-		jointDef.localAnchorA.Set(boss_size.x*0.2*left, boss_size.y*0.2);
-		//�U����
-
+		//ボス側
+		jointDef.localAnchorA.Set(boss_size.x * 0.2 * left, boss_size.y * 0.2);
+		//アンカーポイント側
 		jointDef.localAnchorB.Set(0.0f, 0.0f);
 
 		jointDef.collideConnected = true;//ジョイント同士の衝突を無効にする
@@ -580,8 +577,6 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 		b2Vec2 vec = m_body->GetLinearVelocity();
 
 		m_body->SetLinearVelocity(b2Vec2(0.0f, vec.y));
-
-		
 	}
 }
 
@@ -1066,7 +1061,7 @@ void Boss_1_1::Draw()
 			//コアの描画を削除
 
 			////�V�F�[�_���\�[�X��ݒ�
-			//GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
+//			GetDeviceContext()->PSSetShaderResources(0, 1, &g_debug_attack_color);
 
 			//// �R���C�_�[�̈ʒu�̎擾�i�v���C���[�̈ʒu�j
 			//b2Vec2 anchorpoint_pos = GetAnchorPointBody()->GetPosition();
@@ -1132,7 +1127,7 @@ void Boss_1_1::debugDraw()
 	DrawSprite(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossSensorSize().x * scale, GetBossSensorSize().y * scale));
 
 	//----------------------------------------------------------------------------
-	//実際のボスのサイズを描画
+//実際のボスのサイズを描画
 
 	if (GetBossBody() != nullptr)
 	{
@@ -1150,6 +1145,7 @@ void Boss_1_1::debugDraw()
 		DrawSprite(XMFLOAT2(boss_draw_x, boss_draw_y), 0.0f, XMFLOAT2(GetBossRealSize().x * scale, GetBossRealSize().y * scale));
 	}
 	//---------------------------------------------------------------------------
+//攻撃の描画
 	if (GetAttackBody() != nullptr)
 	{
 		//シェーダーリソースを設定
@@ -1224,7 +1220,7 @@ void Boss_1_1::EffectDraw()
 	screen_center.y = SCREEN_CENTER_Y;
 
 	//---------------------------------------------------------------------------
-	//チャージアタック
+//チャージアタック
 	if (GetAttackBody() != nullptr)
 	{
 		if (now_boss_state == charge_attack_state)
