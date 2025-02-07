@@ -1112,6 +1112,18 @@ public:
 
         }
 
+        //壁とショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_shock_wave))
+        {
+
+            if (objectA->object_name == Boss_field_block)return; 
+            if (objectB->object_name == Boss_field_block)return;
+
+            boss.SetShockWaveFrame(300);
+        }
+
+
 
         //プレイヤーとチャージ攻撃
         if ((objectA->collider_type == collider_chage_attack && objectB->collider_type == collider_player_body) ||
