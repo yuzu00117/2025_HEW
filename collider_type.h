@@ -47,7 +47,6 @@ enum ColliderTypeList
     collider_enemy_static,
     collider_enemy_attack,
     collider_enemy_sensor,
-    collider_enemy_sensor_move,
     collider_enemy_floating,
     collider_enemy_floating_sensor,
 
@@ -65,6 +64,8 @@ enum ColliderTypeList
     collider_object_carry_enemy,
 
     collider_blown_away_enemy,
+
+    collider_bound_block
 };
 
 
