@@ -24,10 +24,16 @@
 
 //テクスチャの入れ物
 //グローバル変数
-static ID3D11ShaderResourceView* g_Geyser_Texture = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_Geyser_Water_Texture = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_Geyser_on_Rock_Texture = NULL;//アンカーのテクスチャ
 
+
+
+static ID3D11ShaderResourceView* g_Geyser_Water_Texture = NULL;//アンカーのテクスチャ
+
+//間欠泉のテクスチャ　アンカーの打つ前
+static ID3D11ShaderResourceView* g_Geyser_Close_Texture = NULL;
+
+//間欠泉のテクスチャ　アンカーの打ったあと
+static ID3D11ShaderResourceView* g_Geyser_Open_Texture = NULL;
 
 
 
@@ -68,7 +74,12 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 
 	//間欠泉自体のフィクスチャ
 	b2PolygonShape geyser_shape;
-	geyser_shape.SetAsBox(geyser_size.x * 0.5, geyser_size.y * 0.5);
+	geyser_shape.SetAsBox(
+		geyser_size.x * 0.5f,  // 幅はそのまま
+		geyser_size.y * 0.1f, // 高さを半分に
+		b2Vec2(0, geyser_size.y * 0.4f), // 中心を下方向へ移動
+		0.0f // 角度
+	);
 
 	b2FixtureDef geyser_fixture;
 	geyser_fixture.shape = &geyser_shape;
@@ -140,7 +151,12 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 	//フィクスチャを付ける
 	b2PolygonShape anchor_point_block_shape;
 
-	anchor_point_block_shape.SetAsBox(geyser_size.x * 0.5, geyser_size.y * 0.5);
+	anchor_point_block_shape.SetAsBox(
+		geyser_size.x * 0.5f,  // 幅はそのまま
+		geyser_size.y * 0.25f, // 高さを半分に
+		b2Vec2(0, geyser_size.y * 0.25f), // 中心を下方向へ移動
+		0.0f // 角度
+	);
 
 	b2FixtureDef anachor_point_fixture;
 
@@ -195,9 +211,11 @@ geyser::~geyser()
 void geyser::Initialize()
 {
 	//間欠泉周りのテクスチャ！！！（日本語）
-	g_Geyser_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_gyaser.png");
+
 	g_Geyser_Water_Texture = InitTexture(L"asset\\texture\\sample_texture\\geyser_water.png");
-	g_Geyser_on_Rock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_geyser_on_rock.png");
+	g_Geyser_Open_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Open_Texture.png");
+	g_Geyser_Close_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture.png");
+	
 
 }
 
@@ -438,6 +456,9 @@ void geyser::Draw()
 		b2Vec2 screen_center;
 		screen_center.x = SCREEN_CENTER_X;
 		screen_center.y = SCREEN_CENTER_Y;
+
+
+		int geyser_Draw_y=10;
 		///ここから調整してね
 		if (GetGeyserBody() != nullptr)
 		{
@@ -458,7 +479,7 @@ void geyser::Draw()
 				//draw
 				DrawSplittingSprite(
 					{ draw_x,
-					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale) },
+					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+geyser_Draw_y*2 },
 					GetGeyserBody()->GetAngle(),
 					{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale * 1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 					7, 6, water_sheet_cnt / 3, 3.0f
@@ -469,21 +490,38 @@ void geyser::Draw()
 				{
 					water_sheet_cnt = 0;
 				}
+
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Open_Texture);
+
+				//draw
+				DrawSplittingSprite(
+					{ draw_x,
+					  draw_y+ geyser_Draw_y },
+					GetGeyserBody()->GetAngle(),
+					{ GetGeyserSize().x * scale,GetGeyserSize().y * scale },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+					15, 1, draw_cnt, 2.0f
+				);
+			}
+			else
+			{
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Open_Texture);
+
+				//draw
+				DrawSplittingSprite(
+					{ draw_x,
+					  draw_y + geyser_Draw_y },
+					GetGeyserBody()->GetAngle(),
+					{ GetGeyserSize().x * scale,GetGeyserSize().y * scale },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+					15, 1, draw_cnt, 2.0f
+				);
 			}
 
+			draw_cnt += 0.3;
 
 			
+			
 
-
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Texture);
-
-			//draw
-			DrawSprite(
-				{ draw_x,
-				  draw_y },
-				GetGeyserBody()->GetAngle(),
-				{ GetGeyserSize().x * scale,GetGeyserSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-			);
+		
 
 
 			
@@ -503,7 +541,7 @@ void geyser::Draw()
 				float body_draw_x = ((bodyPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 				float body_draw_y = ((bodyPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Texture);
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Close_Texture);
 
 
 				//draw
@@ -511,7 +549,7 @@ void geyser::Draw()
 					{ body_draw_x,
 					body_draw_y },
 					boss_geyser_body_Splitting[i]->GetAngle(),
-					{ GetGeyserSize().x / Splitting_x * scale,GetGeyserSize().y / Splitting_y * scale },
+					{ GetGeyserSize().x / Splitting_x /15* scale,GetGeyserSize().y / Splitting_y * scale },
 					Splitting_x,
 					Splitting_y,
 					i,
@@ -544,14 +582,14 @@ void geyser::Finalize()
 	}
 	//画像の解放
 
-	if (g_Geyser_on_Rock_Texture != NULL)
+	if (g_Geyser_Close_Texture != NULL)
 	{
-		UnInitTexture(g_Geyser_on_Rock_Texture);
-		UnInitTexture(g_Geyser_Texture);
+		UnInitTexture(g_Geyser_Close_Texture);
+		UnInitTexture(g_Geyser_Open_Texture);
 		UnInitTexture(g_Geyser_Water_Texture);
 
-		g_Geyser_on_Rock_Texture = NULL;
-		g_Geyser_Texture = NULL;
+		g_Geyser_Close_Texture = NULL;
+		g_Geyser_Open_Texture = NULL;
 		g_Geyser_Water_Texture = NULL;
 
 	}
