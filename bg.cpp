@@ -27,7 +27,7 @@ Bg bg;
 
 #define BACK_GROUND_HEIGHT (50)
 #define BACK_GROUND_SIZE_X (1280*1.0)
-#define BACK_GROUND_SIZE_Y (720*1.0)
+#define BACK_GROUND_SIZE_Y (720*1.2)
 
 void Bg::Initialize()
 {
