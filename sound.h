@@ -116,11 +116,11 @@ enum Sound_Manager
 	Player_Warp_Sound,
 	Player_Frame_Up_Sound,
 
-	Object_Rock_Fall_Sound,
+	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
 	Object_Get_Treasure_Sound,
 	Object_Wood_Fall_Sound,//wood ながい　動作とあってない
 	Object_Rock_Roll_Sound,//rock.cpp  Pulling_rock
-	Object_Geyser_Sound,//間欠泉のマージあと
+	Object_Geyser_Sound,// contact.list　　雷おちてね？
 	Object_Pillar_Break_Sound,//boss_pillar.cpp  Destroy_Splitting
 	Object_Pillar_Hit_Sound,
 
