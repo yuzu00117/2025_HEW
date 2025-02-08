@@ -29,6 +29,7 @@ public:
 	static void	Finalize();
 	static void	Draw();
 
+	static void Reset();
 
 	static bool GetDeadFlag(void)
 	{
@@ -47,7 +48,13 @@ private:
 	static float Black_fade_rate;
 
 
+	static float Black_hole_rate;
+
+
 	static bool Dead_Flag;
+
+
+	
 
 };
 

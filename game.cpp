@@ -46,6 +46,8 @@ void Game::Initialize()
     //文字（絵）
     InitializeWord();
 
+    dead_production::Reset();
+
 
     //プレイヤーの初期化
     player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
@@ -211,38 +213,13 @@ void Game::Update(void)
             }
 
 
-            //プレイヤーが死亡したらリザルト画面に遷移
-            if (PlayerStamina::IsPlayerDead())
-            {
-                dead_production::Update();
-            }
-
-            //プレイヤーが死亡したらリザルト画面に遷移
-            if (dead_production::GetDeadFlag())
-            {
-                //プレイヤーの残機が残っていたら最初からスタート
-                if (PlayerLife::GetLife() > 0)
-                {
-                    PlayerLife::SetLife(PlayerLife::GetLife() - 1);
-                    SceneManager& sceneManager = SceneManager::GetInstance();
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    dead_production::SetDeadFlag(false);
-                }
-                else
-                {
-                    SceneManager& sceneManager = SceneManager::GetInstance();
-                    sceneManager.ChangeScene(SCENE_RESULT);
-                    dead_production::SetDeadFlag(false);
-                }
-
-
-            }
+           
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-            /*    SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);*/
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_RESULT);
             }
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
@@ -274,6 +251,33 @@ void Game::Update(void)
 
 	//カメラシェイクの更新処理
     CameraShake::Update();
+
+    //プレイヤーが死亡したらリザルト画面に遷移
+    if (PlayerStamina::IsPlayerDead())
+    {
+        dead_production::Update();
+    }
+
+    //プレイヤーが死亡したらリザルト画面に遷移
+    if (dead_production::GetDeadFlag())
+    {
+        //プレイヤーの残機が残っていたら最初からスタート
+        if (PlayerLife::GetLife() > 0)
+        {
+            PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+            SceneManager& sceneManager = SceneManager::GetInstance();
+            sceneManager.ChangeScene(SCENE_GAME);
+            dead_production::SetDeadFlag(false);
+        }
+        else
+        {
+            SceneManager& sceneManager = SceneManager::GetInstance();
+            sceneManager.ChangeScene(SCENE_RESULT);
+            dead_production::SetDeadFlag(false);
+        }
+
+
+    }
 
 
 
