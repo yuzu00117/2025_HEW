@@ -188,6 +188,8 @@ private:
 
 	bool open_gyeser_flag = false;
 
+	//スプライトの管理用
+	float draw_cnt;
 
 	int water_sheet_cnt = 0;
 
