@@ -34,6 +34,7 @@
 #include"impact_effect.h"
 #include"gokai.h"
 #include"blown_away_effect.h"
+#include"dead_production.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -72,6 +73,9 @@ void Game::Initialize()
     InitBlownAwayEffect();
 
     Gokai_UI::Initialize();
+
+
+    dead_production::Initialize();
 
 
 
@@ -121,6 +125,8 @@ void Game::Finalize(void)
 
     Gokai_UI::Finalize();
 
+    dead_production::Finalize();
+
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
 
@@ -128,6 +134,9 @@ void Game::Finalize(void)
     FinalizeImpactEffects();
     //撃墜演出エフェクト
     FinalizeBlownAwayEffects();
+
+
+    
 
 
 #ifdef _DEBUG
@@ -192,13 +201,7 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
 
-            //プレイヤーが死亡したらリザルト画面に遷移
-            if (PlayerStamina::IsPlayerDead())
-            {
-                
-                SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);
-            }
+         
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
@@ -208,10 +211,14 @@ void Game::Update(void)
             }
 
 
-
-
             //プレイヤーが死亡したらリザルト画面に遷移
             if (PlayerStamina::IsPlayerDead())
+            {
+                dead_production::Update();
+            }
+
+            //プレイヤーが死亡したらリザルト画面に遷移
+            if (dead_production::GetDeadFlag())
             {
                 //プレイヤーの残機が残っていたら最初からスタート
                 if (PlayerLife::GetLife() > 0)
@@ -219,11 +226,13 @@ void Game::Update(void)
                     PlayerLife::SetLife(PlayerLife::GetLife() - 1);
                     SceneManager& sceneManager = SceneManager::GetInstance();
                     sceneManager.ChangeScene(SCENE_GAME);
+                    dead_production::SetDeadFlag(false);
                 }
                 else
                 {
                     SceneManager& sceneManager = SceneManager::GetInstance();
                     sceneManager.ChangeScene(SCENE_RESULT);
+                    dead_production::SetDeadFlag(false);
                 }
 
 
@@ -232,8 +241,8 @@ void Game::Update(void)
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
-                sceneManager.ChangeScene(SCENE_RESULT);
+            /*    SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_RESULT);*/
             }
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
@@ -265,6 +274,8 @@ void Game::Update(void)
 
 	//カメラシェイクの更新処理
     CameraShake::Update();
+
+
 
 }
 
@@ -337,6 +348,9 @@ void Game::Draw(void)
 
 
 	player_UI::Draw();
+
+
+    dead_production::Draw();
 
 
 #ifdef _DEBUG

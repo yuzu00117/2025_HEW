@@ -259,6 +259,11 @@
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="Item_Jewel.cpp" />
+    <ClCompile Include="bound_block.cpp" />
+    <ClCompile Include="Item_SavePoint.cpp" />
+    <ClCompile Include="dead_production.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -541,6 +546,11 @@
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
     <ClInclude Include="gokai.h" />
     <ClInclude Include="contact_block.h">
+      <Filter>ソースファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="bound_block.h" />
+    <ClInclude Include="Item_SavePoint.h" />
+    <ClInclude Include="dead_production.h">
       <Filter>ソースファイル</Filter>
     </ClInclude>
   </ItemGroup>
