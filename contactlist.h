@@ -1623,6 +1623,10 @@ public:
             angle_rad -= M_PI / 2;
 
 
+            //音の再生
+            app_atomex_start(Enemy_Shot_Down_Sound);
+
+
             int  rand = GetRandomInt(1, 3);
 
             // エフェクトリストに追加

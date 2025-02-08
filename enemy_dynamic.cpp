@@ -23,6 +23,7 @@
 #include"Item_Manager.h"
 #include"create_filter.h"
 #include"object_manager.h"
+#include"sound.h"
 
 
 static ID3D11ShaderResourceView* g_EnemyDynamic_Texture;		  //動的エネミーのテクスチャ
@@ -160,6 +161,7 @@ void EnemyDynamic::Update()
 			break;
 		case ENEMY_STATE_ATTACK:
 			Attack();
+		
 			m_old_state = ENEMY_STATE_ATTACK;
 			break;
 		default:
@@ -175,6 +177,11 @@ void EnemyDynamic::Update()
 	}
 	else if (!GetUse())
 	{
+
+		//エネミーのダウンの音
+		app_atomex_start(Enemy_Knock_Down2_Sound);
+
+
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
@@ -388,6 +395,9 @@ void EnemyDynamic::Attack()
 		{
 			object_manager.AddEnemyAttack(b2Vec2(pos.x + GetSize().x / 4, pos.y), GetSize(), 0.0f, GetID());
 		}
+
+		//攻撃の音を再生
+		app_atomex_start(Enemy_Attack_Sound);
 	}
 
 	//攻撃動作が全て終了したら、動くように戻して移動状態にする
