@@ -38,6 +38,7 @@ enum STAGE_NAME
     STAGE_NULL,
     STAGE_TUTORIAL,
     STAGE_1_1,
+    STAGE_BOSS,
 };
 
 
