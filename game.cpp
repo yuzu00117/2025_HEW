@@ -238,13 +238,9 @@ void Game::Update(void)
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
             {
-                b2Vec2 size = player.GetSensorSize();
-
-                player.Finalize();
-
-                player.Initialize(b2Vec2(48, 0), b2Vec2(1, 2), size);
-
-                boss.Initialize(b2Vec2(53, 0), b2Vec2(18, 24), true);
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.SetStageName(STAGE_BOSS);
+                sceneManager.ChangeScene(SCENE_GAME);
 
             }
         }
