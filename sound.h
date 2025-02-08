@@ -79,12 +79,12 @@ typedef struct AppTag {
 enum Sound_Manager
 {
 	GAME_BGM,
-	TITLE_BGM,
-	STAGESELECT_BGM,
-	RESULT_BGM,
+	TITLE_BGM,//Title init
+	STAGESELECT_BGM,//StageSelectScene inti
+	RESULT_BGM,//RESULT_init
 	BOSS1_BGM,
-	STAGE1_BGM,
-	POP_BGM,
+	STAGE1_BGM,//Game.cpp init
+	POP_BGM,//Game.cpp init
 	ADVENTURE_BGM,
 	STAGE2_BGM,
 	BOSS2_BGM,
@@ -154,7 +154,7 @@ static CriBool app_execute_main(AppObj* app_obj);
 
 CriBool app_atomex_start(Sound_Manager sound_name);
 CriBool app_atomex_stop_player();
-CriBool app_atomex_stop_cue();
+CriBool app_atomex_stop_cue(Sound_Manager sound_name);
 
 /**************************************************************************
  * ïœêîíËã`

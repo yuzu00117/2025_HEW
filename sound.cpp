@@ -35,11 +35,7 @@ void CRIInitialize(void) {
 
 void CRIUpdate(void)
 {
-	if (Keyboard_IsKeyDown(KK_D1))
-	{
-		app_atomex_start(GAME_BGM);
-	}
-
+	
 	/* アプリケーションの更新 */
 	app_execute_main(&app_obj);
 

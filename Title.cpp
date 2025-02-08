@@ -23,6 +23,10 @@ ID3D11ShaderResourceView* g_title_Texture = NULL;
 void TitleScene::Initialize()
 {
 	g_title_Texture= InitTexture(L"asset\\texture\\sample_texture\\sample_title.png");
+
+	//全ての音を止める
+	app_atomex_stop_player();
+	//タイトルのBGMをかける
 	app_atomex_start(TITLE_BGM);
 }
 
