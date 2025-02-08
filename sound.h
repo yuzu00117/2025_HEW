@@ -124,18 +124,18 @@ enum Sound_Manager
 	Object_Pillar_Break_Sound,
 	Object_Pillar_Hit_Sound,
 
-	Boss_Charge_Attack_Sound,
-	Boss_Jump_Sound,
-	Boss_Attack_Wave_Sound,
-	Boss_Walk_Sound,
-	Boss_Charge_Sound,
-	Boss_Core_Damege_Sound,
-	Boss_Damege_Sound,
-	Boss_Stun_Sound,
+	Boss_Charge_Attack_Sound,//update charge_attack_state
+	Boss_Jump_Sound,//update jumpstate
+	Boss_Attack_Wave_Sound,//update shock_wave_state
+	Boss_Walk_Sound,//update walk_state
+	Boss_Charge_Sound,//update charge_attack_state
+	Boss_Core_Damege_Sound, //DestroyBossCore
+	Boss_Damege_Sound,//boss.cpp CreateBossCore
+	Boss_Stun_Sound,//UpdateÅ@down_state
 
 	Enemy_Knock_Down1_Sound,
-	Enemy_MiniGolem_Create_Sound,
-	Enemy_MiniGolem_Explosion_Sound,
+	Enemy_MiniGolem_Create_Sound,//boss.cpp  CreateMiniGolem
+	Enemy_MiniGolem_Explosion_Sound,//boss.cpp  DestroyMiniGolemBody
 	Enemy_Attack_Sound,
 	Enemy_Knock_Down2_Sound,
 	Enemy_Shot_Down_Sound
