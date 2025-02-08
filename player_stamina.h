@@ -31,6 +31,11 @@ public:
 	// プレイヤーの死亡フラグを取得
 	static bool IsPlayerDead();
 
+	static void SetPLayerDead(bool flag)
+	{
+		m_isdead = flag;
+	}
+
 	//アイテムによるダメージ回避あるかどうかを取得
 	static bool	GetAvoidDamageOnce() { return m_avoid_damage_once; }
 	//アイテムによるダメージ回避あるかどうかをセット

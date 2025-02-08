@@ -10,6 +10,8 @@
 #include"texture.h"
 #include"sprite.h"
 #include"easing.h"
+#include"player_life.h"
+#include"player_stamina.h"
 
 static ID3D11ShaderResourceView* g_Black_texture = NULL;//数字のテクスチャ
 static ID3D11ShaderResourceView* g_Black_hole_texture = NULL;//数字のテクスチャ
@@ -39,7 +41,7 @@ void dead_production::Draw()
 	{
 		
 			Black_fade_rate += 0.01;
-			float fadeeasingRate = Ease::InCubic(Black_fade_rate);
+			float fadeeasingRate = Ease::InOutCirc(Black_fade_rate);
 			if (0.5 < fadeeasingRate)
 			{
 				fadeeasingRate = 0.5;
@@ -56,6 +58,8 @@ void dead_production::Draw()
 				Dead_Flag = true;
 				Dead_Cnt = 0;
 				Black_fade_rate = 0;
+
+				PlayerStamina::IsPlayerDead
 			}
 	}
 
