@@ -41,7 +41,7 @@ WORD_INFORM g_word[NUMBER_PARAMETER][MAX_WORD];
 //デバック用パラメータ一覧を開く制御		
 bool	g_pressed ;
 //デバッグ用パラメータ一覧
-bool	g_open = true;
+bool	g_open = false;
 
 //プレイヤーの位置情報
 b2Vec2	g_player_position = { 0.0f,0.0f };
