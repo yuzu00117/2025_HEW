@@ -26,6 +26,7 @@
 #include"Item_Manager.h"
 #include"1_1_boss_carry_object_enemy.h"
 #include"scene.h"
+#include"1-1_boss.h"
 
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
@@ -389,16 +390,164 @@ void Field::Initialize()
 					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_12, false);
 				}
 				if (field_map[y][x] == 13) {//動かない物
-					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_13, false);
+
+					Player &player = Player::GetInstance();
+
+					b2Vec2 size = player.GetSensorSize();
+
+					player.Finalize();
+
+					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
 				}
-				if (field_map[y][x] == 14) {//動かない物
-					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_14, false);
+
+				//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+				if (field_map[y][x] == 14)
+				{//ボスを生成
+					Boss_1_1& boss = Boss_1_1::GetInstance();
+					boss.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(18.f, 24.f), true);
 				}
 
+				//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				if (field_map[y][x] == 15) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_1);
+				}
+				if (field_map[y][x] == 16) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2);
+				}
+				if (field_map[y][x] == 17) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3);
+				}
+				if (field_map[y][x] == 18) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_4);
+				}
+				if (field_map[y][x] == 19) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_5);
+				}
+				if (field_map[y][x] == 20) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_6);
+				}
+				if (field_map[y][x] == 21) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_7);
+				}
+				if (field_map[y][x] == 22) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_8);
+				}
+				if (field_map[y][x] == 23) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_9);
+				}
+				if (field_map[y][x] == 24) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_10);
+				}
+				if (field_map[y][x] == 25) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_11);
+				}
+				if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_12);
+				}
+				if (field_map[y][x] == 27) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_13);
+				}
+				if (field_map[y][x] == 25) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_14);
+				}
+				if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_15);
+				}
+				if (field_map[y][x] == 27) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_16);
+				}
+				if (field_map[y][x] == 28) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_17);
+				}
 
-
+				if (field_map[y][x] == 29) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_18);
+				}
+				if (field_map[y][x] == 30) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_19);
+				}
+				if (field_map[y][x] == 31) {//ボスの地面ブロック破壊できる
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_20);
+				}
+				
+				//----------------------------------------------------------------------------------------------------------------------------------------------------
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 32) {
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_2);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 33) {
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_3);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 34) {
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_4);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 35) {
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_5);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 36) {
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_6);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 37) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_7);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 38) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_8);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 39) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_9);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 40) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_10);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 41) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_11);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 42) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_12);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 43) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_13);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 44) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_14);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 45) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_15);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 46) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_16);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 47) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_17);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 48) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_18);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 49) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_19);
+				}
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 50) { 
+					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_20);
+				}
 				
 
 			}

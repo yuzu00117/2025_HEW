@@ -46,8 +46,36 @@ void Game::Initialize()
     InitializeWord();
 
 
-    //プレイヤーの初期化
-    player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2),player.GetSensorSizeLev1_2());
+    //マップによって初期リスを変える　　　これアンカーのレベル引き継いでないわ
+    SceneManager& sceneManager = SceneManager::GetInstance();
+    switch (sceneManager.GetStageName())
+    {
+    case STAGE_TUTORIAL:
+        //プレイヤーの初期化
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
+        break;
+    case STAGE_1_1:
+
+        //プレイヤーの初期化
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
+
+        break;
+    case STAGE_BOSS:
+
+        //フィールドCPPでプレイヤーのイニシャライズを行う
+ 
+
+        break;
+    case STAGE_NULL:
+
+        break;
+
+    default:
+        break;
+    }
+
+
+
 	//プレイヤーライフの初期化
     PlayerLife::Initialize();
 	//プレイヤーUIの初期化
@@ -350,8 +378,7 @@ void Game::Draw(void)
  */
 Game::Game()
 {
-    //プレイヤーのインスタンスを持って来てGameクラスのメンバを登録する
-    player = Player::GetInstance();//シングルトン
+  
 
 }
 
