@@ -101,20 +101,20 @@ enum Sound_Manager
 	Anchor_Thorw_Sound,//player.cpp crate_state
 	Anchor_Mark_Sound, //anchor_point.cpp
 
-	Player_Soul_Colect1_Sound,
-	Player_Damege_Sound,
-	Player_Dead_Sound,
-	Player_Coin_Colect_Sound,
-	Player_Walk_Sound,
-	Player_Jump_Start_Sound,
-	Player_Jump_End_Sound,
-	Player_Attack_Sound,
-	Player_Jewelry_Colect_Sound,
-	Player_GameOver_Sound,
-	Player_Soul_Colect2_Sound,
-	Player_Fall_Sound,
-	Player_Warp_Sound,
-	Player_Frame_Up_Sound,
+	Player_Soul_Colect1_Sound,//playercpp update
+	Player_Damege_Sound, //player.cpp Player_Damaged
+	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
+	Player_Coin_Colect_Sound,//Item_coni Update
+	Player_Walk_Sound,// player.cpp Update
+	Player_Jump_Start_Sound,//player.cpp update かえたい
+	Player_Jump_End_Sound,//実装なし
+	Player_Attack_Sound,//player.cpp update CreateNormalAttack_State
+	Player_Jewelry_Colect_Sound,//Item_Jewl.cpp update
+	Player_GameOver_Sound,//ゲームおーば完成後に導入したい
+	Player_Soul_Colect2_Sound,//contactliast.h   // プレーヤーとアイテムが衝突したかを判定
+	Player_Fall_Sound,//実装なし
+	Player_Warp_Sound,//実装なし
+	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 
 	Object_Rock_Fall_Sound,
 	Object_Get_Treasure_Sound,
@@ -154,7 +154,7 @@ static CriBool app_execute_main(AppObj* app_obj);
 
 CriBool app_atomex_start(Sound_Manager sound_name);
 CriBool app_atomex_stop_player();
-CriBool app_atomex_stop_cue();
+CriBool app_atomex_stop_cue(Sound_Manager sound_name);
 
 /**************************************************************************
  * 変数定義

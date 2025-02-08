@@ -13,6 +13,7 @@
 #include	"player_stamina.h"
 #include	"anchor_spirit.h"
 #include	"scene.h"
+#include	"sound.h"
 
 
 // 静的メンバ変数の定義（1回だけ行う）
@@ -54,6 +55,7 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	if (m_stamina <= 0.0f)
 	{
 		//ここで残機を減らす処理
+		app_atomex_start(Player_Dead_Sound);
 
 		//画面遷移のためにプレイヤーの死亡フラグを立てる
 		m_isdead = true;
