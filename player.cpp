@@ -766,9 +766,10 @@ void Player::Update()
         break;
     case CreateNormalAttack_state:
 
+
         //通常攻撃の判定をつくる
         Anchor::CreateNormalAttack(b2Vec2(3.0f, 3.0f), right);//通常攻撃のボディをつくる
-
+        app_atomex_start(Player_Attack_Sound);
 
    
 
@@ -1587,6 +1588,12 @@ void Player::DrawAnchorLevel3Frame()
 
         if (Anchor_level3_Frame_Sheet_cnt < 50)
         {
+            //サウンドを再生
+            if (Anchor_level3_Frame_Sheet_cnt == 0)
+            {
+                app_atomex_start(Player_Frame_Up_Sound);
+            }
+
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame1_Texture);
             DrawDividedSprite(

@@ -1036,6 +1036,8 @@ public:
                 if (item_instance != nullptr) {
                     item_instance->Function();
                     item_instance->SetDestory(true);//削除を呼び出す
+                    CriBool app_atomex_start(Player_Soul_Colect2_Sound);
+
                 }
             }
             break;
@@ -1045,6 +1047,7 @@ public:
                 if (spirit_instance != nullptr) {
                     spirit_instance->Function();
                     spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+                   
                 }
 
             }

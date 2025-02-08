@@ -106,15 +106,15 @@ enum Sound_Manager
 	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
 	Player_Coin_Colect_Sound,//Item_coni Update
 	Player_Walk_Sound,// player.cpp Update
-	Player_Jump_Start_Sound,
-	Player_Jump_End_Sound,
-	Player_Attack_Sound,
+	Player_Jump_Start_Sound,//player.cpp update かえたい
+	Player_Jump_End_Sound,//実装なし
+	Player_Attack_Sound,//player.cpp update CreateNormalAttack_State
 	Player_Jewelry_Colect_Sound,//Item_Jewl.cpp update
-	Player_GameOver_Sound,
-	Player_Soul_Colect2_Sound,
-	Player_Fall_Sound,
-	Player_Warp_Sound,
-	Player_Frame_Up_Sound,
+	Player_GameOver_Sound,//ゲームおーば完成後に導入したい
+	Player_Soul_Colect2_Sound,//contactliast.h   // プレーヤーとアイテムが衝突したかを判定
+	Player_Fall_Sound,//実装なし
+	Player_Warp_Sound,//実装なし
+	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 
 	Object_Rock_Fall_Sound,
 	Object_Get_Treasure_Sound,
