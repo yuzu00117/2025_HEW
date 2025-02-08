@@ -95,11 +95,11 @@ enum Sound_Manager
 	Pose_Sound,
 	Result_Sound,
 
-	Anchor_Hit_Sound,
-	Anchor_Hit_Miss_Sound,
-	Anchor_Pulling_Sound,
-	Anchor_Thorw_Sound,
-	Anchor_Mark_Sound,
+	Anchor_Hit_Sound,//‚È‚ñ‚â‚±‚ê
+	Anchor_Hit_Miss_Sound,//‚È‚µ
+	Anchor_Pulling_Sound,//player.cpp connected
+	Anchor_Thorw_Sound,//player.cpp crate_state
+	Anchor_Mark_Sound, //anchor_point.cpp
 
 	Player_Soul_Colect1_Sound,//playercpp update
 	Player_Damege_Sound, //player.cpp Player_Damaged

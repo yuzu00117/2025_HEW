@@ -17,6 +17,7 @@
 #include"player_position.h"
 #include"anchor_spirit.h"
 #include <chrono>
+#include"sound.h"
 
 #define MAX_ANCHOR_POINT_IN_SENSOR (40)//センサー内に存在できる最大のアンカーポイントの数
 
@@ -378,6 +379,8 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 	if (closestBody != nullptr) {
 		g_select_anchor_point_body = closestBody;
 		lastChangeTime = std::chrono::steady_clock::now(); // 基準点変更時間を更新
+		app_atomex_start(Anchor_Mark_Sound);//
+
 	}
 }
 

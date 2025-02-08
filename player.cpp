@@ -652,6 +652,7 @@ void Player::Update()
         if (30 < draw_cnt)
         {
             Anchor::SetAnchorState(Create_state);
+           
         }
         
         break;
@@ -1588,6 +1589,7 @@ void Player::DrawAnchorLevel3Frame()
 
         if (Anchor_level3_Frame_Sheet_cnt < 50)
         {
+
             //サウンドを再生
             if (Anchor_level3_Frame_Sheet_cnt == 0)
             {
@@ -1603,6 +1605,17 @@ void Player::DrawAnchorLevel3Frame()
                 { 1280 ,720 }
                 , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
             );
+
+            //// シェーダリソースを設定
+            //GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame1_Texture);
+            //DrawDividedSprite(
+            //    { SCREEN_WIDTH / 2,
+            //     SCREEN_HEIGHT / 2 },
+            //    0,
+            //    { 1280 ,720 }
+            //    , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
+            //);
+
 
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame2_Texture);
