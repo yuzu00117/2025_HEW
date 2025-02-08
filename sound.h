@@ -118,10 +118,10 @@ enum Sound_Manager
 
 	Object_Rock_Fall_Sound,
 	Object_Get_Treasure_Sound,
-	Object_Wood_Fall_Sound,
-	Object_Rock_Roll_Sound,
-	Object_Geyser_Sound,
-	Object_Pillar_Break_Sound,
+	Object_Wood_Fall_Sound,//wood ながい　動作とあってない
+	Object_Rock_Roll_Sound,//rock.cpp  Pulling_rock
+	Object_Geyser_Sound,//間欠泉のマージあと
+	Object_Pillar_Break_Sound,//boss_pillar.cpp  Destroy_Splitting
 	Object_Pillar_Hit_Sound,
 
 	Boss_Charge_Attack_Sound,
@@ -154,7 +154,7 @@ static CriBool app_execute_main(AppObj* app_obj);
 
 CriBool app_atomex_start(Sound_Manager sound_name);
 CriBool app_atomex_stop_player();
-CriBool app_atomex_stop_cue();
+CriBool app_atomex_stop_cue(Sound_Manager sound_name);
 
 /**************************************************************************
  * 変数定義

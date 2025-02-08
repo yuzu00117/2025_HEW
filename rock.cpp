@@ -17,6 +17,7 @@
 #include"collider_type.h"
 #include"player_position.h"
 #include"create_filter.h"
+#include"sound.h"
 
 
 //テクスチャの入れ物
@@ -160,6 +161,9 @@ void rock::Pulling_rock()
 
 	body->SetLinearVelocity(pulling_power);
 	SetIfPulling(true);
+
+	//サウンドを再生
+	app_atomex_start(Object_Rock_Roll_Sound);
 }
 
 void rock::Draw()
