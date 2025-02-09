@@ -151,7 +151,9 @@ void Field::Initialize()
 				if (field_map[y][x] == 6) {//動的なエネミー
 					objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
 				}
-
+				if (field_map[y][x] == 666) {//静的なエネミー
+					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+				}
 
 				if (field_map[y][x] == 7) {//小さな木のオブジェクト 必要アンカーレベル１
 					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), b2Vec2(2.0f, 1.0f), 1);

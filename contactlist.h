@@ -516,16 +516,7 @@ public:
             (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_static))
         {
-            if (objectA->collider_type == collider_enemy_static)
-            {
-                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
-                enemy_instance->CollisionPlayer();
-            }
-            else if (objectB->collider_type == collider_enemy_static)
-            {
-                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                enemy_instance->CollisionPlayer();
-            }
+            
         }
 
         //プレイヤーと動的エネミーの衝突
@@ -553,6 +544,26 @@ public:
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
+            }
+        }
+
+        //プレイヤーの通常攻撃攻撃と静的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_normal_attack_anchor) ||
+            (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_static))
+        {
+
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(0, 5, 10);
+            HitStop::StartHitStop(5);
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
                 enemy_instance->CollisionPulledObject();
             }
         }
@@ -852,6 +863,24 @@ public:
             }
         }
 
+        //プレイヤーと静的エネミーに付属しているセンサーが触れた場合
+        if ((objectA->collider_type == collider_enemy_static_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_static_sensor) ||
+            (objectA->collider_type == collider_enemy_static_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_static_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_static_sensor)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_static_sensor)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+        }
+
         //プレイヤーが敵の攻撃に触れた場合
         if ((objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_attack) ||
@@ -906,6 +935,37 @@ public:
             {
                 enemy_instanceA->SetDirection(false);
                 enemy_instanceB->SetDirection(true);
+            }
+        }
+        //動的エネミーが静的エネミーに触れた時
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_enemy_static_sensor) ||
+            (objectA->collider_type == collider_enemy_static_sensor && objectB->collider_type == collider_enemy_dynamic))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                if (enemy_dynamic_instance->GetBody()->GetPosition().x < enemy_static_instance->GetBody()->GetPosition().x)
+                {
+                    enemy_dynamic_instance->SetDirection(true);
+                }
+                else
+                {
+                    enemy_dynamic_instance->SetDirection(false);
+                }
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                if (enemy_dynamic_instance->GetBody()->GetPosition().x < enemy_static_instance->GetBody()->GetPosition().x)
+                {
+                    enemy_dynamic_instance->SetDirection(true);
+                }
+                else
+                {
+                    enemy_dynamic_instance->SetDirection(false);
+                }
             }
         }
 
