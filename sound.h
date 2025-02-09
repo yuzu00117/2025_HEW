@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------------------------------
 // #name sound.h
 // #description sound
-// #make 2024/12/03@@¡‘º—FÆ
+// #make 2024/12/03ã€€ã€€ä»Šæ‘å‹å“‰
 // #update 2024/12/03
 // #comment 
 //          
@@ -11,40 +11,40 @@
 
 
  /**************************************************************************
-  * ƒCƒ“ƒNƒ‹[ƒh
+  * ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰
   * Header files
   **************************************************************************/
 #include <cri_adx2le.h>
 #include <CriSmpFramework.h>
 
-  /* ƒCƒ“ƒQ[ƒ€ƒvƒŒƒrƒ…[‚ğ—LŒø‚É‚·‚éê‡A’è‹`‚·‚é */
+  /* ã‚¤ãƒ³ã‚²ãƒ¼ãƒ ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ã‚’æœ‰åŠ¹ã«ã™ã‚‹å ´åˆã€å®šç¾©ã™ã‚‹ */
 #define USE_INGAME_PREVIEW
 
 /**************************************************************************
- * ’è”ƒ}ƒNƒ’è‹`
+ * å®šæ•°ãƒã‚¯ãƒ­å®šç¾©
  * Constant macro definitions
  **************************************************************************/
- /* ACF/ACB‚Ìƒ}ƒNƒ’è‹`ƒwƒbƒ_ */
+ /* ACF/ACBã®ãƒã‚¯ãƒ­å®šç¾©ãƒ˜ãƒƒãƒ€ */
 #include "../../cridata/Public/CueSheet_0.h"
 #include "../../cridata/Public/HEW_sound_acf.h"
 
-/* ƒf[ƒ^ƒfƒBƒŒƒNƒgƒŠ‚Ö‚ÌƒpƒX */
+/* ãƒ‡ãƒ¼ã‚¿ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¸ã®ãƒ‘ã‚¹ */
 #define PATH	"./cri/cridata/Public/"
 
-/* ƒTƒ“ƒvƒ‹‚Åg—p‚·‚éƒtƒ@ƒCƒ‹–¼ */
+/* ã‚µãƒ³ãƒ—ãƒ«ã§ä½¿ç”¨ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«å */
 #define ACF_FILE			"HEW_sound.acf"
 #define ACB_FILE			"CueSheet_0.acb"
 //#define AWB_FILE			"Basic.awb"
 
-/* Å‘åƒ{ƒCƒX”‚ğ‘‚â‚·‚½‚ß‚ÌŠÖ˜Aƒpƒ‰ƒ[ƒ^ */
+/* æœ€å¤§ãƒœã‚¤ã‚¹æ•°ã‚’å¢—ã‚„ã™ãŸã‚ã®é–¢é€£ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ */
 #define MAX_VOICE			(24)
-#define MAX_VIRTUAL_VOICE	(64)		/* ‚´‚Á‚­‚è‘½‚ß(’Êíƒ{ƒCƒX{HCA-MXƒ{ƒCƒX{ƒ¿) */
-#define MAX_CRIFS_LOADER	(64)		/* ‚´‚Á‚­‚è‘½‚ß(’Êíƒ{ƒCƒX{HCA-MXƒ{ƒCƒX{ƒ¿) */
+#define MAX_VIRTUAL_VOICE	(64)		/* ã–ã£ãã‚Šå¤šã‚(é€šå¸¸ãƒœã‚¤ã‚¹ï¼‹HCA-MXãƒœã‚¤ã‚¹ï¼‹Î±) */
+#define MAX_CRIFS_LOADER	(64)		/* ã–ã£ãã‚Šå¤šã‚(é€šå¸¸ãƒœã‚¤ã‚¹ï¼‹HCA-MXãƒœã‚¤ã‚¹ï¼‹Î±) */
 
-/* Å‘åƒTƒ“ƒvƒŠƒ“ƒOƒŒ[ƒgiƒsƒbƒ`•ÏXŠÜ‚Şj */
+/* æœ€å¤§ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ãƒ¬ãƒ¼ãƒˆï¼ˆãƒ”ãƒƒãƒå¤‰æ›´å«ã‚€ï¼‰ */
 #define MAX_SAMPLING_RATE	(48000*2)
 
-/* HCA-MXƒR[ƒfƒbƒN‚ÌƒTƒ“ƒvƒŠƒ“ƒOƒŒ[ƒg */
+/* HCA-MXã‚³ãƒ¼ãƒ‡ãƒƒã‚¯ã®ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ãƒ¬ãƒ¼ãƒˆ */
 #define SAMPLINGRATE_HCAMX		(32000)
 
 
@@ -52,26 +52,26 @@
 #define PITCH_CHANGE_VALUE			(-200.0f)
 
 /**************************************************************************
- * Œ^’è‹`
+ * å‹å®šç¾©
  * Type definitions
  **************************************************************************/
 
- /* ƒLƒ…[ƒŠƒXƒgƒAƒCƒeƒ€ */
+ /* ã‚­ãƒ¥ãƒ¼ãƒªã‚¹ãƒˆã‚¢ã‚¤ãƒ†ãƒ  */
 typedef struct AppCueListItemTag {
 	CriAtomExCueId id;
 } AppCueListItem;
 
-/* ƒAƒvƒŠƒP[ƒVƒ‡ƒ“\‘¢‘Ì */
+/* ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³æ§‹é€ ä½“ */
 typedef struct AppTag {
-	CriAtomExPlayerHn		player;		/* Ä¶ƒvƒŒ[ƒ„ */
-	CriAtomExVoicePoolHn	standard_voice_pool;	/* ƒ{ƒCƒXƒv[ƒ‹(ADX/HCAƒR[ƒfƒbƒN—p) */
-	CriAtomExVoicePoolHn	hcamx_voice_pool;		/* ƒ{ƒCƒXƒv[ƒ‹(HCA-MX—p) */
-	CriAtomExAcbHn			acb_hn;		/* ACBƒnƒ“ƒhƒ‹(‰¹ºƒf[ƒ^) */
-	CriAtomDbasId			dbas_id;	/* D-BAS‚Ìì¬*/
+	CriAtomExPlayerHn		player;		/* å†ç”Ÿãƒ—ãƒ¬ãƒ¼ãƒ¤ */
+	CriAtomExVoicePoolHn	standard_voice_pool;	/* ãƒœã‚¤ã‚¹ãƒ—ãƒ¼ãƒ«(ADX/HCAã‚³ãƒ¼ãƒ‡ãƒƒã‚¯ç”¨) */
+	CriAtomExVoicePoolHn	hcamx_voice_pool;		/* ãƒœã‚¤ã‚¹ãƒ—ãƒ¼ãƒ«(HCA-MXç”¨) */
+	CriAtomExAcbHn			acb_hn;		/* ACBãƒãƒ³ãƒ‰ãƒ«(éŸ³å£°ãƒ‡ãƒ¼ã‚¿) */
+	CriAtomDbasId			dbas_id;	/* D-BASã®ä½œæˆ*/
 
-	CriAtomExPlaybackId		playback_id;	/* VoiceƒLƒ…[‚ÌƒvƒŒƒCƒoƒbƒNID(Ä¶ŠJn‚É•Û‚·‚é) */
+	CriAtomExPlaybackId		playback_id;	/* Voiceã‚­ãƒ¥ãƒ¼ã®ãƒ—ãƒ¬ã‚¤ãƒãƒƒã‚¯ID(å†ç”Ÿé–‹å§‹æ™‚ã«ä¿æŒã™ã‚‹) */
 
-	CriSint32 ui_cue_idnex;				/* ƒ†[ƒU‘I‘ğ’†‚ÌƒLƒ…[   */
+	CriSint32 ui_cue_idnex;				/* ãƒ¦ãƒ¼ã‚¶é¸æŠä¸­ã®ã‚­ãƒ¥ãƒ¼   */
 
 } AppObj;
 
@@ -95,26 +95,26 @@ enum Sound_Manager
 	Pose_Sound,
 	Result_Sound,
 
-	Anchor_Hit_Sound,//‚È‚ñ‚â‚±‚ê
-	Anchor_Hit_Miss_Sound,//‚È‚µ
+	Anchor_Hit_Sound,//ãªã‚“ã‚„ã“ã‚Œ
+	Anchor_Hit_Miss_Sound,//ãªã—
 	Anchor_Pulling_Sound,//player.cpp connected
 	Anchor_Thorw_Sound,//player.cpp crate_state
 	Anchor_Mark_Sound, //anchor_point.cpp
 
-	Player_Soul_Colect1_Sound,
-	Player_Damege_Sound,
-	Player_Dead_Sound,
-	Player_Coin_Colect_Sound,
-	Player_Walk_Sound,
-	Player_Jump_Start_Sound,
-	Player_Jump_End_Sound,
-	Player_Attack_Sound,
-	Player_Jewelry_Colect_Sound,
-	Player_GameOver_Sound,
-	Player_Soul_Colect2_Sound,
-	Player_Fall_Sound,
-	Player_Warp_Sound,
-	Player_Frame_Up_Sound,
+	Player_Soul_Colect1_Sound,//playercpp update
+	Player_Damege_Sound, //player.cpp Player_Damaged
+	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
+	Player_Coin_Colect_Sound,//Item_coni Update
+	Player_Walk_Sound,// player.cpp Update
+	Player_Jump_Start_Sound,//player.cpp update ã‹ãˆãŸã„
+	Player_Jump_End_Sound,//å®Ÿè£…ãªã—
+	Player_Attack_Sound,//player.cpp update CreateNormalAttack_State
+	Player_Jewelry_Colect_Sound,//Item_Jewl.cpp update
+	Player_GameOver_Sound,//ã‚²ãƒ¼ãƒ ãŠãƒ¼ã°å®Œæˆå¾Œã«å°å…¥ã—ãŸã„
+	Player_Soul_Colect2_Sound,//contactliast.h   // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã¨ã‚¢ã‚¤ãƒ†ãƒ ãŒè¡çªã—ãŸã‹ã‚’åˆ¤å®š
+	Player_Fall_Sound,//å®Ÿè£…ãªã—
+	Player_Warp_Sound,//å®Ÿè£…ãªã—
+	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 
 	Object_Rock_Fall_Sound,
 	Object_Get_Treasure_Sound,
@@ -124,25 +124,26 @@ enum Sound_Manager
 	Object_Pillar_Break_Sound,
 	Object_Pillar_Hit_Sound,
 
-	Boss_Charge_Attack_Sound,
-	Boss_Jump_Sound,
-	Boss_Attack_Wave_Sound,
-	Boss_Walk_Sound,
-	Boss_Charge_Sound,
-	Boss_Core_Damege_Sound,
-	Boss_Damege_Sound,
-	Boss_Stun_Sound,
+	Boss_Charge_Attack_Sound,//update charge_attack_state
+	Boss_Jump_Sound,//update jumpstate
+	Boss_Attack_Wave_Sound,//update shock_wave_state
+	Boss_Walk_Sound,//update walk_state
+	Boss_Charge_Sound,//update charge_attack_state
+	Boss_Core_Damege_Sound, //DestroyBossCore
+	Boss_Damege_Sound,//boss.cpp CreateBossCore
+	Boss_Stun_Sound,//Updateã€€down_state
 
-	Enemy_Knock_Down1_Sound,//–¢À‘•
-	Enemy_MiniGolem_Create_Sound,
-	Enemy_MiniGolem_Explosion_Sound,
+
+	Enemy_Knock_Down1_Sound,//æœªå®Ÿè£…
+	Enemy_MiniGolem_Create_Sound,//boss.cpp  CreateMiniGolem
+	Enemy_MiniGolem_Explosion_Sound,//boss.cpp  DestroyMiniGolemBody
 	Enemy_Attack_Sound,//EnemyDyanamic.cpp attack
-	Enemy_Knock_Down2_Sound,//EnemyDyanamic.cpp @update
-	Enemy_Shot_Down_Sound//ContactList.h endcontact@‹C‚É“ü‚ç‚ñ
+	Enemy_Knock_Down2_Sound,//EnemyDyanamic.cpp ã€€update
+	Enemy_Shot_Down_Sound//ContactList.h endcontactã€€æ°—ã«å…¥ã‚‰ã‚“
 
 };
 /***************************************************************************
- * ŠÖ”éŒ¾
+ * é–¢æ•°å®£è¨€
  * Function declarations
  ***************************************************************************/
 static void* user_alloc_func(void* obj, CriUint32 size);
@@ -154,70 +155,70 @@ static CriBool app_execute_main(AppObj* app_obj);
 
 CriBool app_atomex_start(Sound_Manager sound_name);
 CriBool app_atomex_stop_player();
-CriBool app_atomex_stop_cue();
+CriBool app_atomex_stop_cue(Sound_Manager sound_name);
 
 /**************************************************************************
- * •Ï”’è‹`
+ * å¤‰æ•°å®šç¾©
  * Variable definitions
  **************************************************************************/
 
- /* ƒLƒ…[ˆê—— */
+ /* ã‚­ãƒ¥ãƒ¼ä¸€è¦§ */
 static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_1_1BGM,
-	CRI_CUESHEET_0_ƒ^ƒCƒgƒ‹BGM,
+	CRI_CUESHEET_0_ã‚¿ã‚¤ãƒˆãƒ«BGM,
 	CRI_CUESHEET_0_BGM_STAGESELECT,
-	CRI_CUESHEET_0_ƒŠƒUƒ‹ƒgBGM,
-	CRI_CUESHEET_0_BGM_ƒ{ƒX,
-	CRI_CUESHEET_0_BGM_ƒWƒƒƒ“ƒOƒ‹,
-	CRI_CUESHEET_0_BGM_ƒ|ƒbƒv,
-	CRI_CUESHEET_0_BGM_’TŒŸ,
-	CRI_CUESHEET_0_BGM_ƒWƒƒƒ“ƒOƒ‹2,
-	CRI_CUESHEET_0_BGM_ƒ{ƒX2,
-	CRI_CUESHEET_0_‘I‘ğ‰¹,
-	CRI_CUESHEET_0_Œˆ’è‰¹,
-	CRI_CUESHEET_0_ƒLƒƒƒ“ƒZƒ‹‰¹,
-	CRI_CUESHEET_0_ˆê’â~‰¹_ƒƒjƒ…[‰¹_,
-	CRI_CUESHEET_0_ƒŠƒUƒ‹ƒg”­•\,
-	CRI_CUESHEET_0_ƒAƒ“ƒJ[ƒqƒbƒgƒ|ƒCƒ“ƒg,
-	CRI_CUESHEET_0_ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒgƒ~ƒX,
-	CRI_CUESHEET_0_ƒAƒ“ƒJ[‚ğˆø‚Á’£‚é‰¹,
-	CRI_CUESHEET_0_ƒAƒ“ƒJ[“Š‚°‚é‰¹,
-	CRI_CUESHEET_0_ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒgƒ}[ƒN‚µ‚½‚Ì‰¹,
-	CRI_CUESHEET_0_ƒ\ƒEƒ‹‹zû1,
-	CRI_CUESHEET_0_ƒ_ƒ[ƒW‚ğó‚¯‚é‰¹,
-	CRI_CUESHEET_0_‚â‚ç‚ê‚½‰¹,
-	CRI_CUESHEET_0_ƒRƒCƒ“æ“¾‰¹,
-	CRI_CUESHEET_0_ƒvƒŒƒCƒ„[‚Ì‘«‰¹,
-	CRI_CUESHEET_0_ƒWƒƒƒ“ƒv,
-	CRI_CUESHEET_0_’…’n‰¹,
-	CRI_CUESHEET_0_‘ÅŒ‚‰¹,
-	CRI_CUESHEET_0_•óÎæ“¾,
-	CRI_CUESHEET_0_€–S‰¹,
-	CRI_CUESHEET_0_ƒ\ƒEƒ‹‹zû2,
-	CRI_CUESHEET_0_—‰º,
-	CRI_CUESHEET_0_ƒ[ƒv‰¹,
-	CRI_CUESHEET_0_ƒtƒŒ[ƒ€ƒAƒbƒv,
-	CRI_CUESHEET_0_Šâ‚ª—‚¿‚é‰¹,
-	CRI_CUESHEET_0_•ó‚ğæ‚é‰¹,
-	CRI_CUESHEET_0_–Ø‚ª“|‚ê‚é‰¹,
-	CRI_CUESHEET_0_Šâ‚ª“]‚ª‚é‰¹,
-	CRI_CUESHEET_0_ŠÔŒ‡ò,
-	CRI_CUESHEET_0_’Œ“|‚µ‚Äƒoƒ‰ƒoƒ‰‰¹,
-	CRI_CUESHEET_0_’Œ‚Æƒ{ƒX‚ª‚Ô‚Â‚©‚é‰¹,
-	CRI_CUESHEET_0_ƒ{ƒX—­‚ßUŒ‚ÕŒ‚,
-	CRI_CUESHEET_0_ƒ{ƒXƒWƒƒƒ“ƒv’…’n‰¹,
-	CRI_CUESHEET_0_ƒ{ƒXÕŒ‚”g”­¶’†,
-	CRI_CUESHEET_0_ƒ{ƒX‘«‰¹,
-	CRI_CUESHEET_0_ƒ{ƒX’™‚ßUŒ‚,
-	CRI_CUESHEET_0_ƒRƒAƒ_ƒ[ƒW,
-	CRI_CUESHEET_0_ƒ{ƒX‚É‘Î‚·‚éƒ_ƒ[ƒW,
-	CRI_CUESHEET_0_ƒ{ƒXƒXƒ^ƒ“‰¹,
-	CRI_CUESHEET_0_“G‚ğ“|‚·‰¹,
-	CRI_CUESHEET_0_‚¿‚ÑƒS[ƒŒƒ€¶¬‰¹,
-	CRI_CUESHEET_0_‚¿‚ÑƒS[ƒŒƒ€”š”­‰¹,
-	CRI_CUESHEET_0_ƒGƒlƒ~[UŒ‚,
-	CRI_CUESHEET_0_ƒGƒlƒ~[ƒ_ƒEƒ“,
-	CRI_CUESHEET_0_ƒGƒlƒ~[Œ‚’Ä‰¹
+	CRI_CUESHEET_0_ãƒªã‚¶ãƒ«ãƒˆBGM,
+	CRI_CUESHEET_0_BGM_ãƒœã‚¹,
+	CRI_CUESHEET_0_BGM_ã‚¸ãƒ£ãƒ³ã‚°ãƒ«,
+	CRI_CUESHEET_0_BGM_ãƒãƒƒãƒ—,
+	CRI_CUESHEET_0_BGM_æ¢æ¤œ,
+	CRI_CUESHEET_0_BGM_ã‚¸ãƒ£ãƒ³ã‚°ãƒ«2,
+	CRI_CUESHEET_0_BGM_ãƒœã‚¹2,
+	CRI_CUESHEET_0_é¸æŠéŸ³,
+	CRI_CUESHEET_0_æ±ºå®šéŸ³,
+	CRI_CUESHEET_0_ã‚­ãƒ£ãƒ³ã‚»ãƒ«éŸ³,
+	CRI_CUESHEET_0_ä¸€æ™‚åœæ­¢éŸ³_ãƒ¡ãƒ‹ãƒ¥ãƒ¼éŸ³_,
+	CRI_CUESHEET_0_ãƒªã‚¶ãƒ«ãƒˆç™ºè¡¨,
+	CRI_CUESHEET_0_ã‚¢ãƒ³ã‚«ãƒ¼ãƒ’ãƒƒãƒˆãƒã‚¤ãƒ³ãƒˆ,
+	CRI_CUESHEET_0_ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãƒŸã‚¹,
+	CRI_CUESHEET_0_ã‚¢ãƒ³ã‚«ãƒ¼ã‚’å¼•ã£å¼µã‚‹éŸ³,
+	CRI_CUESHEET_0_ã‚¢ãƒ³ã‚«ãƒ¼æŠ•ã’ã‚‹éŸ³,
+	CRI_CUESHEET_0_ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãƒãƒ¼ã‚¯ã—ãŸæ™‚ã®éŸ³,
+	CRI_CUESHEET_0_ã‚½ã‚¦ãƒ«å¸å1,
+	CRI_CUESHEET_0_ãƒ€ãƒ¡ãƒ¼ã‚¸ã‚’å—ã‘ã‚‹éŸ³,
+	CRI_CUESHEET_0_ã‚„ã‚‰ã‚ŒãŸéŸ³,
+	CRI_CUESHEET_0_ã‚³ã‚¤ãƒ³å–å¾—éŸ³,
+	CRI_CUESHEET_0_ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¶³éŸ³,
+	CRI_CUESHEET_0_ã‚¸ãƒ£ãƒ³ãƒ—,
+	CRI_CUESHEET_0_ç€åœ°éŸ³,
+	CRI_CUESHEET_0_æ‰“æ’ƒéŸ³,
+	CRI_CUESHEET_0_å®çŸ³å–å¾—,
+	CRI_CUESHEET_0_æ­»äº¡éŸ³,
+	CRI_CUESHEET_0_ã‚½ã‚¦ãƒ«å¸å2,
+	CRI_CUESHEET_0_è½ä¸‹,
+	CRI_CUESHEET_0_ãƒ¯ãƒ¼ãƒ—éŸ³,
+	CRI_CUESHEET_0_ãƒ•ãƒ¬ãƒ¼ãƒ ã‚¢ãƒƒãƒ—,
+	CRI_CUESHEET_0_å²©ãŒè½ã¡ã‚‹éŸ³,
+	CRI_CUESHEET_0_å®ã‚’å–ã‚‹éŸ³,
+	CRI_CUESHEET_0_æœ¨ãŒå€’ã‚Œã‚‹éŸ³,
+	CRI_CUESHEET_0_å²©ãŒè»¢ãŒã‚‹éŸ³,
+	CRI_CUESHEET_0_é–“æ¬ æ³‰,
+	CRI_CUESHEET_0_æŸ±å€’ã—ã¦ãƒãƒ©ãƒãƒ©éŸ³,
+	CRI_CUESHEET_0_æŸ±ã¨ãƒœã‚¹ãŒã¶ã¤ã‹ã‚‹éŸ³,
+	CRI_CUESHEET_0_ãƒœã‚¹æºœã‚æ”»æ’ƒè¡æ’ƒæ™‚,
+	CRI_CUESHEET_0_ãƒœã‚¹ã‚¸ãƒ£ãƒ³ãƒ—ç€åœ°éŸ³,
+	CRI_CUESHEET_0_ãƒœã‚¹è¡æ’ƒæ³¢ç™ºç”Ÿä¸­,
+	CRI_CUESHEET_0_ãƒœã‚¹è¶³éŸ³,
+	CRI_CUESHEET_0_ãƒœã‚¹è²¯ã‚æ”»æ’ƒ,
+	CRI_CUESHEET_0_ã‚³ã‚¢ãƒ€ãƒ¡ãƒ¼ã‚¸æ™‚,
+	CRI_CUESHEET_0_ãƒœã‚¹ã«å¯¾ã™ã‚‹ãƒ€ãƒ¡ãƒ¼ã‚¸,
+	CRI_CUESHEET_0_ãƒœã‚¹ã‚¹ã‚¿ãƒ³éŸ³,
+	CRI_CUESHEET_0_æ•µã‚’å€’ã™éŸ³,
+	CRI_CUESHEET_0_ã¡ã³ã‚´ãƒ¼ãƒ¬ãƒ ç”ŸæˆéŸ³,
+	CRI_CUESHEET_0_ã¡ã³ã‚´ãƒ¼ãƒ¬ãƒ çˆ†ç™ºéŸ³,
+	CRI_CUESHEET_0_ã‚¨ãƒãƒŸãƒ¼æ”»æ’ƒ,
+	CRI_CUESHEET_0_ã‚¨ãƒãƒŸãƒ¼ãƒ€ã‚¦ãƒ³,
+	CRI_CUESHEET_0_ã‚¨ãƒãƒŸãƒ¼æ’ƒå¢œéŸ³
 };
 
 
@@ -228,7 +229,7 @@ static CriUint32 g_num_cue_items = sizeof(g_cue_list) / sizeof(AppCueListItem);
 
 
 /***************************************************************************
- * ŠÖ”’è‹`
+ * é–¢æ•°å®šç¾©
  * Function definitions
  ***************************************************************************/
 

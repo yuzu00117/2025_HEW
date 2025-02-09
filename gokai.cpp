@@ -35,9 +35,9 @@ void Gokai_UI::Draw()
 
 		int cnt = now_get_gokai_count;
 		// ç∂ë§ÇÃï\é¶ åªç›ÇÃó 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
-			DrawDividedSprite(XMFLOAT2(1000 - (i * 20), 100), 0.0f, XMFLOAT2(20, 20), 10, 1, cnt, 1.0);
+			DrawDividedSprite(XMFLOAT2(1250 - (i * 40), 40), 0.0f, XMFLOAT2(40, 40), 10, 1, cnt, 1.0);
 			cnt /= 10;
 		}
 
