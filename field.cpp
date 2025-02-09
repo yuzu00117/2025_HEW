@@ -326,6 +326,10 @@ void Field::Initialize()
 				if (field_map[y][x] == 70) {//通常フィールドに置いているのジャンプ台
 					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -0.6f), boss_room_level_11);
 				}
+
+				if (field_map[y][x] == 71) {//通常フィールドに置いているのジャンプ台
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(10.f,5.0f),b2Vec2_zero,BOTTOM_A,90);
+				}
 			}
 		}
 

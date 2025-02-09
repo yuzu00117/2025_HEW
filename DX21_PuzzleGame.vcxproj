@@ -202,6 +202,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="UI_Blcok.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
     <ClCompile Include="word.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="UI_Block.h" />
     <ClInclude Include="wood.h" />
     <ClInclude Include="UI_StaminaSpirit_Gauge.h" />
     <ClInclude Include="word.h" />
