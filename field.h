@@ -34,7 +34,7 @@ enum FieldTexture
 	enemy_dynamic_texture,
 	enemy_static_texture,
 
-
+	invisibility_texture,
 
 
 	STAGE_BLOCK_TYPE_1,
