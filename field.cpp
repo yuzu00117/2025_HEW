@@ -205,7 +205,7 @@ void Field::Initialize()
 
 
 				if (field_map[y][x] == 11) {//中くらい木のオブジェクト 必要アンカーレベル2
-					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 12.0f), b2Vec2(3.0f, 1.0f), 2);
+					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 12.0f), b2Vec2(2.0f, 1.0f), 2);
 				}
 
 				//--------------------------------------------------------------------------------------
@@ -213,8 +213,16 @@ void Field::Initialize()
 				if (field_map[y][x] == 12) {//中くらい木のオブジェクト 必要アンカーレベル2
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), DEAD_BLOCK_TYPE,b2Vec2_zero);
 				}
-				
 				//---------------------------------------------------------------------------------------
+
+
+				//------------------------------------------------------------------------------------------
+				//触れたらステージセレクトに行く
+				//-------------------------------------------------------------------------------------------
+				if (field_map[y][x] == 13) {//中くらい木のオブジェクト 必要アンカーレベル2
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_SELECT, b2Vec2_zero);
+				}
+
 
 
 			}
@@ -358,10 +366,32 @@ void Field::Initialize()
 				itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0);
 				}
 
-				if (field_map[y][x] == 71) {//AボタンのUIを表示するセンサーブロック
-					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(10.f,5.0f),b2Vec2_zero,BOTTOM_A,90);
-				}
+
 				//--------------------------------------------------------------------------------------------------------------------------------------------------
+
+				if (field_map[y][x] == 55) {//接触したら死ぬ
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(195.f, 1.f), DEAD_BLOCK_TYPE, b2Vec2_zero);
+
+				}
+				if (field_map[y][x] == 65) {//ボスのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_1,0);
+				}
+				if (field_map[y][x] == 66) {//ボスのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_2,0);
+				}
+				if (field_map[y][x] == 67) {//ボスのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_3,0);
+				}
+				if (field_map[y][x] == 68) {//ボスのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_4,0);
+				}
+				if (field_map[y][x] == 70) {//通常フィールドに置いているのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -0.6f), boss_room_level_11,0);
+				}
+				if (field_map[y][x] == 71) {//通常フィールドに置いているのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), b2Vec2(0.0f, -0.6f), boss_room_level_11,1);
+				}
+
 			}
 		}
 

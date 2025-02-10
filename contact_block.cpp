@@ -17,6 +17,7 @@
 #include"collider_type.h"
 #include"game.h"
 #include"player.h"
+#include"scene.h"
 
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//センサーの
@@ -108,26 +109,36 @@ void contact_block::Update()
 	{
 		if (m_flag==true)
 		{
+			//フラグをリセット
+			m_flag = false;
 			Player& player = Player::GetInstance();
+			SceneManager& sceneManager = SceneManager::GetInstance();
 			switch (m_contact_type)
 			{
 			case NULL_TYPE:
 				break;
 			case DEAD_BLOCK_TYPE:
 
-				
-
 				//プレイヤーが即死する
 				player.Player_Damaged(-1000, 0);
 
+				break;
+			case GO_BOSS_STAGE:
+			
+				sceneManager.SetStageName(STAGE_BOSS);
+				sceneManager.Set_Chenge_Scene_flag(true);
+				break;
+			case GO_STAGE_SELECT:
+			
+				sceneManager.SetStageName(STAGE_SELECT);
+				sceneManager.Set_Chenge_Scene_flag(true);
 				break;
 			default:
 				break;
 			}
 
 
-			//フラグをリセット
-			m_flag = false;
+			
 		}
 
 	}
