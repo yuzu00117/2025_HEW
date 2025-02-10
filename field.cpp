@@ -205,7 +205,7 @@ void Field::Initialize()
 
 
 				if (field_map[y][x] == 11) {//中くらい木のオブジェクト 必要アンカーレベル2
-					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 12.0f), b2Vec2(3.0f, 1.0f), 2);
+					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 12.0f), b2Vec2(2.0f, 1.0f), 2);
 				}
 
 				//--------------------------------------------------------------------------------------
@@ -213,8 +213,16 @@ void Field::Initialize()
 				if (field_map[y][x] == 12) {//中くらい木のオブジェクト 必要アンカーレベル2
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), DEAD_BLOCK_TYPE,b2Vec2_zero);
 				}
-				
 				//---------------------------------------------------------------------------------------
+
+
+				//------------------------------------------------------------------------------------------
+				//触れたらステージセレクトに行く
+				//-------------------------------------------------------------------------------------------
+				if (field_map[y][x] == 13) {//中くらい木のオブジェクト 必要アンカーレベル2
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_SELECT, b2Vec2_zero);
+				}
+
 
 
 			}
