@@ -77,7 +77,7 @@ public:
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
     //岩を追加
-    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
+    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level,bool left);
     //足場を追加
     void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
     //傾斜ブロックの追加
