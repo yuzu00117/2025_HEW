@@ -154,8 +154,6 @@ void CameraShake::Update()
             display::AddDisplayHeight((std::abs(moveY) < resetSpeed) ? moveY : ((moveY > 0) ? resetSpeed : -resetSpeed));
         }
     }
-    Player& player = Player::GetInstance();
-    b2Vec2 newPosition = player.GetPlayerBody()->GetPosition();
-    player.GetSensorBody()->SetLinearVelocity((newPosition - player.GetSensorBody()->GetPosition()));
+
     old_olayer_pos = PlayerPosition::GetPlayerPosition();
 }

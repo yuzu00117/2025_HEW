@@ -187,8 +187,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //センサーの設定用の
         b2Vec2 size_sensor;//命名すまん
-        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
-        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
+        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
+        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -243,16 +243,6 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //プレイヤーのセンサーを新しくつくる
 
-        b2BodyDef sensor_body;
-        sensor_body.type = b2_dynamicBody;
-        sensor_body.position.Set(position.x, position.y);
-        sensor_body.angle = 0.0f;
-        sensor_body.fixedRotation = true;
-        sensor_body.userData.pointer = (uintptr_t)this;
-
-        m_sensor_body = world->CreateBody(&sensor_body);
-
-        SetSensorBody(m_sensor_body);
 
         b2PolygonShape shape_sensor;
        
@@ -281,7 +271,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
 
 
-        b2Fixture* player_sensor_fixture = m_sensor_body->CreateFixture(&fixture_sensor);
+        b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
 
 
         // カスタムデータを作成して設定
@@ -323,7 +313,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         effect_fixture_sensor.filter = createFilterExclude("player_sensor_filter", {});
 
 
-        b2Fixture* effect_player_sensor_fixture = m_sensor_body->CreateFixture(&effect_fixture_sensor);
+        b2Fixture* effect_player_sensor_fixture = m_body->CreateFixture(&effect_fixture_sensor);
 
 
         // カスタムデータを作成して設定
@@ -334,7 +324,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //---------------------------------------------------------------------------------------------------
 
-
+        sensor_flag = false;
 
         draw_state = player_nomal_state;
     
@@ -1433,7 +1423,7 @@ void Player::Draw()
         //----------------------------------------------------------------------------------------
         //センサー描画
 
-        b2Vec2 Pos = GetSensorBody()->GetPosition();
+        b2Vec2 Pos = GetPlayerBody()->GetPosition();
 
 
         float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
@@ -1446,12 +1436,12 @@ void Player::Draw()
         DrawSprite(
             { draw_x,
               draw_y },
-            m_sensor_body->GetAngle(),
+            m_body->GetAngle(),
             { GetSensorSize().x * scale,GetSensorSize().y * scale }
         );
        
 
-
+        //エフェクト
         DrawAnchorLevel3Frame();
 
     }

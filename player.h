@@ -191,21 +191,10 @@ public:
 		return m_body;
 	}
 
-	void SetSensorBody(b2Body* player_body)
-	{
-		m_sensor_body = player_body;
-	}
 
 
-	b2Body* GetSensorBody(void)
-	{
-		return m_sensor_body;
-	}
 
-	void SetPlayerBody(b2Body* player_body)
-	{
-		m_body = player_body;
-	}
+
 
 
 	b2Vec2 GetSensorSizeLev1_2(void)
@@ -217,6 +206,8 @@ public:
 	{
 		return Sensor_size_Lev3;
 	}
+
+
 
 private:
 
@@ -231,7 +222,6 @@ private:
 	//センサー用のサイズ
 	b2Vec2 m_sensor_size;
 
-	b2Body* m_sensor_body;
 
 
 	//ジャンプボタン押されたかどうか（トリガー制御）
@@ -266,9 +256,10 @@ private:
 	 b2Vec2 Walk_effect_size = b2Vec2{ 1.0f,1.0f };
 
 	//レベルに応じたセンサーの大きさを記述したもの	displayの変更に伴って　センサーのサイズも自動で変わるようにした
-	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(40*calculateScale(DISPLAY_RANGE_TO_SCALE), 34 * calculateScale(DISPLAY_RANGE_TO_SCALE));
-	b2Vec2 Sensor_size_Lev3 = b2Vec2(60*calculateScale(DISPLAY_RANGE_TO_SCALE), 51* calculateScale(DISPLAY_RANGE_TO_SCALE));
-
+	b2Vec2 Sensor_size_Lev1_2 = b2Vec2(27*calculateScale(DISPLAY_RANGE_TO_SCALE), 21 * calculateScale(DISPLAY_RANGE_TO_SCALE));
+	b2Vec2 Sensor_size_Lev3 = b2Vec2(37*calculateScale(DISPLAY_RANGE_TO_SCALE), 29* calculateScale(DISPLAY_RANGE_TO_SCALE));
+	
+	
 	//センサーの管理に使う
 	bool sensor_flag;
 	int old_anchor_Lev;
