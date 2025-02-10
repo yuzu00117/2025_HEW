@@ -393,19 +393,22 @@ void Field::Initialize()
 
 				}
 				if (field_map[y][x] == 65) {//ボスのジャンプ台
-					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_1);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_1,0);
 				}
 				if (field_map[y][x] == 66) {//ボスのジャンプ台
-					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_2);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_2,0);
 				}
 				if (field_map[y][x] == 67) {//ボスのジャンプ台
-					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_3);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_3,0);
 				}
 				if (field_map[y][x] == 68) {//ボスのジャンプ台
-					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_4);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -1.0f), boss_room_level_4,0);
 				}
 				if (field_map[y][x] == 70) {//通常フィールドに置いているのジャンプ台
-					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -0.6f), boss_room_level_11);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f, -0.6f), boss_room_level_11,0);
+				}
+				if (field_map[y][x] == 71) {//通常フィールドに置いているのジャンプ台
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), b2Vec2(0.0f, -0.6f), boss_room_level_11,1);
 				}
 			}
 		}
