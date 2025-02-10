@@ -27,9 +27,9 @@ void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, cons
 }
 
 //岩を追加
-void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level)
+void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level,bool left)
 {
-    rockList.emplace_back(std::make_unique<rock>(position, radius, need_anchor_level));
+    rockList.emplace_back(std::make_unique<rock>(position, radius, need_anchor_level,left));
 }
 
 // 足場を追加
