@@ -218,7 +218,7 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_ちびゴーレム爆発音,
 	CRI_CUESHEET_0_エネミー攻撃,
 	CRI_CUESHEET_0_エネミーダウン,
-	CRI_CUESHEET_0_エネミー撃墜音
+	CRI_CUESHEET_0_エネミー撃墜音,
 };
 
 
