@@ -1,4 +1,4 @@
-// #name　contact_block.cpp
+// #name　UI_Block.cpp
 // #description 接触したらなにかのアクションを行う　今追加しているのは触れたら死亡する処理
 // #make 2025/02/06
 // #update 2025/02/06

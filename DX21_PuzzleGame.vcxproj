@@ -202,7 +202,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
-    <ClCompile Include="UI_Blcok.cpp" />
+    <ClCompile Include="UI_Block.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
     <ClCompile Include="word.cpp" />
