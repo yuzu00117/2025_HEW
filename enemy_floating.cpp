@@ -89,7 +89,10 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 
 void EnemyFloating::Initialize()
 {
-	g_EnemyFloating_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
+	if (g_EnemyFloating_Texture == NULL)
+	{
+		g_EnemyFloating_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
+	}
 }
 
 void EnemyFloating::Finalize()
