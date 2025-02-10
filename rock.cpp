@@ -28,7 +28,7 @@ static ID3D11ShaderResourceView* g_Rock_Texture2 = NULL;//アンカーのテクスチャ
 
 
 
-rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
+rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 {
 	//ボディは一つで　フィクスチャを二つ付ける構造にする
 
@@ -95,8 +95,8 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 
 	rock_anchorpoint_fixture.shape = &anchorpoint_circlesShape;
 	rock_anchorpoint_fixture.density = 3.0f;
-	rock_anchorpoint_fixture.friction = 0.5f;//摩擦
-	rock_anchorpoint_fixture.restitution = 0.0f;//反発係数
+	rock_anchorpoint_fixture.friction = 0.1f;//摩擦
+	rock_anchorpoint_fixture.restitution = 0.1f;//反発係数
 	rock_anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 	rock_anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
@@ -124,6 +124,10 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 
 	object_rock_anchorpoint_data->add_force = need_power;
 	m_pulling_power = need_power;
+
+
+	//左右判定
+	left_flag = left;
 
 };
 
@@ -153,7 +157,7 @@ void rock::Pulling_rock()
 	b2Vec2 pulling_power = m_pulling_power;
 
 	//プレイヤー側に倒す
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	if (left_flag)//プレイヤーが左側
 	{
 		pulling_power.x = pulling_power.x * -1;
 	}

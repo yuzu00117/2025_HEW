@@ -99,7 +99,8 @@ private:
 	//宝石のタイプ
 	Jewel_Type	m_type;
 
-
+	//アニメーションid
+	int m_anim_id = 0;
 };
 
 #endif // !ITEM_JEWELRY_H
