@@ -243,7 +243,19 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //プレイヤーのセンサーを新しくつくる
 
+        b2BodyDef sensor_body;
+        sensor_body.type = b2_dynamicBody;
+        sensor_body.position.Set(position.x, position.y);
+        sensor_body.angle = 0.0f;
+        sensor_body.fixedRotation = true;
+        sensor_body.userData.pointer = (uintptr_t)this;
+
+        m_sensor_body = world->CreateBody(&sensor_body);
+
+        SetSensorBody(m_sensor_body);
+
         b2PolygonShape shape_sensor;
+       
 
 
         b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
@@ -269,7 +281,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
 
 
-        b2Fixture* player_sensor_fixture = m_body->CreateFixture(&fixture_sensor);
+        b2Fixture* player_sensor_fixture = m_sensor_body->CreateFixture(&fixture_sensor);
 
 
         // カスタムデータを作成して設定
@@ -311,7 +323,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         effect_fixture_sensor.filter = createFilterExclude("player_sensor_filter", {});
 
 
-        b2Fixture* effect_player_sensor_fixture = m_body->CreateFixture(&effect_fixture_sensor);
+        b2Fixture* effect_player_sensor_fixture = m_sensor_body->CreateFixture(&effect_fixture_sensor);
 
 
         // カスタムデータを作成して設定
@@ -1421,18 +1433,23 @@ void Player::Draw()
         //----------------------------------------------------------------------------------------
         //センサー描画
 
+        b2Vec2 Pos = GetSensorBody()->GetPosition();
 
+
+        float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+       
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
         DrawSprite(
-            { screen_center.x,
-              screen_center.y },
-            m_body->GetAngle(),
+            { draw_x,
+              draw_y },
+            m_sensor_body->GetAngle(),
             { GetSensorSize().x * scale,GetSensorSize().y * scale }
         );
-        float size_sensor = GetSensorSize().x * scale;
-        float size = GetSize().x * scale;
+       
 
 
         DrawAnchorLevel3Frame();

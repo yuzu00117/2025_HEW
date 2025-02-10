@@ -191,11 +191,21 @@ public:
 		return m_body;
 	}
 
+	void SetSensorBody(b2Body* player_body)
+	{
+		m_sensor_body = player_body;
+	}
+
+
+	b2Body* GetSensorBody(void)
+	{
+		return m_sensor_body;
+	}
+
 	void SetPlayerBody(b2Body* player_body)
 	{
 		m_body = player_body;
 	}
-
 
 
 	b2Vec2 GetSensorSizeLev1_2(void)
@@ -220,6 +230,8 @@ private:
 
 	//センサー用のサイズ
 	b2Vec2 m_sensor_size;
+
+	b2Body* m_sensor_body;
 
 
 	//ジャンプボタン押されたかどうか（トリガー制御）

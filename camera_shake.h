@@ -10,6 +10,9 @@
 
 #ifndef CAMERA_SHAKE_H
 #define CAMERA_SHAKE_H
+
+#include"include/box2d/box2d.h"
+
 class CameraShake
 {
 public:
@@ -50,6 +53,8 @@ private:
 	static int camera_shake_height;
 
 	static int camera_shake_width;
+
+	static b2Vec2 old_olayer_pos;
 
 };
 
