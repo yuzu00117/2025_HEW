@@ -103,7 +103,6 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	int ID = data->GenerateID();
 	data->id = ID;
 	sensor_data->id = ID;
-	//sensor_data2->id = ID;
 	SetID(ID);
 
 	m_state = ENEMY_STATE_NULL;
@@ -256,19 +255,6 @@ void EnemyDynamic::Draw()
 		}
 		m_anim_id = m_anim_id % 25;
 		break;
-	case ENEMY_STATE_DESTROYED:
-		//貼るテクスチャを指定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Destroyed);
-
-		DrawDividedSpritePlayer(
-			{ draw_x,
-			  draw_y },
-			GetBody()->GetAngle(),
-			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
-			4, 4, m_anim_id, 3.0, m_direction
-		);
-		m_anim_id++;
-		break;
 	default:
 		//貼るテクスチャを指定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Move);
@@ -400,12 +386,6 @@ void EnemyDynamic::Attack()
 		m_attack_cooltime_counter = 0;
 		return;
 	}
-}
-
-//死亡
-void EnemyDynamic::Destroyed()
-{
-
 }
 
 //センサーとプレイヤーが触れた時の処理

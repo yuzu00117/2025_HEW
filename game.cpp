@@ -54,13 +54,14 @@ void Game::Initialize()
     switch (sceneManager.GetStageName())
     {
     case STAGE_TUTORIAL:
-        //プレイヤーの初期化
-        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
+        ////プレイヤーの初期化
+        //フィールドの中でやるわ
+        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
         break;
     case STAGE_1_1:
 
-        //プレイヤーの初期化
-        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
+        ////プレイヤーの初期化
+        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
 
         break;
     case STAGE_BOSS:
