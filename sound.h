@@ -133,12 +133,12 @@ enum Sound_Manager
 	Boss_Damege_Sound,//boss.cpp CreateBossCore
 	Boss_Stun_Sound,//Update　down_state
 
-	Enemy_Knock_Down1_Sound,
+	Enemy_Knock_Down1_Sound,//未実装
 	Enemy_MiniGolem_Create_Sound,//boss.cpp  CreateMiniGolem
 	Enemy_MiniGolem_Explosion_Sound,//boss.cpp  DestroyMiniGolemBody
-	Enemy_Attack_Sound,
-	Enemy_Knock_Down2_Sound,
-	Enemy_Shot_Down_Sound
+	Enemy_Attack_Sound,//EnemyDyanamic.cpp attack
+	Enemy_Knock_Down2_Sound,//EnemyDyanamic.cpp 　update
+	Enemy_Shot_Down_Sound//ContactList.h endcontact　気に入らん
 
 };
 /***************************************************************************

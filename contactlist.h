@@ -1659,7 +1659,9 @@ public:
             (objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_player_sensor) ||
             (objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_blown_away_enemy))
         {
-          
+             //撃墜した時の音
+            app_atomex_start(Enemy_Shot_Down_Sound);
+
 
             change_enemy_filter_and_body* body_instance;
             // 速度ベクトルを取得
