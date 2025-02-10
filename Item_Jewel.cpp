@@ -23,6 +23,8 @@
 #include"player_UI.h"
 #include"easing.h"
 
+//グローバル変数
+static ID3D11ShaderResourceView* g_Effect_Texture;    //エフェクトのテクスチャ
 
 ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon, float Alpha)
     :m_size(body_size), m_Alpha(Alpha), m_type(type)
@@ -219,6 +221,11 @@ void ItemJewel::Initialize()
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
         break;
     }
+
+    if (!g_Effect_Texture)
+    {
+        g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
+    }
 }
 
 
@@ -273,6 +280,18 @@ void ItemJewel::Draw()
             m_Alpha
         );
 
+        //エフェクト描画
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Effect_Texture);
+
+        DrawDividedSpritePlayer(
+            { draw_x,
+              draw_y },
+            m_body->GetAngle(),
+            { GetSize().x * scale * 1.5f ,GetSize().y * scale * 1.5f },
+            6, 4, m_anim_id, 3.0, true
+        );
+        m_anim_id++;
+        m_anim_id = m_anim_id % 24;
     }
 }
 
@@ -291,6 +310,10 @@ void ItemJewel::Finalize()
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
+    }
+    if (g_Effect_Texture)
+    {
+        UnInitTexture(g_Effect_Texture);
     }
 }
 
