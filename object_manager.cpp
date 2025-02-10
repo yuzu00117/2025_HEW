@@ -118,9 +118,9 @@ void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2
 }
 
 //乗ったら大ジャンプするバウンドブロックの追加
-void ObjectManager::AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level)
+void ObjectManager::AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level,int texture_type)
 {
-    boss_bound_block_list.emplace_back(std::make_unique<boss_bound_block>(position, size, vec, level));
+    boss_bound_block_list.emplace_back(std::make_unique<boss_bound_block>(position, size, vec, level,texture_type));
 }
 
 void ObjectManager::AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num)

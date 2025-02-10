@@ -18,7 +18,7 @@
 class boss_bound_block
 {
 public:
-	boss_bound_block(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level);
+	boss_bound_block(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level,int texture_type);
 	~boss_bound_block();
 
 
@@ -94,6 +94,8 @@ private:
 	bool break_flag = false;
 
 	int Change_Texture_Size_Frame;
+
+	int Texture_type;
 
 
 };
