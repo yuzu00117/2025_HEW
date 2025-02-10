@@ -16,6 +16,13 @@
   **************************************************************************/
 #include <cri_adx2le.h>
 #include <CriSmpFramework.h>
+#include <cri_adx2le.h>
+#include <unordered_map>
+#include <vector>
+#include "keyboard.h"
+#include <thread>
+#include <chrono>
+
 
   /* インゲームプレビューを有効にする場合、定義する */
 #define USE_INGAME_PREVIEW
@@ -152,9 +159,30 @@ static CriBool app_atomex_initialize(AppObj* app_obj);
 static CriBool app_atomex_finalize(AppObj* app_obj);
 static CriBool app_execute_main(AppObj* app_obj);
 
+
+// 音楽の再生（再生IDを保存）
 CriBool app_atomex_start(Sound_Manager sound_name);
-CriBool app_atomex_stop_player();
+
+// 特定の音が再生中かどうかを確認（再生が終了したIDを削除）
+CriBool app_atomex_is_playing(Sound_Manager sound_name);
+
+// 音楽の停止（特定の音のすべての再生を停止し、リストから削除）
 CriBool app_atomex_stop_cue(Sound_Manager sound_name);
+
+// プレイヤー全体を停止（すべての音を管理リストから削除）
+CriBool app_atomex_stop_player();
+
+// 再生中の音のリストを取得
+std::vector<Sound_Manager> app_atomex_get_playing_sounds();
+
+// ループ設定を有効化
+void app_atomex_enable_loop();
+
+// ループ設定を無効化（1回だけ再生）
+void app_atomex_disable_loop();
+
+// 全体の音量を調整
+void app_atomex_set_master_volume(float volume);
 
 /**************************************************************************
  * 変数定義
@@ -235,5 +263,9 @@ static CriUint32 g_num_cue_items = sizeof(g_cue_list) / sizeof(AppCueListItem);
 void CRIInitialize();
 void CRIUpdate();
 void CRIFinalize();
+
+// ここでは変数を `extern` で宣言する（定義しない）
+extern std::unordered_map<Sound_Manager, std::vector<CriAtomExPlaybackId>> g_playback_map;
+
 
 #endif // SOUND_H
