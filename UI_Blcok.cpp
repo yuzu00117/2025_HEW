@@ -1,8 +1,9 @@
-// #name　contact_block.cpp
-// #description 接触したらなにかのアクションを行う　今追加しているのは触れたら死亡する処理
-// #make 2025/02/06
-// #update 2025/02/06
-// #comment 追加・修正予定  接触に関してなにか追加があるのであればEnum型に処理をたす
+//----------------------------------------------------------------------------------------------------
+// #name　UI_Block.cpp
+// #description センサーに接触したらプレイヤーの右上にUIを表示する
+// #make 2025/02/09
+// #update 2025/02/09
+// #comment 追加・修正予定  UIの種類をがんがん足したい
 //         
 //          
 //----------------------------------------------------------------------------------------------------
@@ -24,7 +25,7 @@ static ID3D11ShaderResourceView* g_Texture = NULL;//センサーのテクスチャ
 static ID3D11ShaderResourceView* g_UI_texture = NULL;//UIのテクスチャ
 static ID3D11ShaderResourceView* g_arrow_Texture = NULL;//矢印のテクスチャ
 
-//接触した時に様々な出来事を起こす
+//センサーに触れたらUIを表示する
 UI_block::UI_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle)
 {
 	//サイズをセット
@@ -49,7 +50,7 @@ UI_block::UI_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec
 
 
 
-	b2BodyDef body;//木の幹の部分
+	b2BodyDef body;//ボディ
 	body.type = b2_staticBody;
 	body.position.Set(Position.x, Position.y);
 	body.fixedRotation = true;
@@ -157,7 +158,7 @@ void UI_block::Draw()
 		{ draw_x,
 		  draw_y },
 		angle,
-		{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		{ GetSize().x * scale,GetSize().y * scale }
 	);
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
@@ -166,7 +167,7 @@ void UI_block::Draw()
 		{ draw_x,
 		  draw_y },
 		GetBody()->GetAngle(),
-		{ GetSensorSize().x * scale,GetSensorSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		{ GetSensorSize().x * scale,GetSensorSize().y * scale }
 	);
 
 
