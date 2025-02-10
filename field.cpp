@@ -170,6 +170,11 @@ void Field::Initialize()
 					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, invisibility_texture, false);
 				}
 
+				if (field_map[y][x] == 666) {//静的なエネミー
+					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+				}
+
+
 				//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 				//プレイヤー
 				if (field_map[y][x] == 8) {//プレイヤーの表示
