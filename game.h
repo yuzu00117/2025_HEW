@@ -45,8 +45,8 @@ public:
 	void Teleport_player(b2Vec2 position);
 
 private:
-	
-	Player player;
+	//ƒVƒ“ƒOƒ‹ƒgƒ“‚ð‚±‚Á‚¿‚ÉˆÚ“®
+	Player &player=Player::GetInstance();
 	StaminaSpiritGauge stamina_spirit_gauge;
 	Boss_1_1 &boss =Boss_1_1::GetInstance();
 

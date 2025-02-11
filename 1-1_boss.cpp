@@ -185,6 +185,8 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
 	boss_field_level = 1;
+
+	now_boss_state = charge_attack_state;
 }
 
 void Boss_1_1::Update()
@@ -278,7 +280,13 @@ void Boss_1_1::Update()
 
 		case down_state:
 
+			//サウンドスタート
+			if (sheet_cnt == 0)
+			{
+				app_atomex_start(Boss_Stun_Sound);
+			}
 			sheet_cnt += 0.5;
+			
 
 			if (Max_Down_Frame <= sheet_cnt)
 			{
@@ -293,10 +301,12 @@ void Boss_1_1::Update()
 				if (left_flag)
 				{
 					m_body->SetLinearVelocity(b2Vec2(-walk_power.x, walk_power.y));
+					
 				}
 				else
 				{
 					m_body->SetLinearVelocity(b2Vec2(walk_power.x, walk_power.y));
+					
 				}
 
 				if ((static_cast<int>(sheet_cnt) % 20 == 0))
@@ -306,6 +316,7 @@ void Boss_1_1::Update()
 
 				// カメラシェイクスタート
 				CameraShake::StartCameraShake(1, 0, 10);
+				app_atomex_start(Boss_Walk_Sound);//歩きの音
 			}
 			sheet_cnt += 0.5;
 
@@ -318,6 +329,11 @@ void Boss_1_1::Update()
 			break;
 
 		case jump_state:
+			if (sheet_cnt == 0)
+			{
+				app_atomex_start(Boss_Jump_Sound);//ジャンプの音
+			}
+
 			sheet_cnt += 0.6;
 
 			if (Max_Jump_Sheet <= sheet_cnt)
@@ -345,6 +361,8 @@ void Boss_1_1::Update()
 				CreateShockWave(b2Vec2(5.0f * BOSS_SIZE_SCALE, 6.0f * BOSS_SIZE_SCALE), left_flag);
 				Shock_Wave_Fly_flag = true;
 
+				app_atomex_start(Boss_Attack_Wave_Sound);//ショックウェーブ音
+				
 				// エフェクトスタート
 				shock_wave_effect_sheet_cnt = 1;
 			}
@@ -373,9 +391,15 @@ void Boss_1_1::Update()
 			break;
 		case charge_attack_state:
 
+			if (sheet_cnt == 0)
+			{
+				app_atomex_start(Boss_Charge_Sound);//チャージ音 
+			}
+
 			// シート1枚目はチャージを行う
 			if (sheet_cnt < 100)
 			{
+
 				sheet_cnt += 0.75;
 			}
 			else // シート2枚目はチャージを行う速度
@@ -385,6 +409,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_Start_Frame)
 			{
+				app_atomex_start(Boss_Charge_Attack_Sound);//チャージ音 
 				CreateChargeAttack(b2Vec2(4.0f * BOSS_SIZE_SCALE, 4.0f * BOSS_SIZE_SCALE), left_flag);
 				// エフェクトスタート
 				charge_attack_effect_sheet_cnt = 1;
@@ -499,6 +524,8 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 {
 	if (GetAnchorPointBody() == nullptr)
 	{
+		app_atomex_start(Boss_Damege_Sound);//コアを露出の音
+
 		// サイズを設定
 		SetAnchorPointSize(size);
 
@@ -603,6 +630,7 @@ void Boss_1_1::DestroyBossCore(void)
 		{
 			//ダウン状態に移行
 			now_boss_state = down_state;
+			app_atomex_start(Boss_Core_Damege_Sound);
 		}
 		else
 		{
@@ -826,6 +854,7 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 	{
 		if (GetMiniGolemBody(i) == nullptr && Mini_golem_Create_flag == true)
 		{
+			app_atomex_start(Enemy_MiniGolem_Create_Sound);//ミニゴーレムの生成音
 
 			// ボディのサイズを設定
 			SetMiniGolemDrawSize(mini_golem_size);
@@ -920,6 +949,8 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 {
 	if (destroy_mini_golem_flag == true)
 	{
+		app_atomex_start(Enemy_MiniGolem_Explosion_Sound);//ミニゴーレムの破裂音
+
 		Box2dWorld &box2d_world = Box2dWorld::GetInstance();
 		b2World *world = box2d_world.GetBox2dWorldPointer();
 

@@ -153,6 +153,7 @@
     <ClCompile Include="cri\common\source\CriSmpInputDevice_PC.cpp" />
     <ClCompile Include="cri\common\source\CriSmpTimer_PC.cpp" />
     <ClCompile Include="cri\common\source\CriSmpVideoOutput_PC.cpp" />
+    <ClCompile Include="dead_production.cpp" />
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="directx_controller.cpp" />
     <ClCompile Include="display.cpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="cri\common\include\CriSmpInputDevice.h" />
     <ClInclude Include="cri\common\include\CriSmpTimer.h" />
     <ClInclude Include="cri\common\include\CriSmpVideoOutput.h" />
+    <ClInclude Include="dead_production.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="display.h" />
     <ClInclude Include="DirectXTex.h" />
