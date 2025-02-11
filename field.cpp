@@ -365,6 +365,8 @@ void Field::Initialize()
 				if (field_map[y][x] == 45) {//コイン
 				itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0);
 				}
+
+
 				//--------------------------------------------------------------------------------------------------------------------------------------------------
 
 				if (field_map[y][x] == 55) {//接触したら死ぬ
@@ -389,6 +391,7 @@ void Field::Initialize()
 				if (field_map[y][x] == 71) {//通常フィールドに置いているのジャンプ台
 					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), b2Vec2(0.0f, -0.6f), boss_room_level_11,1);
 				}
+
 			}
 		}
 
