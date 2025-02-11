@@ -428,6 +428,9 @@ public:
                         geyser_instance->SetOpenGyserFlag(true);//水が噴き出す
                     }
 
+                    //噴き出す音の検知
+                    app_atomex_start(Object_Geyser_Sound);
+
                 }
 
 
