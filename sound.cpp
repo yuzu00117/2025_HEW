@@ -13,6 +13,8 @@
   **************************************************************************/
 #include "sound.h"
 #include "keyboard.h"
+#include <thread>
+#include <chrono>
 
   /***************************************************************************
    * 関数定義
@@ -21,6 +23,15 @@
 /* アプリケーションオブジェクトの定義 */
 static AppObj app_obj = { 0 };
 Sound_Manager sound_name;
+
+// ここで実際に変数を定義
+std::unordered_map<Sound_Manager, std::vector<CriAtomExPlaybackId>> g_playback_map;
+
+// 再生中の音を管理するためのマップ
+#include <unordered_map>
+#include <vector>
+
+
 
 //CRIの初期化
 void CRIInitialize(void) {
@@ -188,7 +199,34 @@ CriBool app_execute_main(AppObj* app_obj)
 	return CRI_TRUE;
 }
 
-//1	音楽の再生
+////1	音楽の再生
+//CriBool app_atomex_start(Sound_Manager sound_name)
+//{
+//	CriAtomExCueId start_cue_id = g_cue_list[sound_name].id;
+//
+//	/* キューIDの指定 */
+//	criAtomExPlayer_SetCueId(app_obj.player, app_obj.acb_hn, start_cue_id);
+//
+//	/* MEMO: 特定の音だけピッチを変えて再生したい場合。      */
+//	/* (1) プレーヤにピッチを設定。                          */
+//	/* (2) 再生開始。                                        */
+//	/* (3) プレーヤのピッチを戻す。                          */
+//	/* {                                                     */
+//	/*   criAtomExPlayer_SetPitch(player, pitch);          */
+//	/*   criAtomExPlayer_SetCueId(player, acb, cue_id);  */
+//	/*   criAtomExPlayer_Start(player, pitch);             */
+//	/*   criAtomExPlayer_SetPitch(player, 0.0f);           */
+//	/* {                                                     */
+//	/* 補足: HCA-MXコーデックの場合はピッチ変更は無効。      */
+//
+//	/* 再生の開始 */
+//	CriAtomExPlaybackId playback_id = criAtomExPlayer_Start(app_obj.player);
+//
+//	return CRI_TRUE;
+//}
+
+
+// 音楽の再生（再生IDを保存）
 CriBool app_atomex_start(Sound_Manager sound_name)
 {
 	CriAtomExCueId start_cue_id = g_cue_list[sound_name].id;
@@ -196,38 +234,115 @@ CriBool app_atomex_start(Sound_Manager sound_name)
 	/* キューIDの指定 */
 	criAtomExPlayer_SetCueId(app_obj.player, app_obj.acb_hn, start_cue_id);
 
-	/* MEMO: 特定の音だけピッチを変えて再生したい場合。      */
-	/* (1) プレーヤにピッチを設定。                          */
-	/* (2) 再生開始。                                        */
-	/* (3) プレーヤのピッチを戻す。                          */
-	/* {                                                     */
-	/*   criAtomExPlayer_SetPitch(player, pitch);          */
-	/*   criAtomExPlayer_SetCueId(player, acb, cue_id);  */
-	/*   criAtomExPlayer_Start(player, pitch);             */
-	/*   criAtomExPlayer_SetPitch(player, 0.0f);           */
-	/* {                                                     */
-	/* 補足: HCA-MXコーデックの場合はピッチ変更は無効。      */
-
 	/* 再生の開始 */
 	CriAtomExPlaybackId playback_id = criAtomExPlayer_Start(app_obj.player);
+
+	// 再生IDを保存
+	g_playback_map[sound_name].push_back(playback_id);
 
 	return CRI_TRUE;
 }
 
-//2 音楽の停止
+// 特定の音が再生中かどうかを確認（再生が終了したIDを削除）
+CriBool app_atomex_is_playing(Sound_Manager sound_name)
+{
+	auto it = g_playback_map.find(sound_name);
+	if (it == g_playback_map.end()) {
+		return CRI_FALSE; // 再生IDが登録されていない → 再生していない
+	}
+
+	// 再生が終了したIDを削除
+	it->second.erase(
+		std::remove_if(it->second.begin(), it->second.end(), [](CriAtomExPlaybackId id) {
+			CriAtomExPlaybackStatus status = criAtomExPlayback_GetStatus(id);
+			return (status == CRIATOMEXPLAYBACK_STATUS_REMOVED || status == CRIATOMEXPLAYBACK_STATUS_REMOVED);
+			}),
+		it->second.end()
+	);
+
+	return !it->second.empty();
+}
+
+// 音楽の停止（特定の音のすべての再生を停止し、リストから削除）
+CriBool app_atomex_stop_cue(Sound_Manager sound_name)
+{
+	auto it = g_playback_map.find(sound_name);
+	if (it == g_playback_map.end()) {
+		return CRI_FALSE; // 再生中でないなら何もしない
+	}
+
+	// すべての再生を停止
+	for (auto playback_id : it->second) {
+		criAtomExPlayback_Stop(playback_id);
+	}
+
+	// 再生IDを削除
+	g_playback_map.erase(it);
+
+	return CRI_TRUE;
+}
+
+// プレイヤー全体を停止（すべての音を管理リストから削除）
 CriBool app_atomex_stop_player()
 {
 	/* プレーヤの停止 */
 	criAtomExPlayer_Stop(app_obj.player);
 
+	// すべての再生IDをクリア
+	g_playback_map.clear();
+
 	return CRI_TRUE;
 }
 
-//3 特定の音のみ停止※再生している名前があっていないと不具合が起こるそうです
-CriBool app_atomex_stop_cue(Sound_Manager sound_name)
+// 再生中の音のリストを取得
+std::vector<Sound_Manager> app_atomex_get_playing_sounds()
 {
-	/* 特定の再生音のみ停止 */
-	criAtomExPlayback_Stop(sound_name);
+	std::vector<Sound_Manager> playing_sounds;
 
-	return CRI_TRUE;
+	for (auto it = g_playback_map.begin(); it != g_playback_map.end();)
+	{
+		// 再生が終了したIDを削除
+		it->second.erase(
+			std::remove_if(it->second.begin(), it->second.end(), [](CriAtomExPlaybackId id) {
+				CriAtomExPlaybackStatus status = criAtomExPlayback_GetStatus(id);
+				return (status == CRIATOMEXPLAYBACK_STATUS_REMOVED || status == CRIATOMEXPLAYBACK_STATUS_REMOVED);
+				}),
+			it->second.end()
+		);
+
+		if (!it->second.empty()) {
+			playing_sounds.push_back(it->first);
+			++it;
+		}
+		else {
+			it = g_playback_map.erase(it);
+		}
+	}
+
+	return playing_sounds;
 }
+
+
+// ループ設定を有効化
+void app_atomex_enable_loop()
+{
+	criAtomExPlayer_SetStartTime(app_obj.player, 0);
+}
+
+// ループ設定を無効化（1回だけ再生）
+void app_atomex_disable_loop()
+{
+	criAtomExPlayer_SetStartTime(app_obj.player, -1);
+}
+
+
+
+
+
+// 全体の音量を調整
+void app_atomex_set_master_volume(float volume)
+{
+	criAtomExPlayer_SetVolume(app_obj.player, volume);
+}
+
+
