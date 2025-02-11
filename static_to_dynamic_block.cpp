@@ -142,8 +142,8 @@ static_to_dynamic_block::~static_to_dynamic_block()
 void static_to_dynamic_block::Initialize()
 {
 	if (g_coconut_Texture == NULL) {
-		g_coconut_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coconut.png");
-		g_BoxRock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_fall_rock.png");
+		g_coconut_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down.png");
+		g_BoxRock_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down.png");
 	}
 
 }
