@@ -79,12 +79,12 @@ typedef struct AppTag {
 enum Sound_Manager
 {
 	GAME_BGM,
-	TITLE_BGM,
-	STAGESELECT_BGM,
-	RESULT_BGM,
+	TITLE_BGM,//Title init
+	STAGESELECT_BGM,//StageSelectScene inti
+	RESULT_BGM,//RESULT_init
 	BOSS1_BGM,
-	STAGE1_BGM,
-	POP_BGM,
+	STAGE1_BGM,//Game.cpp init
+	POP_BGM,//Game.cpp init
 	ADVENTURE_BGM,
 	STAGE2_BGM,
 	BOSS2_BGM,
