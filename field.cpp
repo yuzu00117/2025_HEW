@@ -334,9 +334,12 @@ void Field::Initialize()
 				//-------------------------------------------------------------------------------------------
 				//足場ブロック
 				if (field_map[y][x] == 25) {//足場ブロック
-					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.1f) );
+					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.1f),true);
 				}
-
+				if (field_map[y][x] == 26) {//足場ブロック
+					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.1f),false);
+				}
+			
 				//-------------------------------------------------------------------------------------------
 				//転がす岩
 				if (field_map[y][x] == 30) {//岩
