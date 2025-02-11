@@ -118,14 +118,19 @@ void ObjectManager::AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2
 }
 
 //乗ったら大ジャンプするバウンドブロックの追加
-void ObjectManager::AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level)
+void ObjectManager::AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level,int texture_type)
 {
-    boss_bound_block_list.emplace_back(std::make_unique<boss_bound_block>(position, size, vec, level));
+    boss_bound_block_list.emplace_back(std::make_unique<boss_bound_block>(position, size, vec, level,texture_type));
 }
 
 void ObjectManager::AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num)
 {
     contact_block_list.emplace_back(std::make_unique<contact_block>(Position, block_size, type, num));
+}
+
+void ObjectManager::AddUiBlock(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle)
+{
+    Ui_block_list.emplace_back(std::make_unique<UI_block>(Position, block_size, Sensor_size, Sensor_Position,type,texture_angle));
 }
 
 
@@ -339,6 +344,16 @@ contact_block* ObjectManager::FindContactBlock(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+UI_block* ObjectManager::FindUiBlock(int id)
+{
+    for (auto& w : Ui_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 
 
@@ -504,6 +519,12 @@ void ObjectManager::InitializeAll() {
 
         w->Initialize();
     }
+
+    for (auto& w : Ui_block_list)
+    {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -604,6 +625,11 @@ void ObjectManager::UpdateAll() {
     for (auto& w : contact_block_list) {
         w->Update();
     }
+
+    for (auto& w : Ui_block_list)
+    {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -687,6 +713,11 @@ void ObjectManager::DrawAll() {
 
 
     for (auto& w : contact_block_list) {
+        w->Draw();
+    }
+
+    for (auto& w : Ui_block_list)
+    {
         w->Draw();
     }
   
@@ -778,6 +809,11 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : Ui_block_list)
+    {
+        w->Finalize();
+    }
+
     Item_Coin_UI::Finalize();
 
 
@@ -812,7 +848,7 @@ void ObjectManager::FinalizeAll() {
 
     boss_bound_block_list.clear();
 
-
+    Ui_block_list.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

@@ -19,6 +19,9 @@ enum Contact_Block_Type
 	NULL_TYPE,		//なにもないやつ
 	DEAD_BLOCK_TYPE,//触れたら死ぬ
 
+	GO_STAGE_SELECT,//ステージセレクトにいく
+	GO_BOSS_STAGE,//ボス戦に行く
+
 };
 
 

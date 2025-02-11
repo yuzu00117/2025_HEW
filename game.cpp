@@ -42,6 +42,25 @@ bool  HitStop::hit_stop_flag = false;
 
 void Game::Initialize()
 {
+    //全ての音を止める
+    app_atomex_stop_player();
+
+    SceneManager &scene= SceneManager::GetInstance();
+
+    //ステージに合わせてBGMを切り替える
+    switch (scene.GetStageName())
+    {
+    case STAGE_TUTORIAL:
+        app_atomex_start(POP_BGM);
+        break;
+    case STAGE_1_1:
+        app_atomex_start(STAGE1_BGM);
+        break;
+    default:
+        break;
+    }
+
+
 
     //文字（絵）
     InitializeWord();
@@ -232,32 +251,61 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
 
-         
+            SceneManager& sceneManager = SceneManager::GetInstance();
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
 
-
-           
-
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
+                
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
             {
-                SceneManager& sceneManager = SceneManager::GetInstance();
+               
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
-
             }
+
+            //シーン移行の管理
+            if (sceneManager.Get_Chenge_Scene_flag() == true)
+            {
+                //シーン移行したらfalseにする
+                sceneManager.Set_Chenge_Scene_flag(false);
+                switch (sceneManager.GetStageName())
+                {
+                case STAGE_SELECT:
+                    sceneManager.SetStageName(STAGE_SELECT);
+                    sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+                    break;
+                case STAGE_TUTORIAL:
+                    sceneManager.SetStageName(STAGE_TUTORIAL);
+                    sceneManager.ChangeScene(SCENE_GAME);
+                    break;
+                case STAGE_1_1:
+                    sceneManager.SetStageName(STAGE_1_1);
+                    sceneManager.ChangeScene(SCENE_GAME);
+                    break;
+                case STAGE_BOSS:
+                    sceneManager.SetStageName(STAGE_BOSS);
+                    sceneManager.ChangeScene(SCENE_GAME);
+                    break;
+                default:
+                    break;
+                }
+
+              
+            }
+
+
+
+            
         }
        else
        {
