@@ -264,6 +264,9 @@
     <ClCompile Include="dead_production.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="UI_Blcok.cpp">
+      <Filter>リソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -552,6 +555,9 @@
     <ClInclude Include="Item_SavePoint.h" />
     <ClInclude Include="dead_production.h">
       <Filter>ソースファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Block.h">
+      <Filter>リソースファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

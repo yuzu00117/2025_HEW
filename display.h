@@ -28,7 +28,7 @@ public:
 
 	//スケーリング
 	static float GetDisplayScale();
-	
+
 	static void SetDisplayScale(float scale);
 
 
@@ -42,7 +42,16 @@ public:
 
 	static void SetDisplayHeight(float height);
 
+
+
+	static void AddDisplayWidth(float width);
+
+	static void AddDisplayHeight(float height);
+
+
+
 	static void SetDisplayDefault(void);
+
 
 private:
 	static float m_display_scale;

@@ -16,6 +16,13 @@
   **************************************************************************/
 #include <cri_adx2le.h>
 #include <CriSmpFramework.h>
+#include <cri_adx2le.h>
+#include <unordered_map>
+#include <vector>
+#include "keyboard.h"
+#include <thread>
+#include <chrono>
+
 
   /* インゲームプレビューを有効にする場合、定義する */
 #define USE_INGAME_PREVIEW
@@ -79,12 +86,12 @@ typedef struct AppTag {
 enum Sound_Manager
 {
 	GAME_BGM,
-	TITLE_BGM,
-	STAGESELECT_BGM,
-	RESULT_BGM,
+	TITLE_BGM,//Title init
+	STAGESELECT_BGM,//StageSelectScene inti
+	RESULT_BGM,//RESULT_init
 	BOSS1_BGM,
-	STAGE1_BGM,
-	POP_BGM,
+	STAGE1_BGM,//Game.cpp init
+	POP_BGM,//Game.cpp init
 	ADVENTURE_BGM,
 	STAGE2_BGM,
 	BOSS2_BGM,
@@ -116,12 +123,12 @@ enum Sound_Manager
 	Player_Warp_Sound,//実装なし
 	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 
-	Object_Rock_Fall_Sound,
+	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
 	Object_Get_Treasure_Sound,
-	Object_Wood_Fall_Sound,
-	Object_Rock_Roll_Sound,
-	Object_Geyser_Sound,
-	Object_Pillar_Break_Sound,
+	Object_Wood_Fall_Sound,//wood ながい　動作とあってない
+	Object_Rock_Roll_Sound,//rock.cpp  Pulling_rock
+	Object_Geyser_Sound,// contact.list　　雷おちてね？
+	Object_Pillar_Break_Sound,//boss_pillar.cpp  Destroy_Splitting
 	Object_Pillar_Hit_Sound,
 
 	Boss_Charge_Attack_Sound,//update charge_attack_state
@@ -133,12 +140,12 @@ enum Sound_Manager
 	Boss_Damege_Sound,//boss.cpp CreateBossCore
 	Boss_Stun_Sound,//Update　down_state
 
-	Enemy_Knock_Down1_Sound,
+	Enemy_Knock_Down1_Sound,//未実装
 	Enemy_MiniGolem_Create_Sound,//boss.cpp  CreateMiniGolem
 	Enemy_MiniGolem_Explosion_Sound,//boss.cpp  DestroyMiniGolemBody
-	Enemy_Attack_Sound,
-	Enemy_Knock_Down2_Sound,
-	Enemy_Shot_Down_Sound
+	Enemy_Attack_Sound,//EnemyDyanamic.cpp attack
+	Enemy_Knock_Down2_Sound,//EnemyDyanamic.cpp 　update
+	Enemy_Shot_Down_Sound//ContactList.h endcontact　気に入らん
 
 };
 /***************************************************************************
@@ -152,9 +159,30 @@ static CriBool app_atomex_initialize(AppObj* app_obj);
 static CriBool app_atomex_finalize(AppObj* app_obj);
 static CriBool app_execute_main(AppObj* app_obj);
 
+
+// 音楽の再生（再生IDを保存）
 CriBool app_atomex_start(Sound_Manager sound_name);
-CriBool app_atomex_stop_player();
+
+// 特定の音が再生中かどうかを確認（再生が終了したIDを削除）
+CriBool app_atomex_is_playing(Sound_Manager sound_name);
+
+// 音楽の停止（特定の音のすべての再生を停止し、リストから削除）
 CriBool app_atomex_stop_cue(Sound_Manager sound_name);
+
+// プレイヤー全体を停止（すべての音を管理リストから削除）
+CriBool app_atomex_stop_player();
+
+// 再生中の音のリストを取得
+std::vector<Sound_Manager> app_atomex_get_playing_sounds();
+
+// ループ設定を有効化
+void app_atomex_enable_loop();
+
+// ループ設定を無効化（1回だけ再生）
+void app_atomex_disable_loop();
+
+// 全体の音量を調整
+void app_atomex_set_master_volume(float volume);
 
 /**************************************************************************
  * 変数定義
@@ -235,5 +263,9 @@ static CriUint32 g_num_cue_items = sizeof(g_cue_list) / sizeof(AppCueListItem);
 void CRIInitialize();
 void CRIUpdate();
 void CRIFinalize();
+
+// ここでは変数を `extern` で宣言する（定義しない）
+extern std::unordered_map<Sound_Manager, std::vector<CriAtomExPlaybackId>> g_playback_map;
+
 
 #endif // SOUND_H
