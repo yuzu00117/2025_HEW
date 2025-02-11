@@ -115,7 +115,7 @@ change_enemy_filter_and_body::change_enemy_filter_and_body(b2Vec2 position, b2Ve
 
 	m_body->ApplyLinearImpulseToCenter(b2Vec2(Vec.x, Vec.y),true);
 
-	m_body->ApplyTorque(angle,true);
+	m_body->ApplyTorque(angle* size.x*size.y,true);
 	
 
 
