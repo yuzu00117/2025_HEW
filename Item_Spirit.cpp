@@ -274,6 +274,7 @@ void ItemSpirit::Finalize()
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
+        g_Texture = NULL;
     }
 
     m_CollidedObject.clear();

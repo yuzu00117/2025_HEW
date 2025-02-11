@@ -101,41 +101,41 @@ enum Sound_Manager
 	Anchor_Thorw_Sound,//player.cpp crate_state
 	Anchor_Mark_Sound, //anchor_point.cpp
 
-	Player_Soul_Colect1_Sound,
-	Player_Damege_Sound,
-	Player_Dead_Sound,
-	Player_Coin_Colect_Sound,
-	Player_Walk_Sound,
-	Player_Jump_Start_Sound,
-	Player_Jump_End_Sound,
-	Player_Attack_Sound,
-	Player_Jewelry_Colect_Sound,
-	Player_GameOver_Sound,
-	Player_Soul_Colect2_Sound,
-	Player_Fall_Sound,
-	Player_Warp_Sound,
-	Player_Frame_Up_Sound,
+	Player_Soul_Colect1_Sound,//playercpp update
+	Player_Damege_Sound, //player.cpp Player_Damaged
+	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
+	Player_Coin_Colect_Sound,//Item_coni Update
+	Player_Walk_Sound,// player.cpp Update
+	Player_Jump_Start_Sound,//player.cpp update かえたい
+	Player_Jump_End_Sound,//実装なし
+	Player_Attack_Sound,//player.cpp update CreateNormalAttack_State
+	Player_Jewelry_Colect_Sound,//Item_Jewl.cpp update
+	Player_GameOver_Sound,//ゲームおーば完成後に導入したい
+	Player_Soul_Colect2_Sound,//contactliast.h   // プレーヤーとアイテムが衝突したかを判定
+	Player_Fall_Sound,//実装なし
+	Player_Warp_Sound,//実装なし
+	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 
-	Object_Rock_Fall_Sound,
+	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
 	Object_Get_Treasure_Sound,
-	Object_Wood_Fall_Sound,
-	Object_Rock_Roll_Sound,
-	Object_Geyser_Sound,
-	Object_Pillar_Break_Sound,
+	Object_Wood_Fall_Sound,//wood ながい　動作とあってない
+	Object_Rock_Roll_Sound,//rock.cpp  Pulling_rock
+	Object_Geyser_Sound,// contact.list　　雷おちてね？
+	Object_Pillar_Break_Sound,//boss_pillar.cpp  Destroy_Splitting
 	Object_Pillar_Hit_Sound,
 
-	Boss_Charge_Attack_Sound,
-	Boss_Jump_Sound,
-	Boss_Attack_Wave_Sound,
-	Boss_Walk_Sound,
-	Boss_Charge_Sound,
-	Boss_Core_Damege_Sound,
-	Boss_Damege_Sound,
-	Boss_Stun_Sound,
+	Boss_Charge_Attack_Sound,//update charge_attack_state
+	Boss_Jump_Sound,//update jumpstate
+	Boss_Attack_Wave_Sound,//update shock_wave_state
+	Boss_Walk_Sound,//update walk_state
+	Boss_Charge_Sound,//update charge_attack_state
+	Boss_Core_Damege_Sound, //DestroyBossCore
+	Boss_Damege_Sound,//boss.cpp CreateBossCore
+	Boss_Stun_Sound,//Update　down_state
 
 	Enemy_Knock_Down1_Sound,
-	Enemy_MiniGolem_Create_Sound,
-	Enemy_MiniGolem_Explosion_Sound,
+	Enemy_MiniGolem_Create_Sound,//boss.cpp  CreateMiniGolem
+	Enemy_MiniGolem_Explosion_Sound,//boss.cpp  DestroyMiniGolemBody
 	Enemy_Attack_Sound,
 	Enemy_Knock_Down2_Sound,
 	Enemy_Shot_Down_Sound

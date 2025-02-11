@@ -17,6 +17,7 @@
 #include"1-1_boss.h"
 #include"create_filter.h"
 #include"tool.h"
+#include"sound.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
@@ -241,6 +242,8 @@ void boss_pillar::Destroy_Splitting()
 
 			SetBody(nullptr);
 
+			//サウンドを再生
+			app_atomex_start(Object_Pillar_Break_Sound);
 
 			//アンカーポイントのボディも消す
 
