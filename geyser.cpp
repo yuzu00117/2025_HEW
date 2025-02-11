@@ -19,6 +19,7 @@
 #include"create_filter.h"
 #include"player.h"
 #include"easing.h"
+#include"sound.h"
 
 
 

@@ -37,6 +37,8 @@ enum ColliderTypeList
 
     collider_contact_block,
 
+    collider_UI_block,
+
     collider_item,
 
     collider_geyser_water,

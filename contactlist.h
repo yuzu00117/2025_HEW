@@ -39,6 +39,7 @@
 #include"blown_away_effect.h"
 #include"Change_Enemy_Filter_and_Body.h"
 #include"bound_block.h"
+#include"UI_Block.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -427,6 +428,9 @@ public:
                         geyser* geyser_instance = object_manager.FindGeyserID(objectB->id);
                         geyser_instance->SetOpenGyserFlag(true);//水が噴き出す
                     }
+
+                    //噴き出す音の検知
+                    app_atomex_start(Object_Geyser_Sound);
 
                 }
 
@@ -1134,6 +1138,26 @@ public:
             }
       
         }
+
+
+
+        //プレイヤーとUIセンサーが触れた場合
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_UI_block) ||
+            (objectA->collider_type == collider_UI_block && objectB->collider_type == collider_player_body))
+        {
+            if (objectA->collider_type == collider_UI_block)
+            {
+                UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
+                ui_instance->SetFlag(true);
+               
+            }
+            else if (objectB->collider_type == collider_UI_block)
+            {
+
+                UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
+                ui_instance->SetFlag(true);
+            }
+        }
         //-------------------------------------------------------------------------------------------
           // 
           // ここからボス戦のあたり判定を作る
@@ -1654,6 +1678,7 @@ public:
 
 
         //------------------------------------------------------------------------------------------------------------------------
+        //エネミーを吹っ飛ばした時の演出
         if ((objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_effect_sensor) ||
             (objectA->collider_type == collider_effect_sensor && objectB->collider_type == collider_blown_away_enemy)||
             (objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_player_sensor) ||
@@ -1692,6 +1717,25 @@ public:
 
             // エフェクトリストに追加
             blown_away_Effects.emplace_back(Blown_Away_Effect(effect_pos, angle_rad, 2, rand));
+        }
+
+        //-------------------------------------------------------------------------------------------
+        //プレイヤーとUIセンサーが離れた場合
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_UI_block) ||
+            (objectA->collider_type == collider_UI_block && objectB->collider_type == collider_player_body))
+        {
+            if (objectA->collider_type == collider_UI_block)
+            {
+                UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
+                ui_instance->SetFlag(false);
+
+            }
+            else if (objectB->collider_type == collider_UI_block)
+            {
+
+                UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
+                ui_instance->SetFlag(false);
+            }
         }
     }
 
