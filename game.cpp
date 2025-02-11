@@ -42,6 +42,25 @@ bool  HitStop::hit_stop_flag = false;
 
 void Game::Initialize()
 {
+    //全ての音を止める
+    app_atomex_stop_player();
+
+    SceneManager &scene= SceneManager::GetInstance();
+
+    //ステージに合わせてBGMを切り替える
+    switch (scene.GetStageName())
+    {
+    case STAGE_TUTORIAL:
+        app_atomex_start(POP_BGM);
+        break;
+    case STAGE_1_1:
+        app_atomex_start(STAGE1_BGM);
+        break;
+    default:
+        break;
+    }
+
+
 
     //文字（絵）
     InitializeWord();

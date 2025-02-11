@@ -174,6 +174,9 @@ void EnemyDynamic::Update()
 	}
 	else if (!GetUse())
 	{
+		//エネミーが「死んだ時のサウンド
+		app_atomex_start(Enemy_Knock_Down2_Sound);
+
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
@@ -361,6 +364,10 @@ void EnemyDynamic::Attack()
 	//攻撃中は停止
 	GetBody()->SetType(b2_staticBody);
 
+
+
+	
+
 	//攻撃発生フレームになったら攻撃を生成
 	if (m_attack_counter == m_attack_birth)
 	{
@@ -374,6 +381,9 @@ void EnemyDynamic::Attack()
 		{
 			object_manager.AddEnemyAttack(b2Vec2(pos.x + GetSize().x / 4, pos.y), GetSize(), 0.0f, GetID());
 		}
+
+		//攻撃のサウンド
+		app_atomex_start(Enemy_Attack_Sound);
 	}
 
 	//攻撃動作が全て終了したら、動くように戻して移動状態にする
