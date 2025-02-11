@@ -54,6 +54,8 @@ static ID3D11ShaderResourceView* g_left_ground_Texture = NULL;//地面左側の�
 static ID3D11ShaderResourceView* g_under_right_ground_Texture = NULL;//地面右側のテクスチャ
 static ID3D11ShaderResourceView* g_under_left_ground_Texture = NULL;//地面左側のテクスチャ
 
+static ID3D11ShaderResourceView* g_sloop_left_side_texture = NULL;//地面スロープの右側
+static ID3D11ShaderResourceView* g_sloop_right_side_texture = NULL;//地面スロープの左側
 
 Field::Field()
 {
@@ -75,13 +77,18 @@ void Field::Initialize()
 	
 	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
 
-	g_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_glass.png");//グラウンドのテクスチャ
-	g_under_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block.png");//グラウンドのテクスチャ
-	g_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_right.png");//草のテクスチャ　右側
-	g_left_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_left.png");//草のテクスチャ　左側
+	g_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_grass_02.png");//グラウンドのテクスチャ
+	g_under_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_soil_02.png");//グラウンドのテクスチャ
+	g_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_right_02.png");//草のテクスチャ　右側
+	g_left_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_left_02.png");//草のテクスチャ　左側
 
-	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//右側のテクスチャ
-	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//右側のテクスチャ
+	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
+	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_left_dwon.png");//右側のテクスチャ
+
+
+
+	g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
+	g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
@@ -263,11 +270,11 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 7) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_7, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_SLOOP_SIDE_LEFT, false);
 				}
 				if (field_map[y][x] == 8) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_8, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_SLOOP_SIDE_RIGHT, false);
 				}
 				if (field_map[y][x] == 9) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -701,6 +708,12 @@ void Field::Draw()
 				case STAGE_BLOCK_EARTH_UNDER_RIGHT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_under_right_ground_Texture);
 					break;
+				case STAGE_BLOCK_SLOOP_SIDE_LEFT:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloop_left_side_texture);
+					break;
+				case STAGE_BLOCK_SLOOP_SIDE_RIGHT:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloop_right_side_texture);
+					break;
 
 				default:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
@@ -712,7 +725,7 @@ void Field::Draw()
 					{ draw_x,
 					  draw_y },
 					m_p_field_array[y][x]->GetFieldBody()->GetAngle(),
-					{ m_p_field_array[y][x]->GetSize().x * scale , m_p_field_array[y][x]->GetSize().y * scale }
+					{ m_p_field_array[y][x]->GetSize().x * scale , m_p_field_array[y][x]->GetSize().y * scale },3.0
 				);
 			}
 		}

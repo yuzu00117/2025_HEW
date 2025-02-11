@@ -130,10 +130,10 @@ void sloping_block::Initialize()
 	//テクスチャの初期化
 	if (g_sloping_block_left_down_Texture == NULL)
 	{
-		g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_left_down.png");//左下
+		g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
 		g_sloping_block_left_upper_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_left_upper.png");//左上
-		g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_right_down.png");//右下
-		g_sloping_block_right_upper_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_right_upper.png");//右上
+		g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
+		g_sloping_block_right_upper_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
 	}
 }
 
