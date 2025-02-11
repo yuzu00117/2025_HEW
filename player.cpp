@@ -187,8 +187,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //センサーの設定用の
         b2Vec2 size_sensor;//命名すまん
-        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
-        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
+        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
+        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -243,7 +243,9 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //プレイヤーのセンサーを新しくつくる
 
+
         b2PolygonShape shape_sensor;
+       
 
 
         b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
@@ -322,7 +324,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //---------------------------------------------------------------------------------------------------
 
-
+        sensor_flag = false;
 
         draw_state = player_nomal_state;
     
@@ -1427,20 +1429,25 @@ void Player::Draw()
         //----------------------------------------------------------------------------------------
         //センサー描画
 
+        b2Vec2 Pos = GetPlayerBody()->GetPosition();
 
+
+        float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+       
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
         DrawSprite(
-            { screen_center.x,
-              screen_center.y },
+            { draw_x,
+              draw_y },
             m_body->GetAngle(),
             { GetSensorSize().x * scale,GetSensorSize().y * scale }
         );
-        float size_sensor = GetSensorSize().x * scale;
-        float size = GetSize().x * scale;
+       
 
-
+        //エフェクト
         DrawAnchorLevel3Frame();
 
     }

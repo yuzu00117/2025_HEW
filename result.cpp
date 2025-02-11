@@ -56,6 +56,12 @@ void ResulttScene::Initialize()
 	g_score_rank_A_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_a.png");
 	g_score_rank_S_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_s.png");
 
+
+    //‘S‚Ä‚Ì‰¹‚ðŽ~‚ß‚é
+    app_atomex_stop_player();
+
+    //ƒŠƒUƒ‹ƒg‚ÌBGM‚ð‚©‚¯‚é
+    app_atomex_start(RESULT_BGM);
 }
 
 void ResulttScene::Update()

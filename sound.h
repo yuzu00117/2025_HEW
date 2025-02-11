@@ -86,12 +86,12 @@ typedef struct AppTag {
 enum Sound_Manager
 {
 	GAME_BGM,
-	TITLE_BGM,
-	STAGESELECT_BGM,
-	RESULT_BGM,
+	TITLE_BGM,//Title init
+	STAGESELECT_BGM,//StageSelectScene inti
+	RESULT_BGM,//RESULT_init
 	BOSS1_BGM,
-	STAGE1_BGM,
-	POP_BGM,
+	STAGE1_BGM,//Game.cpp init
+	POP_BGM,//Game.cpp init
 	ADVENTURE_BGM,
 	STAGE2_BGM,
 	BOSS2_BGM,
@@ -123,12 +123,12 @@ enum Sound_Manager
 	Player_Warp_Sound,//実装なし
 	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 
-	Object_Rock_Fall_Sound,
+	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
 	Object_Get_Treasure_Sound,
-	Object_Wood_Fall_Sound,
-	Object_Rock_Roll_Sound,
-	Object_Geyser_Sound,
-	Object_Pillar_Break_Sound,
+	Object_Wood_Fall_Sound,//wood ながい　動作とあってない
+	Object_Rock_Roll_Sound,//rock.cpp  Pulling_rock
+	Object_Geyser_Sound,// contact.list　　雷おちてね？
+	Object_Pillar_Break_Sound,//boss_pillar.cpp  Destroy_Splitting
 	Object_Pillar_Hit_Sound,
 
 	Boss_Charge_Attack_Sound,//update charge_attack_state

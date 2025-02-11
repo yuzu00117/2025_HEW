@@ -16,6 +16,7 @@
 #include"static_to_dynamic_block.h"
 #include"create_filter.h"
 #include"collider_type.h"
+#include"sound.h"
 
 
 //テクスチャの入れ物
@@ -154,6 +155,11 @@ void static_to_dynamic_block::Update()
 	{
 		b2Body* body = GetObjectBody();
 		body->SetType(b2_dynamicBody);//動的に変更
+
+		//効果音の再生
+		app_atomex_start(Object_Rock_Fall_Sound);
+
+		Set_Change_Dynamic_flag(false);
 	}
 
 }
