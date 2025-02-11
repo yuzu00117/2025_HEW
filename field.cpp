@@ -55,6 +55,10 @@ static ID3D11ShaderResourceView* g_under_right_ground_Texture = NULL;//地面右
 static ID3D11ShaderResourceView* g_under_left_ground_Texture = NULL;//地面左側のテクスチャ
 
 
+
+static ID3D11ShaderResourceView* g_invisibility_wall_Texture = NULL;//不可視の壁
+
+
 Field::Field()
 {
 }
@@ -82,6 +86,8 @@ void Field::Initialize()
 
 	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//右側のテクスチャ
 	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//右側のテクスチャ
+
+	g_invisibility_wall_Texture=InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
@@ -151,7 +157,7 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 4) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
 				}
 				if (field_map[y][x] == 5) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -167,11 +173,7 @@ void Field::Initialize()
 				//不可視の壁
 				if (field_map[y][x] == 7) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, invisibility_texture, false);
-				}
-
-				if (field_map[y][x] == 666) {//静的なエネミー
-					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
 				}
 
 
@@ -193,7 +195,7 @@ void Field::Initialize()
 				//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 				//エネミー
 				if (field_map[y][x] == 9) {//動かないエネミーの追加
-					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),Box_collider,1);
+					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),0.0);
 				}
 				//-------------------------------------------------------------------------------------------
 
@@ -222,6 +224,15 @@ void Field::Initialize()
 				if (field_map[y][x] == 13) {//中くらい木のオブジェクト 必要アンカーレベル2
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_SELECT, b2Vec2_zero);
 				}
+				//-------------------------------------------------------------------------------------------------
+
+
+				//-----------------------------------------------------------------------------------------------
+				//エネミー  動く
+				if (field_map[y][x] == 14) {//動かないエネミーの追加
+					objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0);
+				}
+				//-----------------------------------------------------------------------------------------------
 
 
 
@@ -697,6 +708,9 @@ void Field::Draw()
 					break;
 				case STAGE_BLOCK_EARTH_UNDER_RIGHT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_under_right_ground_Texture);
+					break;
+				case STAGE_BLOCK_INVISIBILITY:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_invisibility_wall_Texture);
 					break;
 
 				default:

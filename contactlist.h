@@ -673,31 +673,57 @@ public:
             (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_anchor_point) ||
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_static))
         {
-            ObjectData* enemy_data = objectB;
-            ObjectData* object_data = objectA;
-            b2Fixture* object_fixture = fixtureA;
+            EnemyStatic* enemy_instance;
+            b2Vec2 GetObjectVelocity;
+
             if (objectA->collider_type == collider_enemy_static)
+
             {
-                enemy_data = objectA;
-                object_data = objectB;
-                object_fixture = fixtureB;
+                enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+
+                GetObjectVelocity = fixtureB->GetBody()->GetLinearVelocity();
             }
-            EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(enemy_data->id);
-            b2Vec2  enemy_position = enemy_instance->GetBody()->GetPosition();
-            b2Vec2  object_position = object_fixture->GetBody()->GetPosition();
-            b2Vec2 vec;
-            vec.x = enemy_position.x - object_position.x;
-            vec.y = enemy_position.y - object_position.y;
-
-            //オブジェのfixtureの半径を取得
-            b2Shape* const object_shape = object_fixture->GetShape();
-            b2Vec2 object_half_size = GetFixtureHalfSize(object_shape);
-
-            //ベクトルが縦幅より小さい時 (つまりエネミーがオブジェの上に乗っている場合）
-            //+0.01fはちょっと調整
-            if (vec.y >= object_half_size.y + 0.01f && object_fixture->GetBody()->GetLinearVelocity() != b2Vec2(0.0, 0.0))
+            else
             {
+                enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+
+                GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
+            }
+
+            if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            {
+
+
+                //豪快ゲージの加算処理-------------------------------------------------------------------------------------------
+                int needlevel = 0;
+                if (objectA->collider_type == collider_enemy_static)
+                {
+                    needlevel = objectB->need_anchor_level;
+                }
+                else
+                {
+                    needlevel = objectA->need_anchor_level;
+                }
+                switch (needlevel)
+                {
+                case 1:
+                    Gokai_UI::AddGokaiCount(100);
+                    break;
+                case 2:
+                    Gokai_UI::AddGokaiCount(500);
+                    break;
+                case 3:
+                    Gokai_UI::AddGokaiCount(1000);
+                    break;
+                default:
+                    break;
+                }
+                //--------------------------------------------------------------------------------------------
                 enemy_instance->CollisionPulledObject();
+
+                app_atomex_start(Player_Dead_Sound);
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
             }
 
         }
@@ -709,10 +735,6 @@ public:
             (objectA->collider_type == collider_anchor_point && objectB->collider_type == collider_enemy_dynamic))
         {
 
-
-
-            
- 
 
             EnemyDynamic* enemy_instance;
             b2Vec2 GetObjectVelocity;
