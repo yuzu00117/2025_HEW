@@ -192,6 +192,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	stump_fixture.friction = 0.5f;//摩擦
 	stump_fixture.restitution = 0.0f;//反発係数
 	stump_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	stump_fixture.filter = createFilterExclude("object_filter", {});
 
 
 	b2Fixture* object_stump_fixture = GetObjectStumpBody()->CreateFixture(&stump_fixture);
