@@ -21,6 +21,9 @@ public:
 	ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 	~ItemCoin();
 
+	//リスポン用
+	void	CreateBody();
+
 	//ボディーを取得
 	b2Body* GetBody() { return m_body; }
 	//ボディーをセット
@@ -58,6 +61,16 @@ private:
 
 	//アイテムのボディー
 	b2Body* m_body;
+
+	//リスポン用に保存
+	b2Vec2 m_body_position;
+
+	//リスポン用に保存
+	float m_angle;
+
+	//リスポン用に保存
+	bool m_shape_polygon;
+
 
 	//アイテムのサイズ（描画用）
 	b2Vec2 m_size;

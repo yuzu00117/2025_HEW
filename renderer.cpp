@@ -32,6 +32,7 @@ ID3D11DepthStencilView* g_DepthStencilView = NULL;
 
 ID3D11VertexShader*     g_VertexShader = NULL;
 ID3D11PixelShader*      g_PixelShader = NULL;
+ID3D11PixelShader*		g_MoviePixelShader = NULL;
 ID3D11InputLayout*      g_VertexLayout = NULL;
 ID3D11Buffer*			g_ConstantBuffer = NULL;
 ID3D11Buffer*			g_MaterialBuffer = NULL;
@@ -327,7 +328,18 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	}
 
 	g_D3DDevice->CreatePixelShader( pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_PixelShader );
-	
+
+	pPSBlob->Release();
+
+	pPSBlob = NULL;
+	hr = D3DCompileFromFile(L"shader.hlsl", NULL, NULL, "PS", "ps_4_0", D3DCOMPILE_ENABLE_STRICTNESS, 0, &pPSBlob, &pErrorBlob);
+	if (FAILED(hr))
+	{
+		MessageBox(NULL, (char*)pErrorBlob->GetBufferPointer(), "PS", MB_OK | MB_ICONERROR);
+	}
+
+	g_D3DDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_MoviePixelShader);
+
 	pPSBlob->Release();
 
 
@@ -409,3 +421,19 @@ void Present(void)
 	g_SwapChain->Present( 0, 0 );
 }
 
+//=============================================================================
+// ノーマルシェーダーセット
+//=============================================================================
+void SetShaderNormal() {
+	// シェーダ設定
+	g_ImmediateContext->VSSetShader(g_VertexShader, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShader, NULL, 0);
+}
+
+//=============================================================================
+// 動画シェーダーセット
+//=============================================================================
+void SetMovieShader() {
+	// シェーダ設定
+	g_ImmediateContext->PSSetShader(g_MoviePixelShader, NULL, 0);
+}

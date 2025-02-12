@@ -18,6 +18,8 @@
 #include"stage_select.h"
 #include"sound.h"
 
+#include"video_texture.h"
+
 
 
 //ライブラリのリンク
@@ -52,10 +54,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
 
-
-
-
-	Game& game = Game::GetInstance();
 
 	
 
@@ -101,6 +99,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return -1;
 	}
 
+	//Game& game = Game::GetInstance();
+
 
 	//時間計測用
 	DWORD dwExecLastTime;
@@ -124,6 +124,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	
 	sceneManager.RegisterScene(SCENE_TITLE, []() { return std::make_unique<TitleScene>(); });
+	sceneManager.RegisterScene(SCENE_OP, []() { return std::make_unique<VideoScene>(); });
 	sceneManager.RegisterScene(SCENE_STAGE_SELECT, []() { return std::make_unique<StageSelectScene>(); });
 	sceneManager.RegisterScene(SCENE_GAME, []() { return std::make_unique<GameScene>(); });
 	sceneManager.RegisterScene(SCENE_RESULT, []() { return std::make_unique<ResulttScene>(); });
@@ -234,6 +235,8 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//レンダリング処理の初期化
 	InitRenderer(hInstance, hWnd, bWindow);
 
+	VideoTexture::createAPI();
+
 	//サウンドの初期化
 	CRIInitialize();
 
@@ -250,6 +253,8 @@ void FinalFinalize()
 
 	//サウンドの終了処理
 	CRIFinalize();
+
+	VideoTexture::destroyAPI();
 
 	//レンダリングの終了処理
 	UninitRenderer();
