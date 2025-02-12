@@ -41,6 +41,8 @@ enum STAGE_NAME
     STAGE_NULL,
     STAGE_TUTORIAL,
     STAGE_1_1,
+    STAGE_BOSS,
+    STAGE_SELECT,
 };
 
 
@@ -155,7 +157,12 @@ private:
     std::unique_ptr<Scene> currentScene;
     
 
-    STAGE_NAME stage_name;
+    STAGE_NAME Stage_name;
+
+
+    std::unique_ptr<Scene> Change_Request_Scene;
+
+    bool Change_flag=false;
 
     // コンストラクタを private にして外部からのインスタンス化を防ぐ
     SceneManager() = default;
@@ -201,14 +208,24 @@ public:
 
     void SetStageName(STAGE_NAME name)
     {
-        stage_name = name;
+        Stage_name = name;
     }
 
     STAGE_NAME GetStageName(void)
     {
-        return stage_name;
+        return Stage_name;
     }
 
+
+    void Set_Chenge_Scene_flag(bool flag)
+    {
+        Change_flag = flag;
+    }
+
+    bool Get_Chenge_Scene_flag()
+    {
+        return Change_flag;
+    }
 
 
 

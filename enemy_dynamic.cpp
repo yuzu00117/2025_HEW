@@ -103,7 +103,6 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	int ID = data->GenerateID();
 	data->id = ID;
 	sensor_data->id = ID;
-	//sensor_data2->id = ID;
 	SetID(ID);
 
 	m_state = ENEMY_STATE_NULL;
@@ -175,6 +174,9 @@ void EnemyDynamic::Update()
 	}
 	else if (!GetUse())
 	{
+		//エネミーが「死んだ時のサウンド
+		app_atomex_start(Enemy_Knock_Down2_Sound);
+
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
@@ -255,19 +257,6 @@ void EnemyDynamic::Draw()
 			m_anim_id++;
 		}
 		m_anim_id = m_anim_id % 25;
-		break;
-	case ENEMY_STATE_DESTROYED:
-		//貼るテクスチャを指定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyDynamic_Texture_Destroyed);
-
-		DrawDividedSpritePlayer(
-			{ draw_x,
-			  draw_y },
-			GetBody()->GetAngle(),
-			{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
-			4, 4, m_anim_id, 3.0, m_direction
-		);
-		m_anim_id++;
 		break;
 	default:
 		//貼るテクスチャを指定
@@ -375,6 +364,10 @@ void EnemyDynamic::Attack()
 	//攻撃中は停止
 	GetBody()->SetType(b2_staticBody);
 
+
+
+	
+
 	//攻撃発生フレームになったら攻撃を生成
 	if (m_attack_counter == m_attack_birth)
 	{
@@ -388,6 +381,9 @@ void EnemyDynamic::Attack()
 		{
 			object_manager.AddEnemyAttack(b2Vec2(pos.x + GetSize().x / 4, pos.y), GetSize(), 0.0f, GetID());
 		}
+
+		//攻撃のサウンド
+		app_atomex_start(Enemy_Attack_Sound);
 	}
 
 	//攻撃動作が全て終了したら、動くように戻して移動状態にする
@@ -400,12 +396,6 @@ void EnemyDynamic::Attack()
 		m_attack_cooltime_counter = 0;
 		return;
 	}
-}
-
-//死亡
-void EnemyDynamic::Destroyed()
-{
-
 }
 
 //センサーとプレイヤーが触れた時の処理

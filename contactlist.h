@@ -39,6 +39,7 @@
 #include"blown_away_effect.h"
 #include"Change_Enemy_Filter_and_Body.h"
 #include"bound_block.h"
+#include"UI_Block.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -428,6 +429,9 @@ public:
                         geyser_instance->SetOpenGyserFlag(true);//水が噴き出す
                     }
 
+                    //噴き出す音の検知
+                    app_atomex_start(Object_Geyser_Sound);
+
                 }
 
 
@@ -455,12 +459,14 @@ public:
                     {
                         boss.BossDamaged();
                         boss.SetCoreDeleteFlag(true);
+                        boss.SetCorePullingFlag(true);
 
                     }
                     else
                     {
                         boss.BossDamaged();
                         boss.SetCoreDeleteFlag(true);
+                        boss.SetCorePullingFlag(true);
 
                     }
                 }
@@ -514,16 +520,7 @@ public:
             (objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_static))
         {
-            if (objectA->collider_type == collider_enemy_static)
-            {
-                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
-                enemy_instance->CollisionPlayer();
-            }
-            else if (objectB->collider_type == collider_enemy_static)
-            {
-                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
-                enemy_instance->CollisionPlayer();
-            }
+            
         }
 
         //プレイヤーと動的エネミーの衝突
@@ -532,21 +529,7 @@ public:
             (objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_dynamic))
         {
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-50, 120);
-
-            if (objectA->collider_type == collider_enemy_dynamic)
-            {
-                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
-                enemy_instance->CollisionPlayer();
-            }
-            else if (objectB->collider_type == collider_enemy_dynamic)
-            {
-                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
-                enemy_instance->CollisionPlayer();
-            }
+            
         }
 
         //プレイヤーの通常攻撃攻撃と動的エネミーの衝突
@@ -565,6 +548,26 @@ public:
             else if (objectB->collider_type == collider_enemy_dynamic)
             {
                 EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->CollisionPulledObject();
+            }
+        }
+
+        //プレイヤーの通常攻撃攻撃と静的エネミーの衝突
+        if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_normal_attack_anchor) ||
+            (objectA->collider_type == collider_normal_attack_anchor && objectB->collider_type == collider_enemy_static))
+        {
+
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(0, 5, 10);
+            HitStop::StartHitStop(5);
+            if (objectA->collider_type == collider_enemy_static)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->CollisionPulledObject();
+            }
+            else if (objectB->collider_type == collider_enemy_static)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
                 enemy_instance->CollisionPulledObject();
             }
         }
@@ -864,22 +867,46 @@ public:
             }
         }
 
+        //プレイヤーと静的エネミーに付属しているセンサーが触れた場合
+        if ((objectA->collider_type == collider_enemy_static_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_static_sensor) ||
+            (objectA->collider_type == collider_enemy_static_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_static_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_static_sensor)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_static_sensor)
+            {
+                EnemyStatic* enemy_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                enemy_instance->CollisionSensorPlayer();
+            }
+        }
+
         //プレイヤーが敵の攻撃に触れた場合
         if ((objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_attack) ||
             (objectA->collider_type == collider_enemy_attack && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_attack))
         {
+            int damage;
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
-                attack_instance->CollisionPlayer();
+                damage = attack_instance->GetDamage();
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
-                attack_instance->CollisionPlayer();
+                damage = attack_instance->GetDamage();
             }
+
+            app_atomex_start(Player_Dead_Sound);
+            HitStop::StartHitStop(15);
+            CameraShake::StartCameraShake(5, 3, 15);
+            player.Player_Damaged(-damage, 120);
         }
 
         //動的エネミーに付属しているセンサーと地面が触れた場合
@@ -912,6 +939,37 @@ public:
             {
                 enemy_instanceA->SetDirection(false);
                 enemy_instanceB->SetDirection(true);
+            }
+        }
+        //動的エネミーが静的エネミーに触れた時
+        if ((objectA->collider_type == collider_enemy_dynamic && objectB->collider_type == collider_enemy_static_sensor) ||
+            (objectA->collider_type == collider_enemy_static_sensor && objectB->collider_type == collider_enemy_dynamic))
+        {
+            if (objectA->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                if (enemy_dynamic_instance->GetBody()->GetPosition().x < enemy_static_instance->GetBody()->GetPosition().x)
+                {
+                    enemy_dynamic_instance->SetDirection(true);
+                }
+                else
+                {
+                    enemy_dynamic_instance->SetDirection(false);
+                }
+            }
+            else if (objectB->collider_type == collider_enemy_dynamic)
+            {
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                if (enemy_dynamic_instance->GetBody()->GetPosition().x < enemy_static_instance->GetBody()->GetPosition().x)
+                {
+                    enemy_dynamic_instance->SetDirection(true);
+                }
+                else
+                {
+                    enemy_dynamic_instance->SetDirection(false);
+                }
             }
         }
 
@@ -1036,6 +1094,8 @@ public:
                 if (item_instance != nullptr) {
                     item_instance->Function();
                     item_instance->SetDestory(true);//削除を呼び出す
+                    CriBool app_atomex_start(Player_Soul_Colect2_Sound);
+
                 }
             }
             break;
@@ -1045,6 +1105,7 @@ public:
                 if (spirit_instance != nullptr) {
                     spirit_instance->Function();
                     spirit_instance->SetState(Spirit_Destory);//削除を呼び出す
+                   
                 }
 
             }
@@ -1076,6 +1137,26 @@ public:
             break;
             }
       
+        }
+
+
+
+        //プレイヤーとUIセンサーが触れた場合
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_UI_block) ||
+            (objectA->collider_type == collider_UI_block && objectB->collider_type == collider_player_body))
+        {
+            if (objectA->collider_type == collider_UI_block)
+            {
+                UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
+                ui_instance->SetFlag(true);
+               
+            }
+            else if (objectB->collider_type == collider_UI_block)
+            {
+
+                UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
+                ui_instance->SetFlag(true);
+            }
         }
         //-------------------------------------------------------------------------------------------
           // 
@@ -1111,6 +1192,18 @@ public:
             /* player.Player_Damaged(-50, 120);*/
 
         }
+
+        //壁とショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_shock_wave))
+        {
+
+            if (objectA->object_name == Boss_field_block)return; 
+            if (objectB->object_name == Boss_field_block)return;
+
+            boss.SetShockWaveFrame(300);
+        }
+
 
 
         //プレイヤーとチャージ攻撃
@@ -1585,12 +1678,15 @@ public:
 
 
         //------------------------------------------------------------------------------------------------------------------------
+        //エネミーを吹っ飛ばした時の演出
         if ((objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_effect_sensor) ||
             (objectA->collider_type == collider_effect_sensor && objectB->collider_type == collider_blown_away_enemy)||
             (objectA->collider_type == collider_blown_away_enemy && objectB->collider_type == collider_player_sensor) ||
             (objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_blown_away_enemy))
         {
-          
+             //撃墜した時の音
+            app_atomex_start(Enemy_Shot_Down_Sound);
+
 
             change_enemy_filter_and_body* body_instance;
             // 速度ベクトルを取得
@@ -1621,6 +1717,25 @@ public:
 
             // エフェクトリストに追加
             blown_away_Effects.emplace_back(Blown_Away_Effect(effect_pos, angle_rad, 2, rand));
+        }
+
+        //-------------------------------------------------------------------------------------------
+        //プレイヤーとUIセンサーが離れた場合
+        if ((objectA->collider_type == collider_player_body && objectB->collider_type == collider_UI_block) ||
+            (objectA->collider_type == collider_UI_block && objectB->collider_type == collider_player_body))
+        {
+            if (objectA->collider_type == collider_UI_block)
+            {
+                UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
+                ui_instance->SetFlag(false);
+
+            }
+            else if (objectB->collider_type == collider_UI_block)
+            {
+
+                UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
+                ui_instance->SetFlag(false);
+            }
         }
     }
 

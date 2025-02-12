@@ -21,7 +21,7 @@ class rock
 {
 public:
 
-	rock(b2Vec2 Position, float radius, int need_anchor_level);
+	rock(b2Vec2 Position, float radius, int need_anchor_level,bool left);
 	~rock();
 
 
@@ -117,5 +117,7 @@ private:
 	b2Vec2 m_AnchorPoint_size;
 
 	bool	m_pulling = false;
+
+	bool left_flag;
 };
 #endif // !WOOD_H

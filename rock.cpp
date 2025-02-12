@@ -17,6 +17,7 @@
 #include"collider_type.h"
 #include"player_position.h"
 #include"create_filter.h"
+#include"sound.h"
 
 
 //テクスチャの入れ物
@@ -28,7 +29,7 @@ static ID3D11ShaderResourceView* g_Rock_Texture2 = NULL;//アンカーのテクスチャ
 
 
 
-rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
+rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 {
 	//ボディは一つで　フィクスチャを二つ付ける構造にする
 
@@ -95,8 +96,8 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 
 	rock_anchorpoint_fixture.shape = &anchorpoint_circlesShape;
 	rock_anchorpoint_fixture.density = 3.0f;
-	rock_anchorpoint_fixture.friction = 0.5f;//摩擦
-	rock_anchorpoint_fixture.restitution = 0.0f;//反発係数
+	rock_anchorpoint_fixture.friction = 0.1f;//摩擦
+	rock_anchorpoint_fixture.restitution = 0.1f;//反発係数
 	rock_anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 	rock_anchorpoint_fixture.filter = createFilterExclude("object_filter", {});
 
@@ -125,6 +126,10 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level)
 	object_rock_anchorpoint_data->add_force = need_power;
 	m_pulling_power = need_power;
 
+
+	//左右判定
+	left_flag = left;
+
 };
 
 rock::~rock()
@@ -135,7 +140,7 @@ rock::~rock()
 void rock::Initialize()
 {
 	if (g_Rock_Texture == NULL) {
-		g_Rock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_rock.png");
+		g_Rock_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big.png");
 		g_Rock_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Rock_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
 	}
@@ -153,13 +158,16 @@ void rock::Pulling_rock()
 	b2Vec2 pulling_power = m_pulling_power;
 
 	//プレイヤー側に倒す
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	if (left_flag)//プレイヤーが左側
 	{
 		pulling_power.x = pulling_power.x * -1;
 	}
 
 	body->SetLinearVelocity(pulling_power);
 	SetIfPulling(true);
+
+	//サウンドを再生
+	app_atomex_start(Object_Rock_Roll_Sound);
 }
 
 void rock::Draw()

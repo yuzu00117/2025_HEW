@@ -20,7 +20,7 @@
 class one_way_platform
 {
 public:
-	one_way_platform(b2Vec2 Postion, b2Vec2 local_Postion, b2Vec2 size);
+	one_way_platform(b2Vec2 Postion, b2Vec2 local_Postion, b2Vec2 size,bool object_contact);
 	~one_way_platform();
 
 
@@ -66,11 +66,26 @@ public:
 	}
 
 
+	b2Fixture* GetChangeFixture(void)
+	{
+		return change_fixture_list;
+	}
+
+	void SetChangeFixture(b2Fixture* fixture)
+	{
+		change_fixture_list = fixture;
+	}
 
 
+	void SetlocalPosition(b2Vec2 pos)
+	{
+		localpos = pos;
+	}
 
-
-
+	b2Vec2 GetlocalPosition(void)
+	{
+		return localpos;
+	}
 private:
 	int id; // 各インスタンス固有の ID
 
@@ -78,7 +93,9 @@ private:
 
 	b2Vec2 m_one_way_platform_size;
 
+	b2Vec2 localpos;
 
+	b2Fixture *change_fixture_list;
 
 };
 #endif // !WOOD_H

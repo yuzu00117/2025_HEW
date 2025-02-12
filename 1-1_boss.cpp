@@ -46,7 +46,7 @@ static ID3D11ShaderResourceView *g_boss_charge_attack_effect = NULL; // ボス�
 static ID3D11ShaderResourceView *g_mini_golem_break_effect = NULL;	 // ミニゴーレムが破壊された時のエフェクト
 static ID3D11ShaderResourceView *g_boss_panic_effect = NULL;		 // ボスがパニックになった時のエフェクト
 static ID3D11ShaderResourceView *g_boss_shock_wave_effect = NULL;	 // ボスの衝撃波エフェクト
-
+static ID3D11ShaderResourceView *g_boss_down_sheet = NULL;			 // ボスのダウン状態
 //-------------------------------------------------------------------------------------------
 // デバッグ用の画像
 static ID3D11ShaderResourceView *g_debug_color = NULL; // デバッグ用
@@ -88,9 +88,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 		g_boss_jump_sheet1_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet1.png");				  // ゴーレムのジャンプアニメーション1
 		g_boss_jump_sheet2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_jump_new_sheet2.png");				  // ゴーレムのジャンプアニメーション2
 		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");					  // ゴーレムのパニックアニメーション
-
+		g_boss_down_sheet			=InitTexture(L"asset\\texture\\boss_1_1\\boss_down_sheet.png");					  // ゴーレムのダウンアニメーション
+		
+		
 		// エフェクト
-
 		g_boss_charge_attack_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_attack_effect.png"); // ボスのチャージアタックエフェクト
 		g_boss_charge_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_charge_effect.png");			   // ボスのチャージエフェクト
 		g_boss_panic_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_effect.png");				   // ボスのパニックエフェクト
@@ -184,6 +185,8 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
 	boss_field_level = 1;
+
+	now_boss_state = charge_attack_state;
 }
 
 void Boss_1_1::Update()
@@ -274,6 +277,23 @@ void Boss_1_1::Update()
 			}
 
 			break;
+
+		case down_state:
+
+			//サウンドスタート
+			if (sheet_cnt == 0)
+			{
+				app_atomex_start(Boss_Stun_Sound);
+			}
+			sheet_cnt += 0.5;
+			
+
+			if (Max_Down_Frame <= sheet_cnt)
+			{
+				sheet_cnt = 0;
+				now_boss_state = wait_state;
+			}
+			break;
 		case walk_state:
 			if (static_cast<int>(sheet_cnt) % 10 == 0)
 			{
@@ -281,10 +301,12 @@ void Boss_1_1::Update()
 				if (left_flag)
 				{
 					m_body->SetLinearVelocity(b2Vec2(-walk_power.x, walk_power.y));
+					
 				}
 				else
 				{
 					m_body->SetLinearVelocity(b2Vec2(walk_power.x, walk_power.y));
+					
 				}
 
 				if ((static_cast<int>(sheet_cnt) % 20 == 0))
@@ -294,6 +316,7 @@ void Boss_1_1::Update()
 
 				// カメラシェイクスタート
 				CameraShake::StartCameraShake(1, 0, 10);
+				app_atomex_start(Boss_Walk_Sound);//歩きの音
 			}
 			sheet_cnt += 0.5;
 
@@ -306,6 +329,11 @@ void Boss_1_1::Update()
 			break;
 
 		case jump_state:
+			if (sheet_cnt == 0)
+			{
+				app_atomex_start(Boss_Jump_Sound);//ジャンプの音
+			}
+
 			sheet_cnt += 0.6;
 
 			if (Max_Jump_Sheet <= sheet_cnt)
@@ -333,6 +361,8 @@ void Boss_1_1::Update()
 				CreateShockWave(b2Vec2(5.0f * BOSS_SIZE_SCALE, 6.0f * BOSS_SIZE_SCALE), left_flag);
 				Shock_Wave_Fly_flag = true;
 
+				app_atomex_start(Boss_Attack_Wave_Sound);//ショックウェーブ音
+				
 				// エフェクトスタート
 				shock_wave_effect_sheet_cnt = 1;
 			}
@@ -361,9 +391,15 @@ void Boss_1_1::Update()
 			break;
 		case charge_attack_state:
 
+			if (sheet_cnt == 0)
+			{
+				app_atomex_start(Boss_Charge_Sound);//チャージ音 
+			}
+
 			// シート1枚目はチャージを行う
 			if (sheet_cnt < 100)
 			{
+
 				sheet_cnt += 0.75;
 			}
 			else // シート2枚目はチャージを行う速度
@@ -373,6 +409,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Charge_Attack_Start_Frame)
 			{
+				app_atomex_start(Boss_Charge_Attack_Sound);//チャージ音 
 				CreateChargeAttack(b2Vec2(4.0f * BOSS_SIZE_SCALE, 4.0f * BOSS_SIZE_SCALE), left_flag);
 				// エフェクトスタート
 				charge_attack_effect_sheet_cnt = 1;
@@ -479,7 +516,6 @@ void Boss_1_1::BossCoreUpdate()
 		DestroyBossCore(); // ボスのコアを破壊
 
 		sheet_cnt = 0; // シートカウントをリセット
-		now_boss_state = charge_attack_state;
 		CoreDeleteFlag = false;
 	}
 }
@@ -488,6 +524,8 @@ void Boss_1_1::CreateBossCore(b2Vec2 size)
 {
 	if (GetAnchorPointBody() == nullptr)
 	{
+		app_atomex_start(Boss_Damege_Sound);//コアを露出の音
+
 		// サイズを設定
 		SetAnchorPointSize(size);
 
@@ -584,6 +622,27 @@ void Boss_1_1::DestroyBossCore(void)
 
 		// テクスチャをリセット
 		panic_effect_sheet_cnt = 0;
+
+		//最初の行動はチャージ攻撃にしたい
+		Now_Charge_Attack_CoolTime += 1500;
+
+		if (CorePullingFlag == true)
+		{
+			//ダウン状態に移行
+			now_boss_state = down_state;
+			app_atomex_start(Boss_Core_Damege_Sound);
+		}
+		else
+		{
+			//ウェイト状態に移行
+			now_boss_state = wait_state;
+		}
+
+		//フラグをリセット
+		CorePullingFlag = false;
+
+		//チャージ攻撃
+		Now_Charge_Attack_CoolTime = 1500;
 
 		// nullに設定
 		SetAnchorPointBody(nullptr);
@@ -795,6 +854,7 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 	{
 		if (GetMiniGolemBody(i) == nullptr && Mini_golem_Create_flag == true)
 		{
+			app_atomex_start(Enemy_MiniGolem_Create_Sound);//ミニゴーレムの生成音
 
 			// ボディのサイズを設定
 			SetMiniGolemDrawSize(mini_golem_size);
@@ -889,6 +949,8 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 {
 	if (destroy_mini_golem_flag == true)
 	{
+		app_atomex_start(Enemy_MiniGolem_Explosion_Sound);//ミニゴーレムの破裂音
+
 		Box2dWorld &box2d_world = Box2dWorld::GetInstance();
 		b2World *world = box2d_world.GetBox2dWorldPointer();
 
@@ -975,6 +1037,15 @@ void Boss_1_1::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
 
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
+
+			break;
+
+
+		case down_state:
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_down_sheet);
+
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 8, 8, sheet_cnt, boss_alpha, left_flag);
 
 			break;
 		case jump_state:

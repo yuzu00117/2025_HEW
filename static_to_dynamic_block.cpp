@@ -16,6 +16,7 @@
 #include"static_to_dynamic_block.h"
 #include"create_filter.h"
 #include"collider_type.h"
+#include"sound.h"
 
 
 //テクスチャの入れ物
@@ -141,8 +142,8 @@ static_to_dynamic_block::~static_to_dynamic_block()
 void static_to_dynamic_block::Initialize()
 {
 	if (g_coconut_Texture == NULL) {
-		g_coconut_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_coconut.png");
-		g_BoxRock_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_fall_rock.png");
+		g_coconut_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down.png");
+		g_BoxRock_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down.png");
 	}
 
 }
@@ -154,6 +155,11 @@ void static_to_dynamic_block::Update()
 	{
 		b2Body* body = GetObjectBody();
 		body->SetType(b2_dynamicBody);//動的に変更
+
+		//効果音の再生
+		app_atomex_start(Object_Rock_Fall_Sound);
+
+		Set_Change_Dynamic_flag(false);
 	}
 
 }

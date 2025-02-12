@@ -35,6 +35,7 @@
 #include"bound_block.h"
 
 #include"contact_block.h"
+#include"UI_Block.h"
 
 
 // オブジェクトの種類を定義
@@ -57,10 +58,14 @@ enum ObjectType {
 
     Object_contact_block,//接触ブロック
 
+    Object_UI_Block,//UIを表示するブロック
+
     Object_Geyser_Water,
     Boss_core,//ボスのこあ
     Boss_pillar,//ボスの柱
     Boss_Carry_Object_Enemy,//ボス部屋のエネミーがオブジェクトを運ぶやつ
+
+    Boss_field_block,
 };
 
 class Object{};
@@ -75,9 +80,9 @@ public:
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
 
     //岩を追加
-    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level);
+    void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level,bool left);
     //足場を追加
-    void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
+    void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size, const bool& contact_object);
     //傾斜ブロックの追加
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
     //静的→動的のブロックの追加
@@ -108,9 +113,12 @@ public:
     void AddChangeEnemyFilterAndBody(b2Vec2 position, b2Vec2 size, b2Vec2 velocity, ID3D11ShaderResourceView* Textur, int texture_x, int texture_y,b2Vec2 vec);
 
 
-    void AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level);
+    void AddBossBoundBlock(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level,int texture_type);
 
     void AddContactBlock(b2Vec2 Position, b2Vec2 block_size, Contact_Block_Type type, b2Vec2 num);
+
+
+    void AddUiBlock(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle);
 
 
     // ID を使って木を検索
@@ -154,6 +162,8 @@ public:
 
 
     contact_block* FindContactBlock(int id);
+
+    UI_block* FindUiBlock(int id);
 
 
     
@@ -224,7 +234,10 @@ private:
     std::vector<std::unique_ptr<boss_bound_block>>boss_bound_block_list;//バウンドブロックのリスト
 
 
-    std::vector<std::unique_ptr<contact_block>>contact_block_list;
+    std::vector<std::unique_ptr<contact_block>>contact_block_list;//接触ブロック
+
+    std::vector<std::unique_ptr<UI_block>>Ui_block_list;//接触ブロック
+
    
     //ここにオブジェクトごとにリストを追加していく感じ
 

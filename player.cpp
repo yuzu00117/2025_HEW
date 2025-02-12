@@ -187,8 +187,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //センサーの設定用の
         b2Vec2 size_sensor;//命名すまん
-        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
-        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT * DISPLAY_RANGE_TO_SCALE;
+        size_sensor.x = sensor_size.x / BOX2D_SCALE_MANAGEMENT;
+        size_sensor.y = sensor_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -243,7 +243,9 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //プレイヤーのセンサーを新しくつくる
 
+
         b2PolygonShape shape_sensor;
+       
 
 
         b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
@@ -322,7 +324,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 
         //---------------------------------------------------------------------------------------------------
 
-
+        sensor_flag = false;
 
         draw_state = player_nomal_state;
     
@@ -444,60 +446,85 @@ void Player::Update()
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-        //右移動
+       // プレイヤーが歩行中かどうかのフラグ
+  // 右移動
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
-
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
                 m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
             }
-            if (Anchor::GetAnchorState() != Nonexistent_state)
+            else
             {
                 m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
-
             }
 
-
-            //使用中は左右反転できないようにした
+            // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
                 m_direction = 1;
             }
 
+            // 歩行状態に変更
             if (draw_state == player_nomal_state)
             {
                 draw_state = player_walk_state;
             }
 
-            //app_atomex_start(Player_Walk_Sound);
-
+            // 歩行音を再生中でなければ再生する
+            if (draw_state == player_walk_state && !app_atomex_is_playing(Player_Walk_Sound))
+            {
+                app_atomex_start(Player_Walk_Sound);
+            }
         }
-        //左移動
+
+        // 左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_body->ApplyLinearImpulseToCenter({-(GetSpeed()) + adjust_speed, 0.0f},true);
+                m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
             }
-            if (Anchor::GetAnchorState() != Nonexistent_state)
+            else
             {
                 m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
             }
 
-            //使用中は左右反転できないようにした
+            // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
             {
                 m_direction = 0;
             }
 
+            // 歩行状態に変更
             if (draw_state == player_nomal_state)
             {
                 draw_state = player_walk_state;
             }
-            //app_atomex_start(Player_Walk_Sound);
 
+            // 歩行音を再生中でなければ再生する
+            if (draw_state == player_walk_state && !app_atomex_is_playing(Player_Walk_Sound))
+            {
+                app_atomex_start(Player_Walk_Sound);
+            }
         }
+
+        // 停止した場合、歩行音を停止
+        if (!(Keyboard_IsKeyDown(KK_RIGHT) || Keyboard_IsKeyDown(KK_LEFT) || stick.x != 0))
+        {
+            if (draw_state == player_walk_state)
+            {
+                app_atomex_stop_cue(Player_Walk_Sound);
+            }
+
+            draw_state = player_nomal_state;
+        }
+
+
+  
+       
+
+      
 
         //宝石による移動速度アップした時滑るので、プレイヤーの足の摩擦力を上げたのと以下の処理を一応
         if (!(stick.x < 0 || Keyboard_IsKeyDown(KK_LEFT) || stick.x>0 || Keyboard_IsKeyDown(KK_RIGHT))||draw_state == player_nomal_state)
@@ -513,9 +540,7 @@ void Player::Update()
             m_speed = 0.75f;
 
         }
-
-
-
+       
     }
 
 
@@ -572,14 +597,14 @@ void Player::Update()
 
 //ソウルアイテム回収処理
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB))
+    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB))
     {
         ItemManager& itemManager = ItemManager::GetInstance();
         itemManager.SetCollectSpirit(true);
 
         app_atomex_start(Player_Soul_Colect1_Sound);
     }
-    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B) || state.buttonB);
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB);
 
 
 //宝石使う処理(テスト用)
@@ -635,6 +660,7 @@ void Player::Update()
         if (30 < draw_cnt)
         {
             Anchor::SetAnchorState(Create_state);
+           
         }
         
         break;
@@ -749,9 +775,10 @@ void Player::Update()
         break;
     case CreateNormalAttack_state:
 
+
         //通常攻撃の判定をつくる
         Anchor::CreateNormalAttack(b2Vec2(3.0f, 3.0f), right);//通常攻撃のボディをつくる
-
+        app_atomex_start(Player_Attack_Sound);
 
    
 
@@ -839,6 +866,10 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime)
 
     //無敵時間を付与
     invincible_time = invincibletime;
+
+
+    //被弾の音
+    app_atomex_start(Player_Damege_Sound);
 
     // フィルターを変更
     updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
@@ -1328,7 +1359,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                3, 6, draw_cnt / 3, player_alpha, m_direction
+                3, 6, draw_cnt/2, player_alpha, m_direction
 
             );
 
@@ -1398,20 +1429,25 @@ void Player::Draw()
         //----------------------------------------------------------------------------------------
         //センサー描画
 
+        b2Vec2 Pos = GetPlayerBody()->GetPosition();
 
+
+        float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+       
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
         DrawSprite(
-            { screen_center.x,
-              screen_center.y },
+            { draw_x,
+              draw_y },
             m_body->GetAngle(),
             { GetSensorSize().x * scale,GetSensorSize().y * scale }
         );
-        float size_sensor = GetSensorSize().x * scale;
-        float size = GetSize().x * scale;
+       
 
-
+        //エフェクト
         DrawAnchorLevel3Frame();
 
     }
@@ -1566,6 +1602,13 @@ void Player::DrawAnchorLevel3Frame()
 
         if (Anchor_level3_Frame_Sheet_cnt < 50)
         {
+
+            //サウンドを再生
+            if (Anchor_level3_Frame_Sheet_cnt == 0)
+            {
+                app_atomex_start(Player_Frame_Up_Sound);
+            }
+
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame1_Texture);
             DrawDividedSprite(
@@ -1575,6 +1618,17 @@ void Player::DrawAnchorLevel3Frame()
                 { 1280 ,720 }
                 , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
             );
+
+            //// シェーダリソースを設定
+            //GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame1_Texture);
+            //DrawDividedSprite(
+            //    { SCREEN_WIDTH / 2,
+            //     SCREEN_HEIGHT / 2 },
+            //    0,
+            //    { 1280 ,720 }
+            //    , 10, 5, Anchor_level3_Frame_Sheet_cnt, 0.5f
+            //);
+
 
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_level_3_Frame2_Texture);

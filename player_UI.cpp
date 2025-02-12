@@ -27,11 +27,11 @@ ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒ
 ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO‘¤‚Ì‘•ü
 
 // Ã“Iƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
-DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(130.f, 450.f);
-DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(250.f, 500.f);
+DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
+DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
 
-DirectX::XMFLOAT2 player_UI::gauge_only_position = DirectX::XMFLOAT2(92.f, 422.f);
-DirectX::XMFLOAT2 player_UI::gauge_only_size = DirectX::XMFLOAT2(55.f, 340.f);
+DirectX::XMFLOAT2 player_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);
+DirectX::XMFLOAT2 player_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);
 
 float player_UI::player_ui_alpha = 1.0f;
 

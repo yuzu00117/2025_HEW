@@ -123,8 +123,12 @@ void StageSelectScene::Initialize()
 
 	StageSelectContactListener& listener = StageSelectContactListener::GetInstance();
 	m_world->SetContactListener(&listener);
+	
+	
+	//‘S‚Ä‚Ì‰¹‚ðŽ~‚ß‚é
+	app_atomex_stop_player();
 
-
+	//‹È‚ð—¬‚·
 	app_atomex_start(STAGESELECT_BGM);
 }
 

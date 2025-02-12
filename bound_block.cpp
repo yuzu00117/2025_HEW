@@ -18,10 +18,13 @@
 #include"tool.h"
 #include"player.h"
 
-static ID3D11ShaderResourceView* g_bound_block_texture1 = NULL;//バウンドブロックのテクスチャ1
-static ID3D11ShaderResourceView* g_bound_block_texture2 = NULL;//バウンドブロックのテクスチャ２
+static ID3D11ShaderResourceView* g_bound_block_texture1_open = NULL;//バウンドブロックのテクスチャ茶色
+static ID3D11ShaderResourceView* g_bound_block_texture1_close = NULL;//バウンドブロックのテクスチャ茶色
 
-boss_bound_block::boss_bound_block(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level)
+static ID3D11ShaderResourceView* g_bound_block_texture2_open = NULL;//バウンドブロックのテクスチャ灰色
+static ID3D11ShaderResourceView* g_bound_block_texture2_close = NULL;//バウンドブロックのテクスチャ灰色
+
+boss_bound_block::boss_bound_block(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Boss_Room_Level level,int texture_type)
 {
 	SetSize(size);//描画用のサイズを保存
 
@@ -82,7 +85,7 @@ boss_bound_block::boss_bound_block(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Bos
 
 	BossRoomLevel = level;
 
-
+	Texture_type = texture_type;
 
 
 }
@@ -95,9 +98,11 @@ boss_bound_block::~boss_bound_block()
 
 void boss_bound_block::Initialize()
 {
-	if (g_bound_block_texture1 == NULL) {
-		g_bound_block_texture1 = InitTexture(L"asset\\texture\\sample_texture\\bound_block1.png");//バウンドブロックのテクスチャ
-		g_bound_block_texture2 = InitTexture(L"asset\\texture\\sample_texture\\bound_block2.png");//バウンドブロックのテクスチャ
+	if (g_bound_block_texture1_open == NULL) {
+		g_bound_block_texture1_open = InitTexture(L"asset\\texture\\stage_1_1_object\\bound_block_open_type1.png");//バウンドブロックのテクスチャ
+		g_bound_block_texture1_close = InitTexture(L"asset\\texture\\stage_1_1_object\\bound_block_close_type1.png");//バウンドブロックのテクスチャ
+		g_bound_block_texture2_open = InitTexture(L"asset\\texture\\stage_1_1_object\\bound_block_open_type2.png");//バウンドブロックのテクスチャ
+		g_bound_block_texture2_close = InitTexture(L"asset\\texture\\stage_1_1_object\\bound_block_close_type2.png");//バウンドブロックのテクスチャ
 	}
 }
 
@@ -186,7 +191,17 @@ void boss_bound_block::Draw()
 			float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_bound_block_texture1);
+			switch (Texture_type)
+			{
+			case 0:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_bound_block_texture1_close);
+				break;
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_bound_block_texture2_close);
+			default:
+				break;
+			}
+		
 
 
 			//draw
@@ -203,15 +218,21 @@ void boss_bound_block::Draw()
 
 			b2Vec2 Pos = GetBody()->GetPosition();
 
-			Pos.y = Pos.y - (GetSize().y / BOX2D_SCALE_MANAGEMENT);
+			
 
 
 			float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_bound_block_texture2);
-
-
+			switch (Texture_type)
+			{
+			case 0:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_bound_block_texture1_open);
+				break;
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_bound_block_texture2_open);
+			default:
+				break;
+			}
 			//draw
 			DrawSprite(
 				{ draw_x,
@@ -254,11 +275,16 @@ void boss_bound_block::Player_jump()
 
 void boss_bound_block::Finalize()
 {
-	if (g_bound_block_texture1 != NULL)
+	if (g_bound_block_texture1_open != NULL)
 	{
-		UnInitTexture(g_bound_block_texture1);
-		g_bound_block_texture1 = NULL;
-		UnInitTexture(g_bound_block_texture2);
-		g_bound_block_texture2 = NULL;
+		UnInitTexture(g_bound_block_texture1_open);
+		g_bound_block_texture1_open = NULL;
+		UnInitTexture(g_bound_block_texture2_open);
+		g_bound_block_texture2_open = NULL;
+
+		UnInitTexture(g_bound_block_texture1_close);
+		g_bound_block_texture1_close = NULL;
+		UnInitTexture(g_bound_block_texture2_close);
+		g_bound_block_texture2_close = NULL;
 	}
 }

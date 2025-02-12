@@ -26,7 +26,6 @@ enum ENEMY_DYNAMIC_STATE
 	ENEMY_STATE_NULL,
 	ENEMY_STATE_MOVE,
 	ENEMY_STATE_ATTACK,
-	ENEMY_STATE_DESTROYED,
 };
 
 class EnemyDynamic :public Enemy
@@ -91,8 +90,6 @@ public:
 	void Move();
 	//攻撃
 	void Attack();
-	//死亡
-	void Destroyed();
 
 	//センサーとプレイヤーが触れた時の処理
 	void CollisionSensorPlayer();
