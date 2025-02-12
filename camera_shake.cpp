@@ -142,7 +142,7 @@ void CameraShake::Update()
         float displayHeight = display::GetDisplayHeight();
 
         // **ƒJƒƒ‰‚ğ‚æ‚è‘¬‚­Œ³‚ÌˆÊ’u‚É–ß‚·**
-        float resetSpeed = 7.0f; // ­‚µ‘¬‚­–ß‚é‚æ‚¤‚É’²®
+        float resetSpeed = 2.0f; // ­‚µ‘¬‚­–ß‚é‚æ‚¤‚É’²®
 
         if (displayWidth != DEFAULT_DISPLAY_WIDTH) {
             float moveX = (DEFAULT_DISPLAY_WIDTH - displayWidth) * 0.15f;
