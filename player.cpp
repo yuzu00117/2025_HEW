@@ -75,7 +75,7 @@ static ID3D11ShaderResourceView* g_Anchor_LevelDown_Effect = NULL;  //アンカ�
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
-b2Vec2  Player::m_jump_force = b2Vec2(0.0f, -0.40f);
+b2Vec2  Player::m_jump_force = b2Vec2(0.0f, -0.43f);
 float   Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;

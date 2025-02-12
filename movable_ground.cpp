@@ -110,7 +110,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	b2BodyDef anchorpoint_body;//アンカーポイントの部分
 	anchorpoint_body.type = b2_dynamicBody;
 	anchorpoint_body.position.Set(
-		Position.x,
+		Position.x+ground_size.x / 2,
 		Position.y + (ground_size.y / 2) + (anchorpoint_size.y / 2));
 	anchorpoint_body.fixedRotation = true;
 
@@ -145,7 +145,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//床を引っ張る時に必要になるForce とりあえずサイズに依存でつくる
 	b2Vec2 need_power;
 
-	need_power.x = ((GetGroundSize().x * GetGroundSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1;//１は必要に応じて変更して
+	need_power.x = ((GetGroundSize().x * GetGroundSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 0.8;//１は必要に応じて変更して
 	need_power.y = 10.0f;//縦に必要な力はない
 
 
@@ -165,7 +165,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	jointDef.bodyA = p_Ground_body;
 	jointDef.bodyB = m_AnchorPoint_body;
 	jointDef.localAnchorA.Set(-ground_size.x * 0.5f, -ground_size.y * 0.5f); // 床の上端
-	jointDef.localAnchorB.Set(-ground_size.x * 0.5f, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
+	jointDef.localAnchorB.Set(0.0, anchorpoint_size.y * 0.5f); // アンカーポイントの下端
 	jointDef.collideConnected = false;					  //ジョイントした物体同士の接触を消す
 
 	world->CreateJoint(&jointDef);						  //ワールドにジョイントを追加

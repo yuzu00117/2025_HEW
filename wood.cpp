@@ -266,7 +266,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 0.0f;
 	fixtureDef.isSensor = false;
-	fixtureDef.filter = createFilterExclude("texture_body_filter", {"texture_body_filter","object_filter","ground_filter","enemy_filter","Player_filter" });
+	fixtureDef.filter = createFilterExclude("texture_body_filter", {"texture_body_filter","object_filter","ground_filter","enemy_filter","Player_filter","one-way_platform_filter"});
 
 
 	// 11個のボディを作成してワールドに追加
