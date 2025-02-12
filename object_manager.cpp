@@ -134,6 +134,11 @@ void ObjectManager::AddUiBlock(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor
 }
 
 
+void ObjectManager::AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisions_x, int divisions_y, float angle,ID3D11ShaderResourceView* g_Texture)
+{
+    break_block_list.emplace_back(std::make_unique<Break_Block>(Position, block_size, divisions_x, divisions_y, angle,g_Texture));
+}
+
 
 // ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
@@ -354,7 +359,15 @@ UI_block* ObjectManager::FindUiBlock(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-
+Break_Block* ObjectManager::FindBreakBlock(int id)
+{
+    for (auto& w : break_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
 
 
 
@@ -525,6 +538,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : break_block_list)
+    {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -630,6 +648,12 @@ void ObjectManager::UpdateAll() {
     {
         w->Update();
     }
+
+
+    for (auto& w : break_block_list)
+    {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -717,6 +741,12 @@ void ObjectManager::DrawAll() {
     }
 
     for (auto& w : Ui_block_list)
+    {
+        w->Draw();
+    }
+
+
+    for (auto& w : break_block_list)
     {
         w->Draw();
     }
@@ -814,6 +844,12 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : break_block_list)
+    {
+        w->Finalize();
+    }
+
+
     Item_Coin_UI::Finalize();
 
 
@@ -849,6 +885,8 @@ void ObjectManager::FinalizeAll() {
     boss_bound_block_list.clear();
 
     Ui_block_list.clear();
+
+    break_block_list.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

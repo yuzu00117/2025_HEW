@@ -120,8 +120,13 @@ void Field::Initialize()
 		// csvからマップチップを読み込む
 		Field::LoadCSV("asset/mapchip_boss_room.csv");
 		break;
+	case STAGE_TEST: //テスト用のマップチップを作成しました
+		// csvからマップチップを読み込む
+		Field::LoadCSV("asset/mapchip_test.csv");
+		break;
 
 	default:
+
 		break;
 	}
 
@@ -417,6 +422,8 @@ void Field::Initialize()
 					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), b2Vec2(0.0f, -0.6f), boss_room_level_11,1);
 				}
 
+
+				
 			}
 		}
 
@@ -649,6 +656,113 @@ void Field::Initialize()
 		objectManager.InitializeAll();
 		itemManager.InitializeAll();
 
+		break;
+	case STAGE_TEST:
+
+		for (int y = 0; y < m_field_height; ++y)
+		{
+			for (int x = 0; x < m_field_width; ++x)
+			{
+				if (field_map[y][x] == 1) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_1, false);
+				}
+				if (field_map[y][x] == 2) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+				}
+				if (field_map[y][x] == 3) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+				}
+				if (field_map[y][x] == 4) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
+				}
+				if (field_map[y][x] == 5) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+				}
+				if (field_map[y][x] == 6) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+				}
+
+
+				//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				//不可視の壁
+				if (field_map[y][x] == 7) {//動かない物
+					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
+				}
+
+
+				//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				//プレイヤー
+				if (field_map[y][x] == 8) {//プレイヤーの表示
+
+					Player& player = Player::GetInstance();
+
+					b2Vec2 size = player.GetSensorSize();
+
+					player.Finalize();
+
+					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+				}
+				//-------------------------------------------------------------------------------------------
+
+
+				//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				//エネミー
+				if (field_map[y][x] == 9) {//動かないエネミーの追加
+					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0);
+				}
+				//-------------------------------------------------------------------------------------------
+
+				//--------------------------------------------------------------------
+				//木のオブジェクト
+				if (field_map[y][x] == 10) {//小さな木のオブジェクト 必要アンカーレベル１
+					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), b2Vec2(2.0f, 2.0f), 1);
+				}
+
+
+				if (field_map[y][x] == 11) {//中くらい木のオブジェクト 必要アンカーレベル2
+					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 12.0f), b2Vec2(2.0f, 1.0f), 2);
+				}
+
+				//--------------------------------------------------------------------------------------
+				//触れたら死ぬ
+				if (field_map[y][x] == 12) {//中くらい木のオブジェクト 必要アンカーレベル2
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), DEAD_BLOCK_TYPE, b2Vec2_zero);
+				}
+				//---------------------------------------------------------------------------------------
+
+
+				//------------------------------------------------------------------------------------------
+				//触れたらステージセレクトに行く
+				//-------------------------------------------------------------------------------------------
+				if (field_map[y][x] == 13) {//中くらい木のオブジェクト 必要アンカーレベル2
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_SELECT, b2Vec2_zero);
+				}
+				//-------------------------------------------------------------------------------------------------
+
+
+				//-----------------------------------------------------------------------------------------------
+				//エネミー  動く
+				if (field_map[y][x] == 14) {//動かないエネミーの追加
+					objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0);
+				}
+				//-----------------------------------------------------------------------------------------------
+
+				if (field_map[y][x] == 15) {//壊れるオブジェク
+					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 4,4,0, g_under_Ground_Texture);
+				}
+
+			}
+		}
+		objectManager.InitializeAll();
+		itemManager.InitializeAll();
+		
 		break;
 	default:
 		break;
