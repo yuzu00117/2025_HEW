@@ -17,9 +17,12 @@
 #include <functional>
 #include <memory>
 #include"game.h"
+#include"OP.h"
 #include"sound.h"
 #include"sprite.h"
 #include"include/box2d/box2d.h"
+
+#include"clock.h"
 
 //シーンの種類
 enum SCENE_NAME
@@ -90,6 +93,33 @@ private:
     int total_score_points = 0;
 };
 
+class VideoScene : public Scene {
+public :
+    OP& op = OP::GetInstance();
+    void    Initialize() override {
+        std::cout << "OP Scene Initialized" << std::endl;
+        op.Initialize();
+    }
+
+    void    Update() override
+    {
+        std::cout << "OP Scene Updating" << std::endl;
+        op.Update();
+    }
+
+    void Draw()override
+    {
+        std::cout << "OP Scene Drawing" << std::endl;
+        op.Draw();
+    }
+
+    void Finalize() override {
+        std::cout << "OP Scene Finalized" << std::endl;
+        op.Finalize();
+    }
+
+};
+
 class GameScene : public Scene {
 public:
 
@@ -130,6 +160,9 @@ private:
     // コンストラクタを private にして外部からのインスタンス化を防ぐ
     SceneManager() = default;
 
+    Clock clock;
+    float deltaTime = 0;
+
 public:
     // シングルトンインスタンスを取得する関数
     static SceneManager& GetInstance() {
@@ -140,6 +173,9 @@ public:
     // コピーコンストラクタと代入演算子を無効化
     SceneManager(const SceneManager&) = delete;
     SceneManager& operator=(const SceneManager&) = delete;
+
+    float GetDeltaTime() { return deltaTime; }
+    void    SetDeltaTime(float time) { deltaTime = time; }
 
     // シーンの登録
     void RegisterScene(SCENE_NAME scene_name, std::function<std::unique_ptr<Scene>()> factory) {
@@ -180,6 +216,8 @@ public:
     void Update() {
         if (currentScene) {
             currentScene->Update();
+
+            deltaTime = clock.elapsed();
         }
     }
 

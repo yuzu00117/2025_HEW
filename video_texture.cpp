@@ -388,7 +388,7 @@ struct VideoTexture::InternalData {
   int        sampleCount = 0;
   DWORD      sampleFlags = 0;
 
-  Render::Texture* target_texture = nullptr;
+  MovieTexture* target_texture = nullptr;
   uint32_t  width = 0;
   uint32_t  height = 0;
   float     fps = 0.0f;
@@ -612,7 +612,7 @@ public:
 
       // Some videos report one resolution and after the first frame change the height to the next multiple of 16 (using the event MF_SOURCE_READERF_CURRENTMEDIATYPECHANGED)
       if (!target_texture) {
-        target_texture = new Render::Texture();
+        target_texture = new MovieTexture();
         int texture_height = height * 2;
         if (!target_texture->create(width, texture_height, DXGI_FORMAT_R8_UNORM, true))
           return;        
@@ -678,7 +678,7 @@ bool VideoTexture::hasFinished() {
   return internal_data->finished;
 }
 
-Render::Texture* VideoTexture::getTexture() {
+MovieTexture* VideoTexture::getTexture() {
   assert(internal_data);
   return internal_data->target_texture;
 }

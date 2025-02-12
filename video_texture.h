@@ -1,6 +1,10 @@
 #pragma once
 
-#include "dx11_basic.h"
+#include "renderer.h"
+#include "MovieTexture.h"
+
+#define SAFE_RELEASE(x) if(x) { (x)->Release(); x = nullptr; }
+
 
 struct VideoTexture {
 
@@ -17,7 +21,7 @@ struct VideoTexture {
   void pause();
   void resume();
   bool hasFinished();
-  Render::Texture* getTexture();
+  MovieTexture* getTexture();
   float getAspectRatio() const;
 };
 
