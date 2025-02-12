@@ -30,6 +30,9 @@ public:
 	ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon = true, float Alpha = 1.0f);
 	~ItemJewel();
 
+	//リスポン用
+	void	CreateBody();
+
 	//ボディーを取得
 	b2Body* GetBody() { return m_body; }
 	//ボディーをセット
@@ -52,6 +55,9 @@ public:
 	//　ゲージへ回収されている途中なのかどうかをセット
 	void	SetIfCollecting(bool flag);
 
+	//今もう効果発揮下かどうかを取得
+	bool	GetIfFunctioned() { return m_functioned; }
+
 	//これから消えるかどうかを取得
 	bool	GetDestory() { return m_destory; }
 	//これから消えるかどうかをセット
@@ -72,6 +78,17 @@ private:
 	//アイテムのボディー
 	b2Body* m_body;
 
+	//リスポン用に保存
+	b2Vec2 m_body_position;
+
+	//リスポン用に保存
+	bool m_shape_polygon;
+
+
+	//リスポン用に保存
+	float m_angle;
+
+
 	//アイテムのサイズ（描画用）
 	b2Vec2 m_size;
 
@@ -80,6 +97,9 @@ private:
 
 	//テクスチャ
 	ID3D11ShaderResourceView* g_Texture;//アンカーのテクスチャ
+
+	//効果発揮したのか
+	bool	m_functioned = false;
 
 	//消す予定なのかどうか
 	bool	m_destory = false;

@@ -69,7 +69,7 @@ public:
 	}
 
 	 // プレイヤーの初期化
-	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size);
+	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, bool respawning = false);
 	void Update();
 	void Draw();
 	void Finalize();
@@ -213,6 +213,17 @@ private:
 
 	//プレイヤーのBodyをもつ
 	b2Body* m_body;
+
+	//リスポン用に保存
+	b2Vec2 m_body_position;
+
+	//リスポン用に保存
+	b2Vec2 m_body_size;
+
+	//リスポン用に保存
+	b2Vec2 m_initial_sensor_size;
+
+
 
 	//描画用のBodyのサイズもっておく　
 	// 理由としてはこいつのサイズをbox2dないで管理するのはだるいから

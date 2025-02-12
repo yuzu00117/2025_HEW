@@ -10,7 +10,6 @@
 //----------------------------------------------------------------------------------------------------
 
 #include "Item_Manager.h"
-#include "Item_SpeedUp.h"
 #include "world_box2d.h"
 #include"Item_Coin.h"
 #include"Item_Coin_UI.h"
@@ -24,11 +23,6 @@ ItemManager& ItemManager::GetInstance() {
 }
 
 
-void	ItemManager::AddSpeedUp(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
-{
-	// 既存の引数コンストラクタを利用して生成
-	m_SpeedUp_List.emplace_back(std::make_unique<ItemSpeedUp>(position, body_size, angle, shape_polygon, Alpha));
-}
 
 
 void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
@@ -59,15 +53,6 @@ void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, floa
 }
 
 
-ItemSpeedUp* ItemManager::FindItem_SpeedUp_ByID(int ID)
-{
-	for (const auto& w : m_SpeedUp_List) {
-		if (w->GetID() == ID) {
-			return w.get();
-		}
-	}
-	return nullptr; // 見つからない場合は nullptr を返す
-}
 
 ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
 {
@@ -113,9 +98,6 @@ ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 
 // 全てのアイテムを初期化
 void ItemManager::InitializeAll() {
-    for (auto& w : m_SpeedUp_List) {
-        w->Initialize();
-    }
     for (auto& w : m_Spirit_List) {
         w->Initialize();
     }
@@ -133,9 +115,6 @@ void ItemManager::InitializeAll() {
 
 // 全てのアイテムを更新
 void ItemManager::UpdateAll() {
-    for (auto& w : m_SpeedUp_List) {
-		w->Update();
-    }
     for (auto& w : m_Spirit_List) {
         w->Update();
     }
@@ -153,10 +132,6 @@ void ItemManager::UpdateAll() {
 
 // 全てのアイテムを描画
 void ItemManager::DrawAll() {
-    for (auto& w : m_SpeedUp_List) {
-        w->Draw();
-    }
-   
 	for (auto& w : m_Coin_List) {
 		w->Draw();
 	}
@@ -188,9 +163,6 @@ void ItemManager::DrawFront() {
 
 // 全てのアイテムを破棄
 void ItemManager::FinalizeAll() {
-    for (auto& w : m_SpeedUp_List) {
-        w->Finalize();
-    }
 	for (auto& w : m_Coin_List) {
 		w->Finalize();
 	}
@@ -206,7 +178,6 @@ void ItemManager::FinalizeAll() {
     for (auto& w : m_SavePoint_List) {
         w->Finalize();
     }
-    m_SpeedUp_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Jewel_List.clear(); // 動的配列をクリアしてメモリ解放
     m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放

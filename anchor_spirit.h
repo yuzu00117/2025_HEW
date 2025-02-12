@@ -36,6 +36,10 @@ public:
 	//今のソウルゲージの値をマイナス、もしくはプラス（マイナスしたい場合は負数を渡してね！）
 	static void	EditAnchorSpiritValue(float value);
 
+	//今のソウルゲージの値を直接変更
+	static void	SetAnchorSpiritValueDirectly(float value);
+
+
 	static int GetAnchorLevel()
 	{
 		int anchor_level;//アンカーのレベル
