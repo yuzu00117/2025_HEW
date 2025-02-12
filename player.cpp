@@ -647,11 +647,11 @@ void Player::Update()
     }
 
 
-    //通常攻撃のアンカーの呼び出し
-    if ((Keyboard_IsKeyDown(KK_N) || (state.buttonX)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
-    {
-        Anchor::SetAnchorState(WaitCreateNormalAttackDraw_cnt_state);
-    }
+    ////通常攻撃のアンカーの呼び出し
+    //if ((Keyboard_IsKeyDown(KK_N) || (state.buttonX)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
+    //{
+    //    Anchor::SetAnchorState(WaitCreateNormalAttackDraw_cnt_state);
+    //}
 
  
     //プレーの向いている方向　swtich文的の仕様的に外でやる
