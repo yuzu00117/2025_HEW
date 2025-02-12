@@ -1,3 +1,12 @@
+// #name　break_effect.h
+// #description テクスチャとボディサイズを渡すとバラバラにしてくれる　豪快だねー
+// #make 2025/02/06
+// #update 2025/02/06
+// #comment 追加・修正予定  豪快な感じがする
+//         
+//          
+//----------------------------------------------------------------------------------------------------
+
 #ifndef PILLAR_FRAGMENTS_MANAGER_H
 #define PILLAR_FRAGMENTS_MANAGER_H
 
@@ -10,7 +19,8 @@
 #include"sprite.h"
 #include"world_box2d.h"
 #include"player_position.h"
-
+#include"create_filter.h"
+#include <random> // ランダム
 using namespace DirectX;
 
 // 破片クラス
@@ -41,7 +51,7 @@ public:
     void Init(b2World* w, int sx, int sy);
     void Destroy_Splitting(b2Body* targetBody, ID3D11ShaderResourceView* texture, b2Vec2 size);
     void UpdateFragments();
-    void RenderFragments(ID3D11DeviceContext* context);
+    void DrawFragments();
 };
 
 #endif // PILLAR_FRAGMENTS_MANAGER_H

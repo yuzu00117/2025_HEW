@@ -758,6 +758,23 @@ void Field::Initialize()
 					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 4,4,0, g_under_Ground_Texture);
 				}
 
+				if (field_map[y][x] == 16) {//上から落ちるや
+					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f),Box_collider,1);
+				}
+
+
+				if (field_map[y][x] == 17) {//壊れるオブジェク
+					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 4, 4, 0, g_under_Ground_Texture);
+				}
+				
+				if (field_map[y][x] == 17) {//壊れるオブジェク
+					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), left_down);
+				}
+
+				if (field_map[y][x] == 18) {//転がる岩
+					objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT),2,2,false);
+				}
+
 			}
 		}
 		objectManager.InitializeAll();

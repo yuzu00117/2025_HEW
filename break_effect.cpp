@@ -1,22 +1,33 @@
+// #name　break_effect.cpp
+// #description テクスチャとボディサイズを渡すとバラバラにしてくれる　豪快だねー
+// #make 2025/02/06
+// #update 2025/02/06
+// #comment 追加・修正予定  豪快な感じがする
+//         
+//          
+//----------------------------------------------------------------------------------------------------
+
 #include"break_effect.h"
 
 // シングルトンのインスタンス
 PillarFragmentsManager* PillarFragmentsManager::instance = nullptr;
 
-// Fragment クラスの実装
+// Fragment 
 Fragment::Fragment(b2Body* b, ID3D11ShaderResourceView* tex, int idx)
     : body(b), texture(tex), index(idx), creationTime(std::chrono::steady_clock::now()) {}
 
+//破壊するかどうか
 bool Fragment::ShouldDestroy() {
     return std::chrono::duration_cast<std::chrono::seconds>(
         std::chrono::steady_clock::now() - creationTime)
         .count() >= 5;
 }
 
-// PillarFragmentsManager の実装
+
 PillarFragmentsManager::PillarFragmentsManager()
     : world(nullptr), splittingX(3), splittingY(3) {}
 
+//みんな大好きシングルトン
 PillarFragmentsManager& PillarFragmentsManager::GetInstance() {
     if (!instance) {
         instance = new PillarFragmentsManager();
@@ -30,6 +41,8 @@ void PillarFragmentsManager::Init(b2World* w, int sx, int sy) {
     splittingY = sy;
 }
 
+//ここにボディをとテクスチャとサイズをいれると
+//ボディを削除したのち、複数のボディを作成してヴェロシティを加えてぼーん　豪快だね～
 void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderResourceView* texture, b2Vec2 size) {
     if (!targetBody || !world) return;
 
@@ -44,6 +57,11 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
 
     size.x /= BOX2D_SCALE_MANAGEMENT;
     size.y /= BOX2D_SCALE_MANAGEMENT;
+
+    // 乱数生成のためのセットアップ
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> velocityDist(-5.0f, 5.0f); // -5.0f ～ 5.0f の範囲でランダム
 
     int index = 0;
     for (int y = 0; y < splittingY; y++) {
@@ -63,8 +81,14 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
 
             b2Body* fragment = world->CreateBody(&fragmentDef);
 
-            fragment->SetLinearVelocity(b2Vec2(velocity.x * 2, velocity.y * 2));
-            fragment->SetAngularVelocity(angularVelocity);
+            // ランダムな方向の速度を追加
+            float randomX = velocityDist(gen); // -5.0f ～ 5.0f のランダム値
+            float randomY = velocityDist(gen);
+            fragment->SetLinearVelocity(b2Vec2(velocity.x * 4 + randomX, velocity.y * 4 + randomY));
+
+            // ランダムな回転速度を追加
+            float randomAngularVelocity = velocityDist(gen);
+            fragment->SetAngularVelocity(angularVelocity + randomAngularVelocity);
 
             b2PolygonShape fragmentShape;
             fragmentShape.SetAsBox(size.x / (2.0f * splittingX), size.y / (2.0f * splittingY));
@@ -74,6 +98,8 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
             fragmentFixture.density = 1.0f;
             fragmentFixture.friction = 0.5f;
             fragmentFixture.restitution = 0.0f;
+            fragmentFixture.filter = createFilterExclude("texture_body_filter",
+                { "texture_body_filter", "object_filter", "ground_filter", "enemy_filter", "Player_filter" });
 
             fragment->CreateFixture(&fragmentFixture);
 
@@ -82,6 +108,7 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
     }
 }
 
+//ボディを削除するまでの時間の管理
 void PillarFragmentsManager::UpdateFragments() {
     fragments.erase(std::remove_if(fragments.begin(), fragments.end(),
         [&](Fragment& fragment) {
@@ -93,7 +120,8 @@ void PillarFragmentsManager::UpdateFragments() {
         }), fragments.end());
 }
 
-void PillarFragmentsManager::RenderFragments(ID3D11DeviceContext* context) {
+//描画ー
+void PillarFragmentsManager::DrawFragments() {
     b2Vec2 playerPos = PlayerPosition::GetPlayerPosition();
 
     float scale = SCREEN_SCALE;
@@ -107,8 +135,9 @@ void PillarFragmentsManager::RenderFragments(ID3D11DeviceContext* context) {
         float body_draw_x = ((bodyPos.x - playerPos.x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float body_draw_y = ((bodyPos.y - playerPos.y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-        context->PSSetShaderResources(0, 1, &fragment.texture);
+        GetDeviceContext()->PSSetShaderResources(0, 1, &fragment.texture);
 
+       
         DrawSplittingSprite(
             { body_draw_x, body_draw_y },
             fragment.body->GetAngle(),

@@ -1,3 +1,12 @@
+// #name　break_block.cpp
+// #description オブジェクトと接触したら壊れるブロック
+// #make 2025/02/06
+// #update 2025/02/06
+// #comment 追加・修正予定  豪快な感じがする
+//         
+//          
+//----------------------------------------------------------------------------------------------------
+
 #include"break_block.h"
 #include"texture.h"
 #include"sprite.h"
@@ -7,7 +16,7 @@
 #include"1-1_boss.h"
 #include"create_filter.h"
 #include"tool.h"
-
+#include"break_effect.h"
 
 
 //オブジェクトに触れたら壊れるオブジェクト
@@ -91,10 +100,11 @@ void Break_Block::Update()
 	{
 		if (m_flag == true)
 		{
+			PillarFragmentsManager::GetInstance().Destroy_Splitting(m_body, Texture, GetSize());
 
+			SetBody(nullptr);
 
-
-
+			m_flag = false;
 		}
 
 	}
@@ -107,36 +117,38 @@ void Break_Block::Draw()
 
 	///ここから調整してね
 
-	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	float scale = SCREEN_SCALE;
+	if (m_body != nullptr)
+	{
+		// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+		float scale = SCREEN_SCALE;
 
-	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
+		// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
 
-	b2Vec2 Pos = GetBody()->GetPosition();
-
-
-
-
-	// プレイヤー位置を考慮してスクロール補正を加える
-	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		b2Vec2 Pos = GetBody()->GetPosition();
 
 
-	GetDeviceContext()->PSSetShaderResources(0, 1, &Texture);
-
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		angle,
-		{ GetSize().x * scale,GetSize().y * scale }
-	);
 
 
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &Texture);
+
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			angle,
+			{ GetSize().x * scale,GetSize().y * scale }
+		);
+
+	}
 
 
 
