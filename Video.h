@@ -1,4 +1,13 @@
-#pragma once
+//-----------------------------------------------------------------------------------------------------
+// #name Video.h
+// #description 動画の生成や描画のインターフェース？みたいな、外部向け
+// #make 2025/2/7　王泳心
+// #update 2025/2/12
+// #comment 追加・修正予定
+//          
+//----------------------------------------------------------------------------------------------------
+#ifndef VIDEO_H
+#define VIDEO_H
 
 #include"video_texture.h"
 #include<string>
@@ -9,7 +18,7 @@ enum Video_State
 	Video_Pause,
 	Video_Resume,
 	Video_Skip,
-	Video_Finished,	
+	Video_Finished,
 };
 
 class Video
@@ -27,13 +36,13 @@ public:
 
 
 	Video_State	GetState() { return m_state; }
-	void	SetState(Video_State state) { 
+	void	SetState(Video_State state) {
 
 		if (state == Video_Finished) {
 			return;
 		}
 
-		m_state = state; 
+		m_state = state;
 
 		switch (m_state)
 		{
@@ -52,7 +61,7 @@ public:
 	}
 
 	bool	GetIfFinished() { return m_video.hasFinished(); }
-	
+
 
 private:
 	//動画の状態
@@ -60,4 +69,7 @@ private:
 	//動画
 	VideoTexture m_video;
 };
+
+#endif // !VIDEO_H
+
 

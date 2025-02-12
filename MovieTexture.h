@@ -1,4 +1,15 @@
-#pragma once
+//-----------------------------------------------------------------------------------------------------
+// #name MovieTexture.cpp
+// #description 動画の制御
+// #make 　　Juan Abadia（以下のURLが索引）（一部抜粋）
+// https://github.com/yabadabu/dx11_video_texture
+// #update 
+// #comment 追加・修正予定
+//          
+//----------------------------------------------------------------------------------------------------
+
+#ifndef MOVIETEXTURE_H
+#define MOVIETEXTURE_H
 
 #include"renderer.h"
 
@@ -14,4 +25,7 @@ struct MovieTexture {
     void destroy();
     bool updateFromIYUV(const uint8_t* new_data, size_t data_size);
 };
+
+
+#endif // !MOVIETEXTURE_H
 

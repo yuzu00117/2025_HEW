@@ -1,3 +1,12 @@
+//-----------------------------------------------------------------------------------------------------
+// #name video_texture.cpp
+// #description 動画の内部処理
+// #make 　　Juan Abadia（以下のURLが索引）
+// https://github.com/yabadabu/dx11_video_texture
+// #update 
+// #comment 追加・修正予定
+//          
+//----------------------------------------------------------------------------------------------------
 #define _CRT_SECURE_NO_WARNINGS
 #include <string>
 #include <cassert>

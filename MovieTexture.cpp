@@ -1,3 +1,13 @@
+//-----------------------------------------------------------------------------------------------------
+// #name MovieTexture.cpp
+// #description 動画の制御
+// #make 　　Juan Abadia（以下のURLが索引）（一部抜粋）
+// https://github.com/yabadabu/dx11_video_texture
+// #update 
+// #comment 追加・修正予定
+//          
+//----------------------------------------------------------------------------------------------------
+
 #include "MovieTexture.h"
 
 #define SAFE_RELEASE(x) if(x) { (x)->Release(); x = nullptr; }
