@@ -82,7 +82,7 @@ public:
     //岩を追加
     void AddRock(const b2Vec2& position, const float& radius, const int& need_anchor_level,bool left);
     //足場を追加
-    void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size);
+    void AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position, const b2Vec2 &size, const bool& contact_object);
     //傾斜ブロックの追加
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
     //静的→動的のブロックの追加

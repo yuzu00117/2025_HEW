@@ -33,9 +33,9 @@ void ObjectManager::AddRock(const b2Vec2& position, const float& radius, const i
 }
 
 // 足場を追加
-void ObjectManager::AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position,const b2Vec2 &size) {
+void ObjectManager::AddOne_way_platformList(const b2Vec2& position, const b2Vec2& local_position,const b2Vec2 &size, const bool& contact_object) {
     // 既存の 3 引数コンストラクタを利用して生成
-    one_way_platformList.emplace_back(std::make_unique<one_way_platform>(position, local_position, size));
+    one_way_platformList.emplace_back(std::make_unique<one_way_platform>(position, local_position, size, contact_object));
 }
 // 傾斜を追加
 void ObjectManager::AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect) {
