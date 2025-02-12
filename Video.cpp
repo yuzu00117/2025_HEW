@@ -20,9 +20,9 @@ Video::~Video()
 {
 }
 
-void Video::Initialize(const std::string& fileName)
+void Video::Initialize(const std::string& fileName, bool looping)
 {
-    m_video.create(fileName.c_str());
+    m_video.create(fileName.c_str(), looping);
     m_state = Video_Start;
 }
 

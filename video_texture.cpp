@@ -655,9 +655,10 @@ void VideoTexture::destroyAPI() {
   MFShutdown();
 }
 
-bool VideoTexture::create(const char* filename) {
+bool VideoTexture::create(const char* filename, bool looping) {
   assert(!internal_data);
   internal_data = new InternalData();
+  internal_data->autoloop = looping;
   return internal_data->open(filename);
 }
 

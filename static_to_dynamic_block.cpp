@@ -77,7 +77,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 		fixture.shape = &circleShape; // メンバー変数を使用
 	}
 
-	fixture.density = 3.0f;//密度
+	fixture.density = 6.0f;//密度  密度を上げた
 	fixture.friction = 0.3f;//摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;//センサーかどうか

@@ -29,83 +29,73 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 {
 	SetSize(size);
 
-	//ワールドのインスタンスを持ってくる
+	// ワールドのインスタンスを取得
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-
 	SetlocalPosition(local_Postion);
-	//----------------------------------------------------------------------------//
-	//一つ目のボディをつくる
 
-	//サイズを設定する
+	// サイズを設定
 	b2Vec2 one_way_platform_size;
 	one_way_platform_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
 	one_way_platform_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
 
-	//localpostionの調整
+	// ローカルポジションのスケール補正
+	local_Postion.x /= BOX2D_SCALE_MANAGEMENT;
+	local_Postion.y /= BOX2D_SCALE_MANAGEMENT;
 
-	local_Postion.x=local_Postion.x / BOX2D_SCALE_MANAGEMENT;
-	local_Postion.y=local_Postion.y / BOX2D_SCALE_MANAGEMENT;
-
-
-	b2BodyDef one_way_platform_body;//木の幹の部分
+	// 一方通行プラットフォームのボディを作成
+	b2BodyDef one_way_platform_body;
 	one_way_platform_body.type = b2_staticBody;
-	one_way_platform_body.position.Set(Postion.x+local_Postion.x, Postion.y+local_Postion.y);//ローカルの補正もいれる
+	one_way_platform_body.position.Set(Postion.x + local_Postion.x, Postion.y + local_Postion.y);
 	one_way_platform_body.fixedRotation = false;
 
 	b2Body* m_one_way_platform_body = world->CreateBody(&one_way_platform_body);
+	SetObject_one_way_platform_Body(m_one_way_platform_body);
 
-	SetObject_one_way_platform_Body(m_one_way_platform_body);//ボディを登録
-
-
+	// 形状を定義
 	b2PolygonShape one_way_platform_shape;
-	one_way_platform_shape.SetAsBox(one_way_platform_size.x * 0.5, one_way_platform_size.y * 0.5);//シャープを設定
+	one_way_platform_shape.SetAsBox(one_way_platform_size.x * 0.5, one_way_platform_size.y * 0.5);
 
-	
-		b2FixtureDef one_way_platform_fixture;
-		one_way_platform_fixture.shape = &one_way_platform_shape;//シャープを登録
-		one_way_platform_fixture.density = 3.0f;
-		one_way_platform_fixture.friction = 0.5f;//摩擦
-		one_way_platform_fixture.restitution = 0.0f;//反発係数
-		one_way_platform_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-		one_way_platform_fixture.filter = createFilterExclude("one-way_platform_filter", { "object_filter","one-way_platform_filter" });
+	// フィクスチャの作成（通常の地面）
+	b2FixtureDef one_way_platform_fixture;
+	one_way_platform_fixture.shape = &one_way_platform_shape;
+	one_way_platform_fixture.density = 3.0f;
+	one_way_platform_fixture.friction = 0.5f;
+	one_way_platform_fixture.restitution = 0.0f;
+	one_way_platform_fixture.isSensor = false;
+	one_way_platform_fixture.filter = createFilterExclude("one-way_platform_filter", { "object_filter","one-way_platform_filter" });
 
+	b2Fixture* object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_fixture);
+	SetChangeFixture(object_one_way_platform_fixture);
 
-		b2Fixture* object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_fixture);
+	// カスタムデータの作成
+	ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };
+	object_one_way_platform_data->object_name = Object_one_way_platform;
 
-		SetChangeFixture(object_one_way_platform_fixture);
+	int ID = object_one_way_platform_data->GenerateID();
+	object_one_way_platform_data->id = ID;
+	SetID(ID);
 
-		// カスタムデータを作成して設定
-		ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };//一旦壁判定
-		object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+	// ユーザーデータを設定
+	object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
 
-		object_one_way_platform_data->object_name = Object_one_way_platform;//オブジェクトの名前を定義しておく
+	if (object_contact == true)
+	{
+		// フィクスチャを追加（オブジェクトとの衝突用）
+		b2FixtureDef one_way_platform_object_fixture;
+		one_way_platform_object_fixture.shape = &one_way_platform_shape;
+		one_way_platform_object_fixture.density = 3.0f;
+		one_way_platform_object_fixture.friction = 0.5f;
+		one_way_platform_object_fixture.restitution = 0.0f;
+		one_way_platform_object_fixture.isSensor = false;
+		one_way_platform_object_fixture.filter = createFilterExclude("one-way_platform_filter", { "Player_filter","one-way_platform_filter" });
 
+		b2Fixture* contact_object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_object_fixture);
 
-
-		int ID = object_one_way_platform_data->GenerateID();//IDを取得して
-		object_one_way_platform_data->id = ID;//フィクスチャにIDを定義
-		SetID(ID);//クラスにIDを定義
-	
-		if (object_contact == true)
-		{
-			b2FixtureDef one_way_platform_object_fixture;
-			one_way_platform_object_fixture.shape = &one_way_platform_shape;//シャープを登録
-			one_way_platform_object_fixture.density = 3.0f;
-			one_way_platform_object_fixture.friction = 0.5f;//摩擦
-			one_way_platform_object_fixture.restitution = 0.0f;//反発係数
-			one_way_platform_object_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-			one_way_platform_object_fixture.filter = createFilterExclude("one-way_platform_filter", {"Player_filter","one-way_platform_filter"});
-
-
-			b2Fixture* contact_object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_object_fixture);
-
-			// カスタムデータを作成して設定
-			ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };//一旦壁判定
-			contact_object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
-
-		}
+		// ここで新しい `ObjectData` を作らず、既存のデータを使う
+		contact_object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+	}
 
 };
 

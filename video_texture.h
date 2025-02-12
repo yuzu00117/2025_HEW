@@ -25,7 +25,7 @@ struct VideoTexture {
 	struct InternalData;
 	InternalData* internal_data = nullptr;
 
-	bool create(const char* filename);
+	bool create(const char* filename, bool looping);
 	void destroy();
 	bool update(float dt);
 
@@ -34,6 +34,8 @@ struct VideoTexture {
 	bool hasFinished();
 	MovieTexture* getTexture();
 	float getAspectRatio() const;
+
+	bool looping;
 };
 
 #endif // !VIDEO_TEXTURE_H
