@@ -1110,17 +1110,6 @@ public:
             //アイテム種類別に処理する
             switch (item->Item_name)
             {
-            case ITEM_SPEED_UP:
-            {
-                ItemSpeedUp* item_instance = item_manager.FindItem_SpeedUp_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
-                if (item_instance != nullptr) {
-                    item_instance->Function();
-                    item_instance->SetDestory(true);//削除を呼び出す
-                    CriBool app_atomex_start(Player_Soul_Colect2_Sound);
-
-                }
-            }
-            break;
             case ITEM_SPIRIT:
             {
                 ItemSpirit* spirit_instance = item_manager.FindItem_Spirit_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう

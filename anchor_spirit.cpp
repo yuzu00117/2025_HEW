@@ -29,6 +29,7 @@ void AnchorSpirit::Update()
 void AnchorSpirit::Initialize()
 {
 	m_spirit = 50.0f;
+	m_auto_heal = false;
 }
 
 //今のソウルゲージの値をもらう
@@ -73,4 +74,14 @@ void	AnchorSpirit::EditAnchorSpiritValue(float value)
 
 	
 }
+
+void AnchorSpirit::SetAnchorSpiritValueDirectly(float value)
+{
+	m_spirit = value;
+	if (m_spirit > 0)
+	{
+		PlayerStamina::SetPlayerStaminaValueDirectly(MAX_STAMINA);
+	}
+}
+
 
