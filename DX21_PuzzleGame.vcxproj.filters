@@ -264,9 +264,7 @@
     <ClCompile Include="dead_production.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="UI_Blcok.cpp">
-      <Filter>リソースファイル</Filter>
-    </ClCompile>
+    <ClCompile Include="UI_Block.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
