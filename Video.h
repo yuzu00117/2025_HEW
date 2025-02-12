@@ -28,7 +28,7 @@ public:
 	~Video();
 
 
-	void Initialize(const std::string& fileName);
+	void Initialize(const std::string& fileName, bool looping);
 	//“®‰æI‚í‚Á‚½‚©‚ğ•Ô‚·
 	bool Update();
 	void Draw(const XMFLOAT2& pos = XMFLOAT2(0.0f, 0.0f), float height = 1000);
