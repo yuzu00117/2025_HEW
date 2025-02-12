@@ -180,6 +180,7 @@
     <ClCompile Include="movable_ground.cpp" />
     <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="one-way_platform.cpp" />
+    <ClCompile Include="OP.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_life.cpp" />
     <ClCompile Include="player_position.cpp" />
@@ -200,6 +201,9 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="Video.cpp" />
+    <ClCompile Include="MovieTexture.cpp" />
+    <ClCompile Include="video_texture.cpp" />
     <ClCompile Include="UI_Block.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
@@ -221,6 +225,7 @@
     <ClInclude Include="bound_block.h" />
     <ClInclude Include="camera_shake.h" />
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
+    <ClInclude Include="clock.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="contact_block.h" />
@@ -259,6 +264,7 @@
     <ClInclude Include="movable_ground.h" />
     <ClInclude Include="object_manager.h" />
     <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="OP.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_life.h" />
     <ClInclude Include="player_position.h" />
@@ -279,6 +285,9 @@
     <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="Video.h" />
+    <ClInclude Include="MovieTexture.h" />
+    <ClInclude Include="video_texture.h" />
     <ClInclude Include="UI_Block.h" />
     <ClInclude Include="wood.h" />
     <ClInclude Include="UI_StaminaSpirit_Gauge.h" />
