@@ -34,7 +34,6 @@ enum FieldTexture
 	enemy_dynamic_texture,
 	enemy_static_texture,
   
-  invisibility_texture,
 
 	STAGE_BLOCK_GRASS,//草
 	STAGE_BLOCK_GRASS_RIGHT,//草の右側
@@ -43,6 +42,11 @@ enum FieldTexture
 	STAGE_BLOCK_EARTH,//土
 	STAGE_BLOCK_EARTH_UNDER_RIGHT,//土右側
 	STAGE_BLOCK_EARTH_UNDER_LEFT,//土左側
+
+
+	STAGE_BLOCK_INVISIBILITY,//不可視の壁
+
+	
 
 	STAGE_BLOCK_SLOOP_SIDE_RIGHT,
 	STAGE_BLOCK_SLOOP_SIDE_LEFT,
