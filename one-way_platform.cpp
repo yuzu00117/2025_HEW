@@ -24,7 +24,8 @@
 //グローバル変数
 static ID3D11ShaderResourceView* g_one_way_platform_Texture = NULL;//足場ブロックのテクスチャ
 static ID3D11ShaderResourceView* g_one_way_platform1_Texture = NULL;//足場ブロックテクスチャ
-one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 size)
+static ID3D11ShaderResourceView* g_ground_Texture = NULL;//足場ブロックテクスチャのしたに表示する背景のテクスチャ
+one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 size,bool object_contact)
 {
 	SetSize(size);
 
@@ -33,6 +34,7 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
+	SetlocalPosition(local_Postion);
 	//----------------------------------------------------------------------------//
 	//一つ目のボディをつくる
 
@@ -60,29 +62,50 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 	b2PolygonShape one_way_platform_shape;
 	one_way_platform_shape.SetAsBox(one_way_platform_size.x * 0.5, one_way_platform_size.y * 0.5);//シャープを設定
 
-	b2FixtureDef one_way_platform_fixture;
-
-	one_way_platform_fixture.shape = &one_way_platform_shape;//シャープを登録
-	one_way_platform_fixture.density = 3.0f;
-	one_way_platform_fixture.friction = 0.5f;//摩擦
-	one_way_platform_fixture.restitution = 0.0f;//反発係数
-	one_way_platform_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	one_way_platform_fixture.filter = createFilterExclude("one-way_platform_filter", {"object_filter"});
 	
+		b2FixtureDef one_way_platform_fixture;
+		one_way_platform_fixture.shape = &one_way_platform_shape;//シャープを登録
+		one_way_platform_fixture.density = 3.0f;
+		one_way_platform_fixture.friction = 0.5f;//摩擦
+		one_way_platform_fixture.restitution = 0.0f;//反発係数
+		one_way_platform_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+		one_way_platform_fixture.filter = createFilterExclude("one-way_platform_filter", { "object_filter","one-way_platform_filter" });
 
-	b2Fixture* object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_fixture);
 
-	// カスタムデータを作成して設定
-	ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };//一旦壁判定
-	object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+		b2Fixture* object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_fixture);
 
-	object_one_way_platform_data->object_name = Object_one_way_platform;//オブジェクトの名前を定義しておく
+		SetChangeFixture(object_one_way_platform_fixture);
+
+		// カスタムデータを作成して設定
+		ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };//一旦壁判定
+		object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+
+		object_one_way_platform_data->object_name = Object_one_way_platform;//オブジェクトの名前を定義しておく
 
 
-	int ID = object_one_way_platform_data->GenerateID();//IDを取得して
-	object_one_way_platform_data->id = ID;//フィクスチャにIDを定義
-	SetID(ID);//クラスにIDを定義
 
+		int ID = object_one_way_platform_data->GenerateID();//IDを取得して
+		object_one_way_platform_data->id = ID;//フィクスチャにIDを定義
+		SetID(ID);//クラスにIDを定義
+	
+		if (object_contact == true)
+		{
+			b2FixtureDef one_way_platform_object_fixture;
+			one_way_platform_object_fixture.shape = &one_way_platform_shape;//シャープを登録
+			one_way_platform_object_fixture.density = 3.0f;
+			one_way_platform_object_fixture.friction = 0.5f;//摩擦
+			one_way_platform_object_fixture.restitution = 0.0f;//反発係数
+			one_way_platform_object_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+			one_way_platform_object_fixture.filter = createFilterExclude("one-way_platform_filter", {"Player_filter","one-way_platform_filter"});
+
+
+			b2Fixture* contact_object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_object_fixture);
+
+			// カスタムデータを作成して設定
+			ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };//一旦壁判定
+			contact_object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+
+		}
 
 };
 
@@ -99,6 +122,7 @@ void one_way_platform::Initialize()
 	if (g_one_way_platform1_Texture == NULL) {
 		g_one_way_platform_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//センサーがオフ　あたり判定あり
 		g_one_way_platform1_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform1.png");//センサーがオン　あたり判定無し
+		g_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_soil_02.png");//グラウンドのテクスチャ
 	}
 }
 
@@ -106,19 +130,12 @@ void one_way_platform::Update()
 {
 	//プレイヤーより高いいちにあるとセンサーをオフに
 	//オブジェクトに関してすべて貫通
-	if (PlayerPosition::GetPlayerPosition().y+1/BOX2D_SCALE_MANAGEMENT < GetObject_one_way_platform_Body()->GetPosition().y)
+	float offset = 1.0f / BOX2D_SCALE_MANAGEMENT;
+	bool shouldBeSensor = PlayerPosition::GetPlayerPosition().y + offset >= GetObject_one_way_platform_Body()->GetPosition().y;
+
+	if (GetChangeFixture()->IsSensor() != shouldBeSensor) // 状態が変わるときだけ SetSensor() を呼ぶ
 	{
-		if (GetObject_one_way_platform_Body()->GetFixtureList()->IsSensor() == true)//センサーをがオンいわゆる判定無しの場合
-		{
-			GetObject_one_way_platform_Body()->GetFixtureList()->SetSensor(false);//センサーをオフに
-		}
-	}
-	else
-	{
-		if (GetObject_one_way_platform_Body()->GetFixtureList()->IsSensor() == false)//センサーをがオンいわゆる判定無しの場合
-		{
-			GetObject_one_way_platform_Body()->GetFixtureList()->SetSensor(true);//センサーをオフに
-		}
+		GetChangeFixture()->SetSensor(shouldBeSensor);
 	}
 }
 
@@ -141,6 +158,17 @@ void one_way_platform::Draw()
 	//取得したbodyのポジションに対してBox2dスケールの補正を加える
 	float draw_x = ((one_way_platform_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((one_way_platform_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+	//背景を先に描画
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_ground_Texture);
+	DrawSprite(
+		{ draw_x+GetlocalPosition().x*scale,
+		  draw_y+(GetlocalPosition().y + GetSize().x) * scale},
+		GetObject_one_way_platform_Body()->GetAngle(),
+		{ GetSize().x * scale,GetSize().x * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+	);
+
 
 	if (GetObject_one_way_platform_Body()->GetFixtureList()->IsSensor() == false)
 	{

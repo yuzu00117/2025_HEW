@@ -57,6 +57,10 @@ static ID3D11ShaderResourceView* g_under_left_ground_Texture = NULL;//地面左�
 static ID3D11ShaderResourceView* g_sloop_left_side_texture = NULL;//地面スロープの右側
 static ID3D11ShaderResourceView* g_sloop_right_side_texture = NULL;//地面スロープの左側
 
+
+static ID3D11ShaderResourceView* g_invisibility_wall_Texture = NULL;//不可視の壁
+
+
 Field::Field()
 {
 }
@@ -82,6 +86,11 @@ void Field::Initialize()
 	g_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_right_02.png");//草のテクスチャ　右側
 	g_left_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_left_02.png");//草のテクスチャ　左側
 
+	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//右側のテクスチャ
+	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//右側のテクスチャ
+
+	g_invisibility_wall_Texture=InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
+
 	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
 	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_left_dwon.png");//右側のテクスチャ
 
@@ -89,6 +98,7 @@ void Field::Initialize()
 
 	g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
 	g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
+
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
@@ -158,7 +168,7 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 4) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
 				}
 				if (field_map[y][x] == 5) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -174,11 +184,7 @@ void Field::Initialize()
 				//不可視の壁
 				if (field_map[y][x] == 7) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, invisibility_texture, false);
-				}
-
-				if (field_map[y][x] == 666) {//静的なエネミー
-					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
 				}
 
 
@@ -200,7 +206,7 @@ void Field::Initialize()
 				//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 				//エネミー
 				if (field_map[y][x] == 9) {//動かないエネミーの追加
-					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),Box_collider,1);
+					objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f),0.0);
 				}
 				//-------------------------------------------------------------------------------------------
 
@@ -229,6 +235,15 @@ void Field::Initialize()
 				if (field_map[y][x] == 13) {//中くらい木のオブジェクト 必要アンカーレベル2
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_SELECT, b2Vec2_zero);
 				}
+				//-------------------------------------------------------------------------------------------------
+
+
+				//-----------------------------------------------------------------------------------------------
+				//エネミー  動く
+				if (field_map[y][x] == 14) {//動かないエネミーの追加
+					objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0);
+				}
+				//-----------------------------------------------------------------------------------------------
 
 
 
@@ -334,9 +349,12 @@ void Field::Initialize()
 				//-------------------------------------------------------------------------------------------
 				//足場ブロック
 				if (field_map[y][x] == 25) {//足場ブロック
-					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.1f) );
+					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.1f),true);
 				}
-
+				if (field_map[y][x] == 26) {//足場ブロック
+					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.1f),false);
+				}
+			
 				//-------------------------------------------------------------------------------------------
 				//転がす岩
 				if (field_map[y][x] == 30) {//岩
@@ -708,11 +726,18 @@ void Field::Draw()
 				case STAGE_BLOCK_EARTH_UNDER_RIGHT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_under_right_ground_Texture);
 					break;
+
+				case STAGE_BLOCK_INVISIBILITY:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_invisibility_wall_Texture);
+          break;
+
 				case STAGE_BLOCK_SLOOP_SIDE_LEFT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloop_left_side_texture);
 					break;
+
 				case STAGE_BLOCK_SLOOP_SIDE_RIGHT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloop_right_side_texture);
+
 					break;
 
 				default:
