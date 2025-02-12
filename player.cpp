@@ -98,8 +98,18 @@ Player::~Player()
  
 }
 
-void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
+void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, bool respawning)
 {
+    if (respawning)
+    {
+        m_is_jumping = false;
+        m_jump_pressed = false;
+        m_direction = 1;
+        m_jump_force = b2Vec2(0.0f, -0.40f);
+        m_speed = 0.04f;
+        invincible_time = 0;
+    }
+
     if (m_body) {
         // ボディを削除
         Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -107,6 +117,10 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
         world->DestroyBody(m_body);
         m_body = nullptr;
     }
+
+    m_body_position = position;
+    m_body_size = body_size;
+    m_initial_sensor_size = sensor_size;
 
 
     if (g_player_Texture == NULL) {
