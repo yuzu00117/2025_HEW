@@ -26,12 +26,23 @@ void PlayerStamina::Initialize()
 {
 	m_stamina = 300.0f;
 	m_isdead = false; // プレイヤーの死亡フラグを初期化
+	m_avoid_damage_once = false;
 }
 
 float	PlayerStamina::GetPlayerStaminaValue()
 {
 	return m_stamina;
 }
+
+void PlayerStamina::SetPlayerStaminaValueDirectly(float value)
+{
+	if (value > MAX_STAMINA) {
+
+		value = MAX_STAMINA;
+	}
+	m_stamina = value;
+}
+
 
 void	PlayerStamina::EditPlayerStaminaValue(float value)
 {

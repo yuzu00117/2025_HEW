@@ -98,7 +98,7 @@ public:
     //浮遊エネミー生成
     void AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle);
 
-    void AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize,int splitting_x, int splitting_y, Boss_Room_Level level);
+    void AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize,int splitting_x, int splitting_y, int level);
 
     void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
 

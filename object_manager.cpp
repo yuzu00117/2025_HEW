@@ -77,7 +77,7 @@ void ObjectManager::AddEnemyFloating(b2Vec2 position, b2Vec2 body_size, float an
 }
 
 //間欠泉の生成
-void ObjectManager::AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, Boss_Room_Level level)
+void ObjectManager::AddGeyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, int level)
 {
     geyserList.emplace_back(std::make_unique<geyser>(GeyserPosition, GeyserSize, RangeFlyWaterSize, splitting_x, splitting_y, level));
 }

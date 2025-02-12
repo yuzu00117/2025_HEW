@@ -38,7 +38,7 @@ static ID3D11ShaderResourceView* g_Geyser_Open_Texture = NULL;
 
 
 
-geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, Boss_Room_Level level)
+geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSize, int splitting_x, int splitting_y, int level)
 {
 	//ボディは一つで　フィクスチャを二つ付ける構造にする
 	SetGeyserSize(GeyserSize);					//間欠泉のサイズをセット
@@ -112,12 +112,12 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 
 	b2Vec2 vertices[4] = { b2Vec2(0.0f,0.0f) };
 
-	vertices[0].Set(-range_fly_water_size.x / 2, -geyser_size.y / 2);//左上
-	vertices[1].Set(range_fly_water_size.x / 2, -geyser_size.y / 2);//右上
+	vertices[0].Set(-range_fly_water_size.x / 2, 0 );//左上
+	vertices[1].Set(range_fly_water_size.x / 2, 0);//右上
 	vertices[2].Set(range_fly_water_size.x / 2, -geyser_size.y / 2 - range_fly_water_size.y);//左下
 	vertices[3].Set(-range_fly_water_size.x / 2, -geyser_size.y / 2 - range_fly_water_size.y);//右下
 
-	range_fly_water_shape.Set(vertices, 4); // 頂点を指定して三角形を設定
+	range_fly_water_shape.Set(vertices, 4); 
 
 	b2FixtureDef range_fly_water_fixture;
 	range_fly_water_fixture.shape = &range_fly_water_shape;
@@ -175,7 +175,7 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 	object_anchor_point_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchor_point_data);
 
 	object_anchor_point_data->id = GetID();
-	object_anchor_point_data->need_anchor_level = 1;
+	object_anchor_point_data->need_anchor_level = level;
 	object_anchor_point_data->object_name = Object_Geyser;
 
 
@@ -196,7 +196,7 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 
 
 
-	boss_room_level = level;
+
 
 	Splitting_x = splitting_x;
 	Splitting_y = splitting_y;
