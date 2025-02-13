@@ -29,6 +29,8 @@ b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 std::chrono::steady_clock::time_point lastChangeTime = std::chrono::steady_clock::now();
 const std::chrono::duration<float> changeCooldown(0.5f);
 
+float AnchorPoint::target_sheet_frame = 0;
+
 
 //センサーの画像
 ID3D11ShaderResourceView* g_anchor_point_target_Texture = NULL;
@@ -271,8 +273,15 @@ void AnchorPoint::Draw()
 				  draw_y },
 				0.0f,
 				{ 70 ,70 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-				15,1,1,1.0f
+				15,1,target_sheet_frame,1.0f
 			);
+
+			target_sheet_frame += 0.5;
+
+			if (15 <= target_sheet_frame)
+			{
+				target_sheet_frame = 0;
+			}
 		}
 	}
 
