@@ -166,7 +166,8 @@ void EnemyDynamic::Update()
 			{
 				SetState(ENEMY_STATE_MOVE);
 
-				SetDirectionBasedOnPlayer();
+				// エネミーの移動時のプレイヤー追尾を削除
+				//SetDirectionBasedOnPlayer();
 			}
 			m_old_state = ENEMY_STATE_NULL;
 			break;
