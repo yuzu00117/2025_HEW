@@ -958,7 +958,7 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 
 		// ソウルを落とす
 		ItemManager &item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(m_mini_golem_body->GetPosition(), {1.0f, 2.0f}, 0.0f, ENEMY_GOLEM_SOULGAGE);
+		item_manager.AddSpirit(m_mini_golem_body->GetPosition(), {2.0f, 3.0f}, 0.0f, ENEMY_GOLEM_SPIRIT_TYPE);
 
 		// 生成エフェクト用の管理
 		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();
