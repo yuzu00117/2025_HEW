@@ -140,6 +140,12 @@ void ObjectManager::AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisi
 }
 
 
+//ボスの壁オブジェクトを追加
+void ObjectManager::AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture)
+{
+    boss_wall_list.emplace_back(std::make_unique<Boss_Wall_Objcet>(position, size, splitting_x, splitting_y, g_Texture));
+}
+
 // ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
@@ -370,6 +376,16 @@ Break_Block* ObjectManager::FindBreakBlock(int id)
 }
 
 
+Boss_Wall_Objcet* ObjectManager::FindBossWallObjcet(int id)
+{
+    for (auto& w : boss_wall_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 
 
@@ -543,6 +559,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : boss_wall_list)
+    {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -654,6 +675,12 @@ void ObjectManager::UpdateAll() {
     {
         w->Update();
     }
+
+    for (auto& w : boss_wall_list)
+    {
+        w->Update();
+    }
+
 }
 
 // 全ての木を描画
@@ -750,6 +777,12 @@ void ObjectManager::DrawAll() {
     {
         w->Draw();
     }
+
+    for (auto& w : boss_wall_list)
+    {
+        w->Draw();
+    }
+
   
     Item_Coin_UI::Draw();
 }
@@ -850,6 +883,12 @@ void ObjectManager::FinalizeAll() {
     }
 
 
+    for (auto& w : boss_wall_list)
+    {
+        w->Finalize();
+    }
+
+
     Item_Coin_UI::Finalize();
 
 
@@ -887,6 +926,9 @@ void ObjectManager::FinalizeAll() {
     Ui_block_list.clear();
 
     break_block_list.clear();
+
+
+    boss_wall_list.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

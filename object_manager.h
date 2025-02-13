@@ -31,13 +31,12 @@
 #include"geyser.h"
 #include"1_1_boss_carry_object_enemy_spawner.h"
 #include"Change_Enemy_Filter_and_Body.h"
-
 #include"bound_block.h"
-
 #include"contact_block.h"
 #include"UI_Block.h"
 #include"break_block.h"
-
+#include"boss_wall_object.h"
+#include "1_1_boss_pillar.h"
 // オブジェクトの種類を定義
 enum ObjectType {
     NULL_object,
@@ -63,6 +62,7 @@ enum ObjectType {
     Object_Geyser_Water,
     Boss_core,//ボスのこあ
     Boss_pillar,//ボスの柱
+    Boss_Wall,//ボスの柱の
     Boss_Carry_Object_Enemy,//ボス部屋のエネミーがオブジェクトを運ぶやつ
 
     Boss_field_block,
@@ -123,6 +123,8 @@ public:
 
     void AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisions_x, int divisions_y, float angle,ID3D11ShaderResourceView* g_Texture);
 
+    void AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -168,6 +170,8 @@ public:
     UI_block* FindUiBlock(int id);
 
     Break_Block* FindBreakBlock(int id);
+
+    Boss_Wall_Objcet* FindBossWallObjcet(int id);
     
 
     
@@ -234,6 +238,8 @@ private:
     std::vector<std::unique_ptr<change_enemy_filter_and_body>>change_filter_boidy_enemy_list ;//撃墜演出されたエネミーのリスト
 
     std::vector<std::unique_ptr<boss_bound_block>>boss_bound_block_list;//バウンドブロックのリスト
+
+    std::vector<std::unique_ptr<Boss_Wall_Objcet>>boss_wall_list;//バウンドブロックのリスト
 
 
     std::vector<std::unique_ptr<contact_block>>contact_block_list;//接触ブロック

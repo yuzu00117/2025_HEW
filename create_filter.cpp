@@ -17,7 +17,8 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"Boss_field_filter",       0x0120 },  // 1 << 8
     {"blown_away_enemy_filter", 0x0140},
     {"player_sensor_filter",    0x0160 },
-    {"texture_body_filter",     0x0180 }  // 1 << 9　　描画の際にボディを使いたいが落下させたいから、
+    {"texture_body_filter",     0x0180 },  // 1 << 9　　描画の際にボディを使いたいが落下させたいから、
+    {"break_block_body_filter", 0x0200 }
 
 
 };

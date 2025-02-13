@@ -114,7 +114,7 @@ void boss_field_block::Update()
 		}
 
 		// 新しいフィルターを作成
-		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter" });
+		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter","Boss_filter" });
 		fixture->SetFilterData(newFilter);
 
 		break_flag = true;

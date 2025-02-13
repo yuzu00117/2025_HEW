@@ -496,7 +496,7 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 2) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_2, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(7.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_2, false);
 				}
 				if (field_map[y][x] == 3) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -534,9 +534,12 @@ void Field::Initialize()
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
 					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_11, false);
 				}
-				if (field_map[y][x] == 12) {//動かない物
-					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_12, false);
+
+
+
+
+				if (field_map[y][x] == 12) {//壊れるブロック
+					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3,3,0.0,g_under_Ground_Texture);
 				}
 				if (field_map[y][x] == 13) {//動かない物
 
@@ -549,6 +552,7 @@ void Field::Initialize()
 					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
 				}
 
+				
 				//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 				if (field_map[y][x] == 14)
@@ -698,6 +702,16 @@ void Field::Initialize()
 					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.f), 1, 6, boss_room_level_20);
 				}
 				
+
+
+
+
+
+
+				//ボスのオブジェクトに使う柱
+				if (field_map[y][x] == 70) {
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.5f), 6, 6,g_Ground_Texture);
+				}
 
 			}
 		}

@@ -142,6 +142,7 @@
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="boss_wall_object.cpp" />
     <ClCompile Include="bound_block.cpp" />
     <ClCompile Include="break_block.cpp" />
     <ClCompile Include="break_effect.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="anchor_spirit.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="blown_away_effect.h" />
+    <ClInclude Include="boss_wall_object.h" />
     <ClInclude Include="bound_block.h" />
     <ClInclude Include="break_block.h" />
     <ClInclude Include="break_effect.h" />

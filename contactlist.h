@@ -41,6 +41,7 @@
 #include"bound_block.h"
 #include"UI_Block.h"
 #include"break_block.h"
+#include"boss_wall_object.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -528,6 +529,25 @@ public:
                     }
                 }
 
+
+
+
+
+                //ボスの部屋の壁
+                if (objectA->object_name == Boss_Wall || objectB->object_name == Boss_Wall)
+                {
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_Wall)//ボス戦の壁
+                    {
+                        Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);
+                        wall_instance->SetPullingFlag(true);
+                    }
+                    if (objectB->object_name == Boss_Wall)//ボス戦の壁
+                    {
+                        Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);
+                        wall_instance->SetPullingFlag(true);
+                    }
+                }
             }//end_if( Anchor::GetAnchorState() == Connected_state)
 
         
@@ -1285,14 +1305,17 @@ public:
                 }
 
 
-                if (objectA->object_name == Boss_Carry_Object_Enemy)
+                if (objectA->object_name == Boss_Wall)
                 {
-                 
+                    Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    wall_instance->SetSplitting_Destroy_Flag(true);
                 }
-                if (objectB->object_name == Boss_Carry_Object_Enemy)
+                if (objectB->object_name == Boss_Wall)
                 {
-
+                    Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    wall_instance->SetSplitting_Destroy_Flag(true);
                 }
+      
 
             }
 
