@@ -13,6 +13,7 @@
 #include "renderer.h"
 #include "Bg.h"
 #include "player_position.h"
+#include"scene.h"
 
 
 static ID3D11ShaderResourceView* g_Bg_Texture[4] = { NULL };  // 背景テクスチャ（配列化）
@@ -25,29 +26,78 @@ b2Vec2 g_old_player_position;
 // 背景インスタンス
 Bg bg;
 
-#define BACK_GROUND_HEIGHT (50)
-#define BACK_GROUND_SIZE_X (1280*1.7)
-#define BACK_GROUND_SIZE_Y (720*1.7)
+//stage1_1
+#define STAGE_1_1_BACK_GROUND_HEIGHT (50)
+#define STAGE_1_1_BACK_GROUND_SIZE_X (1280*1.7)
+#define STAGE_1_1_BACK_GROUND_SIZE_Y (720*1.7)
 
+#define TUTORIAL_BACK_GROUND_HEIGHT (0)
+#define TUTORIAL_BACK_GROUND_SIZE_X (1280*1.1)
+#define TUTORIAL_BACK_GROUND_SIZE_Y (720*1.1)
 void Bg::Initialize()
 {
+
+
+    //スクロールの高さなどをリセット
+    g_old_player_position = b2Vec2_zero;
     // 各背景テクスチャの読み込み（配列に統一）
-    g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
-    g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
-    g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
-    g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background_5.png");
+    
+    SceneManager& sceneManager = SceneManager::GetInstance();
 
-    g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
+    int height=0;
+    int width = 0;
+
+    switch (sceneManager.GetStageName())
+    {
+    case STAGE_1_1:
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
+        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
+        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background_5.png");
+
+        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
 
 
-    g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+        height= STAGE_1_1_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_BACK_GROUND_SIZE_X;
+        break;
+    case STAGE_TUTORIAL:
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\tutorial\\background_1.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
+        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\tutorial\\background_2.png");
+        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\tutorial\\background_3.png");
+
+        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+
+        height = TUTORIAL_BACK_GROUND_HEIGHT;
+        width = TUTORIAL_BACK_GROUND_SIZE_X;
+        break;
+
+    default:
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
+        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
+        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background_5.png");
+
+        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
+
+
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+        height = STAGE_1_1_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_BACK_GROUND_SIZE_X;
+        break;
+    }
+
+   
     // 背景画像の初期配置（配列化）
     for (int layer = 0; layer < 4; layer++)
     {
         float sizeMultiplier = (layer == 0) ? 1.5f : 1.0f;
         for (int i = 0; i < 4; i++)
         {
-            bg.texture_pos[layer][i] = XMFLOAT2(BACK_GROUND_SIZE_X * sizeMultiplier * i, BACK_GROUND_HEIGHT * sizeMultiplier);
+            bg.texture_pos[layer][i] = XMFLOAT2(width * sizeMultiplier * i, height * sizeMultiplier);
         }
     }
 }
@@ -60,6 +110,26 @@ void Bg::Update()
     // テクスチャごとのスクロール速度
     float textureScrollSpeedsX[] = { 0.1f, 0.3f, 0.7f, 1.0f };
     float textureScrollSpeedY[] = { 0.01f, 0.1f, 0.2f, 0.3f }; // 縦スクロールの速度（調整可）
+
+    float BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y;
+    SceneManager & sceneManager = SceneManager::GetInstance();
+    switch (sceneManager.GetStageName())
+    {
+    case STAGE_1_1:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y= STAGE_1_1_BACK_GROUND_SIZE_Y;
+        break;
+    case STAGE_TUTORIAL:
+        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
+        break;
+    default:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        break;
+    }
+    
+
 
     // 背景のスクロール処理（X 軸 & Y 軸）
     for (int layer = 0; layer < 4; layer++)
@@ -91,7 +161,23 @@ void Bg::Update()
 
 void Bg::Draw()
 {
-
+    float BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y;
+    SceneManager& sceneManager = SceneManager::GetInstance();
+    switch (sceneManager.GetStageName())
+    {
+    case STAGE_1_1:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        break;
+    case STAGE_TUTORIAL:
+        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
+        break;
+    default:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        break;
+    }
     // ライトテクスチャの描画（背景の影響を受ける）
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture_Most);
     DrawSpriteOld({ BACK_GROUND_SIZE_X / 2, BACK_GROUND_SIZE_Y / 2 }, 0.0f, { BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y }, 1.0f);
@@ -118,6 +204,7 @@ void Bg::Finalize()
     {
         UnInitTexture(g_Bg_Texture[i]);
     }
+    
 }
 
 void Bg::FrontDraw()
