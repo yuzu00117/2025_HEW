@@ -18,7 +18,7 @@
 //==========É}ÉNÉçíËã`==========//
 #define ENEMY_DYNAMIC_LIFE (100)
 #define ENEMY_DYNAMIC_DAMAGE (MAX_STAMINA/2)
-#define ENEMY_DYNAMIC_SOULGAGE (25)
+#define ENEMY_DYNAMIC_SPIRIT_TYPE (Spirit_S)
 #define ENEMY_DYNAMIC_SCORE (200)
 
 enum ENEMY_DYNAMIC_STATE

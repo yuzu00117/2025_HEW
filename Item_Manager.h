@@ -44,7 +44,7 @@ public:
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
 	//recovery引数はプレイヤーがアイテムを取るときのソウルの回復値
-	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha = 1.0f);
+	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritType type, float Alpha = 1.0f);
 	void	AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
 	//Jewel_Type型のtype引数は BLUE, RED, YELLOW のどれかを渡す
 	void	AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon = true, float Alpha = 1.0f);
