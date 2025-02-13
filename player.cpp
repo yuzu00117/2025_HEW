@@ -609,18 +609,6 @@ void Player::Update()
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 
 
-//ソウルアイテム回収処理
-//----------------------------------------------------------------------------------------------------------------------------------------------------
-    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB))
-    {
-        ItemManager& itemManager = ItemManager::GetInstance();
-        itemManager.SetCollectSpirit(true);
-
-        app_atomex_start(Player_Soul_Colect1_Sound);
-    }
-    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB);
-
-
 //宝石使う処理(テスト用)
 //----------------------------------------------------------------------------------------------------------------------------------------------------
     if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J)))
