@@ -217,10 +217,12 @@ void StageSelectScene::Update()
 				break;
 
 			case 3:
+				sceneManager.SetStageName(STAGE_TEST);
 				sceneManager.ChangeScene(SCENE_GAME);
 				break;
 
 			case 4:
+				sceneManager.SetStageName(STAGE_TEST);
 				sceneManager.ChangeScene(SCENE_GAME);
 				break;
 			}

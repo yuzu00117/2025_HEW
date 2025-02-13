@@ -102,7 +102,7 @@ void Bg::Draw()
         for (int i = 0; i < 4; i++)
         {
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture[layer]);
-            DrawSprite(bg.texture_pos[layer][i], 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X * sizeMultiplier, BACK_GROUND_SIZE_Y * sizeMultiplier));
+            DrawBgSprite(bg.texture_pos[layer][i], 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X * sizeMultiplier, BACK_GROUND_SIZE_Y * sizeMultiplier));
         }
     }
 

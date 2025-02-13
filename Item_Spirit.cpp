@@ -79,7 +79,6 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float rec
     data->id = ID;
     SetID(ID);
 
-
 }
 
 void	ItemSpirit::Update()
@@ -108,20 +107,6 @@ void	ItemSpirit::Update()
             }
 
         }
-        //状態が上昇中の場合
-        if (m_state == Spirit_Rising)
-        {
-            //上に上昇
-            GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
-        }
-        if (m_state == Spirit_Falling)
-        {
-            //もし落下の終点に着いたら
-            if (m_body->GetPosition().y >= m_Falling_to_position.y)
-            {
-                SetState(Spirit_Idle);
-            }
-        }
         //消される予定ならボディーを消す
         if (m_state == Spirit_Destory)
         {
@@ -130,6 +115,7 @@ void	ItemSpirit::Update()
             world->DestroyBody(m_body);
             m_body = nullptr;
         }
+
     }
 
 }
@@ -145,59 +131,6 @@ void ItemSpirit::SetState(SpiritState state)
     if (m_body != nullptr)
     {
         m_state = state;
-        switch (m_state)
-        {
-        case Spirit_Idle:
-            m_body->SetGravityScale(0);
-            break;
-        case Spirit_Rising:
-            m_body->SetGravityScale(0);
-            //GetBody()->ApplyLinearImpulseToCenter(b2Vec2(0.0f, -0.1f), true);
-            break;
-        case Spirit_Falling:
-            m_body->SetGravityScale(1);
-            break;
-        case Spirit_Collecting:
-        {
-            if (!m_CollidedObject.empty())
-            {
-                m_CollidedObject.clear();
-            }
-            if (m_state == Spirit_Destory)
-            {
-                return;
-            }
-            //  当たり判定をセンサーに変更、フィルタもなしに変更（何にも反応できる）
-            b2Fixture* fixture = m_body->GetFixtureList();
-            b2Filter filter;
-            filter.maskBits = 0xFFFF;
-            fixture->SetFilterData(filter);
-            fixture->SetSensor(true);
-
-            //  画面のサイズをアンカーがレベル３の時のサイズと想定して、プレイヤーからめっちゃ遠い場合位置を画面近くまで移動させる
-            b2Vec2 position = m_body->GetPosition();
-            b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
-            b2Vec2 sensor_size = Player::GetInstance().GetSensorSizeLev3();
-
-
-            //  （ +/- adjust）はすでに画面近くにいるソウルを除くため
-            float adjust = 1.5f;
-            float SCREEN_LEFT = player_position.x - sensor_size.x / BOX2D_SCALE_MANAGEMENT / 2 - adjust;
-            float SCREEN_RIGHT = player_position.x + sensor_size.x / BOX2D_SCALE_MANAGEMENT / 2 + adjust;
-
-            if (position.x < SCREEN_LEFT)
-            {
-                position.x = SCREEN_LEFT;
-            }
-            else if (position.x > SCREEN_RIGHT)
-            {
-                position.x = SCREEN_RIGHT;
-            }
-            m_body->SetTransform(position, m_body->GetAngle());
-
-        }
-            break;
-        }
     }
 
 }
@@ -277,7 +210,6 @@ void ItemSpirit::Finalize()
         g_Texture = NULL;
     }
 
-    m_CollidedObject.clear();
 }
 
 ItemSpirit::~ItemSpirit()
