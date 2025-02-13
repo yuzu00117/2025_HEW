@@ -43,6 +43,8 @@ enum STAGE_NAME
     STAGE_1_1,
     STAGE_BOSS,
     STAGE_SELECT,
+
+    STAGE_TEST,
 };
 
 

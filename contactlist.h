@@ -40,6 +40,7 @@
 #include"Change_Enemy_Filter_and_Body.h"
 #include"bound_block.h"
 #include"UI_Block.h"
+#include"break_block.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -331,6 +332,28 @@ public:
             }
 
         }
+
+        //オブジェクトと壊れるブロック
+        if ((objectA->collider_type == collider_break_block && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_break_block))
+        {
+
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(0, 5, 10);
+            HitStop::StartHitStop(5);
+            if (objectA->collider_type == collider_break_block)
+            {
+                Break_Block* breakblock_instance = object_manager.FindBreakBlock(objectA->id);
+                breakblock_instance->SetFlag(true);
+            }
+            else if (objectB->collider_type == collider_break_block)
+            {
+                Break_Block* breakblock_instance = object_manager.FindBreakBlock(objectB->id);
+                breakblock_instance->SetFlag(true);
+            }
+        }
+
+
 
         //プレイヤーに付属しているセンサーとアンカーポイントが触れた場合
         if ((objectA->collider_type == collider_anchor && objectB->collider_type == collider_anchor_point) ||
@@ -1587,6 +1610,8 @@ public:
         }
 
         //-------------------------------------------------------------------------------------------
+
+
 
 
 
