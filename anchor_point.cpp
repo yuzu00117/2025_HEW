@@ -157,7 +157,7 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 
 void AnchorPoint::Initialize()
 {
-	g_anchor_point_target_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_purple.png");
+	g_anchor_point_target_Texture= InitTexture(L"asset\\texture\\anchor_point\\AnchorPointTarget.png");
 	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_blue.png");
 	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_yellow.png");
 	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_red.png");
@@ -266,11 +266,12 @@ void AnchorPoint::Draw()
 		//draw
 		if (g_select_anchor_point_body->GetPosition() != player.GetOutSidePlayerBody()->GetPosition())
 		{
-			DrawSprite(
+			DrawSplittingSprite(
 				{ draw_x,
 				  draw_y },
 				0.0f,
-				{ 70 ,70 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				{ 70 ,70 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				15,1,1,1.0f
 			);
 		}
 	}
