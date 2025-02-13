@@ -71,8 +71,6 @@ public:
 	// 全てのアイテムを破棄
 	void FinalizeAll();
 
-	//　全てのソウルアイテムが回収される予定だと設定する
-	void	SetCollectSpirit(bool flag);
 
 	//全ての宝石を使う
 	void	UseAllJewel();

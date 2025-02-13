@@ -25,9 +25,6 @@ enum SpiritType
 
 enum SpiritState
 {
-	Spirit_Idle,	//地面に着いている
-	Spirit_Rising,	//上昇している
-	Spirit_Falling,	//上昇後の落下（オブジェクトと離れた瞬間の座標まで落下）
 	Spirit_Collecting,	//プレイヤーに回収されいている途中
 	Spirit_Destory,		//これから消される予定
 };
@@ -63,27 +60,6 @@ public:
 	void	SetState(SpiritState state);
 
 
-	//当たっているオブジェクトを追加
-	void	AddCollidedObject(b2Body* object) { m_CollidedObject.push_back(object); }
-	//直近まで当たっているオブジェクトが誰かを取得
-	const b2Body* FindLeastCollidedObject() {
-		return m_CollidedObject.back();
-	}
-	//さっきまで当たっていたオブジェクトを消す
-	void	DeleteCollidedObject(b2Body* object) {
-		if (!(m_CollidedObject.begin() == m_CollidedObject.end()) && m_state != Spirit_Collecting)
-		{
-			m_CollidedObject.remove_if([object](b2Body* p) { return p == object; });
-
-			if (m_CollidedObject.size() == 0)
-			{
-				SetState(Spirit_Falling);
-				//今離れた瞬間のソウルの座標を落下の終点にする
-				m_Falling_to_position = m_body->GetPosition();
-			}
-		}
-	}
-
 
 	//アイテムがゲットされた時の処理
 	void	Function();
@@ -114,12 +90,8 @@ private:
 	int m_anim_id = 1;
 
 	//今の状態
-	SpiritState m_state = Spirit_Idle;
+	SpiritState m_state = Spirit_Collecting;
 
-	//ソウルが今当たっているオブジェクト（或いは地面）
-	std::list<b2Body*>m_CollidedObject;
-
-	b2Vec2 m_Falling_to_position;	//どの座標まで落ちるか（落下状態の時に使う）
 };
 
 #endif // !ITEM_SPIRIT_H
