@@ -18,7 +18,7 @@
 //==========É}ÉNÉçíËã`==========//
 #define ENEMY_STATIC_LIFE (100)
 #define ENEMY_STATIC_DAMAGE (MAX_STAMINA/2)
-#define ENEMY_STATIC_SOULGAGE (25)
+#define ENEMY_STATIC_SPIRIT_TYPE (Spirit_S)
 #define ENEMY_STATIC_SCORE (100)
 
 enum ENEMY_STATIC_STATE

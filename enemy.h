@@ -15,6 +15,8 @@
 #define ENEMY_MAX (100)
 
 #include"world_box2d.h"
+#include"Item_Spirit.h"
+
 
 class Enemy
 {
@@ -31,8 +33,8 @@ private:
 	int m_life;
 	//エネミーが与えるダメージ
 	int m_damage;
-	//エネミーを倒した際に獲るソウルゲージ
-	int m_soulgage;
+	//エネミーを倒した際に獲るソウルタイプ
+	SpiritType m_spirit_type;
 	//エネミーを倒した際に獲るスコア
 	int m_score;
 	
@@ -42,8 +44,8 @@ private:
 	bool m_in_screen;
 public:
 	Enemy() = default;
-	Enemy(int life, int damage, int soulgage, int score, bool use, bool in_screen)
-		:m_life(life), m_damage(damage), m_soulgage(soulgage), m_score(score), m_use(use), m_in_screen(false) {}
+	Enemy(int life, int damage, SpiritType spirit_type, int score, bool use, bool in_screen)
+		:m_life(life), m_damage(damage), m_spirit_type(spirit_type), m_score(score), m_use(use), m_in_screen(false) {}
 	virtual ~Enemy() = default;
 
 	int GetID()
@@ -91,13 +93,13 @@ public:
 		m_life = damage;
 	}
 
-	int GetSoulgage()
+	SpiritType GetSpiritType()
 	{
-		return m_soulgage;
+		return m_spirit_type;
 	}
-	void SetSoulgage(int soulgage)
+	void SetSpiritType(SpiritType type)
 	{
-		m_life = soulgage;
+		m_spirit_type = type;
 	}
 
 	bool GetUse()

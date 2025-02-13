@@ -16,6 +16,13 @@
 #include<string>
 #include<list>
 
+enum SpiritType
+{
+	Spirit_L,
+	Spirit_M,
+	Spirit_S,
+};
+
 enum SpiritState
 {
 	Spirit_Idle,	//地面に着いている
@@ -31,7 +38,7 @@ public:
 	//最低必要な引数：position（位置情報）、body_size（サイズ）、angle（回転角度のラジアン）
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
-	ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha = 1.0f);
+	ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritType type, float Alpha = 1.0f);
 	~ItemSpirit();
 
 	//ボディーを取得
@@ -100,8 +107,11 @@ private:
 	//アイテムの透明度
 	float m_Alpha;
 
-	//ソウル回復値
-	float m_recovery;
+	//ソウルの種類
+	SpiritType m_type;
+
+	//アニメーションパターンID
+	int m_anim_id = 1;
 
 	//今の状態
 	SpiritState m_state = Spirit_Idle;
