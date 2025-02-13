@@ -74,9 +74,9 @@ void Anchor::Initialize()
 	//テクスチャの初期化
 
 	//アンカーの錨の部分（日本語）
-	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev1.png");
-	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev2.png");
-	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev3.png");
+	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv1.png");
+	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv2.png");
+	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv3.png");
 
 
 	//アンカーの鎖
@@ -162,7 +162,7 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	anchor_angle = anchor_angle * 180.0f / M_PI;
 
 	// 270度を補正 画像が下向きだったから
-	anchor_angle += 270.0f;
+	anchor_angle +=35.0f;
 
 	// 負の角度を正の範囲に調整（0°～360°）
 	if (anchor_angle < 0) {
@@ -280,15 +280,15 @@ void Anchor::Draw()
 		{
 		case 1:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
-			anchor_size_scale = 1;
+			anchor_size_scale = 1.3;
 			break;
 		case 2:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
-			anchor_size_scale = 1.5;
+			anchor_size_scale = 2.0;
 			break;
 		case 3:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
-			anchor_size_scale = 2;
+			anchor_size_scale = 3.0;
 			break;
 		default:
 			break;
@@ -583,7 +583,7 @@ void Anchor::DrawChain()
 	b2Vec2 chain_size(0.2f, 0.05); // Xが長いチェーン
 
 	// チェーン描画
-	for (int i = 1; i <= chain_count; ++i)
+	for (int i = 1; i <= chain_count-2; ++i)
 	{
 		// 線形補間で位置を計算
 		float t = static_cast<float>(i) / chain_count; // 0.0～1.0の範囲

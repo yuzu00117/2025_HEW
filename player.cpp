@@ -1724,3 +1724,8 @@ void Player::DrawAnchorLevelUpDownEffect()
        
     }
 }
+
+int Player::GetAnchorFrameManagement()
+{
+    return g_anchor_frame_management_number;
+}
