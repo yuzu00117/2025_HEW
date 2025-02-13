@@ -32,7 +32,7 @@ static ID3D11ShaderResourceView* g_EnemyDynamic_Texture_Destroyed;//動的エネ
 static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	  //エネミーのセンサーのテクスチャ
 
 EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
-	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SOULGAGE, ENEMY_DYNAMIC_SCORE, true, false)
+	:Enemy(ENEMY_DYNAMIC_LIFE, ENEMY_DYNAMIC_DAMAGE, ENEMY_DYNAMIC_SPIRIT_TYPE, ENEMY_DYNAMIC_SCORE, true, false)
 {
 	b2BodyDef body;
 	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
@@ -179,7 +179,7 @@ void EnemyDynamic::Update()
 
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType());
 
 
 
