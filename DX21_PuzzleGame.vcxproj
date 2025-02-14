@@ -47,7 +47,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
@@ -110,26 +110,25 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies);</AdditionalDependencies>
+      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>cri\criinclude;cri\common;cri\cridata;cri\libs;cri\common\include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>cri\libs</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);cri_ware_pcx64_le_import.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>box2d\Debug;%(AdditionalLibraryDirectories);cri\libs\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>box2d.lib;Xinput.lib;cri_ware_pcx64_le_import.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -144,6 +143,8 @@
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="bound_block.cpp" />
+    <ClCompile Include="break_block.cpp" />
+    <ClCompile Include="break_effect.cpp" />
     <ClCompile Include="camera_shake.cpp" />
     <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
     <ClCompile Include="blown_away_effect.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="movable_ground.cpp" />
     <ClCompile Include="object_manager.cpp" />
     <ClCompile Include="one-way_platform.cpp" />
+    <ClCompile Include="OP.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="player_life.cpp" />
     <ClCompile Include="player_position.cpp" />
@@ -201,6 +203,9 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
+    <ClCompile Include="Video.cpp" />
+    <ClCompile Include="MovieTexture.cpp" />
+    <ClCompile Include="video_texture.cpp" />
     <ClCompile Include="UI_Block.cpp" />
     <ClCompile Include="wood.cpp" />
     <ClCompile Include="UI_StaminaSpirit_Gauge.cpp" />
@@ -220,8 +225,11 @@
     <ClInclude Include="bg.h" />
     <ClInclude Include="blown_away_effect.h" />
     <ClInclude Include="bound_block.h" />
+    <ClInclude Include="break_block.h" />
+    <ClInclude Include="break_effect.h" />
     <ClInclude Include="camera_shake.h" />
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
+    <ClInclude Include="clock.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />
     <ClInclude Include="contact_block.h" />
@@ -260,6 +268,7 @@
     <ClInclude Include="movable_ground.h" />
     <ClInclude Include="object_manager.h" />
     <ClInclude Include="one-way_platform.h" />
+    <ClInclude Include="OP.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="player_life.h" />
     <ClInclude Include="player_position.h" />
@@ -280,6 +289,9 @@
     <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="tool.h" />
+    <ClInclude Include="Video.h" />
+    <ClInclude Include="MovieTexture.h" />
+    <ClInclude Include="video_texture.h" />
     <ClInclude Include="UI_Block.h" />
     <ClInclude Include="wood.h" />
     <ClInclude Include="UI_StaminaSpirit_Gauge.h" />

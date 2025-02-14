@@ -17,7 +17,7 @@
 static ID3D11ShaderResourceView* g_EnemyFloating_Texture = NULL;	//動的エネミーのテクスチャ
 
 EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
-	:Enemy(ENEMY_FLOATING_LIFE, ENEMY_FLOATING_DAMAGE, ENEMY_FLOATING_SOULGAGE, ENEMY_FLOATING_SCORE, true, false)
+	:Enemy(ENEMY_FLOATING_LIFE, ENEMY_FLOATING_DAMAGE, ENEMY_FLOATING_SPIRIT_TYPE, ENEMY_FLOATING_SCORE, true, false)
 {
 	b2BodyDef body;
 	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
@@ -125,7 +125,7 @@ void EnemyFloating::Update()
 	{
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage(), false);
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType(), false);
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();

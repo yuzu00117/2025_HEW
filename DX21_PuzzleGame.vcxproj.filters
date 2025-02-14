@@ -258,10 +258,20 @@
     <ClCompile Include="Item_Jewel.cpp" />
     <ClCompile Include="bound_block.cpp" />
     <ClCompile Include="Item_SavePoint.cpp" />
+    <ClCompile Include="video_texture.cpp" />
+    <ClCompile Include="MovieTexture.cpp" />
+    <ClCompile Include="Video.cpp" />
+    <ClCompile Include="OP.cpp" />
     <ClCompile Include="dead_production.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
     <ClCompile Include="UI_Block.cpp" />
+    <ClCompile Include="break_block.cpp">
+      <Filter>リソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="break_effect.cpp">
+      <Filter>ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -545,11 +555,22 @@
     </ClInclude>
     <ClInclude Include="bound_block.h" />
     <ClInclude Include="Item_SavePoint.h" />
+    <ClInclude Include="clock.h" />
+    <ClInclude Include="video_texture.h" />
+    <ClInclude Include="MovieTexture.h" />
+    <ClInclude Include="Video.h" />
+    <ClInclude Include="OP.h" />
     <ClInclude Include="dead_production.h">
       <Filter>ソースファイル</Filter>
     </ClInclude>
     <ClInclude Include="UI_Block.h">
       <Filter>リソースファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="break_block.h">
+      <Filter>リソースファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="break_effect.h">
+      <Filter>ソースファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

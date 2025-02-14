@@ -57,5 +57,7 @@ void SetProjectionMatrix(XMMATRIX ProjectionMatrix );
 
 
 void SetMaterial( MATERIAL Material );
+void SetShaderNormal();
+void SetMovieShader();
 
 

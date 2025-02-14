@@ -52,13 +52,13 @@ void ItemManager::AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, b
     m_SavePoint_List.emplace_back(std::make_unique<ItemSavePoint>(position, body_size, angle, shape_polygon, Alpha));
 }
 
-void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool respawning, float Alpha)
+void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritType type, bool respawning, float Alpha)
 {
     if (respawning) {
         return;
     }
     // 既存の引数コンストラクタを利用して生成
-    m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, Alpha));
+    m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, type, Alpha));
    //　新しく作ったものの初期化処理
     auto& lastSpirit = *m_Spirit_List.back();
     lastSpirit.Initialize();
@@ -216,13 +216,6 @@ void ItemManager::FinalizeAll(bool respawning) {
     m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
-void ItemManager::SetCollectSpirit(bool flag)
-{
-    for (auto& w : m_Spirit_List) {
-        w->SetState(Spirit_Collecting);
-    }
-
-}
 
 void ItemManager::UseAllJewel()
 {

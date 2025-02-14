@@ -68,7 +68,9 @@ enum ColliderTypeList
 
     collider_blown_away_enemy,
 
-    collider_bound_block
+    collider_bound_block,
+
+    collider_break_block,//オブジェクトと接触したら壊れるブロック
 };
 
 

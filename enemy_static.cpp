@@ -29,7 +29,7 @@ static ID3D11ShaderResourceView* g_EnemyStatic_Texture_Destroyed;//Ã“IƒGƒlƒ~[‚
 static ID3D11ShaderResourceView* g_EnemySensor_Texture = NULL;	  //ƒGƒlƒ~[‚ÌƒZƒ“ƒT[‚ÌƒeƒNƒXƒ`ƒƒ
 
 EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
-	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SOULGAGE, ENEMY_STATIC_SCORE, true, false)
+	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SPIRIT_TYPE, ENEMY_STATIC_SCORE, true, false)
 {
 	b2BodyDef body;
 	body.type = b2_staticBody;							//Ã“I‚ÈƒIƒuƒWƒFƒNƒg‚É‚·‚é‚È‚çture
@@ -168,7 +168,7 @@ void EnemyStatic::Update()
 	{
 		//ƒ\ƒEƒ‹‚ð—Ž‚Æ‚·
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage(), false);
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType(), false);
 
 
 
