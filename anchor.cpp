@@ -148,30 +148,13 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position=anchor_position;
+	body.angle = 0;
 
 	//投げられた角度にあわせてアンカーの角度の設定の必要があるっぴよ
 
-	b2Vec2 Temporary_angle;//ベクトル使って飛んでいく角度 変数名は一時的なっていみ
-	Temporary_angle.x = target_AP_body->GetPosition().x - player_body->GetPosition().x;//xの座標の管理
-	Temporary_angle.y = target_AP_body->GetPosition().y - player_body->GetPosition().y;//yの座標の管理
+	
 
-	//ラジアン角を算出
-	float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
 
-	// ラジアンから度数へ変換
-	anchor_angle = anchor_angle * 180.0f / M_PI;
-
-	// 270度を補正 画像が下向きだったから
-	anchor_angle +=35.0f;
-
-	// 負の角度を正の範囲に調整（0°～360°）
-	if (anchor_angle < 0) {
-		anchor_angle += 360.0f;
-	}
-
-	//度数をラジアンに変換して
-	//Box2dのラジアンで管理してる
-	body.angle = anchor_angle * M_PI / 180.0f;
 
 
 	body.fixedRotation = true;//回転を固定にする
@@ -294,13 +277,48 @@ void Anchor::Draw()
 			break;
 		}
 
-		
+
+		b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
+
+		b2Vec2 Temporary_angle;//ベクトル使って飛んでいく角度 変数名は一時的なっていみ
+
+		if (Anchor::GetAnchorState() == Throwing_state)
+		{
+			Temporary_angle.x = target_AP_body->GetPosition().x - anchor->GetPosition().x;//xの座標の管理
+			Temporary_angle.y = target_AP_body->GetPosition().y - anchor->GetPosition().y;//yの座標の管理
+		}
+		else
+		{
+			Player& player = Player::GetInstance();
+			Temporary_angle.x = anchor->GetPosition().x -player.GetOutSidePlayerBody()->GetPosition().x;//xの座標の管理
+			Temporary_angle.y = anchor->GetPosition().y - player.GetOutSidePlayerBody()->GetPosition().y;//yの座標の管理
+		}
+
+
+
+		//ラジアン角を算出
+		float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
+
+		// ラジアンから度数へ変換
+		anchor_angle = anchor_angle * 180.0f / M_PI;
+
+		// 270度を補正 画像が下向きだったから
+		anchor_angle += 35.0f;
+
+		// 負の角度を正の範囲に調整（0°～360°）
+		if (anchor_angle < 0) {
+			anchor_angle += 360.0f;
+		}
+
+		//度数をラジアンに変換して
+		//Box2dのラジアンで管理してる
+		float angle=anchor_angle * M_PI / 180.0f;
 
 		//draw
 		DrawSprite(
 			{ draw_x,
 			  draw_y },
-			g_anchor_instance->GetAnchorBody()->GetAngle(),
+			angle,
 			{ g_anchor_instance->GetSize().x*scale*anchor_size_scale,g_anchor_instance->GetSize().y*scale* anchor_size_scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 		);
 
