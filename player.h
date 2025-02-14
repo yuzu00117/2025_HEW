@@ -115,6 +115,8 @@ public:
 	//アンカーのレベル変動があった際のエフェクト
 	void DrawAnchorLevelUpDownEffect();
 
+	int GetAnchorFrameManagement();
+
 
 	//描画用にサイズを持たせておく
 	b2Vec2 GetSize() const 

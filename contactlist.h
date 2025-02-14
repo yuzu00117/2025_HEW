@@ -279,7 +279,10 @@ public:
 
             if (Anchor::GetAnchorState() == Throwing_state)
             {
-                Anchor::SetAnchorState(Deleting_state);
+                if (10 < player.GetAnchorFrameManagement())
+                {
+                    Anchor::SetAnchorState(Deleting_state);
+                }
             }
 
 
