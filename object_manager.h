@@ -36,7 +36,7 @@
 
 #include"contact_block.h"
 #include"UI_Block.h"
-
+#include"break_block.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -86,7 +86,7 @@ public:
     //傾斜ブロックの追加
     void AddSloping_block(const b2Vec2& position, const b2Vec2& size, const SlopingBlockAspect& aspect);
     //静的→動的のブロックの追加
-    void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level);
+    void AddStatic_to_Dynamic_block(const b2Vec2& position, const b2Vec2& size, const collider_type_Box_or_Circle& collider_type, const int& need_level, const bool& break_flag);
     // 引っ張れる床を追加
     void AddMovable_Ground(const b2Vec2& position, const b2Vec2& groundSize, const b2Vec2& anchorPointSize, const int& need_level);
     //静的エネミー生成
@@ -120,6 +120,8 @@ public:
 
     void AddUiBlock(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle);
 
+
+    void AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisions_x, int divisions_y, float angle,ID3D11ShaderResourceView* g_Texture);
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -165,7 +167,7 @@ public:
 
     UI_block* FindUiBlock(int id);
 
-
+    Break_Block* FindBreakBlock(int id);
     
 
     
@@ -237,6 +239,8 @@ private:
     std::vector<std::unique_ptr<contact_block>>contact_block_list;//接触ブロック
 
     std::vector<std::unique_ptr<UI_block>>Ui_block_list;//接触ブロック
+
+    std::vector<std::unique_ptr<Break_Block>>break_block_list;//接触ブロック
 
    
     //ここにオブジェクトごとにリストを追加していく感じ

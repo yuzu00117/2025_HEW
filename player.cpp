@@ -69,6 +69,11 @@ static ID3D11ShaderResourceView* g_Anchor_LevelUp_1to2_Effect = NULL;//アンカ
 static ID3D11ShaderResourceView* g_Anchor_LevelUp_2to3_Effect = NULL;//アンカーがレベル2から３になった場合のエフェクト
 static ID3D11ShaderResourceView* g_Anchor_LevelDown_Effect = NULL;  //アンカーがレベルが下がったひと
 
+//たまちゃん
+static ID3D11ShaderResourceView* g_TamaChan_Lv1 = NULL;//たまちゃんLv1
+static ID3D11ShaderResourceView* g_TamaChan_Lv2 = NULL;//たまちゃんLv2
+static ID3D11ShaderResourceView* g_TamaChan_Lv3 = NULL;//たまちゃんLv3
+
 
 
 //staticメンバー変数の初期化
@@ -165,6 +170,11 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
         g_Anchor_LevelUp_1to2_Effect = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Up_1to2_Effect.png");
         g_Anchor_LevelUp_2to3_Effect = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Up_2to3_Effect.png");
         g_Anchor_LevelDown_Effect =    InitTexture(L"asset\\texture\\anchor_point\\Anchor_Level_Domn_Effect.png");
+
+
+        g_TamaChan_Lv1 = InitTexture(L"asset\\texture\\anchor_point\\tama_Lv1.png");
+        g_TamaChan_Lv2 = InitTexture(L"asset\\texture\\anchor_point\\tama_Lv2.png");
+        g_TamaChan_Lv3 = InitTexture(L"asset\\texture\\anchor_point\\tama_Lv3.png");
     }
 
 
@@ -460,18 +470,13 @@ void Player::Update()
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-       // プレイヤーが歩行中かどうかのフラグ
-  // 右移動
+         // プレイヤーが歩行中かどうかのフラグ
+        // 右移動
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
-            }
+            
+            m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
+        
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -495,14 +500,10 @@ void Player::Update()
         // 左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
-            }
+          
+             m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
+          
+         
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -607,18 +608,6 @@ void Player::Update()
 
         //プレイヤーポジションCPPの関数にデータをセット
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
-
-
-//ソウルアイテム回収処理
-//----------------------------------------------------------------------------------------------------------------------------------------------------
-    if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB))
-    {
-        ItemManager& itemManager = ItemManager::GetInstance();
-        itemManager.SetCollectSpirit(true);
-
-        app_atomex_start(Player_Soul_Colect1_Sound);
-    }
-    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_G) || state.buttonB);
 
 
 //宝石使う処理(テスト用)
@@ -886,7 +875,7 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime)
     app_atomex_start(Player_Damege_Sound);
 
     // フィルターを変更
-    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
+    updateFixtureFilter("Player_filter", {"object_filter","enemy_filter","MiniGolem_filter","Boss_filter"});
 
 }
 
@@ -1464,6 +1453,10 @@ void Player::Draw()
         //エフェクト
         DrawAnchorLevel3Frame();
 
+
+        //たまちゃん
+        DrawTamaChan();
+
     }
 }
 
@@ -1554,6 +1547,12 @@ void Player::Finalize()
         UnInitTexture(g_Anchor_Effect_L1);
         UnInitTexture(g_Anchor_Effect_L2);
         UnInitTexture(g_Anchor_Effect_L3);
+        UnInitTexture(g_Anchor_LevelUp_1to2_Effect);
+        UnInitTexture(g_Anchor_LevelUp_2to3_Effect);
+        UnInitTexture(g_Anchor_LevelDown_Effect);
+        UnInitTexture(g_TamaChan_Lv1);
+        UnInitTexture(g_TamaChan_Lv2);
+        UnInitTexture(g_TamaChan_Lv3);
 
         g_player_Texture = NULL;
         g_player_jump_sheet = NULL;
@@ -1574,6 +1573,13 @@ void Player::Finalize()
         g_Anchor_Effect_L1 = NULL;
         g_Anchor_Effect_L2 = NULL;
         g_Anchor_Effect_L3 = NULL;
+
+        g_Anchor_LevelUp_1to2_Effect = NULL;
+        g_Anchor_LevelUp_2to3_Effect = NULL;
+        g_Anchor_LevelDown_Effect = NULL;
+        g_TamaChan_Lv1 = NULL;
+        g_TamaChan_Lv2 = NULL;
+        g_TamaChan_Lv3 = NULL;
     }
 
 }
@@ -1601,7 +1607,7 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
         minus = -1;
     }
 
-    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, 1.0*KnockBackLevel));
+    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, -1.0*KnockBackLevel));
 
 }
 
@@ -1735,4 +1741,45 @@ void Player::DrawAnchorLevelUpDownEffect()
      
        
     }
+}
+
+
+void Player::DrawTamaChan()
+{
+
+
+    // コライダーと位置情報の補正をするため
+    float scale = SCREEN_SCALE;
+
+    // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+    b2Vec2 screen_center;
+    screen_center.x = SCREEN_CENTER_X;
+    screen_center.y = SCREEN_CENTER_Y;
+
+
+    b2Vec2 Pos = GetPlayerBody()->GetPosition();
+
+
+    float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+    float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+    // シェーダリソースを設定
+    GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+
+    DrawSplittingSprite(
+        { draw_x-100,
+          draw_y-100 },
+        0,
+        {150,150 },
+        6,6,TamaChanSheetCnt,3.0f
+    );
+
+    TamaChanSheetCnt += 0.5;
+
+}
+
+int Player::GetAnchorFrameManagement()
+{
+    return g_anchor_frame_management_number;
 }

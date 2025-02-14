@@ -35,6 +35,7 @@
 #include"gokai.h"
 #include"blown_away_effect.h"
 #include"dead_production.h"
+#include"break_effect.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -128,8 +129,13 @@ void Game::Initialize()
     dead_production::Initialize();
 
 
-
     b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+
+
+    //壊れるオブジェクトのエフェクト
+    PillarFragmentsManager::GetInstance().Init(world, 3, 3);
+
+    
     // 衝突リスナーをワールドに登録
     MyContactListener& contactListener = MyContactListener::GetInstance();
     world->SetContactListener(&contactListener);
@@ -242,8 +248,8 @@ void Game::Update(void)
             //ボスの更新処理
             boss.Update();
 
-
-
+            //壊れる演出のエフェクト
+            PillarFragmentsManager::GetInstance().UpdateFragments();
 
             //衝突エフェクトの描画処理
             UpdateImpactEffects();
@@ -429,7 +435,7 @@ void Game::Draw(void)
 
     dead_production::Draw();
 
-
+    PillarFragmentsManager::GetInstance().DrawFragments();
 #ifdef _DEBUG
     //デバッグ文字
     DrawDebug();
