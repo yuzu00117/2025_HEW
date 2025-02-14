@@ -303,7 +303,7 @@ void Anchor::Draw()
 		anchor_angle = anchor_angle * 180.0f / M_PI;
 
 		// 270度を補正 画像が下向きだったから
-		anchor_angle += 35.0f;
+		anchor_angle += 40.0f;
 
 		// 負の角度を正の範囲に調整（0°～360°）
 		if (anchor_angle < 0) {
