@@ -36,6 +36,7 @@
 #include"blown_away_effect.h"
 #include"dead_production.h"
 #include"break_effect.h"
+#include"change_scene_end_production.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -66,7 +67,11 @@ void Game::Initialize()
     //文字（絵）
     InitializeWord();
 
+
+    //死亡処理の演出のリセット
     dead_production::Reset();
+    //changeシートのリセット
+    change_scene_end_production::Reset();
 
 
     //マップによって初期リスを変える　　　これアンカーのレベル引き継いでないわ
@@ -128,6 +133,8 @@ void Game::Initialize()
 
     dead_production::Initialize();
 
+    change_scene_end_production::Initialize();
+
 
     b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 
@@ -183,6 +190,8 @@ void Game::Finalize(void)
 
     dead_production::Finalize();
 
+    change_scene_end_production::Finalize();
+
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
 
@@ -190,6 +199,9 @@ void Game::Finalize(void)
     FinalizeImpactEffects();
     //撃墜演出エフェクト
     FinalizeBlownAwayEffects();
+
+    //壊れるエフェクトブロックのファイナライズ
+    PillarFragmentsManager::GetInstance().Finalize();
 
 
     
@@ -207,6 +219,7 @@ void Game::Finalize(void)
 
 void Game::Update(void)
 {
+    SceneManager& sceneManager = SceneManager::GetInstance();
 
     // Box2D ワールドのステップ更新
     b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
@@ -257,7 +270,7 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
 
-            SceneManager& sceneManager = SceneManager::GetInstance();
+         
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
@@ -279,35 +292,7 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
             }
 
-            //シーン移行の管理
-            if (sceneManager.Get_Chenge_Scene_flag() == true)
-            {
-                //シーン移行したらfalseにする
-                sceneManager.Set_Chenge_Scene_flag(false);
-                switch (sceneManager.GetStageName())
-                {
-                case STAGE_SELECT:
-                    sceneManager.SetStageName(STAGE_SELECT);
-                    sceneManager.ChangeScene(SCENE_STAGE_SELECT);
-                    break;
-                case STAGE_TUTORIAL:
-                    sceneManager.SetStageName(STAGE_TUTORIAL);
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    break;
-                case STAGE_1_1:
-                    sceneManager.SetStageName(STAGE_1_1);
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    break;
-                case STAGE_BOSS:
-                    sceneManager.SetStageName(STAGE_BOSS);
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    break;
-                default:
-                    break;
-                }
-
-              
-            }
+           
 
 
 
@@ -358,7 +343,39 @@ void Game::Update(void)
 
     }
 
+    //シーン移行の管理
+    if (sceneManager.Get_Chenge_Scene_flag() == true)
+    {
+        //シーン移行したらfalseにする
+        change_scene_end_production::Update();
+        if (change_scene_end_production::GetChangeFlag() == true)
+        {
+            sceneManager.Set_Chenge_Scene_flag(false);
+            switch (sceneManager.GetStageName())
+            {
+            case STAGE_SELECT:
+                sceneManager.SetStageName(STAGE_SELECT);
+                sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+                break;
+            case STAGE_TUTORIAL:
+                sceneManager.SetStageName(STAGE_TUTORIAL);
+                sceneManager.ChangeScene(SCENE_GAME);
+                break;
+            case STAGE_1_1:
+                sceneManager.SetStageName(STAGE_1_1);
+                sceneManager.ChangeScene(SCENE_GAME);
+                break;
+            case STAGE_BOSS:
+                sceneManager.SetStageName(STAGE_BOSS);
+                sceneManager.ChangeScene(SCENE_GAME);
+                break;
+            default:
+                break;
+            }
+        }
 
+
+    }
 
 }
 
@@ -406,9 +423,6 @@ void Game::Draw(void)
     DrawBlownAwayEffects(1.0f);
 
 
-  
-
-
 
     Bg::FrontDraw();
 
@@ -434,6 +448,11 @@ void Game::Draw(void)
 
 
     dead_production::Draw();
+
+    //チェンジシーン
+    change_scene_end_production::Draw();
+
+
 
     PillarFragmentsManager::GetInstance().DrawFragments();
 #ifdef _DEBUG
