@@ -1763,44 +1763,52 @@ void Player::DrawTamaChan()
     screen_center.y = SCREEN_CENTER_Y;
 
     // コライダーの位置の取得（プレイヤーの位置）
-    b2Vec2 playerPos = GetPlayerBody()->GetPosition();
+    b2Vec2 player_pos = GetPlayerBody()->GetPosition();
 
     // たまちゃんの現在の位置を取得
-    static b2Vec2 tamaChanPos = playerPos;
+    static b2Vec2 tamachan_pos = player_pos;
 
     // プレイヤーの位置に向かって徐々に移動する
-    float followSpeed = 0.05f; // 追従速度（0.0f〜1.0fの範囲で調整）
-    tamaChanPos.x += (playerPos.x - tamaChanPos.x) * followSpeed;
-    tamaChanPos.y += (playerPos.y - tamaChanPos.y) * followSpeed;
-
-    // たまちゃんの描画位置を計算
-    float draw_x = ((tamaChanPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-    float draw_y = ((tamaChanPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+    float follow_speed = 0.03f; // 追従速度（0.0f〜1.0fの範囲で調整）
 
     // プレイヤーの向きを取得
-    bool direction = GetDirection();
+    bool direction = GetDirection(); // true: 右向き, false: 左向き
+    // たまちゃんの向き（左かどうか）
+    bool is_left;
 
     // 向きに応じてたまちゃんの位置を反転
     if (!direction) {
-        draw_x = draw_x + 100;
+        // たまちゃんの位置を反転
+        tamachan_pos.x += (player_pos.x - tamachan_pos.x + 0.5) * follow_speed;
+        tamachan_pos.y += (player_pos.y - tamachan_pos.y) - 1 * follow_speed;
+        // たまちゃんの向きを反転
+        is_left = false;
     }
     else
-    {
-        draw_x = draw_x - 100;
+    {   // たまちゃんの位置を反転
+        tamachan_pos.x += (player_pos.x - tamachan_pos.x - 0.5) * follow_speed;
+        tamachan_pos.y += (player_pos.y - tamachan_pos.y) - 1 * follow_speed;
+        // たまちゃんの向きを反転
+        is_left = true;
     }
 
+    // たまちゃんの描画位置を計算
+    float draw_x = ((tamachan_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+    float draw_y = ((tamachan_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
     // シェーダリソースを設定
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
 
     // スプライトを描画
-    DrawSplittingSprite(
-        { draw_x, draw_y - 100 }, // 描画位置
+    DrawDividedSpritePlayer(
+        { draw_x, draw_y -100 },        // 描画位置
         0,                              // 回転角度
         { 150, 150 },                   // サイズ
         6, 6,                           // 分割数
         TamaChanSheetCnt,               // シートカウント
-        3.0f                            // スケール
+        3.0f,                           // スケール
+        is_left                         // 左向きかどうか
+        
     );
 
     TamaChanSheetCnt += 0.5;
