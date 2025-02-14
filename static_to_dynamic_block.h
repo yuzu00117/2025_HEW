@@ -25,7 +25,7 @@ class static_to_dynamic_block
 {
 public:
 
-	static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, collider_type_Box_or_Circle collider_type, int need_anchor_level);
+	static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, collider_type_Box_or_Circle collider_type, int need_anchor_level,bool break_flag);
 	~static_to_dynamic_block();
 
 
@@ -109,6 +109,11 @@ private:
 	bool change_dynamic_flag;
 
 	bool	m_pulling = false;
+
+
+	bool Break_Flag;
+
+	b2Vec2 prevVelocity;
 };
 
 
