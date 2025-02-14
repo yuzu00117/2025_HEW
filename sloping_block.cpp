@@ -128,11 +128,13 @@ void sloping_block::Initialize()
 
 void sloping_block::Update()
 {
+	//プレイヤーがと衝突しているならプレイヤーが登れるように力を加える
 	if (m_player_collided)
 	{
 
 		Player& player = Player::GetInstance();
 
+		//プレイヤーが歩いていないのなら力を加えない
 		if (player.GetState() != player_walk_state)
 		{
 			return;
@@ -149,27 +151,33 @@ void sloping_block::Update()
 			vertex[i].y += body_position.y;
 		}
 
+		//斜面のベクトル計算（掛ける8.0は調整値）
 		b2Vec2	vector;
 		vector.x = (vertex[0].x - vertex[2].x)*8.0f;
 		vector.y = (vertex[0].y - vertex[2].y)*8.0f;
 
-		//ブロックの向きによってプレイヤーの向きが変わった時の処理が違う
+		//プレイヤーのボディを取得しておく
 		auto player_body = player.GetOutSidePlayerBody();
+		//力を加える時最大のベロシティを設定
 		b2Vec2 max_velocity = { 2.0f,-1.0f };
 
+		//ブロックの向きによってプレイヤーの向きが変わった時の処理が違う
 		switch (GetBlockAspect())
 		{
 		case right_down:
 			//プレイヤーが「右」向いている時上る
 			if (player.GetDirection() == 1)
 			{
+				//プレイヤーに力を加える
 				player_body->ApplyForceToCenter(vector, true);
 				auto player_velocity = player_body->GetLinearVelocity();
+				//ベロシティの最大値を超えないようにするための処理
 				if (player_velocity.x > max_velocity.x)
 				{
 					player_body->SetLinearVelocity({ max_velocity.x, player_velocity.y });
 					player_velocity.x = max_velocity.x;
 				}
+				//ベロシティの最大値を超えないようにするための処理
 				if (player_velocity.y < max_velocity.y)
 				{
 					player_body->SetLinearVelocity({ player_velocity.x, max_velocity.y });
@@ -179,6 +187,7 @@ void sloping_block::Update()
 			//プレイヤーが「左」向いている時下る
 			else
 			{
+				//プレイヤーが斜面に沿って下れるように力を加える
 				player.GetOutSidePlayerBody()->ApplyLinearImpulseToCenter({ 0.0f,0.2f }, true);
 			}
 			break;
@@ -186,13 +195,16 @@ void sloping_block::Update()
 			//プレイヤーが「左」向いている時上る
 			if (player.GetDirection() == 0)
 			{
+				//プレイヤーに力を加える
 				player.GetOutSidePlayerBody()->ApplyForceToCenter(vector, true);
 				auto player_velocity = player_body->GetLinearVelocity();
+				//ベロシティの最大値を超えないようにするための処理
 				if (player_velocity.x > max_velocity.x)
 				{
 					player_body->SetLinearVelocity({ max_velocity.x, player_velocity.y });
 					player_velocity.x = max_velocity.x;
 				}
+				//ベロシティの最大値を超えないようにするための処理
 				if (player_velocity.y < max_velocity.y)
 				{
 					player_body->SetLinearVelocity({ player_velocity.x, max_velocity.y });
@@ -204,6 +216,7 @@ void sloping_block::Update()
 			//プレイヤーが「右」向いている時下る
 			else
 			{
+				//プレイヤーが斜面に沿って下れるように力を加える
 				player.GetOutSidePlayerBody()->ApplyLinearImpulseToCenter({ 0.0f,0.2f }, true);
 			}
 			break;
