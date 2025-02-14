@@ -598,7 +598,7 @@ void Anchor::DrawChain()
 	float angle = atan2(anchor_position.y - player_position.y, anchor_position.x - player_position.x);
 
 	// チェーンサイズ設定 (X方向が長い)
-	b2Vec2 chain_size(0.2f, 0.05); // Xが長いチェーン
+	b2Vec2 chain_size(0.2f, 0.1); // Xが長いチェーン
 
 	// チェーン描画
 	for (int i = 1; i <= chain_count-2; ++i)
