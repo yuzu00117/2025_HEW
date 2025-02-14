@@ -993,6 +993,12 @@ void Boss_1_1::DeleteAttackBody()
 		world->DestroyBody(m_destroy_body);
 
 		SetAttackBody(nullptr);
+
+		// ショックウェーブが再生中でなければ再生する
+		if (app_atomex_is_playing(Boss_Attack_Wave_Sound)==true)
+		{
+			app_atomex_stop_cue(Boss_Attack_Wave_Sound);
+		}
 	}
 }
 
