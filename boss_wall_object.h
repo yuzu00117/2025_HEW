@@ -19,7 +19,7 @@
 class Boss_Wall_Objcet
 {
 public:
-	Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,ID3D11ShaderResourceView* g_Texture);
+	Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,ID3D11ShaderResourceView* g_Texture,bool left);
 	~Boss_Wall_Objcet();
 
 
@@ -139,6 +139,8 @@ private:
 	b2Body* AnchorPoint_body;//アンカーポイントのボディ
 
 	b2Vec2 m_size;//サイズ
+
+	bool left_flag;//アンカーポイントを表示する位置
 
 	int Splitting_x;//横の分割すう
 

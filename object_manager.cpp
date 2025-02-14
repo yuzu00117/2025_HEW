@@ -141,9 +141,9 @@ void ObjectManager::AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisi
 
 
 //ボスの壁オブジェクトを追加
-void ObjectManager::AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture)
+void ObjectManager::AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture,bool left)
 {
-    boss_wall_list.emplace_back(std::make_unique<Boss_Wall_Objcet>(position, size, splitting_x, splitting_y, g_Texture));
+    boss_wall_list.emplace_back(std::make_unique<Boss_Wall_Objcet>(position, size, splitting_x, splitting_y, g_Texture,left));
 }
 
 // ID を使って木を検索インスタンスを取得できる

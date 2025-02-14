@@ -23,7 +23,7 @@
 #include"1-1_boss.h"
 
 
-Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,ID3D11ShaderResourceView* g_Texture)
+Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,ID3D11ShaderResourceView* g_Texture,bool left)
 {
 	SetSize(size);//描画用のサイズを保存
 
@@ -80,6 +80,8 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 
 	Texture=g_Texture;
 	isUse = true;
+
+	left_flag =left;
 }
 
 Boss_Wall_Objcet::~Boss_Wall_Objcet()
@@ -257,12 +259,17 @@ void Boss_Wall_Objcet::CreateAnchorPoint()
 		anchorpoint_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
 		anchorpoint_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
 
-	
+		float left = -1;
+		if (left_flag == false)
+		{
+			left = 1;
+		}
+
 		b2Vec2 position = m_body->GetPosition();
 
 		b2BodyDef anchor_point_body;
 		anchor_point_body.type = b2_dynamicBody;																   // 動的なオブジェクトにする
-		anchor_point_body.position.Set(GetBody()->GetPosition().x, GetBody()->GetPosition().y); // ポジションを設定
+		anchor_point_body.position.Set(GetBody()->GetPosition().x+(GetSize().x/BOX2D_SCALE_MANAGEMENT/2)*left, GetBody()->GetPosition().y); // ポジションを設定
 		anchor_point_body.angle = 0;																			   // 角度の初期化
 		anchor_point_body.userData.pointer = (uintptr_t)this;													   // userDataのポインタを設定
 		anchor_point_body.fixedRotation = true;																	   // 回転を固定する
@@ -302,8 +309,8 @@ void Boss_Wall_Objcet::CreateAnchorPoint()
 		jointDef.bodyA = m_body;			   // 壁の本体
 		jointDef.bodyB = GetObjectAnchorPointBody(); // ボスのアンカーポイントのボディ
 
-		// ボス側
-		jointDef.localAnchorA.Set(0.0f,0.0f);
+		// 壁がわ
+		jointDef.localAnchorA.Set(GetSize().x/BOX2D_SCALE_MANAGEMENT*0.5*left, 0.0f);
 		// アンカーポイント側
 		jointDef.localAnchorB.Set(0.0f, 0.0f);
 

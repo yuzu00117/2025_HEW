@@ -705,13 +705,15 @@ void Field::Initialize()
 
 
 
-
-
-
-				//ボスのオブジェクトに使う柱
 				if (field_map[y][x] == 70) {
-					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 14.5f), 6, 6,g_Ground_Texture);
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(11.f, 14.5f), 6, 6, g_Ground_Texture, false);
 				}
+				//ボスのオブジェクトに使う壁
+				if (field_map[y][x] == 71) {
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(11.f, 14.5f), 6, 6,g_Ground_Texture,true);
+				}
+
+			
 
 			}
 		}
