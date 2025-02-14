@@ -1752,11 +1752,8 @@ void Player::DrawAnchorLevelUpDownEffect()
     }
 }
 
-
 void Player::DrawTamaChan()
 {
-
-
     // コライダーと位置情報の補正をするため
     float scale = SCREEN_SCALE;
 
@@ -1765,27 +1762,48 @@ void Player::DrawTamaChan()
     screen_center.x = SCREEN_CENTER_X;
     screen_center.y = SCREEN_CENTER_Y;
 
+    // コライダーの位置の取得（プレイヤーの位置）
+    b2Vec2 playerPos = GetPlayerBody()->GetPosition();
 
-    b2Vec2 Pos = GetPlayerBody()->GetPosition();
+    // たまちゃんの現在の位置を取得
+    static b2Vec2 tamaChanPos = playerPos;
 
+    // プレイヤーの位置に向かって徐々に移動する
+    float followSpeed = 0.05f; // 追従速度（0.0f〜1.0fの範囲で調整）
+    tamaChanPos.x += (playerPos.x - tamaChanPos.x) * followSpeed;
+    tamaChanPos.y += (playerPos.y - tamaChanPos.y) * followSpeed;
 
-    float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-    float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+    // たまちゃんの描画位置を計算
+    float draw_x = ((tamaChanPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+    float draw_y = ((tamaChanPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+    // プレイヤーの向きを取得
+    bool direction = GetDirection();
+
+    // 向きに応じてたまちゃんの位置を反転
+    if (!direction) {
+        draw_x = draw_x + 100;
+    }
+    else
+    {
+        draw_x = draw_x - 100;
+    }
 
 
     // シェーダリソースを設定
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
 
+    // スプライトを描画
     DrawSplittingSprite(
-        { draw_x-100,
-          draw_y-100 },
-        0,
-        {150,150 },
-        6,6,TamaChanSheetCnt,3.0f
+        { draw_x, draw_y - 100 }, // 描画位置
+        0,                              // 回転角度
+        { 150, 150 },                   // サイズ
+        6, 6,                           // 分割数
+        TamaChanSheetCnt,               // シートカウント
+        3.0f                            // スケール
     );
 
     TamaChanSheetCnt += 0.5;
-
 }
 
 int Player::GetAnchorFrameManagement()
