@@ -374,7 +374,8 @@ void Game::Draw(void)
     SetDepthEnable(false);
 
  
-
+    //背景に描画
+    objectManager.DrawBack();
 
     //ボスの描画処理
     boss.Draw();
@@ -395,7 +396,7 @@ void Game::Draw(void)
     //アンカーの描画処理
     Anchor::Draw();
 
-
+  
 
     itemManager.DrawFront();
     objectManager.DrawFront();
