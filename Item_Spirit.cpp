@@ -118,12 +118,7 @@ void	ItemSpirit::Update()
 
             GetBody()->ApplyLinearImpulseToCenter(b2Vec2(vec.x * speed, vec.y * speed), true);
 
-            //ソウルのサイズが徐々に減る
-            if (m_size.x > 0.8f || m_size.y > m_size.x * 2)
-            {
-                m_size.x -= 0.005f;
-                m_size.y -= 0.005f;
-            }
+       
 
         }
         //消される予定ならボディーを消す
@@ -209,13 +204,30 @@ void ItemSpirit::Draw()
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+        float sprit_scale = 1;
+
+        switch (m_type)
+        {
+        case Spirit_L:
+            sprit_scale = 4.0f;
+            break;
+        case Spirit_M:
+            sprit_scale = 2.5f;
+            break;
+        case Spirit_S:
+            sprit_scale = 1.2f;
+            break;
+        default:
+            break;
+        }
+
 
         DrawSplittingSprite(
             { draw_x,
             draw_y },
             m_body->GetAngle(),
-            { GetSize().x * scale,GetSize().y * scale },
-            6, 4, m_anim_id,1.0f
+            { GetSize().x * scale* sprit_scale * 0.75f,GetSize().y * scale * sprit_scale },
+            6, 4, m_anim_id,2.0f
         );
         
         count_anim_time++;

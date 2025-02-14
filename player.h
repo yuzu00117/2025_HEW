@@ -108,12 +108,16 @@ public:
 	//アンカーを投げた時に発光するエフェクトを呼び出す関数
 	void StartAnchorEffect();
 
+	//たまちゃんの描画
+	void DrawTamaChan();
 
 	//アンカーを投げた時にプレイヤーが発光するエフェクト
 	void DrawAnchorEffect();
 
 	//アンカーのレベル変動があった際のエフェクト
 	void DrawAnchorLevelUpDownEffect();
+
+	int GetAnchorFrameManagement();
 
 
 	//描画用にサイズを持たせておく
@@ -303,6 +307,8 @@ private:
 
 	int dustFrameCnt;
 
+
+	float TamaChanSheetCnt = 0.0f;
 
 	//-----------------------------------------
 	//プレイヤーのサウンドの管理
