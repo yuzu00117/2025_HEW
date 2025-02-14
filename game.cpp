@@ -84,18 +84,23 @@ void Game::Initialize()
     case STAGE_TUTORIAL:
         ////プレイヤーの初期化
         //フィールドの中でやるわ
-        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
         break;
     case STAGE_1_1:
 
         ////プレイヤーの初期化
-        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
 
         break;
     case STAGE_BOSS:
 
         //フィールドCPPでプレイヤーのイニシャライズを行う
  
+
+        break;
+    case STAGE_TEST:
+        ////プレイヤーの初期化
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(), m_respawn);
 
         break;
     case STAGE_NULL:

@@ -827,10 +827,11 @@ void Field::Initialize(bool respawning)
 					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Box_collider, 1, true);
 				}
 
+
 			}
 		}
 		objectManager.InitializeAll();
-		itemManager.InitializeAll();
+		itemManager.InitializeAll(respawning);
 		
 		break;
 	default:
