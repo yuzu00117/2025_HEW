@@ -138,6 +138,19 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 	{
 		if (g_anchor_point_body[i] == delete_anchor_point_body) // 削除対象のボディが見つかった場合
 		{
+
+			// 選択中のアンカーポイントを解除する
+			if (delete_anchor_point_body == g_select_anchor_point_body)
+			{
+				if (Anchor::GetAnchorState() == Nonexistent_state)
+				{
+					g_select_anchor_point_body = nullptr;
+				}
+				else
+				{
+					return;
+				}
+			}
 			g_anchor_point_body[i] = nullptr; // 配列内の該当エントリを無効化
 
 			// 配列の詰め処理
@@ -147,11 +160,7 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 			}
 			g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR - 1] = nullptr; // 配列の最後をクリア
 
-			// 選択中のアンカーポイントを解除する
-			if (delete_anchor_point_body == g_select_anchor_point_body)
-			{
-				g_select_anchor_point_body = nullptr;
-			}
+		
 			return; // 処理終了
 		}
 	}
@@ -401,5 +410,6 @@ b2Body* AnchorPoint::GetTargetAnchorPointBody()
 {
 	return g_select_anchor_point_body;
 }
+
 
 
