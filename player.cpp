@@ -1773,23 +1773,28 @@ void Player::DrawTamaChan()
 
     // プレイヤーの向きを取得
     bool direction = GetDirection(); // true: 右向き, false: 左向き
-    // たまちゃんの向き（左かどうか）
-    bool is_left;
 
     // 向きに応じてたまちゃんの位置を反転
     if (!direction) {
         // たまちゃんの位置を反転
         tamachan_pos.x += (player_pos.x - tamachan_pos.x + 0.5) * follow_speed;
         tamachan_pos.y += (player_pos.y - tamachan_pos.y) - 1 * follow_speed;
-        // たまちゃんの向きを反転
-        is_left = false;
+        // たまちゃんの位置がプレイヤーを越したら
+        if (tamachan_pos.x > player_pos.x) {
+            // たまちゃんの向きを反転
+            is_left = false;
+		}
+
     }
     else
     {   // たまちゃんの位置を反転
         tamachan_pos.x += (player_pos.x - tamachan_pos.x - 0.5) * follow_speed;
         tamachan_pos.y += (player_pos.y - tamachan_pos.y) - 1 * follow_speed;
-        // たまちゃんの向きを反転
-        is_left = true;
+        // たまちゃんの位置がプレイヤーを越したら
+        if (tamachan_pos.x < player_pos.x) {
+            // たまちゃんの向きを反転
+            is_left = true;
+        }
     }
 
     // たまちゃんの描画位置を計算
