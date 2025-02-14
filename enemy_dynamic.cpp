@@ -180,7 +180,7 @@ void EnemyDynamic::Update()
 
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0, GetSpiritType());
 
 
 
