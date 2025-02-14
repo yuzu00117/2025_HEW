@@ -875,7 +875,7 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime)
     app_atomex_start(Player_Damege_Sound);
 
     // フィルターを変更
-    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
+    updateFixtureFilter("Player_filter", {"object_filter","enemy_filter","MiniGolem_filter","Boss_filter"});
 
 }
 
@@ -1607,7 +1607,7 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
         minus = -1;
     }
 
-    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, 1.0*KnockBackLevel));
+    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, -1.0*KnockBackLevel));
 
 }
 

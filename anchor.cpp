@@ -123,6 +123,9 @@ void Anchor::DeleteAnchor()
 
 void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 {
+	//アンカーを削除にする
+	if (AnchorPoint::GetTargetAnchorPointBody() == nullptr) { Anchor::SetAnchorState(Deleting_state); return; }
+
 	//アンカーの錨の部分を作ってあげちゃう
 	b2Body* player_body = Player::GetOutSidePlayerBody();			//プレイヤーのBody情報を取得
 	b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();//ターゲットとしたアンカーポイントのボディ情報を取得
