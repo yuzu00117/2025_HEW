@@ -208,6 +208,9 @@ public:
 	}
 
 
+	player_draw_state GetState() { return draw_state; }
+
+
 
 private:
 
@@ -299,7 +302,6 @@ private:
 	std::vector<DustEffect> dustEffects;
 
 	int dustFrameCnt;
-
 
 
 	//-----------------------------------------

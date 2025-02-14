@@ -56,6 +56,8 @@ enum ObjectType {
 
     Object_teleport_block,//テレポートブロック
 
+    Object_sloping_block,   //傾斜のついたブロック
+
     Object_contact_block,//接触ブロック
 
     Object_UI_Block,//UIを表示するブロック
@@ -171,8 +173,6 @@ public:
     
 
     
-    //IDとオブジェクトタイプでオブジェクトを検索
-    Object* FindObjectByID_ObjectType(int id, ObjectType type);
 
     //指定の静的エネミーを削除
     void DestroyEnemyStatic(int id);

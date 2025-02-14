@@ -408,12 +408,6 @@ void Field::Initialize()
 					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_down);
 				}
 
-				if (field_map[y][x] == 37) {//右上斜面
-					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_upper);
-				}
-				if (field_map[y][x] == 38) {//左上斜面
-					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_upper);
-				}
 				//--------------------------------------------------------------------------------------------------------------------------------------------
 				//静的動的ブロック
 				if (field_map[y][x] == 39) {//岩ゴロゴロのところで使ってる
