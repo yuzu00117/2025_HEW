@@ -9,6 +9,7 @@
 #ifndef PLAYER_LIFE_H_
 #define PLAYER_LIFE_H_
 
+#define PLAYER_LIFE (3) //プレイヤーの残機の初期値
 
 class PlayerLife
 {

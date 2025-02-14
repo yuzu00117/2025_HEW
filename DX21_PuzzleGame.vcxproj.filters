@@ -154,9 +154,6 @@
     <ClCompile Include="Item_Manager.cpp">
       <Filter>ソースファイル\item</Filter>
     </ClCompile>
-    <ClCompile Include="Item_SpeedUp.cpp">
-      <Filter>ソースファイル\item</Filter>
-    </ClCompile>
     <ClCompile Include="Item_Spirit.cpp">
       <Filter>ソースファイル\item</Filter>
     </ClCompile>
@@ -264,9 +261,7 @@
     <ClCompile Include="dead_production.cpp">
       <Filter>ソースファイル</Filter>
     </ClCompile>
-    <ClCompile Include="UI_Blcok.cpp">
-      <Filter>リソースファイル</Filter>
-    </ClCompile>
+    <ClCompile Include="UI_Block.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -429,9 +424,6 @@
       <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="Item_Manager.h">
-      <Filter>ヘッダーファイル\item</Filter>
-    </ClInclude>
-    <ClInclude Include="Item_SpeedUp.h">
       <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="Item_Spirit.h">

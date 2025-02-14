@@ -168,7 +168,7 @@ void EnemyStatic::Update()
 	{
 		//ƒ\ƒEƒ‹‚ð—Ž‚Æ‚·
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage(), false);
 
 
 

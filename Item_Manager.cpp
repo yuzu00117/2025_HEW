@@ -25,26 +25,38 @@ ItemManager& ItemManager::GetInstance() {
 
 
 
-void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+void	ItemManager::AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon, float Alpha)
 {
+    if (respawning) {
+        return;
+    }
 	// 既存の引数コンストラクタを利用して生成
 	m_Coin_List.emplace_back(std::make_unique<ItemCoin>(position, body_size, angle, shape_polygon, Alpha));
 }
 
-void ItemManager::AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon, float Alpha)
+void ItemManager::AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool respawning, bool shape_polygon, float Alpha)
 {
+    if (respawning) {
+        return;
+    }
     // 既存の引数コンストラクタを利用して生成
     m_Jewel_List.emplace_back(std::make_unique<ItemJewel>(position, body_size, angle, type, shape_polygon, Alpha));
 }
 
-void ItemManager::AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
+void ItemManager::AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon, float Alpha)
 {
+    if (respawning) {
+        return;
+    }
     // 既存の引数コンストラクタを利用して生成
     m_SavePoint_List.emplace_back(std::make_unique<ItemSavePoint>(position, body_size, angle, shape_polygon, Alpha));
 }
 
-void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
+void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, bool respawning, float Alpha)
 {
+    if (respawning) {
+        return;
+    }
     // 既存の引数コンストラクタを利用して生成
     m_Spirit_List.emplace_back(std::make_unique<ItemSpirit>(position, body_size, angle, recovery, Alpha));
    //　新しく作ったものの初期化処理
@@ -74,13 +86,11 @@ ItemJewel* ItemManager::FindItem_Jewel_ByID(int ID)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-ItemSavePoint* ItemManager::FindItem_SavePoint_ByID(int ID)
+ItemSavePoint* ItemManager::FindItem_SavePoint()
 {
     for (const auto& w : m_SavePoint_List) {
-        if (w->GetID() == ID) {
             return w.get();
         }
-    }
     return nullptr;
 }
 
@@ -97,7 +107,17 @@ ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 
 
 // 全てのアイテムを初期化
-void ItemManager::InitializeAll() {
+void ItemManager::InitializeAll(bool respawning) {
+    //リスポン時の初期化処理
+//=========================================
+    if (respawning)
+    {
+        InitializeWhenSpawning();
+        return;
+    }
+
+    //リスポンじゃない時の初期化処理
+    //=========================================
     for (auto& w : m_Spirit_List) {
         w->Initialize();
     }
@@ -162,7 +182,20 @@ void ItemManager::DrawFront() {
 
 
 // 全てのアイテムを破棄
-void ItemManager::FinalizeAll() {
+void ItemManager::FinalizeAll(bool respawning) {
+    //リスポン時の終了処理
+//=========================================
+    if (respawning) {
+        for (auto& w : m_Spirit_List) {
+            w->Finalize();
+        }
+        m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+        return;
+    }
+
+
+    //リスポンじゃない時の終了処理
+    //=========================================
 	for (auto& w : m_Coin_List) {
 		w->Finalize();
 	}
@@ -195,7 +228,7 @@ void ItemManager::UseAllJewel()
 {
     int count = 0;
     for (auto& w : m_Jewel_List) {
-        if (w->GetBody() == nullptr)
+        if (w->GetIfFunctioned() == false && w->GetBody() == nullptr)
         {
             w->Function();
             count++;
@@ -208,9 +241,30 @@ void ItemManager::UseAllJewel()
         AnchorSpirit::SetIfAutoHeal(true);
     }
 
-    m_Jewel_List.remove_if([](const auto& p) {return p->GetBody() == nullptr; });
+    //m_Jewel_List.remove_if([](const auto& p) {return p->GetBody() == nullptr; });
 
 }
+
+void ItemManager::InitializeWhenSpawning()
+{
+    for (auto& w : m_Spirit_List) {
+        w->Initialize();
+    }
+
+    for (auto& w : m_Coin_List) {
+        w->CreateBody();
+    }
+
+    for (auto& w : m_Jewel_List) {
+        w->CreateBody();
+    }
+
+    for (auto& w : m_SavePoint_List) {
+        w->CreateBody();
+    }
+
+}
+
 
 
 

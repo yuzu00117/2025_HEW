@@ -125,7 +125,7 @@ void EnemyFloating::Update()
 	{
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 1.0f,2.0f }, 0.0f, GetSoulgage(), false);
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
