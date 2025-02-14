@@ -470,18 +470,13 @@ void Player::Update()
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-       // プレイヤーが歩行中かどうかのフラグ
-  // 右移動
+         // プレイヤーが歩行中かどうかのフラグ
+        // 右移動
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
-            }
+            
+            m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
+        
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -505,14 +500,10 @@ void Player::Update()
         // 左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
-            }
+          
+             m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
+          
+         
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
