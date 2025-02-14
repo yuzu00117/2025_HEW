@@ -442,24 +442,10 @@ void Field::Initialize(bool respawning)
 				}
 
 
-				if (field_map[y][x] == 49) {//中間地点
+				if (field_map[y][x] == 51) {//中間地点
 					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, respawning);
 				}
-				if (field_map[y][x] == 46) {//宝石 赤
-					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0,RED);
-				}
-				if (field_map[y][x] == 47) {//宝石　青
-					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, BLUE);
-				}
-				if (field_map[y][x] == 47) {//宝石　黄
-					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, YELLOW);
-				}
 
-
-				//--------------------------------------------------------------------------------------------------------------------------------------------------
-				if (field_map[y][x] == 51) {//セーブポイント
-					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT-(0.5/BOX2D_SCALE_MANAGEMENT)), b2Vec2(1.f, 2.f), 0);
-				}
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
 				//間欠泉
 				if (field_map[y][x] == 56) {//間欠泉
