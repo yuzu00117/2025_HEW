@@ -174,8 +174,8 @@ void Bg::Draw()
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
         break;
     default:
-        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
         break;
     }
     // ライトテクスチャの描画（背景の影響を受ける）

@@ -110,20 +110,13 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
 
 //ボディを削除するまでの時間の管理
 void PillarFragmentsManager::UpdateFragments() {
-    if (!world) return;
-
-    // まず削除対象のボディを全て削除する
-    for (auto& fragment : fragments) {
-        if (fragment.ShouldDestroy() && fragment.body) {
-            world->DestroyBody(fragment.body);
-            fragment.body = nullptr;
-        }
-    }
-
-    // nullptr になったものを削除
     fragments.erase(std::remove_if(fragments.begin(), fragments.end(),
-        [](const Fragment& fragment) {
-            return fragment.body == nullptr;
+        [&](Fragment& fragment) {
+            if (fragment.ShouldDestroy()) {
+                world->DestroyBody(fragment.body);
+                return true;
+            }
+            return false;
         }), fragments.end());
 }
 
@@ -155,20 +148,4 @@ void PillarFragmentsManager::DrawFragments() {
             1.0f
         );
     }
-}
-
-
-void PillarFragmentsManager::Finalize() {
-    if (!world) return;  // world が nullptr なら何もしない
-
-    // 全フラグメントのボディを削除
-    for (auto& fragment : fragments) {
-        if (fragment.body) {
-            world->DestroyBody(fragment.body);
-            fragment.body = nullptr;
-        }
-    }
-
-    // フラグメントリストをクリア
-    fragments.clear();
 }

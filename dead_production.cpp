@@ -146,8 +146,5 @@ void dead_production::Finalize()
 	{
 		UnInitTexture(g_Black_texture);
 		g_Black_texture = NULL;
-
-		UnInitTexture(g_Black_hole_texture);
-		g_Black_hole_texture = NULL;
 	}
 }
