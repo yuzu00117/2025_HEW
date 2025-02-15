@@ -37,6 +37,7 @@
 #include"dead_production.h"
 #include"break_effect.h"
 #include"change_scene_end_production.h"
+#include"change_scene_start_production.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -70,38 +71,14 @@ void Game::Initialize()
 
     //死亡処理の演出のリセット
     dead_production::Reset();
-    //changeシートのリセット
+    //changeシートの終了処理リセット
     change_scene_end_production::Reset();
+    //changeシーン開始処理のリセット
+    change_scene_start_production::Reset();
 
 
-    //マップによって初期リスを変える　　　これアンカーのレベル引き継いでないわ
-    SceneManager& sceneManager = SceneManager::GetInstance();
-    switch (sceneManager.GetStageName())
-    {
-    case STAGE_TUTORIAL:
-        ////プレイヤーの初期化
-        //フィールドの中でやるわ
-        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
-        break;
-    case STAGE_1_1:
+   
 
-        ////プレイヤーの初期化
-        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
-
-        break;
-    case STAGE_BOSS:
-
-        //フィールドCPPでプレイヤーのイニシャライズを行う
- 
-
-        break;
-    case STAGE_NULL:
-
-        break;
-
-    default:
-        break;
-    }
 
 
 
@@ -130,10 +107,12 @@ void Game::Initialize()
 
     Gokai_UI::Initialize();
 
-
+    //死亡処理の演出のイニシャライズを行う
     dead_production::Initialize();
-
+    //シーン終了の演出のイニシャライズを行う
     change_scene_end_production::Initialize();
+    //シーン開始の演出のイニシャライズを行う
+    change_scene_start_production::Initialize();
 
 
     b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
@@ -191,6 +170,8 @@ void Game::Finalize(void)
     dead_production::Finalize();
 
     change_scene_end_production::Finalize();
+
+    change_scene_start_production::Finalize();
 
     //体力ソウルゲージUIの終了処理
     stamina_spirit_gauge.Finalize();
@@ -315,6 +296,10 @@ void Game::Update(void)
 
 	//カメラシェイクの更新処理
     CameraShake::Update();
+
+
+    //画面開始処理
+    change_scene_start_production::Update();
 
     //プレイヤーが死亡したらリザルト画面に遷移
     if (PlayerStamina::IsPlayerDead())
@@ -451,6 +436,9 @@ void Game::Draw(void)
 
     //チェンジシーン
     change_scene_end_production::Draw();
+
+
+    change_scene_start_production::Draw();
 
 
 

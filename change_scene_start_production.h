@@ -1,14 +1,14 @@
 
 //-----------------------------------------------------------------------------------------------------
-// #name change_scene_end_production.h
-// #description    シーン移行の際の終わる側の演出
+// #name change_scene_start_production.h
+// #description    シーン移行の際の始まる側の演出
 // #make 2025/02/15　永野義也
 // #update 2025/02/15
 // #comment 追加・修正予定
 //
 //-------------------------------------------------------------------------------------------------------
-#ifndef CHANGE_SCENE_END_PRODUCTION_H
-#define CHANGE_SCENE_END_PRODUCTION_H
+#ifndef CHANGE_SCENE_START_PRODUCTION_H
+#define CHANGE_SCENE_START_PRODUCTION_H
 
 
 
@@ -16,12 +16,12 @@
 
 
 
-class change_scene_end_production
+class change_scene_start_production
 {
 
 public:
-	change_scene_end_production() = default;
-	~change_scene_end_production() {};
+	change_scene_start_production() = default;
+	~change_scene_start_production() {};
 
 	static void	Initialize();
 	static void	Update();
@@ -60,3 +60,4 @@ private:
 
 
 #endif // !DEAD_PRODUCTION_H
+#pragma once
