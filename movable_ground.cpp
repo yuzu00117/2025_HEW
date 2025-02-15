@@ -275,7 +275,7 @@ void movable_ground::Pulling_ground()
 	//プレイヤー側に引っ張る
 	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x )//プレイヤーが左側
 	{
-		pulling_power.x = pulling_power.x * -5;
+		pulling_power.x = pulling_power.x * -8;
 	}
 	else
 	{
