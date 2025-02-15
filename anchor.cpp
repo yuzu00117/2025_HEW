@@ -123,6 +123,9 @@ void Anchor::DeleteAnchor()
 
 void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 {
+	//アンカーを削除にする
+	if (AnchorPoint::GetTargetAnchorPointBody() == nullptr) { Anchor::SetAnchorState(Deleting_state); return; }
+
 	//アンカーの錨の部分を作ってあげちゃう
 	b2Body* player_body = Player::GetOutSidePlayerBody();			//プレイヤーのBody情報を取得
 	b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();//ターゲットとしたアンカーポイントのボディ情報を取得
@@ -415,77 +418,81 @@ void Anchor::CreateRotateJoint()
 	//くっついたアンカーポイントをフィクスチャを変更する
 
 	// まず現在のフィクスチャのサイズを取得する
-	b2Fixture* fixture = targetBody->GetFixtureList();
-	if (fixture != nullptr) {
-		bool sensor_on_off = fixture->IsSensor();
-		float m_density=fixture->GetDensity();
-		float m_friction = fixture->GetFriction();
-		float m_restitution = fixture->GetRestitution();
-		// 形状を取得し、ポリゴンであることを確認
-		b2Shape* baseShape = fixture->GetShape();
-		if (baseShape->GetType() != b2Shape::e_polygon) {
-			return; // ポリゴン形状でなければ処理しない
+	if (targetBody != nullptr)
+	{
+
+		b2Fixture* fixture = targetBody->GetFixtureList();
+		if (fixture != nullptr) {
+			bool sensor_on_off = fixture->IsSensor();
+			float m_density = fixture->GetDensity();
+			float m_friction = fixture->GetFriction();
+			float m_restitution = fixture->GetRestitution();
+			// 形状を取得し、ポリゴンであることを確認
+			b2Shape* baseShape = fixture->GetShape();
+			if (baseShape->GetType() != b2Shape::e_polygon) {
+				return; // ポリゴン形状でなければ処理しない
+			}
+			// 元の b2PolygonShapeをコピー
+			b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
+			if (originalShape == nullptr) {
+
+				return;
+			}
+
+			b2PolygonShape newShape;
+			b2Vec2 vertices[b2_maxPolygonVertices];
+			int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+
+			for (int i = 0; i < vertexCount; ++i) {
+				vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
+			}
+
+			newShape.Set(vertices, vertexCount);
+
+
+			// 既存のフィクスチャを削除
+			targetBody->DestroyFixture(fixture);
+
+			// 新しいフィクスチャを作成
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &newShape;
+			fixtureDef.density = m_density;     // 密度
+			fixtureDef.friction = m_friction;   // 摩擦
+			fixtureDef.restitution = m_restitution; // 反発係数
+			fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
+
+			b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
+
+			// カスタムデータを作成して設定
+			ObjectData* anchordata = new ObjectData{ collider_object };
+			anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
 		}
-		// 元の b2PolygonShapeをコピー
-		b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
-		if (originalShape == nullptr) {
-			
-			return;
+
+
+
+		if (anchorBody == nullptr || targetBody == nullptr) {
+			return; // ターゲットが存在しない場合は何もしない
 		}
 
-		b2PolygonShape newShape;
-		b2Vec2 vertices[b2_maxPolygonVertices];
-		int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+		// 回転ジョイントを定義
+		b2RevoluteJointDef jointDef;
+		jointDef.bodyA = anchorBody;
+		jointDef.bodyB = targetBody;
 
-		for (int i = 0; i < vertexCount; ++i) {
-			vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
-		}
+		// ジョイントのアンカー点を設定 (例: アンカーの位置に合わせる)
+		b2Vec2 localAnchorA = anchorBody->GetLocalPoint(contact_listener.contactPoint);
+		b2Vec2 localAnchorB = targetBody->GetLocalPoint(contact_listener.contactPoint);
 
-		newShape.Set(vertices, vertexCount);
+		jointDef.collideConnected = true; // ジョイントで接続されたボディ間の衝突を無効化
 
+		// ジョイントを生成
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+		world->CreateJoint(&jointDef);
 
-		// 既存のフィクスチャを削除
-		targetBody->DestroyFixture(fixture);
-
-		// 新しいフィクスチャを作成
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &newShape;
-		fixtureDef.density = m_density;     // 密度
-		fixtureDef.friction = m_friction;   // 摩擦
-		fixtureDef.restitution = m_restitution; // 反発係数
-		fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
-
-		b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
-
-		// カスタムデータを作成して設定
-		ObjectData* anchordata = new ObjectData{ collider_object };
-		anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+		//エフェクトスタート
+		g_anchor_instance->anchor_hit_effect_flag = true;
 	}
-	
-
-
-	if (anchorBody == nullptr || targetBody == nullptr) {
-		return; // ターゲットが存在しない場合は何もしない
-	}
-
-	// 回転ジョイントを定義
-	b2RevoluteJointDef jointDef;
-	jointDef.bodyA = anchorBody;
-	jointDef.bodyB = targetBody;
-
-	// ジョイントのアンカー点を設定 (例: アンカーの位置に合わせる)
-	b2Vec2 localAnchorA = anchorBody->GetLocalPoint(contact_listener.contactPoint);
-	b2Vec2 localAnchorB = targetBody->GetLocalPoint(contact_listener.contactPoint);
-
-	jointDef.collideConnected = true; // ジョイントで接続されたボディ間の衝突を無効化
-
-	// ジョイントを生成
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
-	world->CreateJoint(&jointDef);
-
-	//エフェクトスタート
-	g_anchor_instance->anchor_hit_effect_flag = true;
 }
 
 /**
