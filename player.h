@@ -150,6 +150,10 @@ public:
 		return m_is_jumping;
 	}
 
+	//アンカー投げる時の速度の倍率を取得
+	float	GetAnchorThrowing_SpeedUp() { return m_AnchorThrowing_SpeedUp; }
+	//アンカー投げる時の速度の倍率をセット
+	void	SetAnchorThrowing_SpeedUp(float value) { m_AnchorThrowing_SpeedUp = value; }
 
 
 	//今の速度を取得
@@ -241,7 +245,8 @@ private:
 	b2Vec2 m_sensor_size;
 
 
-
+	//アンカー投げる時の速度の倍率
+	static float m_AnchorThrowing_SpeedUp;
 	//ジャンプボタン押されたかどうか（トリガー制御）
 	static bool m_jump_pressed;
 	//ジャンプ中かどうか
