@@ -14,7 +14,6 @@
 #include"player.h"
 #include"field.h"
 #include"directx_controller.h"
-#include"UI_StaminaSpirit_Gauge.h"
 #include"1-1_boss.h"
 #include"object_manager.h"
 #include"Item_Manager.h"
@@ -42,18 +41,22 @@ public:
 	void Draw();
 	void Finalize();
 
+	void	Respawn();
+
 	void Teleport_player(b2Vec2 position);
 
 private:
 	//シングルトンをこっちに移動
 	Player &player=Player::GetInstance();
-	StaminaSpiritGauge stamina_spirit_gauge;
 	Boss_1_1 &boss =Boss_1_1::GetInstance();
 
 
 
 	ObjectManager& objectManager = ObjectManager::GetInstance();
 	ItemManager& itemManager = ItemManager::GetInstance();
+
+	//このあとリスポンする予定なのか（変化するのは初回リスポンする時オンにするのと、残機がなくなって、或いはクリアしてリザルトに遷移する時オフにする、この２回だけ）
+	bool	m_respawn;
 };
 
 

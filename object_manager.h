@@ -38,6 +38,8 @@
 #include"UI_Block.h"
 #include"break_block.h"
 
+#include"texture_block.h"
+
 // オブジェクトの種類を定義
 enum ObjectType {
     NULL_object,
@@ -125,6 +127,9 @@ public:
 
     void AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisions_x, int divisions_y, float angle,ID3D11ShaderResourceView* g_Texture);
 
+
+    void AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -170,6 +175,8 @@ public:
     UI_block* FindUiBlock(int id);
 
     Break_Block* FindBreakBlock(int id);
+
+    Texture_block* FindTextureBlock(int id);
     
 
     
@@ -196,6 +203,8 @@ public:
 
     //全面に表示する　UI　エフェクトなど
     void DrawFront();
+
+    void DrawBack();
 
     // 全てのオブジェクトを破棄
     void FinalizeAll();
@@ -240,7 +249,9 @@ private:
 
     std::vector<std::unique_ptr<UI_block>>Ui_block_list;//接触ブロック
 
-    std::vector<std::unique_ptr<Break_Block>>break_block_list;//接触ブロック
+    std::vector<std::unique_ptr<Break_Block>>break_block_list;//壊れるブロック
+
+    std::vector<std::unique_ptr<Texture_block>>texture_block_list;//背景ブロック
 
    
     //ここにオブジェクトごとにリストを追加していく感じ

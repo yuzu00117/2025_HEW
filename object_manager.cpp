@@ -140,6 +140,11 @@ void ObjectManager::AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisi
 }
 
 
+void ObjectManager::AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture)
+{
+    texture_block_list.emplace_back(std::make_unique<Texture_block>(Position, block_size, texture_angle, texture));
+}
+
 // ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
@@ -370,6 +375,17 @@ Break_Block* ObjectManager::FindBreakBlock(int id)
 }
 
 
+Texture_block* ObjectManager::FindTextureBlock(int id)
+{
+    for (auto& w : texture_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+
 
 
 
@@ -520,6 +536,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : texture_block_list)
+    {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -628,6 +649,11 @@ void ObjectManager::UpdateAll() {
 
 
     for (auto& w : break_block_list)
+    {
+        w->Update();
+    }
+
+    for (auto& w : texture_block_list)
     {
         w->Update();
     }
@@ -740,6 +766,15 @@ void ObjectManager::DrawFront()
     }
 }
 
+
+void ObjectManager::DrawBack()
+{
+    for (auto& w : texture_block_list) {
+        w->Draw();
+    }
+}
+
+
 // 全ての木を破棄
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
@@ -826,6 +861,11 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : texture_block_list)
+    {
+        w->Finalize();
+    }
+
 
     Item_Coin_UI::Finalize();
 
@@ -864,6 +904,8 @@ void ObjectManager::FinalizeAll() {
     Ui_block_list.clear();
 
     break_block_list.clear();
+
+    texture_block_list.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

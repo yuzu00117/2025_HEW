@@ -44,20 +44,20 @@ public:
 	// コライダーの形はデフォルトで四角形、円にしたい場合は false を渡す、変更がなければ特に値を渡さなくてもいいよ
 	// Alpha値はデフォルトで1.0、変更がなければ値を渡さなくてもいいよ
 	//recovery引数はプレイヤーがアイテムを取るときのソウルの回復値
-	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritType type, float Alpha = 1.0f);
-	void	AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
+	void	AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritType type, bool respawning, float Alpha = 1.0f);
+	void	AddCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
 	//Jewel_Type型のtype引数は BLUE, RED, YELLOW のどれかを渡す
-	void	AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon = true, float Alpha = 1.0f);
-	void	AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon = true, float Alpha = 1.0f);
+	void	AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
+	void	AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
 
 	// ID を使ってアイテムを検索
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
 	ItemCoin* FindItem_Coin_ByID(int ID);
 	ItemJewel* FindItem_Jewel_ByID(int ID);
-	ItemSavePoint* FindItem_SavePoint_ByID(int ID);
+	ItemSavePoint* FindItem_SavePoint();
 
 	// 全てのアイテムを初期化
-	void InitializeAll();
+	void InitializeAll(bool respawning = false);
 
 	// 全てのアイテムを更新
 	void UpdateAll();
@@ -69,11 +69,15 @@ public:
 	void DrawFront();
 
 	// 全てのアイテムを破棄
-	void FinalizeAll();
+	void FinalizeAll(bool respawning = false);
 
 
 	//全ての宝石を使う
 	void	UseAllJewel();
+
+	//　リスポン時の初期化処理
+	void	InitializeWhenSpawning();
+
 
 
 private:
