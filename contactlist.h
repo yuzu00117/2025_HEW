@@ -232,7 +232,7 @@ public:
             }
         }
 
-        // プレーヤーとテレポートブロックが衝突したかを判定
+        // プレーヤーとオブジェクトが衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_player_body) ||
@@ -252,7 +252,7 @@ public:
             if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
                
-                player.Player_Damaged(-50, 120);//被弾処理
+                player.Player_Damaged(0, 120);//被弾処理
 
                 if (objectA->collider_type == collider_object)
                 {
@@ -1128,7 +1128,7 @@ public:
             break;
             case ITEM_SAVEPOINT:
             {
-                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint();//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 if (savepoint_instance != nullptr) {
                     savepoint_instance->SetPlayerPassed();
                 }
@@ -1171,7 +1171,7 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-50, 120);
+            player.Player_Damaged(0, 120);
             
 
         }
