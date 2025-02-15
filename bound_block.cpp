@@ -207,9 +207,9 @@ void boss_bound_block::Draw()
 			//draw
 			DrawSprite(
 				{ draw_x,
-				  draw_y },
+				  draw_y-10 },
 				GetBody()->GetAngle(),
-				{ GetSize().x * scale ,GetSize().y * scale }
+				{ GetSize().x * scale ,GetSize().y * scale*1.3f }
 			);
 		}
 		else

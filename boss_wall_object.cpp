@@ -49,8 +49,8 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 
 
 	//形の定義
-	b2PolygonShape shape;
-	shape.SetAsBox(body_size.x * 0.5, body_size.y * 0.5);
+	b2CircleShape shape;
+	shape.m_radius = body_size.y * 0.4; // 半径を適切に設定
 
 
 	//-----------------------------------------------------
@@ -59,8 +59,8 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 
 	fixture.shape = &shape;
 	fixture.density = 10.0f;
-	fixture.friction = 0.0f;
-	fixture.restitution = 0.5f;
+	fixture.friction = 0.5f;
+	fixture.restitution = 0.2f;
 	fixture.isSensor = false;
 	fixture.filter = createFilterExclude("object_filter", {"Player_filter"});
 
@@ -115,6 +115,16 @@ void Boss_Wall_Objcet::Update()
 				DeleteAnchorPoint();
 			}
 
+			if (Splitting_end == true)
+			{
+				Destroy_Cnt++;
+			}
+
+			if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
+			{
+				DestroySplittedBodies(boss_pillar_body_Splitting);
+				isUse = false;
+			}
 
 
 
@@ -218,7 +228,7 @@ void Boss_Wall_Objcet::Destroy_Splitting()
 					fragmentFixture.density = 1.0f; // ボディの密度を設定。密度が大きいほどボディの質量が重くなる。
 					fragmentFixture.friction = 0.5f; // 摩擦係数を設定。接触面の滑りやすさを制御し、小さい値ほど滑りやすい。
 					fragmentFixture.restitution = 0.0f; // 反発係数を設定。0は反発しない（衝突時にエネルギーを失う）、1は完全に弾む。
-					fragmentFixture.filter = createFilterExclude("ground_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter" });
+					fragmentFixture.filter = createFilterExclude("ground_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter","ground_filter" });
 
 					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
 
@@ -365,16 +375,18 @@ void Boss_Wall_Objcet::ChangeBody()
 
 void Boss_Wall_Objcet::WallPullling()
 {
-	int minus = -1;
-
-	Boss_1_1& boss = Boss_1_1::GetInstance();
-	//プレイヤー側に倒す
-	if (PlayerPosition::GetPlayerPosition().x < boss.GetOutSideBody()->GetPosition().x)//プレイヤーが左側
+	if (m_body != nullptr)
 	{
-		minus = 1;
-	}
+		int minus = 1;
 
-	m_body->ApplyLinearImpulseToCenter(b2Vec2(5.0f * minus, -9.0f),true);
+		if (left_flag)
+		{
+			minus = -1;
+		}
+	
+		m_body->ApplyLinearImpulseToCenter(b2Vec2(50.0f * minus, -2.0f), true);
+		m_body->ApplyTorque(1000 * minus, true);
+	}
 }
 
 void Boss_Wall_Objcet::Draw()
@@ -406,7 +418,7 @@ void Boss_Wall_Objcet::Draw()
 			DrawSprite(
 				{ draw_x,
 				  draw_y },
-				GetBody()->GetAngle(),
+				0.0f,
 				{ GetSize().x * scale ,GetSize().y * scale*1.2f }
 			);
 		}

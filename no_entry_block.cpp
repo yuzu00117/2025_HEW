@@ -65,7 +65,7 @@ NoEntryBlock::NoEntryBlock(b2Vec2 Position, b2Vec2 block_size, ID3D11ShaderResou
 	block_fixture.friction = 0.5f;//–€ŽC
 	block_fixture.restitution = 0.0f;//”½”­ŒW”
 	block_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
-	block_fixture.filter = createFilterExclude("No_Entry_block_body_filter", { "break_block_body_filter","object_filter","ground_filter" });
+	block_fixture.filter = createFilterExclude("No_Entry_block_body_filter", { "break_block_body_filter","object_filter","ground_filter","texture_body_filter"});
 
 	b2Fixture* object_fixture = m_body->CreateFixture(&block_fixture);
 

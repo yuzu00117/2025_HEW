@@ -142,9 +142,9 @@ private:
 
 	bool left_flag;//アンカーポイントを表示する位置
 
-	int Splitting_x;//横の分割すう
+	int Splitting_x=10;//横の分割すう
 
-	int Splitting_y;//たての分割すう
+	int Splitting_y=8;//たての分割すう
 
 	bool Splitting_Destroy_Flag = false;//柱のボディを破壊して分割するフラグ
 

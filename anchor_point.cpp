@@ -332,17 +332,7 @@ void AnchorPoint::Finalize()
 	}
 
 
-	if (g_select_anchor_point_body != nullptr)
-	{
-		if (Player::GetOutSidePlayerBody() != g_select_anchor_point_body)
-		{
-			world->DestroyBody(g_select_anchor_point_body);
-		}
-		else
-		{
-			g_select_anchor_point_body = nullptr;
-		}
-	}
+
 
 	if (g_anchor_point_target_lev1_Texture != NULL)
 	{
