@@ -393,29 +393,6 @@ Texture_block* ObjectManager::FindTextureBlock(int id)
 
 
 
-Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
-{
-    switch (type)
-    {
-    case Object_Wood: // 木
-        break;
-    case Object_Rock: // 岩
-        break;
-    case Object_one_way_platform://足場　したからしか乗れない
-        break;
-    case Object_Static_to_Dynamic://静的から動的に変更するオブジェクト
-        break;
-    case Object_Movable_Ground:  //引っ張れる床 
-        break;
-    case Object_Enemy_Static://静的エネミー
-        break;
-    case Object_Enemy_Dynamic://動的エネミー
-        break;
-    default:
-        break;
-    }
-    return nullptr; // 見つからない場合は nullptr を返す
-}
 
 //指定の静的エネミーを削除
 void ObjectManager::DestroyEnemyStatic(int id)
@@ -950,5 +927,8 @@ void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
     }
 
 }
+
+
+
 
 

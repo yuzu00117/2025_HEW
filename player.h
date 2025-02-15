@@ -216,6 +216,9 @@ public:
 	}
 
 
+	player_draw_state GetState() { return draw_state; }
+
+
 
 private:
 
@@ -310,8 +313,10 @@ private:
 	int dustFrameCnt;
 
 
+	// たまちゃんのアニメーションシートのカウント
 	float TamaChanSheetCnt = 0.0f;
-
+	// たまちゃんの向き管理用
+	bool is_left = true;
 
 	//-----------------------------------------
 	//プレイヤーのサウンドの管理

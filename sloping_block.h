@@ -18,9 +18,7 @@
 enum SlopingBlockAspect //斜面の向きを管理する
 {
 	right_down,
-	right_upper,
 	left_down,
-	left_upper,
 };
 
 
@@ -37,8 +35,11 @@ public:
 	void Draw();
 	void Finalize();
 
-	void Pulling_wood(b2Vec2 pullingpower);
 
+	//プレイヤーと衝突しているのかどうかを取得
+	bool	GetPlayerCollided() { return m_player_collided; }
+	//プレイヤーと衝突しているのかどうかをセット
+	void	SetPlayerCollided(bool flag);
 
 	// ID を取得する
 	int GetID() const {
@@ -96,6 +97,9 @@ private:
 	b2Vec2 m_SlopingBlock_size;
 
 	SlopingBlockAspect m_aspect;
+
+	//プレイヤーと衝突しているのか
+	bool	m_player_collided = false;
 	
 };
 
