@@ -37,12 +37,20 @@
 #include"dead_production.h"
 #include"break_effect.h"
 
+
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
 
 
 void Game::Initialize()
 {
+    //ゲームシーンに入って初回はInitialize要らない（BeforeGameScene.cppで事前にInitializeした）（目的：リスポンする時Initializeしたくない物があるから）
+    if (!m_respawn)
+    {
+        PlayerLife::Initialize();
+    }
+
+
     //全ての音を止める
     app_atomex_stop_player();
 
@@ -76,18 +84,23 @@ void Game::Initialize()
     case STAGE_TUTORIAL:
         ////プレイヤーの初期化
         //フィールドの中でやるわ
-        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
         break;
     case STAGE_1_1:
 
         ////プレイヤーの初期化
-        //player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2());
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
 
         break;
     case STAGE_BOSS:
 
         //フィールドCPPでプレイヤーのイニシャライズを行う
  
+
+        break;
+    case STAGE_TEST:
+        ////プレイヤーの初期化
+        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(), m_respawn);
 
         break;
     case STAGE_NULL:
@@ -100,8 +113,6 @@ void Game::Initialize()
 
 
 
-	//プレイヤーライフの初期化
-    PlayerLife::Initialize();
 	//プレイヤーUIの初期化
     player_UI::Initialize();
     //プレイヤーの体力の初期化
@@ -114,7 +125,7 @@ void Game::Initialize()
     Anchor::Initialize();
 
     //フィールドの初期化
-    Field::Initialize();
+    Field::Initialize(m_respawn);
 
     //背景の初期化
     Bg::Initialize();
@@ -145,15 +156,16 @@ void Game::Initialize()
     InitializeDebug();
 #endif // !_DEBUG
 
+    Respawn();
 }
 
+//残機はゲームシーンではFinalizeはやらない、Resultシーンでやる
 void Game::Finalize(void)
 {
-
-
- 
-    //プレイヤーライフの終了処理
-    PlayerLife::Finalize();
+    if (!m_respawn)
+    {
+        PlayerLife::Finalize();
+    }
 	//プレイヤーUIの終了処理
     player_UI::Finalize();
 	//プレイヤーの終了処理
@@ -165,7 +177,7 @@ void Game::Finalize(void)
     Anchor::Finalize();
 
     //フィールドの終了処理
-    Field::Finalize();
+    Field::Finalize(m_respawn);
 
     //背景の終了処理
     Bg::Finalize();
@@ -183,8 +195,6 @@ void Game::Finalize(void)
 
     dead_production::Finalize();
 
-    //体力ソウルゲージUIの終了処理
-    stamina_spirit_gauge.Finalize();
 
     //衝突時のエフェクトを
     FinalizeImpactEffects();
@@ -262,13 +272,7 @@ void Game::Update(void)
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                sceneManager.ChangeScene(SCENE_RESULT);
-            }
-
-            //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
-            if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                
+                m_respawn = false;
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
 
@@ -343,16 +347,18 @@ void Game::Update(void)
         //プレイヤーの残機が残っていたら最初からスタート
         if (PlayerLife::GetLife() > 0)
         {
+            m_respawn = true;
             PlayerLife::SetLife(PlayerLife::GetLife() - 1);
+            dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.ChangeScene(SCENE_GAME);
-            dead_production::SetDeadFlag(false);
         }
         else
         {
+            m_respawn = false;
+            dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.ChangeScene(SCENE_RESULT);
-            dead_production::SetDeadFlag(false);
         }
 
 
@@ -361,6 +367,35 @@ void Game::Update(void)
 
 
 }
+
+
+void Game::Respawn()
+{
+    //リスポン時の座標決め
+    //==========================================================================
+    b2Vec2 respawn_position = b2Vec2{ 1.0f, 0.0f };
+    ItemManager& item_manager = ItemManager::GetInstance();
+    ItemSavePoint* savepoint = item_manager.FindItem_SavePoint();
+    //ステージに中間地がある場合
+    if (savepoint != nullptr)
+    {
+        if (savepoint->GetIfPlayerPassed())
+        {
+            respawn_position = savepoint->GetBody()->GetPosition();
+            AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
+        }
+    }
+
+
+    Player::GetOutSidePlayerBody()->SetTransform(respawn_position, 0.0f);
+
+
+
+    //リスポンした時の効果音
+    app_atomex_start(Player_Jewelry_Colect_Sound);
+}
+
+
 
 void Game::Draw(void)
 {
@@ -426,8 +461,6 @@ void Game::Draw(void)
 
     Gokai_UI::Draw();
 
-  //体力ソウルゲージUIの描画処理
-	stamina_spirit_gauge.Draw();
 
 
 	player_UI::Draw();
