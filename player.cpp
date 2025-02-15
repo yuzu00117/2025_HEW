@@ -470,18 +470,13 @@ void Player::Update()
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-       // プレイヤーが歩行中かどうかのフラグ
-  // 右移動
+         // プレイヤーが歩行中かどうかのフラグ
+        // 右移動
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
-            }
+            
+            m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
+        
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -505,14 +500,10 @@ void Player::Update()
         // 左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
-            }
+          
+             m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
+          
+         
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -884,7 +875,7 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime)
     app_atomex_start(Player_Damege_Sound);
 
     // フィルターを変更
-    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
+    updateFixtureFilter("Player_filter", {"object_filter","enemy_filter","MiniGolem_filter","Boss_filter"});
 
 }
 
@@ -1616,7 +1607,7 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
         minus = -1;
     }
 
-    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, 1.0*KnockBackLevel));
+    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, -1.0*KnockBackLevel));
 
 }
 
