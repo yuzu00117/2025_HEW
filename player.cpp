@@ -77,6 +77,7 @@ static ID3D11ShaderResourceView* g_TamaChan_Lv3 = NULL;//たまちゃんLv3
 
 
 //staticメンバー変数の初期化
+float   Player::m_AnchorThrowing_SpeedUp = 1.0f;
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
@@ -107,6 +108,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
 {
     if (respawning)
     {
+        m_AnchorThrowing_SpeedUp = 1.0f;
         m_is_jumping = false;
         m_jump_pressed = false;
         m_direction = 1;
@@ -470,18 +472,13 @@ void Player::Update()
             adjust_speed = -(GetSpeed() / 2);
         }
         //----------------------------------------------------------
-       // プレイヤーが歩行中かどうかのフラグ
-  // 右移動
+         // プレイヤーが歩行中かどうかのフラグ
+        // 右移動
         if ((vel.x < max_velocity.x) && ((stick.x > 0) || (Keyboard_IsKeyDown(KK_RIGHT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ (GetSpeed() + adjust_speed) / 3 , 0.0f }, true);
-            }
+            
+            m_body->ApplyLinearImpulseToCenter({ GetSpeed() + adjust_speed , 0.0f }, true);
+        
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -505,14 +502,10 @@ void Player::Update()
         // 左移動
         if ((vel.x > -max_velocity.x) && ((stick.x < 0) || (Keyboard_IsKeyDown(KK_LEFT))))
         {
-            if (Anchor::GetAnchorState() == Nonexistent_state)
-            {
-                m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
-            }
-            else
-            {
-                m_body->ApplyLinearImpulseToCenter({ ((GetSpeed()) + adjust_speed) / -3 , 0.0f }, true);
-            }
+          
+             m_body->ApplyLinearImpulseToCenter({ -(GetSpeed()) + adjust_speed, 0.0f }, true);
+          
+         
 
             // 使用中は左右反転できないようにする
             if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -697,7 +690,7 @@ void Player::Update()
         break;
 
     case Throwing_state://錨が飛んでいる状態
-        Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
+        Anchor::ThrowAnchorToAP(m_AnchorThrowing_SpeedUp);//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
         g_anchor_frame_management_number++;
 
         if (180 < g_anchor_frame_management_number)
@@ -884,7 +877,7 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime)
     app_atomex_start(Player_Damege_Sound);
 
     // フィルターを変更
-    updateFixtureFilter("Player_filter", { "object_filter","enemy_filter","MiniGolem_filter","Boss_filter" });
+    updateFixtureFilter("Player_filter", {"object_filter","enemy_filter","MiniGolem_filter","Boss_filter"});
 
 }
 
@@ -1616,7 +1609,7 @@ void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
         minus = -1;
     }
 
-    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, 1.0*KnockBackLevel));
+    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, -1.0*KnockBackLevel));
 
 }
 
@@ -1752,11 +1745,8 @@ void Player::DrawAnchorLevelUpDownEffect()
     }
 }
 
-
 void Player::DrawTamaChan()
 {
-
-
     // コライダーと位置情報の補正をするため
     float scale = SCREEN_SCALE;
 
@@ -1765,27 +1755,61 @@ void Player::DrawTamaChan()
     screen_center.x = SCREEN_CENTER_X;
     screen_center.y = SCREEN_CENTER_Y;
 
+    // コライダーの位置の取得（プレイヤーの位置）
+    b2Vec2 player_pos = GetPlayerBody()->GetPosition();
 
-    b2Vec2 Pos = GetPlayerBody()->GetPosition();
+    // たまちゃんの現在の位置を取得
+    static b2Vec2 tamachan_pos = player_pos;
 
+    // プレイヤーの位置に向かって徐々に移動する
+    float follow_speed = 0.03f; // 追従速度（0.0f〜1.0fの範囲で調整）
 
-    float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-    float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+    // プレイヤーの向きを取得
+    bool direction = GetDirection(); // true: 右向き, false: 左向き
 
+    // 向きに応じてたまちゃんの位置を反転
+    if (!direction) {
+        // たまちゃんの位置を反転
+        tamachan_pos.x += (player_pos.x - tamachan_pos.x + 0.5) * follow_speed;
+        tamachan_pos.y += (player_pos.y - tamachan_pos.y) - 1 * follow_speed;
+        // たまちゃんの位置がプレイヤーを越したら
+        if (tamachan_pos.x > player_pos.x) {
+            // たまちゃんの向きを反転
+            is_left = false;
+		}
+
+    }
+    else
+    {   // たまちゃんの位置を反転
+        tamachan_pos.x += (player_pos.x - tamachan_pos.x - 0.5) * follow_speed;
+        tamachan_pos.y += (player_pos.y - tamachan_pos.y) - 1 * follow_speed;
+        // たまちゃんの位置がプレイヤーを越したら
+        if (tamachan_pos.x < player_pos.x) {
+            // たまちゃんの向きを反転
+            is_left = true;
+        }
+    }
+
+    // たまちゃんの描画位置を計算
+    float draw_x = ((tamachan_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+    float draw_y = ((tamachan_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
     // シェーダリソースを設定
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
 
-    DrawSplittingSprite(
-        { draw_x-100,
-          draw_y-100 },
-        0,
-        {150,150 },
-        6,6,TamaChanSheetCnt,3.0f
+    // スプライトを描画
+    DrawDividedSpritePlayer(
+        { draw_x, draw_y -100 },        // 描画位置
+        0,                              // 回転角度
+        { 150, 150 },                   // サイズ
+        6, 6,                           // 分割数
+        TamaChanSheetCnt,               // シートカウント
+        3.0f,                           // スケール
+        is_left                         // 左向きかどうか
+        
     );
 
     TamaChanSheetCnt += 0.5;
-
 }
 
 int Player::GetAnchorFrameManagement()

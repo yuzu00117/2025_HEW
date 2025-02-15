@@ -198,6 +198,8 @@ void    ItemJewel::Function()
     case RED:
         //オブジェを引っ張る時の力を倍数で掛ける
         object_manager.SetPullingPower_With_Multiple(b2Vec2{ 1.5f,1.5f });
+        //アンカー投げる速度UP
+        player.SetAnchorThrowing_SpeedUp(1.5f);
         break;
     case YELLOW:
         PlayerStamina::SetAvoidDamageOnce(true);

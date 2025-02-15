@@ -145,7 +145,7 @@ void EnemyFloating::Update()
 
 		//ƒ\ƒEƒ‹‚ð—Ž‚Æ‚·
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType(), false);
 
 
 		b2Vec2 now_positon = GetBody()->GetPosition();
