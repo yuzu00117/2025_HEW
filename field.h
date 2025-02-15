@@ -48,6 +48,15 @@ enum FieldTexture
 
 	
 
+	ISEKI_TOP_BLOCK,		//遺跡の上
+	ISEKI_TOP_LEFT_BLOCK,	//遺跡の上　左
+	ISEKI_TOP__RIGHT_BLOCK,	//遺跡の上　右
+
+	ISEKI_BLOCK,			//遺跡の真ん中
+	ISEKI_LEFT_BLOCK,		//遺跡の左
+	ISEKI_RIGHT_BLOCK,		//遺跡の右
+	
+
 	STAGE_BLOCK_SLOOP_SIDE_RIGHT,
 	STAGE_BLOCK_SLOOP_SIDE_LEFT,
 

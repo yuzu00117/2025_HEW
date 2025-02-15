@@ -16,13 +16,13 @@
 #include"collider_type.h"
 #include"player_position.h"
 #include"sloping_block.h"
+#include"scene.h"
 
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_sloping_block_right_down_Texture = NULL;//テクスチャ 右下
 static ID3D11ShaderResourceView* g_sloping_block_left_down_Texture = NULL;//テクスチャ 　左した
-static ID3D11ShaderResourceView* g_sloping_block_right_upper_Texture = NULL;//テクスチャ 　右上
-static ID3D11ShaderResourceView* g_sloping_block_left_upper_Texture = NULL;//テクスチャ 　左上
+
 
 
 
@@ -130,10 +130,21 @@ void sloping_block::Initialize()
 	//テクスチャの初期化
 	if (g_sloping_block_left_down_Texture == NULL)
 	{
-		g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
-		g_sloping_block_left_upper_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_left_upper.png");//左上
-		g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
-		g_sloping_block_right_upper_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
+		SceneManager& sceneManager = SceneManager::GetInstance();
+	
+		//ステージによって代入する
+		if (sceneManager.GetStageName() == STAGE_BOSS)
+		{
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//右側のテクスチャ
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_left.png");//右側のテクスチャ
+		}
+		else
+		{
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
+		}
+	
+
 	}
 }
 
@@ -166,14 +177,11 @@ void sloping_block::Draw()
 	case right_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_down_Texture);
 		break;
-	case right_upper:
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_upper_Texture);
-		break;
+
 	case left_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_down_Texture);
 		break;
-	case left_upper:
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_upper_Texture);
+
 		break;
 	default:
 		break;
@@ -205,8 +213,7 @@ void sloping_block::Finalize()
 	
 	//テクスチャの解放
 	UnInitTexture(g_sloping_block_left_down_Texture);
-	UnInitTexture(g_sloping_block_left_upper_Texture);
 	UnInitTexture(g_sloping_block_right_down_Texture);
-	UnInitTexture(g_sloping_block_right_upper_Texture);
+
 
 }
