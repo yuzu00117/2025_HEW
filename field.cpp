@@ -830,6 +830,11 @@ void Field::Initialize()
 					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Box_collider, 1, true);
 				}
 
+
+				if (field_map[y][x] == 25) {//コイン
+					itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0);
+				}
+
 			}
 		}
 		objectManager.InitializeAll();

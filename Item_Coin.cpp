@@ -111,7 +111,7 @@ void	ItemCoin::Update()
         world->DestroyBody(m_body);
         m_body = nullptr;
 
-        Item_Coin_UI::SetDrawCount(180);
+        Item_Coin_UI::SetDrawCount(30);
         Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetNowCoinCount()+1);
         app_atomex_start(Player_Coin_Colect_Sound);
 
