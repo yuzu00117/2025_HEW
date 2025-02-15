@@ -14,18 +14,18 @@
 #include"texture.h"
 #include"player_position.h"
 #include"collider_type.h"
-#include"player_position.h"
 #include"sloping_block.h"
+#include"FixtureSizeCalculate.h"
+#include"player.h"
+
 
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_sloping_block_right_down_Texture = NULL;//テクスチャ 右下
 static ID3D11ShaderResourceView* g_sloping_block_left_down_Texture = NULL;//テクスチャ 　左した
-static ID3D11ShaderResourceView* g_sloping_block_right_upper_Texture = NULL;//テクスチャ 　右上
-static ID3D11ShaderResourceView* g_sloping_block_left_upper_Texture = NULL;//テクスチャ 　左上
 
 
-
+b2Fixture* g_fixture = nullptr;
 
 
 
@@ -66,7 +66,6 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 
 
 
-	b2PolygonShape sloping_block_shape;
 	// 三角形のシェイプを定義
 	b2PolygonShape triangleShape;
 	b2Vec2 vertices[3] = {b2Vec2(0.0f,0.0f)};
@@ -78,20 +77,10 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 		vertices[1].Set(-sloping_block_size.x / 2, +sloping_block_size.y / 2); 
 		vertices[2].Set(sloping_block_size.x / 2, sloping_block_size.y / 2);   
 		break;
-	case right_upper:
-		vertices[0].Set(+sloping_block_size.x / 2, -sloping_block_size.y / 2);   
-		vertices[1].Set(sloping_block_size.x / 2, sloping_block_size.y / 2);  
-		vertices[2].Set(-sloping_block_size.x / 2, -sloping_block_size.y / 2);  
-		break;
 	case left_down:
 		vertices[0].Set(-sloping_block_size.x / 2, sloping_block_size.y / 2); 
 		vertices[1].Set(-sloping_block_size.x/2, -sloping_block_size.y/2); 
 		vertices[2].Set(sloping_block_size.x, sloping_block_size.y); 
-		break;
-	case left_upper:
-		vertices[0].Set(-sloping_block_size.x / 2, -sloping_block_size.y / 2); 
-		vertices[1].Set(sloping_block_size.x / 2, -sloping_block_size.y / 2);
-		vertices[2].Set(-sloping_block_size.x / 2, sloping_block_size.y / 2);
 		break;
 	default:
 		break;
@@ -108,9 +97,11 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 	sloping_block_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
 
 	b2Fixture* object_sloping_block_fixture = m_sloping_block_body->CreateFixture(&sloping_block_fixture);
+	g_fixture = object_sloping_block_fixture;
 
 	// カスタムデータを作成して設定
 	ObjectData* object_sloping_block_data = new ObjectData{ collider_ground };//一旦地面判定
+	object_sloping_block_data->object_name = Object_sloping_block;
 	object_sloping_block_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_sloping_block_data);
 
 
@@ -131,15 +122,112 @@ void sloping_block::Initialize()
 	if (g_sloping_block_left_down_Texture == NULL)
 	{
 		g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
-		g_sloping_block_left_upper_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_Sloping_block_left_upper.png");//左上
 		g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
-		g_sloping_block_right_upper_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
 	}
 }
 
 void sloping_block::Update()
 {
+	//プレイヤーがと衝突しているならプレイヤーが登れるように力を加える
+	if (m_player_collided)
+	{
+
+		Player& player = Player::GetInstance();
+
+		//プレイヤーが歩いていないのなら力を加えない
+		if (player.GetState() != player_walk_state)
+		{
+			return;
+		}
+
+		//頂点データをfixtureから取得
+		b2Vec2 vertex[3];
+		b2Vec2 body_position = SlopingBlock_body->GetPosition();
+		for (int i = 0; i < 3; i++)
+		{
+			vertex[i] = GetPolygonFixtureVertex(g_fixture->GetShape(), i);
+			//頂点データをbox2D座標（directXのワールド座標一歩手前）に変換
+			vertex[i].x += body_position.x;
+			vertex[i].y += body_position.y;
+		}
+
+		//斜面のベクトル計算（掛ける8.0は調整値）
+		b2Vec2	vector;
+		vector.x = (vertex[0].x - vertex[2].x)*8.0f;
+		vector.y = (vertex[0].y - vertex[2].y)*8.0f;
+
+		//プレイヤーのボディを取得しておく
+		auto player_body = player.GetOutSidePlayerBody();
+		//力を加える時最大のベロシティを設定
+		b2Vec2 max_velocity = { 2.0f,-1.0f };
+
+		//ブロックの向きによってプレイヤーの向きが変わった時の処理が違う
+		switch (GetBlockAspect())
+		{
+		case right_down:
+			//プレイヤーが「右」向いている時上る
+			if (player.GetDirection() == 1)
+			{
+				//プレイヤーに力を加える
+				player_body->ApplyForceToCenter(vector, true);
+				auto player_velocity = player_body->GetLinearVelocity();
+				//ベロシティの最大値を超えないようにするための処理
+				if (player_velocity.x > max_velocity.x)
+				{
+					player_body->SetLinearVelocity({ max_velocity.x, player_velocity.y });
+					player_velocity.x = max_velocity.x;
+				}
+				//ベロシティの最大値を超えないようにするための処理
+				if (player_velocity.y < max_velocity.y)
+				{
+					player_body->SetLinearVelocity({ player_velocity.x, max_velocity.y });
+					player_velocity.y = max_velocity.y;
+				}
+			}
+			//プレイヤーが「左」向いている時下る
+			else
+			{
+				//プレイヤーが斜面に沿って下れるように力を加える
+				player.GetOutSidePlayerBody()->ApplyLinearImpulseToCenter({ 0.0f,0.2f }, true);
+			}
+			break;
+		case left_down:
+			//プレイヤーが「左」向いている時上る
+			if (player.GetDirection() == 0)
+			{
+				//プレイヤーに力を加える
+				player.GetOutSidePlayerBody()->ApplyForceToCenter(vector, true);
+				auto player_velocity = player_body->GetLinearVelocity();
+				//ベロシティの最大値を超えないようにするための処理
+				if (player_velocity.x > max_velocity.x)
+				{
+					player_body->SetLinearVelocity({ max_velocity.x, player_velocity.y });
+					player_velocity.x = max_velocity.x;
+				}
+				//ベロシティの最大値を超えないようにするための処理
+				if (player_velocity.y < max_velocity.y)
+				{
+					player_body->SetLinearVelocity({ player_velocity.x, max_velocity.y });
+					player_velocity.y = max_velocity.y;
+				}
+
+
+			}
+			//プレイヤーが「右」向いている時下る
+			else
+			{
+				//プレイヤーが斜面に沿って下れるように力を加える
+				player.GetOutSidePlayerBody()->ApplyLinearImpulseToCenter({ 0.0f,0.2f }, true);
+			}
+			break;
+		default:
+			break;
+		}
+
+	}
 }
+
+
 
 void sloping_block::Draw()
 {
@@ -166,14 +254,8 @@ void sloping_block::Draw()
 	case right_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_down_Texture);
 		break;
-	case right_upper:
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_upper_Texture);
-		break;
 	case left_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_down_Texture);
-		break;
-	case left_upper:
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_upper_Texture);
 		break;
 	default:
 		break;
@@ -205,8 +287,11 @@ void sloping_block::Finalize()
 	
 	//テクスチャの解放
 	UnInitTexture(g_sloping_block_left_down_Texture);
-	UnInitTexture(g_sloping_block_left_upper_Texture);
 	UnInitTexture(g_sloping_block_right_down_Texture);
-	UnInitTexture(g_sloping_block_right_upper_Texture);
 
+}
+
+void sloping_block::SetPlayerCollided(bool flag)
+{
+	m_player_collided = flag;
 }

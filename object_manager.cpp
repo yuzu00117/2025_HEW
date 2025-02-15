@@ -140,6 +140,11 @@ void ObjectManager::AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisi
 }
 
 
+void ObjectManager::AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture)
+{
+    texture_block_list.emplace_back(std::make_unique<Texture_block>(Position, block_size, texture_angle, texture));
+}
+
 // ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
@@ -370,36 +375,24 @@ Break_Block* ObjectManager::FindBreakBlock(int id)
 }
 
 
-
-
-
-
-
-
-
-Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
+Texture_block* ObjectManager::FindTextureBlock(int id)
 {
-    switch (type)
-    {
-    case Object_Wood: // 木
-        break;
-    case Object_Rock: // 岩
-        break;
-    case Object_one_way_platform://足場　したからしか乗れない
-        break;
-    case Object_Static_to_Dynamic://静的から動的に変更するオブジェクト
-        break;
-    case Object_Movable_Ground:  //引っ張れる床 
-        break;
-    case Object_Enemy_Static://静的エネミー
-        break;
-    case Object_Enemy_Dynamic://動的エネミー
-        break;
-    default:
-        break;
+    for (auto& w : texture_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
     }
     return nullptr; // 見つからない場合は nullptr を返す
 }
+
+
+
+
+
+
+
+
+
 
 //指定の静的エネミーを削除
 void ObjectManager::DestroyEnemyStatic(int id)
@@ -543,6 +536,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : texture_block_list)
+    {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -651,6 +649,11 @@ void ObjectManager::UpdateAll() {
 
 
     for (auto& w : break_block_list)
+    {
+        w->Update();
+    }
+
+    for (auto& w : texture_block_list)
     {
         w->Update();
     }
@@ -763,6 +766,15 @@ void ObjectManager::DrawFront()
     }
 }
 
+
+void ObjectManager::DrawBack()
+{
+    for (auto& w : texture_block_list) {
+        w->Draw();
+    }
+}
+
+
 // 全ての木を破棄
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
@@ -849,6 +861,11 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : texture_block_list)
+    {
+        w->Finalize();
+    }
+
 
     Item_Coin_UI::Finalize();
 
@@ -887,6 +904,8 @@ void ObjectManager::FinalizeAll() {
     Ui_block_list.clear();
 
     break_block_list.clear();
+
+    texture_block_list.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
@@ -908,5 +927,8 @@ void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
     }
 
 }
+
+
+
 
 
