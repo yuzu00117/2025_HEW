@@ -37,6 +37,7 @@
 #include"dead_production.h"
 #include"break_effect.h"
 #include"change_scene_end_production.h"
+#include"UI_StaminaSpirit_Gauge.h"
 
 
 int HitStop::hit_stop_time = 0;
@@ -206,7 +207,9 @@ void Game::Finalize(void)
     change_scene_end_production::Finalize();
 
     //体力ソウルゲージUIの終了処理
-    stamina_spirit_gauge.Finalize();
+    //stamina_spirit_gauge.Finalize()がなかったのでそれらしいものを探してみた
+    StaminaSpiritGauge staminaSpiritGauge;
+    staminaSpiritGauge.Finalize();
 
 
     //衝突時のエフェクトを
