@@ -201,6 +201,7 @@
     <ClCompile Include="static_to_dynamic_block.cpp" />
     <ClCompile Include="teleport_block.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="texture_block.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tool.cpp" />
     <ClCompile Include="Video.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="static_to_dynamic_block.h" />
     <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="texture_block.h" />
     <ClInclude Include="tool.h" />
     <ClInclude Include="Video.h" />
     <ClInclude Include="MovieTexture.h" />
