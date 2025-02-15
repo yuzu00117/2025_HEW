@@ -36,7 +36,7 @@
 #include"UI_Block.h"
 #include"break_block.h"
 #include"boss_wall_object.h"
-#include "1_1_boss_pillar.h"
+#include"no_entry_block.h"
 // オブジェクトの種類を定義
 enum ObjectType {
     NULL_object,
@@ -125,6 +125,8 @@ public:
 
     void AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture,bool left);
 
+    void AddNoEntryBlock(b2Vec2 Position, b2Vec2 block_size, ID3D11ShaderResourceView* g_Texture);
+
     // ID を使って木を検索
     wood* FindWoodByID(int id);
     //IDを使って　岩を検索
@@ -172,6 +174,8 @@ public:
     Break_Block* FindBreakBlock(int id);
 
     Boss_Wall_Objcet* FindBossWallObjcet(int id);
+
+    NoEntryBlock* FindNoEntryBlokc(int id);
     
 
     
@@ -246,8 +250,10 @@ private:
 
     std::vector<std::unique_ptr<UI_block>>Ui_block_list;//接触ブロック
 
-    std::vector<std::unique_ptr<Break_Block>>break_block_list;//接触ブロック
+    std::vector<std::unique_ptr<Break_Block>>break_block_list;//オブジェクトに触れたら壊れるブロック
 
+
+    std::vector<std::unique_ptr<NoEntryBlock>>no_enetry_block_list;//立ち入り禁止ブロック
    
     //ここにオブジェクトごとにリストを追加していく感じ
 

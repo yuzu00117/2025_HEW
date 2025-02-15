@@ -222,10 +222,33 @@ void AnchorPoint::Draw()
 			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-		
+
+			//--------------------------------------------------------------------------------------------------------------
+			//ボスの壁でNULLエラーが出たので追加した
+
+			if (g_anchor_point_body[i] == AnchorPoint::GetTargetAnchorPointBody()) 
+			{
+				if (Anchor::GetAnchorState() == Connected_state ||Anchor::GetAnchorState()== Pulling_state ||Anchor::GetAnchorState()== Deleting_state)
+				{
+					return;
+				}
+			}
+
+			b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
+			if (!fixtureA) {
+				continue;  // fixtureAがnullptrならスキップ
+			}
+
+			void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+			if (!userData) {
+				continue;  // userDataがnullptrならスキップ
+			}
+			//--------------------------------------------------------------------------------------------------------------
 			
 
-			b2Fixture*fixtureA= g_anchor_point_body[i]->GetFixtureList();
+			
+
+			
 			auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 
 			switch (objectA->need_anchor_level)

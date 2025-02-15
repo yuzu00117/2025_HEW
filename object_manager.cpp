@@ -146,6 +146,13 @@ void ObjectManager::AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, i
     boss_wall_list.emplace_back(std::make_unique<Boss_Wall_Objcet>(position, size, splitting_x, splitting_y, g_Texture,left));
 }
 
+
+//プレイヤーとボスだけがたちいれない壁
+void ObjectManager::AddNoEntryBlock(b2Vec2 Position, b2Vec2 block_size, ID3D11ShaderResourceView* g_Texture)
+{
+    no_enetry_block_list.emplace_back(std::make_unique<NoEntryBlock>(Position, block_size, g_Texture));
+}
+
 // ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
@@ -388,6 +395,16 @@ Boss_Wall_Objcet* ObjectManager::FindBossWallObjcet(int id)
 
 
 
+NoEntryBlock* ObjectManager::FindNoEntryBlokc(int id)
+{
+    for (auto& w : no_enetry_block_list) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
 
 
 
@@ -564,6 +581,11 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : no_enetry_block_list)
+    {
+        w->Initialize();
+    }
+
     Item_Coin_UI::Initialize();
 }
 
@@ -681,6 +703,12 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+
+    for (auto& w : no_enetry_block_list)
+    {
+        w->Update();
+    }
+
 }
 
 // 全ての木を描画
@@ -772,6 +800,10 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : no_enetry_block_list)
+    {
+        w->Draw();
+    }
 
     for (auto& w : break_block_list)
     {
@@ -888,6 +920,10 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : no_enetry_block_list)
+    {
+        w->Finalize();
+    }
 
     Item_Coin_UI::Finalize();
 
@@ -929,6 +965,8 @@ void ObjectManager::FinalizeAll() {
 
 
     boss_wall_list.clear();
+
+    no_enetry_block_list.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

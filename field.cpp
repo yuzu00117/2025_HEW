@@ -541,6 +541,12 @@ void Field::Initialize()
 				if (field_map[y][x] == 12) {//壊れるブロック
 					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3,3,0.0,g_under_Ground_Texture);
 				}
+
+				if (field_map[y][x] == 12) {//壊れるブロック
+					objectManager.AddNoEntryBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), g_AnchorPoint_Texture);
+				}
+
+
 				if (field_map[y][x] == 13) {//動かない物
 
 					Player &player = Player::GetInstance();
@@ -566,7 +572,7 @@ void Field::Initialize()
 					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_1);
 				}
 				if (field_map[y][x] == 16) {//ボスの地面ブロック破壊できる
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_12, false);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2);
 				}
 				if (field_map[y][x] == 17) {//ボスの地面ブロック破壊できる
 					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3);
@@ -998,11 +1004,36 @@ void Field::Finalize()
 
 	if (g_Ground_Texture != NULL)
 	{
-		UnInitTexture(g_AnchorPoint_Texture);
+		// **地形・環境オブジェクトのテクスチャ**
 		UnInitTexture(g_Ground_Texture);
-
 		g_Ground_Texture = NULL;
+
+		UnInitTexture(g_under_Ground_Texture);
+		g_under_Ground_Texture = NULL;
+
+		UnInitTexture(g_AnchorPoint_Texture);
 		g_AnchorPoint_Texture = NULL;
+
+		UnInitTexture(g_right_ground_Texture);
+		g_right_ground_Texture = NULL;
+
+		UnInitTexture(g_left_ground_Texture);
+		g_left_ground_Texture = NULL;
+
+		UnInitTexture(g_under_right_ground_Texture);
+		g_under_right_ground_Texture = NULL;
+
+		UnInitTexture(g_under_left_ground_Texture);
+		g_under_left_ground_Texture = NULL;
+
+		UnInitTexture(g_sloop_left_side_texture);
+		g_sloop_left_side_texture = NULL;
+
+		UnInitTexture(g_sloop_right_side_texture);
+		g_sloop_right_side_texture = NULL;
+
+		UnInitTexture(g_invisibility_wall_Texture);
+		g_invisibility_wall_Texture = NULL;
 	}
 
 }

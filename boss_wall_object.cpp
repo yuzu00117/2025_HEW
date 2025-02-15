@@ -59,8 +59,8 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 
 	fixture.shape = &shape;
 	fixture.density = 10.0f;
-	fixture.friction = 0.01f;
-	fixture.restitution = 0.0f;
+	fixture.friction = 0.0f;
+	fixture.restitution = 0.5f;
 	fixture.isSensor = false;
 	fixture.filter = createFilterExclude("object_filter", {"Player_filter"});
 
@@ -76,7 +76,7 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 	int ID = object_data->GenerateID();
 	object_data->id = ID;
 	object_data->object_name = Boss_Wall;
-	this->SetID(ID);
+	SetID(ID);
 
 	Texture=g_Texture;
 	isUse = true;
@@ -374,7 +374,7 @@ void Boss_Wall_Objcet::WallPullling()
 		minus = 1;
 	}
 
-	m_body->ApplyLinearImpulseToCenter(b2Vec2(2.0f * minus, 0.0f),true);
+	m_body->ApplyLinearImpulseToCenter(b2Vec2(5.0f * minus, -9.0f),true);
 }
 
 void Boss_Wall_Objcet::Draw()
@@ -407,7 +407,7 @@ void Boss_Wall_Objcet::Draw()
 				{ draw_x,
 				  draw_y },
 				GetBody()->GetAngle(),
-				{ GetSize().x * scale ,GetSize().y * scale }
+				{ GetSize().x * scale ,GetSize().y * scale*1.2f }
 			);
 		}
 
