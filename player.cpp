@@ -77,6 +77,7 @@ static ID3D11ShaderResourceView* g_TamaChan_Lv3 = NULL;//たまちゃんLv3
 
 
 //staticメンバー変数の初期化
+float   Player::m_AnchorThrowing_SpeedUp = 1.0f;
 bool    Player::m_is_jumping = false;
 bool    Player::m_jump_pressed = false;
 bool     Player::m_direction = 1;
@@ -107,6 +108,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
 {
     if (respawning)
     {
+        m_AnchorThrowing_SpeedUp = 1.0f;
         m_is_jumping = false;
         m_jump_pressed = false;
         m_direction = 1;
@@ -688,7 +690,7 @@ void Player::Update()
         break;
 
     case Throwing_state://錨が飛んでいる状態
-        Anchor::ThrowAnchorToAP();//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
+        Anchor::ThrowAnchorToAP(m_AnchorThrowing_SpeedUp);//アンカーをターゲットとしたアンカーポイントに向かって投げる関数
         g_anchor_frame_management_number++;
 
         if (180 < g_anchor_frame_management_number)
