@@ -14,7 +14,7 @@
 
 
 #define BOSS_SIZE_SCALE (1.5)
-#define ENEMY_GOLEM_SOULGAGE (100)
+#define ENEMY_GOLEM_SPIRIT_TYPE (Spirit_L)
 
 enum boss_state
 {

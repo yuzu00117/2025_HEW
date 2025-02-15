@@ -21,11 +21,30 @@
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
 
+int count_anim_time = 0;
 
 
-ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, float recovery, float Alpha)
-    :m_size(body_size), m_Alpha(Alpha), m_recovery(recovery)
+
+ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritType type, float Alpha)
+    :m_size(body_size), m_Alpha(Alpha), m_type(type)
 {
+
+    if (g_Texture == NULL)
+    {
+        switch (m_type)
+        {
+        case Spirit_L:
+            g_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_L.png");
+            break;
+        case Spirit_M:
+            g_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_M.png");
+            break;
+        case Spirit_S:
+            g_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_S.png");
+            break;
+        }
+    }
+
     b2BodyDef body;
     body.type = b2_dynamicBody;
     body.position.Set(position.x, position.y);
@@ -99,12 +118,7 @@ void	ItemSpirit::Update()
 
             GetBody()->ApplyLinearImpulseToCenter(b2Vec2(vec.x * speed, vec.y * speed), true);
 
-            //ソウルのサイズが徐々に減る
-            if (m_size.x > 0.8f || m_size.y > m_size.x * 2)
-            {
-                m_size.x -= 0.005f;
-                m_size.y -= 0.005f;
-            }
+       
 
         }
         //消される予定ならボディーを消す
@@ -137,17 +151,28 @@ void ItemSpirit::SetState(SpiritState state)
 
 void    ItemSpirit::Function()
 {
-    PlayerStamina::EditPlayerStaminaValue(m_recovery);
+    float recovery = 0;
+    switch (m_type)
+    {
+    case Spirit_L:
+        recovery = 100;
+        break;
+    case Spirit_M:
+        recovery = 50;
+        break;
+    case Spirit_S:
+        recovery = 25;
+        break;
+    }
+
+
+    PlayerStamina::EditPlayerStaminaValue(recovery);
 }
 
 
 
 void ItemSpirit::Initialize()
 {
-    if (g_Texture == NULL)
-    {
-        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\tama.png");
-    }
 
 }
 
@@ -179,15 +204,39 @@ void ItemSpirit::Draw()
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+        float sprit_scale = 1;
 
-        //描画
-        DrawSprite(
+        switch (m_type)
+        {
+        case Spirit_L:
+            sprit_scale = 4.0f;
+            break;
+        case Spirit_M:
+            sprit_scale = 2.5f;
+            break;
+        case Spirit_S:
+            sprit_scale = 1.2f;
+            break;
+        default:
+            break;
+        }
+
+
+        DrawSplittingSprite(
             { draw_x,
-              draw_y },
+            draw_y },
             m_body->GetAngle(),
-            { GetSize().x * scale,GetSize().y * scale },
-            m_Alpha
+            { GetSize().x * scale* sprit_scale * 0.75f,GetSize().y * scale * sprit_scale },
+            6, 4, m_anim_id,2.0f
         );
+        
+        count_anim_time++;
+        if (count_anim_time > 60)
+        {
+            m_anim_id++;
+            m_anim_id = m_anim_id % 24;
+        }
+
 
     }
 }

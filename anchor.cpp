@@ -74,9 +74,9 @@ void Anchor::Initialize()
 	//テクスチャの初期化
 
 	//アンカーの錨の部分（日本語）
-	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev1.png");
-	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev2.png");
-	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\anchor_point_lev3.png");
+	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv1.png");
+	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv2.png");
+	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv3.png");
 
 
 	//アンカーの鎖
@@ -123,6 +123,9 @@ void Anchor::DeleteAnchor()
 
 void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 {
+	//アンカーを削除にする
+	if (AnchorPoint::GetTargetAnchorPointBody() == nullptr) { Anchor::SetAnchorState(Deleting_state); return; }
+
 	//アンカーの錨の部分を作ってあげちゃう
 	b2Body* player_body = Player::GetOutSidePlayerBody();			//プレイヤーのBody情報を取得
 	b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();//ターゲットとしたアンカーポイントのボディ情報を取得
@@ -148,30 +151,13 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
 	body.position=anchor_position;
+	body.angle = 0;
 
 	//投げられた角度にあわせてアンカーの角度の設定の必要があるっぴよ
 
-	b2Vec2 Temporary_angle;//ベクトル使って飛んでいく角度 変数名は一時的なっていみ
-	Temporary_angle.x = target_AP_body->GetPosition().x - player_body->GetPosition().x;//xの座標の管理
-	Temporary_angle.y = target_AP_body->GetPosition().y - player_body->GetPosition().y;//yの座標の管理
+	
 
-	//ラジアン角を算出
-	float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
 
-	// ラジアンから度数へ変換
-	anchor_angle = anchor_angle * 180.0f / M_PI;
-
-	// 270度を補正 画像が下向きだったから
-	anchor_angle += 270.0f;
-
-	// 負の角度を正の範囲に調整（0°～360°）
-	if (anchor_angle < 0) {
-		anchor_angle += 360.0f;
-	}
-
-	//度数をラジアンに変換して
-	//Box2dのラジアンで管理してる
-	body.angle = anchor_angle * M_PI / 180.0f;
 
 
 	body.fixedRotation = true;//回転を固定にする
@@ -280,27 +266,62 @@ void Anchor::Draw()
 		{
 		case 1:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
-			anchor_size_scale = 1;
+			anchor_size_scale = 1.3;
 			break;
 		case 2:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
-			anchor_size_scale = 1.5;
+			anchor_size_scale = 2.0;
 			break;
 		case 3:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
-			anchor_size_scale = 2;
+			anchor_size_scale = 3.0;
 			break;
 		default:
 			break;
 		}
 
-		
+
+		b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
+
+		b2Vec2 Temporary_angle;//ベクトル使って飛んでいく角度 変数名は一時的なっていみ
+
+		if (Anchor::GetAnchorState() == Throwing_state)
+		{
+			Temporary_angle.x = target_AP_body->GetPosition().x - anchor->GetPosition().x;//xの座標の管理
+			Temporary_angle.y = target_AP_body->GetPosition().y - anchor->GetPosition().y;//yの座標の管理
+		}
+		else
+		{
+			Player& player = Player::GetInstance();
+			Temporary_angle.x = anchor->GetPosition().x -player.GetOutSidePlayerBody()->GetPosition().x;//xの座標の管理
+			Temporary_angle.y = anchor->GetPosition().y - player.GetOutSidePlayerBody()->GetPosition().y;//yの座標の管理
+		}
+
+
+
+		//ラジアン角を算出
+		float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
+
+		// ラジアンから度数へ変換
+		anchor_angle = anchor_angle * 180.0f / M_PI;
+
+		// 270度を補正 画像が下向きだったから
+		anchor_angle += 40.0f;
+
+		// 負の角度を正の範囲に調整（0°～360°）
+		if (anchor_angle < 0) {
+			anchor_angle += 360.0f;
+		}
+
+		//度数をラジアンに変換して
+		//Box2dのラジアンで管理してる
+		float angle=anchor_angle * M_PI / 180.0f;
 
 		//draw
 		DrawSprite(
 			{ draw_x,
 			  draw_y },
-			g_anchor_instance->GetAnchorBody()->GetAngle(),
+			angle,
 			{ g_anchor_instance->GetSize().x*scale*anchor_size_scale,g_anchor_instance->GetSize().y*scale* anchor_size_scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 		);
 
@@ -397,77 +418,81 @@ void Anchor::CreateRotateJoint()
 	//くっついたアンカーポイントをフィクスチャを変更する
 
 	// まず現在のフィクスチャのサイズを取得する
-	b2Fixture* fixture = targetBody->GetFixtureList();
-	if (fixture != nullptr) {
-		bool sensor_on_off = fixture->IsSensor();
-		float m_density=fixture->GetDensity();
-		float m_friction = fixture->GetFriction();
-		float m_restitution = fixture->GetRestitution();
-		// 形状を取得し、ポリゴンであることを確認
-		b2Shape* baseShape = fixture->GetShape();
-		if (baseShape->GetType() != b2Shape::e_polygon) {
-			return; // ポリゴン形状でなければ処理しない
+	if (targetBody != nullptr)
+	{
+
+		b2Fixture* fixture = targetBody->GetFixtureList();
+		if (fixture != nullptr) {
+			bool sensor_on_off = fixture->IsSensor();
+			float m_density = fixture->GetDensity();
+			float m_friction = fixture->GetFriction();
+			float m_restitution = fixture->GetRestitution();
+			// 形状を取得し、ポリゴンであることを確認
+			b2Shape* baseShape = fixture->GetShape();
+			if (baseShape->GetType() != b2Shape::e_polygon) {
+				return; // ポリゴン形状でなければ処理しない
+			}
+			// 元の b2PolygonShapeをコピー
+			b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
+			if (originalShape == nullptr) {
+
+				return;
+			}
+
+			b2PolygonShape newShape;
+			b2Vec2 vertices[b2_maxPolygonVertices];
+			int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+
+			for (int i = 0; i < vertexCount; ++i) {
+				vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
+			}
+
+			newShape.Set(vertices, vertexCount);
+
+
+			// 既存のフィクスチャを削除
+			targetBody->DestroyFixture(fixture);
+
+			// 新しいフィクスチャを作成
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &newShape;
+			fixtureDef.density = m_density;     // 密度
+			fixtureDef.friction = m_friction;   // 摩擦
+			fixtureDef.restitution = m_restitution; // 反発係数
+			fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
+
+			b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
+
+			// カスタムデータを作成して設定
+			ObjectData* anchordata = new ObjectData{ collider_object };
+			anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
 		}
-		// 元の b2PolygonShapeをコピー
-		b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
-		if (originalShape == nullptr) {
-			
-			return;
+
+
+
+		if (anchorBody == nullptr || targetBody == nullptr) {
+			return; // ターゲットが存在しない場合は何もしない
 		}
 
-		b2PolygonShape newShape;
-		b2Vec2 vertices[b2_maxPolygonVertices];
-		int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+		// 回転ジョイントを定義
+		b2RevoluteJointDef jointDef;
+		jointDef.bodyA = anchorBody;
+		jointDef.bodyB = targetBody;
 
-		for (int i = 0; i < vertexCount; ++i) {
-			vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
-		}
+		// ジョイントのアンカー点を設定 (例: アンカーの位置に合わせる)
+		b2Vec2 localAnchorA = anchorBody->GetLocalPoint(contact_listener.contactPoint);
+		b2Vec2 localAnchorB = targetBody->GetLocalPoint(contact_listener.contactPoint);
 
-		newShape.Set(vertices, vertexCount);
+		jointDef.collideConnected = true; // ジョイントで接続されたボディ間の衝突を無効化
 
+		// ジョイントを生成
+		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+		b2World* world = box2d_world.GetBox2dWorldPointer();
+		world->CreateJoint(&jointDef);
 
-		// 既存のフィクスチャを削除
-		targetBody->DestroyFixture(fixture);
-
-		// 新しいフィクスチャを作成
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &newShape;
-		fixtureDef.density = m_density;     // 密度
-		fixtureDef.friction = m_friction;   // 摩擦
-		fixtureDef.restitution = m_restitution; // 反発係数
-		fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
-
-		b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
-
-		// カスタムデータを作成して設定
-		ObjectData* anchordata = new ObjectData{ collider_object };
-		anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+		//エフェクトスタート
+		g_anchor_instance->anchor_hit_effect_flag = true;
 	}
-	
-
-
-	if (anchorBody == nullptr || targetBody == nullptr) {
-		return; // ターゲットが存在しない場合は何もしない
-	}
-
-	// 回転ジョイントを定義
-	b2RevoluteJointDef jointDef;
-	jointDef.bodyA = anchorBody;
-	jointDef.bodyB = targetBody;
-
-	// ジョイントのアンカー点を設定 (例: アンカーの位置に合わせる)
-	b2Vec2 localAnchorA = anchorBody->GetLocalPoint(contact_listener.contactPoint);
-	b2Vec2 localAnchorB = targetBody->GetLocalPoint(contact_listener.contactPoint);
-
-	jointDef.collideConnected = true; // ジョイントで接続されたボディ間の衝突を無効化
-
-	// ジョイントを生成
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
-	world->CreateJoint(&jointDef);
-
-	//エフェクトスタート
-	g_anchor_instance->anchor_hit_effect_flag = true;
 }
 
 /**
@@ -580,10 +605,10 @@ void Anchor::DrawChain()
 	float angle = atan2(anchor_position.y - player_position.y, anchor_position.x - player_position.x);
 
 	// チェーンサイズ設定 (X方向が長い)
-	b2Vec2 chain_size(0.2f, 0.05); // Xが長いチェーン
+	b2Vec2 chain_size(0.2f, 0.1); // Xが長いチェーン
 
 	// チェーン描画
-	for (int i = 1; i <= chain_count; ++i)
+	for (int i = 1; i <= chain_count-2; ++i)
 	{
 		// 線形補間で位置を計算
 		float t = static_cast<float>(i) / chain_count; // 0.0～1.0の範囲

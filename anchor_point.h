@@ -56,7 +56,8 @@ public:
 	static b2Body* GetTargetAnchorPointBody();
 
 private:
-	
+	static float target_sheet_frame;
+
 };
 
 

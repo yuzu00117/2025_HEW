@@ -417,15 +417,15 @@ void Field::Initialize()
 				//--------------------------------------------------------------------------------------------------------------------------------------------
 				//静的動的ブロック
 				if (field_map[y][x] == 39) {//岩ゴロゴロのところで使ってる
-					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT - 0.5 / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT+0.5/BOX2D_SCALE_MANAGEMENT), b2Vec2(4.f, 4.f), Box_collider,1);
+					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT - 0.5 / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT+0.5/BOX2D_SCALE_MANAGEMENT), b2Vec2(4.f, 4.f), Box_collider,1,false);
 				}
 
 				if (field_map[y][x] == 40) {//岩ゴロゴロのところで使ってる
-					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT , y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), Box_collider, 1);
+					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT , y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), Box_collider, 1,false);
 				}	
 				
 				if (field_map[y][x] == 41) {//岩ゴロゴロのところで使ってる
-					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.f, 4.f), Box_collider, 1);
+					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.f, 4.f), Box_collider, 1,false);
 				}
 
 			
@@ -566,7 +566,7 @@ void Field::Initialize()
 					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_1);
 				}
 				if (field_map[y][x] == 16) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_12, false);
 				}
 				if (field_map[y][x] == 17) {//ボスの地面ブロック破壊できる
 					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3);
@@ -826,7 +826,7 @@ void Field::Initialize()
 				}
 
 				if (field_map[y][x] == 16) {//上から落ちるや
-					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f),Box_collider,1);
+					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f),Box_collider,1,false);
 				}
 
 
@@ -840,6 +840,10 @@ void Field::Initialize()
 
 				if (field_map[y][x] == 18) {//転がる岩
 					objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT),2,2,false);
+				}
+
+				if (field_map[y][x] == 20) {//上から落ちるや
+					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Box_collider, 1, true);
 				}
 
 			}
@@ -1090,3 +1094,5 @@ void Field::LoadMap(StageType stage_type)
     // 新しいマップを初期化
     Initialize();
 }
+
+

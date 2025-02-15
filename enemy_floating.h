@@ -17,7 +17,7 @@
 //==========É}ÉNÉçíËã`==========//
 #define ENEMY_FLOATING_LIFE (100)
 #define ENEMY_FLOATING_DAMAGE (MAX_STAMINA/2)
-#define ENEMY_FLOATING_SOULGAGE (50)
+#define ENEMY_FLOATING_SPIRIT_TYPE (Spirit_M)
 #define ENEMY_FLOATING_SCORE (200)
 
 
