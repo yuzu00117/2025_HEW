@@ -148,6 +148,8 @@
     <ClCompile Include="camera_shake.cpp" />
     <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
     <ClCompile Include="blown_away_effect.cpp" />
+    <ClCompile Include="change_scene_end_production.cpp" />
+    <ClCompile Include="change_scene_start_production.cpp" />
     <ClCompile Include="contact_block.cpp" />
     <ClCompile Include="create_filter.cpp" />
     <ClCompile Include="cri\common\source\CriSmpFramework_PC.cpp" />
@@ -230,6 +232,8 @@
     <ClInclude Include="break_effect.h" />
     <ClInclude Include="camera_shake.h" />
     <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
+    <ClInclude Include="change_scene_end_production.h" />
+    <ClInclude Include="change_scene_start_production.h" />
     <ClInclude Include="clock.h" />
     <ClInclude Include="collider_type.h" />
     <ClInclude Include="contactlist.h" />

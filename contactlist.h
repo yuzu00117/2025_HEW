@@ -232,6 +232,24 @@ public:
             }
         }
 
+
+        //プレイヤーと傾斜のついたブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->object_name == Object_sloping_block) ||
+            (objectA->object_name == Object_sloping_block && objectB->collider_type == collider_player_leg))
+        {
+            if (objectA->object_name == Object_sloping_block)
+            {
+                sloping_block* sloping_block_instance = object_manager.FindSloping_BlockByID(objectA->id);
+                sloping_block_instance->SetPlayerCollided(true);
+            }
+            else if (objectB->object_name == Object_sloping_block)
+            {
+                sloping_block* sloping_block_instance = object_manager.FindSloping_BlockByID(objectB->id);
+                sloping_block_instance->SetPlayerCollided(true);
+            }
+
+        }
+
         // プレーヤーとオブジェクトが衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_object) ||
@@ -1718,6 +1736,25 @@ public:
                 ui_instance->SetFlag(false);
             }
         }
+
+
+        //プレイヤーと傾斜のついたブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->object_name == Object_sloping_block) ||
+            (objectA->object_name == Object_sloping_block && objectB->collider_type == collider_player_leg))
+        {
+            if (objectA->object_name == Object_sloping_block)
+            {
+                sloping_block* sloping_block_instance = object_manager.FindSloping_BlockByID(objectA->id);
+                sloping_block_instance->SetPlayerCollided(false);
+            }
+            else if (objectB->object_name == Object_sloping_block)
+            {
+                sloping_block* sloping_block_instance = object_manager.FindSloping_BlockByID(objectB->id);
+                sloping_block_instance->SetPlayerCollided(false);
+            }
+
+        }
+
     }
 
 
