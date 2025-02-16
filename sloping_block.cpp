@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name sloping_block.cpp
-// #description ŒXÎ‚Ì‚Â‚¢‚½ƒuƒƒbƒN‚Ìƒwƒbƒ_[
-// #make 2024/12/04@‰i–ì‹`–ç
+// #description å‚¾æ–œã®ã¤ã„ãŸãƒ–ãƒ­ãƒƒã‚¯ã®ãƒ˜ãƒƒãƒ€ãƒ¼
+// #make 2024/12/04ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/04
-// #comment ’Ç‰ÁEC³—\’è
-//          E‚È‚¢‚Æ‚¨‚à‚¤[
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ãªã„ã¨ãŠã‚‚ã†ãƒ¼
 //
 //----------------------------------------------------------------------------------------------------
 #include"include/box2d/box2d.h"
@@ -15,14 +15,17 @@
 #include"player_position.h"
 #include"collider_type.h"
 #include"sloping_block.h"
+#include"scene.h"
 #include"FixtureSizeCalculate.h"
 #include"player.h"
 
 
-//ƒeƒNƒXƒ`ƒƒ‚Ì“ü‚ê•¨
-//ƒOƒ[ƒoƒ‹•Ï”
-static ID3D11ShaderResourceView* g_sloping_block_right_down_Texture = NULL;//ƒeƒNƒXƒ`ƒƒ ‰E‰º
-static ID3D11ShaderResourceView* g_sloping_block_left_down_Texture = NULL;//ƒeƒNƒXƒ`ƒƒ @¶‚µ‚½
+
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®å…¥ã‚Œç‰©
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
+static ID3D11ShaderResourceView* g_sloping_block_right_down_Texture = NULL;//ãƒ†ã‚¯ã‚¹ãƒãƒ£ å³ä¸‹
+static ID3D11ShaderResourceView* g_sloping_block_left_down_Texture = NULL;//ãƒ†ã‚¯ã‚¹ãƒãƒ£ ã€€å·¦ã—ãŸ
+
 
 
 b2Fixture* g_fixture = nullptr;
@@ -32,30 +35,30 @@ b2Fixture* g_fixture = nullptr;
 sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect aspect)
 {
 
-	//Œü‚«‚ğƒZƒbƒg‚µ‚Ä‚¨‚­
+	//å‘ãã‚’ã‚»ãƒƒãƒˆã—ã¦ãŠã
 	SetBlockAspect(aspect);
 
-	//•`‰æ‚æ‚¤‚ÌƒTƒCƒY‚Ìİ’è
+	//æç”»ã‚ˆã†ã®ã‚µã‚¤ã‚ºã®è¨­å®š
 	SetSlopingBlockSize(size);
 
 
 
 
-	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
 	//----------------------------------------------------------------------------//
-	//ˆê‚Â–Ú‚Ìƒ{ƒfƒB‚ğ‚Â‚­‚é
+	//ä¸€ã¤ç›®ã®ãƒœãƒ‡ã‚£ã‚’ã¤ãã‚‹
 
-	//ƒTƒCƒY‚ğİ’è‚·‚é
+	//ã‚µã‚¤ã‚ºã‚’è¨­å®šã™ã‚‹
 	b2Vec2 sloping_block_size;
 	sloping_block_size.x = size.x / BOX2D_SCALE_MANAGEMENT;
 	sloping_block_size.y = size.y / BOX2D_SCALE_MANAGEMENT;
 
 
-	b2BodyDef sloping_block_body;//Î–Ê‚ÌƒuƒƒbƒN
+	b2BodyDef sloping_block_body;//æ–œé¢ã®ãƒ–ãƒ­ãƒƒã‚¯
 	sloping_block_body.type = b2_staticBody;
 	sloping_block_body.position.Set(position.x, position.y);
 	sloping_block_body.fixedRotation = false;
@@ -66,7 +69,7 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 
 
 
-	// OŠpŒ`‚ÌƒVƒFƒCƒv‚ğ’è‹`
+	// ä¸‰è§’å½¢ã®ã‚·ã‚§ã‚¤ãƒ—ã‚’å®šç¾©
 	b2PolygonShape triangleShape;
 	b2Vec2 vertices[3] = {b2Vec2(0.0f,0.0f)};
 
@@ -86,28 +89,28 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 		break;
 	}
 	
-	triangleShape.Set(vertices, 3); // ’¸“_‚ğw’è‚µ‚ÄOŠpŒ`‚ğİ’è
+	triangleShape.Set(vertices, 3); // é ‚ç‚¹ã‚’æŒ‡å®šã—ã¦ä¸‰è§’å½¢ã‚’è¨­å®š
 
 	b2FixtureDef sloping_block_fixture;
 
 	sloping_block_fixture.shape = &triangleShape;
 	sloping_block_fixture.density = 3.0f;
-	sloping_block_fixture.friction = 0.5f;//–€C
-	sloping_block_fixture.restitution = 0.0f;//”½”­ŒW”
-	sloping_block_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	sloping_block_fixture.friction = 0.5f;//æ‘©æ“¦
+	sloping_block_fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+	sloping_block_fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
 	b2Fixture* object_sloping_block_fixture = m_sloping_block_body->CreateFixture(&sloping_block_fixture);
 	g_fixture = object_sloping_block_fixture;
 
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-	ObjectData* object_sloping_block_data = new ObjectData{ collider_ground };//ˆê’U’n–Ê”»’è
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+	ObjectData* object_sloping_block_data = new ObjectData{ collider_ground };//ä¸€æ—¦åœ°é¢åˆ¤å®š
 	object_sloping_block_data->object_name = Object_sloping_block;
 	object_sloping_block_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_sloping_block_data);
 
 
-	int ID = object_sloping_block_data->GenerateID();//ID‚ğæ“¾
-	object_sloping_block_data->id = ID;//ƒtƒBƒNƒXƒ`ƒƒ‚É“o˜^
-	SetID(ID);//ƒNƒ‰ƒX‚É“o˜^
+	int ID = object_sloping_block_data->GenerateID();//IDã‚’å–å¾—
+	object_sloping_block_data->id = ID;//ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã«ç™»éŒ²
+	SetID(ID);//ã‚¯ãƒ©ã‚¹ã«ç™»éŒ²
 
 };
 
@@ -118,93 +121,108 @@ sloping_block::~sloping_block()
 
 void sloping_block::Initialize()
 {
-	//ƒeƒNƒXƒ`ƒƒ‚Ì‰Šú‰»
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®åˆæœŸåŒ–
 	if (g_sloping_block_left_down_Texture == NULL)
 	{
-		g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//‰E‘¤‚ÌƒeƒNƒXƒ`ƒƒ
-		g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//‰E‘¤‚ÌƒeƒNƒXƒ`ƒƒ
+
+		SceneManager& sceneManager = SceneManager::GetInstance();
+	
+		//ã‚¹ãƒ†ãƒ¼ã‚¸ã«ã‚ˆã£ã¦ä»£å…¥ã™ã‚‹
+		if (sceneManager.GetStageName() == STAGE_BOSS)
+		{
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//å³å´ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_left.png");//å³å´ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+		}
+		else
+		{
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//å³å´ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//å³å´ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+		}
+	
+
+
 	}
 }
 
 void sloping_block::Update()
 {
-	//ƒvƒŒƒCƒ„[‚ª‚ÆÕ“Ë‚µ‚Ä‚¢‚é‚È‚çƒvƒŒƒCƒ„[‚ª“o‚ê‚é‚æ‚¤‚É—Í‚ğ‰Á‚¦‚é
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã¨è¡çªã—ã¦ã„ã‚‹ãªã‚‰ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç™»ã‚Œã‚‹ã‚ˆã†ã«åŠ›ã‚’åŠ ãˆã‚‹
 	if (m_player_collided)
 	{
 
 		Player& player = Player::GetInstance();
 
-		//ƒvƒŒƒCƒ„[‚ª•à‚¢‚Ä‚¢‚È‚¢‚Ì‚È‚ç—Í‚ğ‰Á‚¦‚È‚¢
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ­©ã„ã¦ã„ãªã„ã®ãªã‚‰åŠ›ã‚’åŠ ãˆãªã„
 		if (player.GetState() != player_walk_state)
 		{
 			return;
 		}
 
-		//’¸“_ƒf[ƒ^‚ğfixture‚©‚çæ“¾
+		//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã‚’fixtureã‹ã‚‰å–å¾—
 		b2Vec2 vertex[3];
 		b2Vec2 body_position = SlopingBlock_body->GetPosition();
 		for (int i = 0; i < 3; i++)
 		{
 			vertex[i] = GetPolygonFixtureVertex(g_fixture->GetShape(), i);
-			//’¸“_ƒf[ƒ^‚ğbox2DÀ•WidirectX‚Ìƒ[ƒ‹ƒhÀ•Wˆê•àè‘Oj‚É•ÏŠ·
+			//é ‚ç‚¹ãƒ‡ãƒ¼ã‚¿ã‚’box2Dåº§æ¨™ï¼ˆdirectXã®ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ä¸€æ­©æ‰‹å‰ï¼‰ã«å¤‰æ›
 			vertex[i].x += body_position.x;
 			vertex[i].y += body_position.y;
 		}
 
-		//Î–Ê‚ÌƒxƒNƒgƒ‹ŒvZiŠ|‚¯‚é8.0‚Í’²®’lj
+		//æ–œé¢ã®ãƒ™ã‚¯ãƒˆãƒ«è¨ˆç®—ï¼ˆæ›ã‘ã‚‹8.0ã¯èª¿æ•´å€¤ï¼‰
 		b2Vec2	vector;
 		vector.x = (vertex[0].x - vertex[2].x)*8.0f;
 		vector.y = (vertex[0].y - vertex[2].y)*8.0f;
 
-		//ƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğæ“¾‚µ‚Ä‚¨‚­
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒœãƒ‡ã‚£ã‚’å–å¾—ã—ã¦ãŠã
 		auto player_body = player.GetOutSidePlayerBody();
-		//—Í‚ğ‰Á‚¦‚éÅ‘å‚ÌƒxƒƒVƒeƒB‚ğİ’è
+		//åŠ›ã‚’åŠ ãˆã‚‹æ™‚æœ€å¤§ã®ãƒ™ãƒ­ã‚·ãƒ†ã‚£ã‚’è¨­å®š
 		b2Vec2 max_velocity = { 2.0f,-1.0f };
 
-		//ƒuƒƒbƒN‚ÌŒü‚«‚É‚æ‚Á‚ÄƒvƒŒƒCƒ„[‚ÌŒü‚«‚ª•Ï‚í‚Á‚½‚Ìˆ—‚ªˆá‚¤
+		//ãƒ–ãƒ­ãƒƒã‚¯ã®å‘ãã«ã‚ˆã£ã¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘ããŒå¤‰ã‚ã£ãŸæ™‚ã®å‡¦ç†ãŒé•ã†
 		switch (GetBlockAspect())
 		{
 		case right_down:
-			//ƒvƒŒƒCƒ„[‚ªu‰EvŒü‚¢‚Ä‚¢‚éã‚é
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã€Œå³ã€å‘ã„ã¦ã„ã‚‹æ™‚ä¸Šã‚‹
 			if (player.GetDirection() == 1)
 			{
-				//ƒvƒŒƒCƒ„[‚É—Í‚ğ‰Á‚¦‚é
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«åŠ›ã‚’åŠ ãˆã‚‹
 				player_body->ApplyForceToCenter(vector, true);
 				auto player_velocity = player_body->GetLinearVelocity();
-				//ƒxƒƒVƒeƒB‚ÌÅ‘å’l‚ğ’´‚¦‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Ìˆ—
+				//ãƒ™ãƒ­ã‚·ãƒ†ã‚£ã®æœ€å¤§å€¤ã‚’è¶…ãˆãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å‡¦ç†
 				if (player_velocity.x > max_velocity.x)
 				{
 					player_body->SetLinearVelocity({ max_velocity.x, player_velocity.y });
 					player_velocity.x = max_velocity.x;
 				}
-				//ƒxƒƒVƒeƒB‚ÌÅ‘å’l‚ğ’´‚¦‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Ìˆ—
+				//ãƒ™ãƒ­ã‚·ãƒ†ã‚£ã®æœ€å¤§å€¤ã‚’è¶…ãˆãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å‡¦ç†
 				if (player_velocity.y < max_velocity.y)
 				{
 					player_body->SetLinearVelocity({ player_velocity.x, max_velocity.y });
 					player_velocity.y = max_velocity.y;
 				}
 			}
-			//ƒvƒŒƒCƒ„[‚ªu¶vŒü‚¢‚Ä‚¢‚é‰º‚é
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã€Œå·¦ã€å‘ã„ã¦ã„ã‚‹æ™‚ä¸‹ã‚‹
 			else
 			{
-				//ƒvƒŒƒCƒ„[‚ªÎ–Ê‚É‰ˆ‚Á‚Ä‰º‚ê‚é‚æ‚¤‚É—Í‚ğ‰Á‚¦‚é
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ–œé¢ã«æ²¿ã£ã¦ä¸‹ã‚Œã‚‹ã‚ˆã†ã«åŠ›ã‚’åŠ ãˆã‚‹
 				player.GetOutSidePlayerBody()->ApplyLinearImpulseToCenter({ 0.0f,0.2f }, true);
 			}
 			break;
 		case left_down:
-			//ƒvƒŒƒCƒ„[‚ªu¶vŒü‚¢‚Ä‚¢‚éã‚é
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã€Œå·¦ã€å‘ã„ã¦ã„ã‚‹æ™‚ä¸Šã‚‹
 			if (player.GetDirection() == 0)
 			{
-				//ƒvƒŒƒCƒ„[‚É—Í‚ğ‰Á‚¦‚é
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«åŠ›ã‚’åŠ ãˆã‚‹
 				player.GetOutSidePlayerBody()->ApplyForceToCenter(vector, true);
 				auto player_velocity = player_body->GetLinearVelocity();
-				//ƒxƒƒVƒeƒB‚ÌÅ‘å’l‚ğ’´‚¦‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Ìˆ—
+				//ãƒ™ãƒ­ã‚·ãƒ†ã‚£ã®æœ€å¤§å€¤ã‚’è¶…ãˆãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å‡¦ç†
 				if (player_velocity.x > max_velocity.x)
 				{
 					player_body->SetLinearVelocity({ max_velocity.x, player_velocity.y });
 					player_velocity.x = max_velocity.x;
 				}
-				//ƒxƒƒVƒeƒB‚ÌÅ‘å’l‚ğ’´‚¦‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß‚Ìˆ—
+				//ãƒ™ãƒ­ã‚·ãƒ†ã‚£ã®æœ€å¤§å€¤ã‚’è¶…ãˆãªã„ã‚ˆã†ã«ã™ã‚‹ãŸã‚ã®å‡¦ç†
 				if (player_velocity.y < max_velocity.y)
 				{
 					player_body->SetLinearVelocity({ player_velocity.x, max_velocity.y });
@@ -213,10 +231,10 @@ void sloping_block::Update()
 
 
 			}
-			//ƒvƒŒƒCƒ„[‚ªu‰EvŒü‚¢‚Ä‚¢‚é‰º‚é
+			//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒã€Œå³ã€å‘ã„ã¦ã„ã‚‹æ™‚ä¸‹ã‚‹
 			else
 			{
-				//ƒvƒŒƒCƒ„[‚ªÎ–Ê‚É‰ˆ‚Á‚Ä‰º‚ê‚é‚æ‚¤‚É—Í‚ğ‰Á‚¦‚é
+				//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ–œé¢ã«æ²¿ã£ã¦ä¸‹ã‚Œã‚‹ã‚ˆã†ã«åŠ›ã‚’åŠ ãˆã‚‹
 				player.GetOutSidePlayerBody()->ApplyLinearImpulseToCenter({ 0.0f,0.2f }, true);
 			}
 			break;
@@ -231,32 +249,35 @@ void sloping_block::Update()
 
 void sloping_block::Draw()
 {
-	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+	// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
-	///‚±‚±‚©‚ç’²®‚µ‚Ä‚Ë
+	///ã“ã“ã‹ã‚‰èª¿æ•´ã—ã¦ã­
 
 	b2Vec2 sloping_block_pos = GetObjectSlopingBlockBody()->GetPosition();
 
-	// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-	//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+	//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 	float draw_x = ((sloping_block_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((sloping_block_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	switch (GetBlockAspect())//Œü‚«‚ğƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÅƒZƒbƒg‚µ‚Ä‚é‚Ì‚Å‚»‚ê‚ğó‚¯æ‚Á‚Ä•`‰æ
+	switch (GetBlockAspect())//å‘ãã‚’ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã‚»ãƒƒãƒˆã—ã¦ã‚‹ã®ã§ãã‚Œã‚’å—ã‘å–ã£ã¦æç”»
 	{
 	case right_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_down_Texture);
 		break;
+
+
 	case left_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_down_Texture);
 		break;
+
 	default:
 		break;
 	}
@@ -266,28 +287,29 @@ void sloping_block::Draw()
 		{ draw_x,
 		  draw_y },
 		GetObjectSlopingBlockBody()->GetAngle(),
-		{ GetSlopingBlockSize().x * scale,GetSlopingBlockSize().y * scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+		{ GetSlopingBlockSize().x * scale,GetSlopingBlockSize().y * scale }///ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹ã™ã¹ãŒãªã„ã€€ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã«è¿½åŠ ã—ã‚ˆã†ã‹ãªï¼Ÿã£ã¦ãƒ¬ãƒ™ãƒ«
 	);
 }
 
 void sloping_block::Finalize()
 {
 
-	//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+	//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
 
 	if (GetObjectSlopingBlockBody() != nullptr)
 	{
-		//ƒ{ƒfƒB‚Ìíœ
+		//ãƒœãƒ‡ã‚£ã®å‰Šé™¤
 		world->DestroyBody(SlopingBlock_body);
 	}
 
 	
-	//ƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
 	UnInitTexture(g_sloping_block_left_down_Texture);
 	UnInitTexture(g_sloping_block_right_down_Texture);
+
 
 }
 
