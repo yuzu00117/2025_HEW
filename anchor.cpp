@@ -368,7 +368,7 @@ void Anchor::Finalize()
 
 
 
-void Anchor::ThrowAnchorToAP()
+void Anchor::ThrowAnchorToAP(float speed_up)
 {
 	if (g_anchor_instance == nullptr)
 	{
@@ -395,7 +395,7 @@ void Anchor::ThrowAnchorToAP()
 		}
 		b2Vec2 velocity = to_pos - anchor_pos;
 		velocity.Normalize(); // 単位ベクトル化して方向を決定
-		velocity *= 20; // 投擲速度を設定	
+		velocity *= (20 * speed_up); // 投擲速度を設定	
 
 		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 	}

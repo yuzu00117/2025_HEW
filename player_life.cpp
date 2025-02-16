@@ -25,6 +25,7 @@ float PlayerLife::m_life = PLAYER_LIFE;//プレイヤーの残機
 void PlayerLife::Initialize()
 {
 	g_life_Texture = InitTexture(L"asset\\texture\\life.png");
+	m_life = PLAYER_LIFE;
 
 }
 
