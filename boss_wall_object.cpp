@@ -138,7 +138,12 @@ void Boss_Wall_Objcet::Update()
 			{
 				
 				WallPullling();
-				
+				pulling_cnt++;
+			}
+
+			if (120 < pulling_cnt)
+			{
+				Splitting_Destroy_Flag = true;
 			}
 
 			Destroy_Splitting();

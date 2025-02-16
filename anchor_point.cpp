@@ -236,12 +236,12 @@ void AnchorPoint::Draw()
 
 			b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
 			if (!fixtureA) {
-				continue;  // fixtureAがnullptrならスキップ
+				return;
 			}
 
 			void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 			if (!userData) {
-				continue;  // userDataがnullptrならスキップ
+				return;  // userDataがnullptrならスキップ
 			}
 			//--------------------------------------------------------------------------------------------------------------
 			

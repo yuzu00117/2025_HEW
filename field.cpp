@@ -538,9 +538,9 @@ void Field::Initialize()
 
 
 
-				if (field_map[y][x] == 12) {//壊れるブロック
-					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3,3,0.0,g_under_Ground_Texture);
-				}
+				//if (field_map[y][x] == 12) {//壊れるブロック
+				//	objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3,3,0.0,g_under_Ground_Texture);
+				//}
 
 				if (field_map[y][x] == 12) {//壊れるブロック
 					objectManager.AddNoEntryBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), g_AnchorPoint_Texture);
@@ -773,16 +773,49 @@ void Field::Initialize()
 				}
 				
 
-
+				b2Vec2 boss_wall_size = { 20.f,20.f };
 				if (field_map[y][x] == 70) {
-					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(11.f, 13.0f), 6, 6, g_Ground_Texture, false);
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6, g_Ground_Texture, false);
 				}
 				//ボスのオブジェクトに使う壁
 				if (field_map[y][x] == 71) {
-					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(11.f, 13.0f), 6, 6,g_Ground_Texture,true);
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6,g_Ground_Texture,true);
 				}
 
-			
+
+
+
+				if (field_map[y][x] == 80) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f),boss_room_level_2, true);
+				}
+				if (field_map[y][x] == 81) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_3, false);
+				}
+				if (field_map[y][x] == 82) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_4, true);
+				}
+				if (field_map[y][x] == 83) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_5, false);
+				}
+				if (field_map[y][x] == 84) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_6, true);
+				}
+				if (field_map[y][x] == 85) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_7, false);
+				}
+				if (field_map[y][x] == 86) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_8, true);
+				}
+				if (field_map[y][x] == 87) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_9, false);
+				}
+				if (field_map[y][x] == 88) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_10, true);
+				}
+				if (field_map[y][x] == 89) {
+					objectManager.AddBossCarryEnemySpawner(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.0f), boss_room_level_11, false);
+				}
+
 
 			}
 		}

@@ -158,6 +158,7 @@ private:
 
 	bool move_flag = false;
 
+	int pulling_cnt;
 
 	//テクスチャ
 	ID3D11ShaderResourceView* Texture;
