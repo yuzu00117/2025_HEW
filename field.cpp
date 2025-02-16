@@ -849,6 +849,10 @@ void Field::Initialize(bool respawning)
 				if (field_map[y][x] == 21) {//上から落ちるや
 					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f,g_left_ground_Texture);
 				}
+
+				if (field_map[y][x] == 25) {//上から落ちるや
+					itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
+				}
 			}
 		}
 		objectManager.InitializeAll();

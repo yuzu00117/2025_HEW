@@ -53,7 +53,7 @@ private:
 	static int max_coin_count;
 	static int now_get_coin_count;
 
-
+	static float coin_effect_frame;
 
 	static int DrawCount;
 };
