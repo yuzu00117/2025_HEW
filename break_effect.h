@@ -52,6 +52,7 @@ public:
     void Destroy_Splitting(b2Body* targetBody, ID3D11ShaderResourceView* texture, b2Vec2 size);
     void UpdateFragments();
     void DrawFragments();
+    void Finalize();
 };
 
 #endif // PILLAR_FRAGMENTS_MANAGER_H

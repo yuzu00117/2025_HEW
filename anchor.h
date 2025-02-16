@@ -50,7 +50,7 @@ public:
 	* @brief アンカーを投げる処理
 	* アンカー自身と目標となる座標を取得して、目標の座標に飛ばす
 	*/
-	static void ThrowAnchorToAP();
+	static void ThrowAnchorToAP(float speed_up = 1.0f);
 
 	/**
 	 * @brief アンカーを引っ張る

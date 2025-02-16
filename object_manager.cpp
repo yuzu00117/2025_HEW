@@ -140,6 +140,7 @@ void ObjectManager::AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisi
 }
 
 
+
 //ボスの壁オブジェクトを追加
 void ObjectManager::AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture,bool left)
 {
@@ -151,6 +152,11 @@ void ObjectManager::AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, i
 void ObjectManager::AddNoEntryBlock(b2Vec2 Position, b2Vec2 block_size, ID3D11ShaderResourceView* g_Texture)
 {
     no_enetry_block_list.emplace_back(std::make_unique<NoEntryBlock>(Position, block_size, g_Texture));
+}
+
+void ObjectManager::AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture)
+{
+    texture_block_list.emplace_back(std::make_unique<Texture_block>(Position, block_size, texture_angle, texture));
 }
 
 // ID を使って木を検索インスタンスを取得できる
@@ -383,9 +389,20 @@ Break_Block* ObjectManager::FindBreakBlock(int id)
 }
 
 
+
 Boss_Wall_Objcet* ObjectManager::FindBossWallObjcet(int id)
 {
     for (auto& w : boss_wall_list) {
+              if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr; // 見つからない場合は nullptr を返す
+}
+
+Texture_block* ObjectManager::FindTextureBlock(int id)
+{
+    for (auto& w : texture_block_list) {
         if (w->GetID() == id) {
             return w.get();
         }
@@ -410,29 +427,6 @@ NoEntryBlock* ObjectManager::FindNoEntryBlokc(int id)
 
 
 
-Object* ObjectManager::FindObjectByID_ObjectType(int id, ObjectType type)
-{
-    switch (type)
-    {
-    case Object_Wood: // 木
-        break;
-    case Object_Rock: // 岩
-        break;
-    case Object_one_way_platform://足場　したからしか乗れない
-        break;
-    case Object_Static_to_Dynamic://静的から動的に変更するオブジェクト
-        break;
-    case Object_Movable_Ground:  //引っ張れる床 
-        break;
-    case Object_Enemy_Static://静的エネミー
-        break;
-    case Object_Enemy_Dynamic://動的エネミー
-        break;
-    default:
-        break;
-    }
-    return nullptr; // 見つからない場合は nullptr を返す
-}
 
 //指定の静的エネミーを削除
 void ObjectManager::DestroyEnemyStatic(int id)
@@ -576,12 +570,19 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+
     for (auto& w : boss_wall_list)
     {
         w->Initialize();
     }
 
     for (auto& w : no_enetry_block_list)
+    {
+        w->Initialize();
+    }
+  
+  
+    for (auto& w : texture_block_list)
     {
         w->Initialize();
     }
@@ -709,6 +710,12 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+
+    for (auto& w : texture_block_list)
+    {
+        w->Update();
+    }
+
 }
 
 // 全ての木を描画
@@ -828,6 +835,15 @@ void ObjectManager::DrawFront()
     }
 }
 
+
+void ObjectManager::DrawBack()
+{
+    for (auto& w : texture_block_list) {
+        w->Draw();
+    }
+}
+
+
 // 全ての木を破棄
 void ObjectManager::FinalizeAll() {
     for (auto& w : woodList) {
@@ -914,6 +930,11 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : texture_block_list)
+    {
+        w->Finalize();
+    }
+
 
     for (auto& w : boss_wall_list)
     {
@@ -964,9 +985,13 @@ void ObjectManager::FinalizeAll() {
     break_block_list.clear();
 
 
+
     boss_wall_list.clear();
 
     no_enetry_block_list.clear();
+
+    texture_block_list.clear();
+
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
@@ -988,5 +1013,8 @@ void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
     }
 
 }
+
+
+
 
 

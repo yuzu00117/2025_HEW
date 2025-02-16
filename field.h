@@ -81,10 +81,10 @@ public:
 	Field();
 	virtual ~Field();
 
-	static void Initialize();
+	static void Initialize(bool respawning = false);
 	static void Update();
 	static void Draw();
-	static void Finalize();
+	static void Finalize(bool respawning = false);
 
 	//csvファイルを読み込み、二次元配列として格納
 	static bool LoadCSV(const std::string& filename);
