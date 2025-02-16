@@ -20,9 +20,9 @@ bool AnchorSpirit::m_auto_heal = false;
 
 void AnchorSpirit::Update()
 {
-	if (m_auto_heal)
+	if (m_auto_heal && m_spirit != MAX_ANCHOR_SPIRIT)
 	{
-		EditAnchorSpiritValue(MAX_ANCHOR_SPIRIT);
+		EditAnchorSpiritValue(1.0f);
 	}
 }
 
