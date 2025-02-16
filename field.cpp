@@ -86,7 +86,7 @@ Field::~Field()
 
 
 //初期化
-void Field::Initialize()
+void Field::Initialize(bool respawning)
 {
 	
 	//テクスチャの初期化
@@ -274,13 +274,10 @@ void Field::Initialize()
 					objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0);
 				}
 				//-----------------------------------------------------------------------------------------------
-
-
-
 			}
 		}
 		objectManager.InitializeAll();
-		itemManager.InitializeAll();
+		itemManager.InitializeAll(respawning);
 		break;
 	case STAGE_1_1:
 		// csvからマップチップを読み込む
@@ -433,12 +430,6 @@ void Field::Initialize()
 					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_down);
 				}
 
-				if (field_map[y][x] == 37) {//右上斜面
-					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_upper);
-				}
-				if (field_map[y][x] == 38) {//左上斜面
-					objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_upper);
-				}
 				//--------------------------------------------------------------------------------------------------------------------------------------------
 				//静的動的ブロック
 				if (field_map[y][x] == 39) {//岩ゴロゴロのところで使ってる
@@ -457,23 +448,23 @@ void Field::Initialize()
 				//---------------------------------------------------------------------------------------------------------------------------------------------------
 				//コインや宝石
 				if (field_map[y][x] == 45) {//コイン
-				itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0);
+				itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
 				}
-				if (field_map[y][x] == 46) {//宝石 赤
-					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0,RED);
+				if (field_map[y][x] == 46) {//青宝石
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE, respawning);
 				}
-				if (field_map[y][x] == 47) {//宝石　青
-					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, BLUE);
+				if (field_map[y][x] == 47) {//赤宝石
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, RED, respawning);
 				}
-				if (field_map[y][x] == 47) {//宝石　黄
-					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, YELLOW);
+				if (field_map[y][x] == 48) {//黄色宝石
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, YELLOW, respawning);
 				}
 
 
-				//--------------------------------------------------------------------------------------------------------------------------------------------------
-				if (field_map[y][x] == 51) {//セーブポイント
-					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT-(0.5/BOX2D_SCALE_MANAGEMENT)), b2Vec2(1.f, 2.f), 0);
+				if (field_map[y][x] == 51) {//中間地点
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, respawning);
 				}
+
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
 				//間欠泉
 				if (field_map[y][x] == 56) {//間欠泉
@@ -504,7 +495,7 @@ void Field::Initialize()
 		}
 
 		objectManager.InitializeAll();
-		itemManager.InitializeAll();
+		itemManager.InitializeAll(respawning);
 	
 		break;
 	case STAGE_BOSS:
@@ -730,7 +721,7 @@ void Field::Initialize()
 
 
 		objectManager.InitializeAll();
-		itemManager.InitializeAll();
+		itemManager.InitializeAll(respawning);
 
 		break;
 	case STAGE_TEST:
@@ -855,10 +846,13 @@ void Field::Initialize()
 					objectManager.AddStatic_to_Dynamic_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), Box_collider, 1, true);
 				}
 
+				if (field_map[y][x] == 21) {//上から落ちるや
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f,g_left_ground_Texture);
+				}
 			}
 		}
 		objectManager.InitializeAll();
-		itemManager.InitializeAll();
+		itemManager.InitializeAll(respawning);
 		
 		break;
 	default:
@@ -1001,7 +995,7 @@ void Field::Draw()
 
 
 
-void Field::Finalize()
+void Field::Finalize(bool respawning)
 {
 	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -1027,7 +1021,7 @@ void Field::Finalize()
 	//終了処理
 	AnchorPoint::Finalize();
 	objectManager.FinalizeAll();
-	itemManager.FinalizeAll();
+	itemManager.FinalizeAll(respawning);
 
 	if (g_Ground_Texture != NULL)
 	{

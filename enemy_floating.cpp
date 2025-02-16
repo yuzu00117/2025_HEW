@@ -14,7 +14,8 @@
 #include "player_position.h"
 
 
-static ID3D11ShaderResourceView* g_EnemyFloating_Texture = NULL;	//動的エネミーのテクスチャ
+static ID3D11ShaderResourceView* g_EnemyFloating_Texture = NULL;	//動的エネミーの移動中のテクスチャ
+static ID3D11ShaderResourceView* g_EnemyFloating_Die_Texture = NULL;	//動的エネミーの死ぬ間際のテクスチャ
 
 EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 	:Enemy(ENEMY_FLOATING_LIFE, ENEMY_FLOATING_DAMAGE, ENEMY_FLOATING_SPIRIT_TYPE, ENEMY_FLOATING_SCORE, true, false)
@@ -91,7 +92,8 @@ void EnemyFloating::Initialize()
 {
 	if (g_EnemyFloating_Texture == NULL)
 	{
-		g_EnemyFloating_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//動的エネミーのテクスチャ
+		g_EnemyFloating_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating_moving.png");//動的エネミーの移動のテクスチャ
+		g_EnemyFloating_Die_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating_dead.png");//動的エネミーが死ぬテクスチャ
 	}
 }
 
@@ -111,7 +113,9 @@ void EnemyFloating::Finalize()
 	if (g_EnemyFloating_Texture != NULL)
 	{
 		UnInitTexture(g_EnemyFloating_Texture);
+		UnInitTexture(g_EnemyFloating_Die_Texture);
 		g_EnemyFloating_Texture = NULL;
+		g_EnemyFloating_Die_Texture = NULL;
 	}
 }
 
@@ -119,22 +123,48 @@ void EnemyFloating::Update()
 {
 	if (GetUse() && m_sensed_player)
 	{
-		Move();
+		switch (GetState())
+		{
+		case ENEMY_FLOATING_STATE_IDLE:
+			break;
+		case ENEMY_FLOATING_STATE_MOVE:
+			Move();
+			break;
+		case ENEMY_FLOATING_STATE_DIE:
+			break;
+		default:
+			break;
+		}
+
 	}
 	else if (!GetUse())
 	{
+
+		//エネミーが「死んだ時のサウンド
+		app_atomex_start(Enemy_Knock_Down2_Sound);
+
 		//ソウルを落とす
 		ItemManager& item_manager = ItemManager::GetInstance();
-		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType());
+		item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType(), false);
+
+
+		b2Vec2 now_positon = GetBody()->GetPosition();
+		b2Vec2 now_size = GetSize();
+		b2Vec2 now_vec = GetBody()->GetLinearVelocity();
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
 		world->DestroyBody(GetBody());
+		SetBody(nullptr);
 
 		//オブジェクトマネージャー内のエネミー削除
 		ObjectManager& object_manager = ObjectManager::GetInstance();
 		object_manager.DestroyEnemyFloating(GetID());
+
+
+		object_manager.AddChangeEnemyFilterAndBody(now_positon, b2Vec2(now_size.x * 2, now_size.y * 2), b2Vec2_zero, g_EnemyFloating_Die_Texture, 4, 4, now_vec);
+
 	}
 }
 
@@ -155,16 +185,41 @@ void EnemyFloating::Draw()
 	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	//貼るテクスチャを指定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Texture);
+	switch (GetState())
+	{
+	case ENEMY_FLOATING_STATE_IDLE:
+	case ENEMY_FLOATING_STATE_MOVE:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Texture);
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ GetSize().x * scale , GetSize().y * scale }
-	);
+		DrawSplittingSprite(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale ,GetSize().y * scale },
+			5, 5, m_anim_id, 3.0f
+		);
+		m_anim_id++;
+		m_anim_id = m_anim_id % 25;
+		break;
+	case ENEMY_FLOATING_STATE_DIE:
+		//貼るテクスチャを指定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Die_Texture);
+
+		DrawSplittingSprite(
+			{ draw_x,
+			  draw_y },
+			GetBody()->GetAngle(),
+			{ GetSize().x * scale ,GetSize().y * scale },
+			5, 5, m_anim_id, 3.0f
+		);
+		m_anim_id++;
+		m_anim_id = m_anim_id % 25;
+
+		break;
+	default:
+		break;
+	}
 }
 
 //移動
