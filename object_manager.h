@@ -264,11 +264,7 @@ private:
 
     std::vector<std::unique_ptr<Break_Block>>break_block_list;//オブジェクトに触れたら壊れるブロック
 
-
-    std::vector<std::unique_ptr<Break_Block>>break_block_list;//壊れるブロック
-
     std::vector<std::unique_ptr<Texture_block>>texture_block_list;//背景ブロック
-
 
     std::vector<std::unique_ptr<NoEntryBlock>>no_enetry_block_list;//立ち入り禁止ブロック
    
