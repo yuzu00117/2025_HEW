@@ -61,6 +61,18 @@ static ID3D11ShaderResourceView* g_sloop_right_side_texture = NULL;//地面ス�
 static ID3D11ShaderResourceView* g_invisibility_wall_Texture = NULL;//不可視の壁
 
 
+//遺跡のステージブロック
+static ID3D11ShaderResourceView* g_Iseki_Top_Texture = NULL;		//遺跡のうえ
+static ID3D11ShaderResourceView* g_Iseki_Top_Left_Texture = NULL;	//遺跡のうえ左側
+static ID3D11ShaderResourceView* g_Iseki_Top_Right_Texture = NULL;	//遺跡のうえ右側
+
+static ID3D11ShaderResourceView* g_Iseki_Texture = NULL;		//遺跡の中
+static ID3D11ShaderResourceView* g_Iseki_Left_Texture = NULL;	//遺跡の中左側
+static ID3D11ShaderResourceView* g_Iseki_Right_Texture = NULL;	//遺跡の中右側
+
+
+
+
 Field::Field()
 {
 }
@@ -99,6 +111,19 @@ void Field::Initialize(bool respawning)
 	g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
 	g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
 
+	//----------------------------------------------------------------------------------------
+	//遺跡のテクスチャ
+	
+	g_Iseki_Top_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_top.png");				//遺跡の上のテクスチャ
+	g_Iseki_Top_Left_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_left.png");		//遺跡の上のテクスチャ  左
+	g_Iseki_Top_Right_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_right.png");		//遺跡の上のテクスチャ  右
+
+	g_Iseki_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block.png");						//遺跡の中のテクスチャ
+	g_Iseki_Left_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_naka_left.png");		//遺跡の中のテクスチャ  左
+	g_Iseki_Right_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_naka_right.png");	//遺跡の中のテクスチャ  右
+
+	//----------------------------------------------------------------------------------------
+	// 
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
@@ -707,27 +732,27 @@ void Field::Initialize(bool respawning)
 			{
 				if (field_map[y][x] == 1) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_1, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_BLOCK, false);
 				}
 				if (field_map[y][x] == 2) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_LEFT_BLOCK, false);
 				}
 				if (field_map[y][x] == 3) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_RIGHT_BLOCK, false);
 				}
 				if (field_map[y][x] == 4) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_TOP_BLOCK, false);
 				}
 				if (field_map[y][x] == 5) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_TOP_LEFT_BLOCK, false);
 				}
 				if (field_map[y][x] == 6) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ground_texture, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_TOP__RIGHT_BLOCK, false);
 				}
 
 
@@ -909,7 +934,7 @@ void Field::Draw()
 
 				case STAGE_BLOCK_INVISIBILITY:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_invisibility_wall_Texture);
-          break;
+				 break;
 
 				case STAGE_BLOCK_SLOOP_SIDE_LEFT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloop_left_side_texture);
@@ -917,8 +942,32 @@ void Field::Draw()
 
 				case STAGE_BLOCK_SLOOP_SIDE_RIGHT:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloop_right_side_texture);
-
 					break;
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------
+				case ISEKI_TOP_BLOCK:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Top_Texture);
+					break;
+				case ISEKI_TOP_LEFT_BLOCK:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Top_Left_Texture);
+					break;
+				case ISEKI_TOP__RIGHT_BLOCK:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Top_Right_Texture);
+					break;
+
+				case ISEKI_BLOCK:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Texture);
+					break;
+				case ISEKI_LEFT_BLOCK:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Left_Texture);
+					break;
+				case ISEKI_RIGHT_BLOCK:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Right_Texture);
+					break;
+			
+
+
 
 				default:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
@@ -981,6 +1030,28 @@ void Field::Finalize(bool respawning)
 
 		g_Ground_Texture = NULL;
 		g_AnchorPoint_Texture = NULL;
+
+	
+		// **遺跡のステージブロックのテクスチャ**
+		UnInitTexture(g_Iseki_Top_Texture);
+		g_Iseki_Top_Texture = NULL;
+
+		UnInitTexture(g_Iseki_Top_Left_Texture);
+		g_Iseki_Top_Left_Texture = NULL;
+
+		UnInitTexture(g_Iseki_Top_Right_Texture);
+		g_Iseki_Top_Right_Texture = NULL;
+
+		UnInitTexture(g_Iseki_Texture);
+		g_Iseki_Texture = NULL;
+
+		UnInitTexture(g_Iseki_Left_Texture);
+		g_Iseki_Left_Texture = NULL;
+
+		UnInitTexture(g_Iseki_Right_Texture);
+		g_Iseki_Right_Texture = NULL;
+		
+
 	}
 
 }
