@@ -628,12 +628,20 @@ public:
             if (objectA->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
-                enemy_instance->CollisionPlayer();
+                if (enemy_instance->GetAttactCoolingTime() <= 0)
+                {
+                    enemy_instance->CollisionPlayer();
+                    enemy_instance->SetAttactCoolingTime(60);
+                }                
             }
             else if (objectB->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
-                enemy_instance->CollisionPlayer();
+                if (enemy_instance->GetAttactCoolingTime() <= 0)
+                {
+                    enemy_instance->CollisionPlayer();
+                    enemy_instance->SetAttactCoolingTime(60);
+                }
             }
         }
 

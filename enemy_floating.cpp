@@ -61,7 +61,7 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 //--------------------------------------------
 	b2PolygonShape sensor_shape;                         //shapeには色々な型がある　サークルとかもあるよ
 	float one_square = 1.0f / BOX2D_SCALE_MANAGEMENT;	//　1マスのサイズ
-	sensor_shape.SetAsBox( size.x * 0.5f + (one_square * 7), size.y * 0.5f + (one_square * 7) );//あたり判定を登録する4点　+((one_square * 7))fは幅が合計14マスが多くするため
+	sensor_shape.SetAsBox( size.x * 0.5f + (one_square * 15), size.y * 0.5f + (one_square * 15) );//あたり判定を登録する4点　+((one_square * 7))fは幅が合計14マスが多くするため
 
 	b2FixtureDef sensor_fixture;
 	sensor_fixture.shape = &sensor_shape;    //シャープをフィクスチャに登録する
@@ -123,6 +123,11 @@ void EnemyFloating::Update()
 {
 	if (GetUse() && m_sensed_player)
 	{
+		if (m_attack_cooling_time > 0)
+		{
+			m_attack_cooling_time--;
+		}
+
 		switch (GetState())
 		{
 		case ENEMY_FLOATING_STATE_IDLE:
