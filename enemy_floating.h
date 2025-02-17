@@ -33,9 +33,11 @@ class EnemyFloating : public Enemy
 {
 private:
 	b2Body*	m_body = nullptr;
-	float m_speed = 1.5f;
+	float m_speed = 0.2f;
 	bool	m_sensed_player = false;	//プレイヤーを感知したかどうか
 	int m_anim_id = 0;
+
+	int m_attack_cooling_time = 0;	//攻撃クールタイム
 
 	//エネミーの状態(動作)
 	ENEMY_FLOATING_STATE m_state = ENEMY_FLOATING_STATE_IDLE;
@@ -76,6 +78,11 @@ public:
 			GetBody()->SetLinearVelocity(b2Vec2(0.0f,0.0f));
 		}
 	}
+
+	//攻撃クールタイムを取得
+	int	GetAttactCoolingTime() { return m_attack_cooling_time; }
+	//攻撃クールタイムをセット
+	void	SetAttactCoolingTime(int time) { m_attack_cooling_time = time; }
 
 	//移動
 	void Move();
