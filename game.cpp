@@ -498,8 +498,11 @@ void Game::Draw(void)
 
 	player_UI::Draw();
 
+    PillarFragmentsManager::GetInstance().DrawFragments();
 
     dead_production::Draw();
+
+
 
     //チェンジシーン
     change_scene_end_production::Draw();
@@ -509,7 +512,7 @@ void Game::Draw(void)
 
 
 
-    PillarFragmentsManager::GetInstance().DrawFragments();
+
 #ifdef _DEBUG
     //デバッグ文字
     DrawDebug();
