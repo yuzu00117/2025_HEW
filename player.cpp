@@ -22,6 +22,7 @@
 
 
 
+
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
 
@@ -41,6 +42,9 @@ ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 //歩く時のエフェクト
 ID3D11ShaderResourceView* g_player_walk_effect = NULL;
 
+
+//プレイヤーが死んだ時
+ID3D11ShaderResourceView* g_player_dead_Texture = NULL;
 
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
@@ -132,6 +136,9 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
 
     if (g_player_Texture == NULL) {
         //テクスチャのロード
+
+        g_player_dead_Texture=InitTexture(L"asset\\texture\\player_texture\\player_dead_sheet.png");
+
         g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
         g_player_jump_sheet = InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
@@ -1414,6 +1421,29 @@ void Player::Draw()
 
             );
             break;
+
+        case player_dead_state:
+
+            draw_cnt++;
+
+            if (126 < draw_cnt)
+            {
+                draw_cnt = 126;
+            }
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_dead_Texture);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x*1.7f ,GetSize().y * scale * player_scale_y },
+                8, 8, draw_cnt / 2, 3.0, m_direction
+
+            );
+
+            break;
            
         default:
             break;
@@ -1529,6 +1559,7 @@ void Player::Finalize()
 
     if (g_player_Texture != nullptr)
     {
+        UnInitTexture(g_player_dead_Texture);
         UnInitTexture(g_player_Texture);
         UnInitTexture(g_player_jump_sheet);
         UnInitTexture(g_player_throw_anchor_sheet);
@@ -1556,6 +1587,7 @@ void Player::Finalize()
         UnInitTexture(g_TamaChan_Lv2);
         UnInitTexture(g_TamaChan_Lv3);
 
+        g_player_dead_Texture = NULL;
         g_player_Texture = NULL;
         g_player_jump_sheet = NULL;
         g_player_throw_anchor_sheet = NULL;

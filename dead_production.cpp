@@ -44,9 +44,17 @@ void dead_production::Reset()
 
 void dead_production::Update()
 {
+	if (Dead_Cnt == 0)
+	{
+		Player& player = Player::GetInstance();
+		player.SetState(player_dead_state);
+		player.SetDrawCnt(0);
+	}
+
 	Dead_Cnt++;
 	Black_fade_rate += 0.01;
 	HitStop::StartHitStop(10);
+	
 
 }
 
