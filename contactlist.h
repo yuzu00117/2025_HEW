@@ -138,6 +138,8 @@ public:
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_break_block) ||
+            (objectA->collider_type == collider_break_block && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
@@ -361,7 +363,7 @@ public:
 
             //カメラシェイクとヒットストップを追加しました
             CameraShake::StartCameraShake(0, 5, 10);
-            HitStop::StartHitStop(5);
+           /* HitStop::StartHitStop(5);*/
             if (objectA->collider_type == collider_break_block)
             {
                 Break_Block* breakblock_instance = object_manager.FindBreakBlock(objectA->id);
@@ -738,7 +740,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.5 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
@@ -801,7 +803,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.5<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
@@ -862,7 +864,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.5 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
