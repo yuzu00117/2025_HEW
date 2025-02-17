@@ -223,9 +223,26 @@ void AnchorPoint::Draw()
 
 
 		
-			
+			if (g_anchor_point_body[i] == AnchorPoint::GetTargetAnchorPointBody())
+			{
+				if (Anchor::GetAnchorState() == Connected_state || Anchor::GetAnchorState() == Pulling_state || Anchor::GetAnchorState() == Deleting_state)
+				{
+					return;
+				}
+			}
 
-			b2Fixture*fixtureA= g_anchor_point_body[i]->GetFixtureList();
+			b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
+			if (!fixtureA) {
+				return;
+			}
+
+			void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+			if (!userData) {
+				return;  
+			}
+			//--------------------------------------------------------------------------------------------------------------
+
+			
 			auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 
 			switch (objectA->need_anchor_level)
