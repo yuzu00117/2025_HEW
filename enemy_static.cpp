@@ -32,7 +32,7 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 	:Enemy(ENEMY_STATIC_LIFE, ENEMY_STATIC_DAMAGE, ENEMY_STATIC_SPIRIT_TYPE, ENEMY_STATIC_SCORE, true, false)
 {
 	b2BodyDef body;
-	body.type = b2_staticBody;							//静的なオブジェクトにするならture
+	body.type = b2_dynamicBody;							//静的なオブジェクトにするならture
 	body.position.Set(position.x, position.y);			//ポジションをセット
 	body.angle = angle;									//角度の定義
 	body.userData.pointer = (uintptr_t)this;			//userDataのポインタを定義 
@@ -60,7 +60,7 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;    //シャープをフィクスチャに登録する
-	fixture.density = 1.0f;    //密度
+	fixture.density = 0.1f;    //密度
 	fixture.friction = 0.05f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = false;  //センサーかどうか、trueならあたり判定は消える
