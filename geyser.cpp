@@ -28,7 +28,8 @@
 
 
 
-static ID3D11ShaderResourceView* g_Geyser_Water_Texture = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_Geyser_Water_Texture = NULL;//間欠泉の水
+static ID3D11ShaderResourceView* g_Geyser_Start_Water_Texture = NULL;//間欠泉の初めの方のみず
 
 //間欠泉のテクスチャ　アンカーの打つ前
 static ID3D11ShaderResourceView* g_Geyser_Close_Texture = NULL;
@@ -212,10 +213,14 @@ geyser::~geyser()
 void geyser::Initialize()
 {
 	//間欠泉周りのテクスチャ！！！（日本語）
-
-	g_Geyser_Water_Texture = InitTexture(L"asset\\texture\\sample_texture\\geyser_water.png");
-	g_Geyser_Open_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Open_Texture.png");
-	g_Geyser_Close_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture.png");
+	if (g_Geyser_Open_Texture == NULL)
+	{
+	
+		g_Geyser_Open_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Open_Texture.png");
+		g_Geyser_Close_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture.png");
+		g_Geyser_Start_Water_Texture= InitTexture(L"asset\\texture\\stage_1_1_object\\geyser_start_water.png");
+		g_Geyser_Water_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\geyser_loop_water.png");
+	}
 	
 
 }
@@ -459,7 +464,7 @@ void geyser::Draw()
 		screen_center.y = SCREEN_CENTER_Y;
 
 
-		int geyser_Draw_y=10;
+		int geyser_Draw_y=0;
 		///ここから調整してね
 		if (GetGeyserBody() != nullptr)
 		{
@@ -475,21 +480,33 @@ void geyser::Draw()
 
 			if (open_gyeser_flag == true)
 			{
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
-
+				if (water_sheet_cnt < 150)
+				{
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Start_Water_Texture);
+				}
+				else
+				{
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Water_Texture);
+				}
+				
 				//draw
 				DrawSplittingSprite(
 					{ draw_x,
-					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+geyser_Draw_y*2 },
+					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+20},
 					GetGeyserBody()->GetAngle(),
 					{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale * 1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-					7, 6, water_sheet_cnt / 3, 3.0f
+					10, 5, water_sheet_cnt / 3, 3.0f
 
 				);
 				water_sheet_cnt++;
-				if (126 < water_sheet_cnt)
+				if (290 < water_sheet_cnt)
 				{
-					water_sheet_cnt = 0;
+					water_sheet_cnt = 151;
+				}
+
+				if (120 < water_sheet_cnt && water_sheet_cnt<150)
+				{
+					water_sheet_cnt = 150;
 				}
 
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Open_Texture);
