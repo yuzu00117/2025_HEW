@@ -168,10 +168,15 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 
 void AnchorPoint::Initialize()
 {
-	g_anchor_point_target_Texture= InitTexture(L"asset\\texture\\anchor_point\\AnchorPointTarget.png");
-	g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_blue.png");
-	g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_yellow.png");
-	g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_red.png");
+	
+		g_anchor_point_target_Texture = InitTexture(L"asset\\texture\\anchor_point\\AnchorPointTarget.png");
+		g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_blue.png");
+		g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_yellow.png");
+		g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_red.png");
+	
+
+
+
 }
 
 void AnchorPoint::Update()
@@ -322,6 +327,7 @@ void AnchorPoint::Finalize()
 	
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 	{
+		g_anchor_point_body[i] = NULL;
 		g_anchor_point_body[i] = nullptr;
 	}
 
@@ -413,10 +419,25 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 
 
 
+
+
 b2Body* AnchorPoint::GetTargetAnchorPointBody()
 {
 	return g_select_anchor_point_body;
 }
 
+
+
+bool AnchorPoint::AnchorPointListCheck()
+{
+	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)  //
+	{
+		if (g_anchor_point_body[i] != NULL)  // 
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 
