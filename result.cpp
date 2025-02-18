@@ -46,15 +46,15 @@ void ResulttScene::Initialize()
 	g_result_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_result.png");
 
     //ランクのテクスチャの読み込み
-    g_score_rank_C_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_c.png");
-    g_score_rank_B_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_b.png");
-    g_score_rank_A_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_a.png");
-    g_score_rank_S_Texture = InitTexture(L"asset\\texture\\sample_texture\\score_s.png");
+    g_score_rank_C_Texture = InitTexture(L"asset\\texture\\score_texture\\score_c.png");
+    g_score_rank_B_Texture = InitTexture(L"asset\\texture\\score_texture\\score_b.png");
+    g_score_rank_A_Texture = InitTexture(L"asset\\texture\\score_texture\\score_a.png");
+    g_score_rank_S_Texture = InitTexture(L"asset\\texture\\score_texture\\score_s.png");
 	//トータルランクのテクスチャの読み込み（スタンプ）
-	g_score_rank_C_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_c.png");
-	g_score_rank_B_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_b.png");
-	g_score_rank_A_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_a.png");
-	g_score_rank_S_stamp_Texture = InitTexture(L"asset\\texture\\sample_texture\\stamp01_s.png");
+	g_score_rank_C_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_c.png");
+	g_score_rank_B_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_b.png");
+	g_score_rank_A_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_a.png");
+	g_score_rank_S_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_s.png");
 
 
     //全ての音を止める
