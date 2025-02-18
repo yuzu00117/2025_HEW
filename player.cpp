@@ -949,7 +949,7 @@ void    Player::KnockBack_Update()
         float   Beziers_B_ratio = 1.0f;
 
         //ノックバック開始直後ならパラメータの初期設定を行う
-        if (g_Beziers_id == 0 && g_KnockBack_elapce_time == 1.0f)
+        if (g_Beziers_id == 0 && g_KnockBack_elapce_time == 0.0f)
         {
             float distance_x = 50.0f;                   //ベジエ二回全部で移動したｘ座標距離
             float max_bounce_height = 30.0f;            //最大バウンド高さ
@@ -1018,7 +1018,7 @@ void    Player::KnockBack_Update()
         case 1:
             if (g_KnockBack_elapce_time >= g_KnockBack_total_time / Beziers_total_ratio * Beziers_B_ratio)
             {
-                g_KnockBack_elapce_time = g_KnockBack_total_time = 1.0f;
+                g_KnockBack_elapce_time = g_KnockBack_total_time = 0.0f;
                 g_Beziers_id = 0;
             }
             break;
