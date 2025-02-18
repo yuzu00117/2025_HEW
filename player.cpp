@@ -640,8 +640,20 @@ void Player::Update()
     //オブジェクトに投げるアンカー処理の呼び出し
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
-        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+        if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+        {
+          
+            if (false == AnchorPoint::AnchorPointListCheck())
+            {
+                return;
+            }
+      
+
+            if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition() != m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
+            {
+               Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+            }
+        }
     }
 
 
@@ -1826,14 +1838,36 @@ void Player::DrawTamaChan()
     float draw_x = ((tamachan_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
     float draw_y = ((tamachan_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+    b2Vec2 tamachan_size;
+
+    switch (AnchorSpirit::GetAnchorLevel())
+    {
+    case 1:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv1);
+        tamachan_size = { 75.f,75.f };
+        break;
+    case 2:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv2);
+        tamachan_size = { 125.f,125.f };
+        break;
+    case 3:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+        tamachan_size = { 175.f,175.f };
+        break;
+    default:
+        break;
+    }
+
+   
 
     // スプライトを描画
     DrawDividedSpritePlayer(
         { draw_x, draw_y -100 },        // 描画位置
         0,                              // 回転角度
-        { 150, 150 },                   // サイズ
+        { tamachan_size.x, tamachan_size.y },                   // サイズ
         6, 6,                           // 分割数
         TamaChanSheetCnt,               // シートカウント
         3.0f,                           // スケール

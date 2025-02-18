@@ -61,7 +61,7 @@ Break_Block::Break_Block(b2Vec2 Position, b2Vec2 block_size, int divisions_x, in
 	block_fixture.friction = 0.5f;//–€ŽC
 	block_fixture.restitution = 0.0f;//”½”­ŒW”
 	block_fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
-	block_fixture.filter = createFilterExclude("object_filter", {});
+	block_fixture.filter = createFilterExclude("break_block_body_filter", {});
 
 	b2Fixture* object_fixture = m_body->CreateFixture(&block_fixture);
 
