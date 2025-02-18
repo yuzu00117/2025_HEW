@@ -60,7 +60,7 @@ Break_Block::Break_Block(b2Vec2 Position, b2Vec2 block_size, int divisions_x, in
 	block_fixture.density = 1.0f;
 	block_fixture.friction = 0.5f;//摩擦
 	block_fixture.restitution = 0.0f;//反発係数
-	block_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	block_fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 	block_fixture.filter = createFilterExclude("break_block_body_filter", {});
 
 	b2Fixture* object_fixture = m_body->CreateFixture(&block_fixture);
@@ -70,10 +70,26 @@ Break_Block::Break_Block(b2Vec2 Position, b2Vec2 block_size, int divisions_x, in
 	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
 
+	b2FixtureDef player_fixture;
+
+	player_fixture.shape = &block_shape;
+	player_fixture.density = 1.0f;
+	player_fixture.friction = 0.5f;//摩擦
+	player_fixture.restitution = 0.0f;//反発係数
+	player_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	player_fixture.filter = createFilterExclude("break_block_body_filter", {"object_filter"});
+
+	b2Fixture* m_player_fixture = m_body->CreateFixture(&player_fixture);
+
+	// カスタムデータを作成して設定
+	ObjectData* player_data = new ObjectData{ collider_break_player_block };
+	m_player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_data);
+
 
 
 	int ID = object_data->GenerateID();
 	object_data->id = ID;
+	player_data->id = ID;
 
 	SetID(ID);
 
