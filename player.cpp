@@ -135,7 +135,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
     m_body_position = position;
     m_body_size = body_size;
     m_initial_sensor_size = sensor_size;
-
+    player_alpha = 3.0f;
 
     g_anchor_frame_management_number = 0;
     g_KnockBack_total_time = 0.0f;        //  ノックバック（ベジエ2回合計）に使う時間
