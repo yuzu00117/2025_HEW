@@ -811,7 +811,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (0.5<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.001<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
@@ -846,7 +846,11 @@ public:
                 HitStop::StartHitStop(15);
                 CameraShake::StartCameraShake(5, 3, 15);
             }
-           
+            //静止状態のオブジェクトに当たると向きを反転させる
+            else
+            {
+                enemy_instance->SetDirection(!enemy_instance->GetDirection());
+            }
        
         }
 
@@ -1012,7 +1016,9 @@ public:
 
         //動的エネミーに付属しているセンサーと地面が触れた場合
         if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor))
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_break_block) ||
+            (objectA->collider_type == collider_break_block && objectB->collider_type == collider_enemy_sensor))
         {
             if (objectA->collider_type == collider_enemy_sensor)
             {
@@ -1073,6 +1079,7 @@ public:
                 }
             }
         }
+
 
         //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合(今のところ浮遊エネミーでこのセンサー判定使う予定まだないけど、一応)
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_floating) ||
@@ -1595,7 +1602,9 @@ public:
 
          //動的エネミーに付属しているセンサーと地面が離れた時
         if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor))
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_break_block) ||
+            (objectA->collider_type == collider_break_block && objectB->collider_type == collider_enemy_sensor))
         {
             if (objectA->collider_type == collider_enemy_sensor)
             {
