@@ -214,9 +214,6 @@
     <ClCompile Include="Item_Manager.cpp">
       <Filter>ソースファイル\item</Filter>
     </ClCompile>
-    <ClCompile Include="Item_SpeedUp.cpp">
-      <Filter>ソースファイル\item</Filter>
-    </ClCompile>
     <ClCompile Include="Item_Spirit.cpp">
       <Filter>ソースファイル\item</Filter>
     </ClCompile>
@@ -244,33 +241,74 @@
     <ClCompile Include="teleport_block.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="impact_effect.cpp">
-      <Filter>リソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="1_1_boss_carry_object_enemy.cpp" />
-    <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp" />
-    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp" />
-    <ClCompile Include="blown_away_effect.cpp" />
-    <ClCompile Include="gokai.cpp" />
-    <ClCompile Include="contact_block.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Item_Jewel.cpp" />
-    <ClCompile Include="bound_block.cpp" />
-    <ClCompile Include="Item_SavePoint.cpp" />
-    <ClCompile Include="video_texture.cpp" />
-    <ClCompile Include="MovieTexture.cpp" />
-    <ClCompile Include="Video.cpp" />
-    <ClCompile Include="OP.cpp" />
-    <ClCompile Include="dead_production.cpp">
-      <Filter>ソースファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="UI_Block.cpp" />
-    <ClCompile Include="break_block.cpp">
-      <Filter>リソースファイル</Filter>
-    </ClCompile>
     <ClCompile Include="break_effect.cpp">
-      <Filter>ソースファイル</Filter>
+      <Filter>ソースファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="1_1_boss_carry_object_enemy.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="1_1_boss_carry_object_enemy_spawner.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="blown_away_effect.cpp">
+      <Filter>ソースファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="boss_wall_object.cpp">
+      <Filter>ソースファイル\boss</Filter>
+    </ClCompile>
+    <ClCompile Include="bound_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Change_Enemy_Filter_and_Body.cpp">
+      <Filter>ソースファイル\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="change_scene_end_production.cpp">
+      <Filter>ソースファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="change_scene_start_production.cpp">
+      <Filter>ソースファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_SavePoint.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="Item_Jewel.cpp">
+      <Filter>ソースファイル\item</Filter>
+    </ClCompile>
+    <ClCompile Include="contact_block.cpp">
+      <Filter>ソースファイル\collider</Filter>
+    </ClCompile>
+    <ClCompile Include="no_entry_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="Video.cpp">
+      <Filter>ソースファイル\video</Filter>
+    </ClCompile>
+    <ClCompile Include="video_texture.cpp">
+      <Filter>ソースファイル\video</Filter>
+    </ClCompile>
+    <ClCompile Include="MovieTexture.cpp">
+      <Filter>ソースファイル\video</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_Block.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="OP.cpp">
+      <Filter>ソースファイル\video</Filter>
+    </ClCompile>
+    <ClCompile Include="dead_production.cpp">
+      <Filter>ソースファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="gokai.cpp">
+      <Filter>ソースファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="texture_block.cpp">
+      <Filter>ソースファイル\field</Filter>
+    </ClCompile>
+    <ClCompile Include="break_block.cpp">
+      <Filter>ソースファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="impact_effect.cpp">
+      <Filter>ソースファイル\effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -472,7 +510,6 @@
     <ClInclude Include="1_1_boss_pillar.h">
       <Filter>ヘッダーファイル\boss</Filter>
     </ClInclude>
-    <ClInclude Include="Item_Jewel.h" />
     <ClInclude Include="camera_shake.h">
       <Filter>ヘッダーファイル\camera</Filter>
     </ClInclude>
@@ -498,9 +535,6 @@
       <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="Item_Manager.h">
-      <Filter>ヘッダーファイル\item</Filter>
-    </ClInclude>
-    <ClInclude Include="Item_SpeedUp.h">
       <Filter>ヘッダーファイル\item</Filter>
     </ClInclude>
     <ClInclude Include="Item_Spirit.h">
@@ -542,35 +576,77 @@
     <ClInclude Include="hit_stop.h">
       <Filter>ヘッダーファイル\tool</Filter>
     </ClInclude>
-    <ClInclude Include="impact_effect.h">
-      <Filter>リソースファイル</Filter>
+    <ClInclude Include="1_1_boss_carry_object_enemy.h">
+      <Filter>ヘッダーファイル\boss</Filter>
     </ClInclude>
-    <ClInclude Include="1_1_boss_carry_object_enemy.h" />
-    <ClInclude Include="1_1_boss_carry_object_enemy_spawner.h" />
-    <ClInclude Include="blown_away_effect.h" />
-    <ClInclude Include="Change_Enemy_Filter_and_Body.h" />
-    <ClInclude Include="gokai.h" />
-    <ClInclude Include="contact_block.h">
-      <Filter>ソースファイル</Filter>
+    <ClInclude Include="1_1_boss_carry_object_enemy_spawner.h">
+      <Filter>ヘッダーファイル\boss</Filter>
     </ClInclude>
-    <ClInclude Include="bound_block.h" />
-    <ClInclude Include="Item_SavePoint.h" />
-    <ClInclude Include="clock.h" />
-    <ClInclude Include="video_texture.h" />
-    <ClInclude Include="MovieTexture.h" />
-    <ClInclude Include="Video.h" />
-    <ClInclude Include="OP.h" />
-    <ClInclude Include="dead_production.h">
-      <Filter>ソースファイル</Filter>
+    <ClInclude Include="blown_away_effect.h">
+      <Filter>ヘッダーファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="UI_Block.h">
-      <Filter>リソースファイル</Filter>
+    <ClInclude Include="boss_wall_object.h">
+      <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="break_block.h">
-      <Filter>リソースファイル</Filter>
+    <ClInclude Include="bound_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
     <ClInclude Include="break_effect.h">
-      <Filter>ソースファイル</Filter>
+      <Filter>ヘッダーファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Change_Enemy_Filter_and_Body.h">
+      <Filter>ヘッダーファイル\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="change_scene_end_production.h">
+      <Filter>ヘッダーファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="change_scene_start_production.h">
+      <Filter>ヘッダーファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="clock.h">
+      <Filter>ヘッダーファイル\tool</Filter>
+    </ClInclude>
+    <ClInclude Include="contact_block.h">
+      <Filter>ヘッダーファイル\collider</Filter>
+    </ClInclude>
+    <ClInclude Include="dead_production.h">
+      <Filter>ヘッダーファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="gokai.h">
+      <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Jewel.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_SavePoint.h">
+      <Filter>ヘッダーファイル\item</Filter>
+    </ClInclude>
+    <ClInclude Include="MovieTexture.h">
+      <Filter>ヘッダーファイル\video</Filter>
+    </ClInclude>
+    <ClInclude Include="OP.h">
+      <Filter>ヘッダーファイル\video</Filter>
+    </ClInclude>
+    <ClInclude Include="Video.h">
+      <Filter>ヘッダーファイル\video</Filter>
+    </ClInclude>
+    <ClInclude Include="video_texture.h">
+      <Filter>ヘッダーファイル\video</Filter>
+    </ClInclude>
+    <ClInclude Include="no_entry_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="texture_block.h">
+      <Filter>ヘッダーファイル\field</Filter>
+    </ClInclude>
+    <ClInclude Include="break_block.h">
+      <Filter>ヘッダーファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="impact_effect.h">
+      <Filter>ヘッダーファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Block.h">
+      <Filter>ヘッダーファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -687,6 +763,18 @@
     </Filter>
     <Filter Include="ヘッダーファイル\scene\stage_select">
       <UniqueIdentifier>{f79a6462-8753-4c5b-8a9f-2675071857bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\effect">
+      <UniqueIdentifier>{97a30a91-1e18-474b-aad8-22672cb9406f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\video">
+      <UniqueIdentifier>{f52fa717-a5d6-4fe6-9e10-a8f5e826f13a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\effect">
+      <UniqueIdentifier>{874a55be-d0a7-4dae-b7eb-1b5d998828e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\video">
+      <UniqueIdentifier>{b0ca579a-cbef-4448-9bb5-9daf4d822a6a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
