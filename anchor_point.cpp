@@ -223,103 +223,90 @@ void AnchorPoint::Draw()
 
 
 
-			//--------------------------------------------------------------------------------------------------------------
-			//ボスの壁でNULLエラーが出たので追加した
-
 			if (g_anchor_point_body[i] == AnchorPoint::GetTargetAnchorPointBody())
 			{
 				if (Anchor::GetAnchorState() == Connected_state || Anchor::GetAnchorState() == Pulling_state || Anchor::GetAnchorState() == Deleting_state)
-
-
-					if (g_anchor_point_body[i] == AnchorPoint::GetTargetAnchorPointBody())
-					{
-						if (Anchor::GetAnchorState() == Connected_state || Anchor::GetAnchorState() == Pulling_state || Anchor::GetAnchorState() == Deleting_state)
-
-						{
-							return;
-						}
-					}
-
-
-				b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
-				if (!fixtureA) {
+				{
 					return;
 				}
-
-				void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
-				if (!userData) {
-					return;  // userDataがnullptrならスキップ
-				}
-				//--------------------------------------------------------------------------------------------------------------
-
-
-
-
-				auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
-
-				switch (objectA->need_anchor_level)
-				{
-				case 0:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
-					break;
-				case 1:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
-					break;
-				case 2:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
-					break;
-				case 3:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
-					break;
-				default:
-					break;
-				}
-
-
-
-
-				//draw
-				DrawSprite(
-					{ draw_x,
-					  draw_y },
-					g_anchor_point_body[i]->GetAngle(),
-					{ 75,75 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-				);
 			}
-		}
+
+			b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
+			if (!fixtureA) {
+				return;
+			}
+
+			void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+			if (!userData) {
+				return;
+			}
+			//--------------------------------------------------------------------------------------------------------------
 
 
-		if (g_select_anchor_point_body != nullptr)
-		{
-			b2Vec2 position;
-			position.x = g_select_anchor_point_body->GetPosition().x;
-			position.y = g_select_anchor_point_body->GetPosition().y;
+			auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 
-			// プレイヤー位置を考慮してスクロール補正を加える
-			//取得したbodyのポジションに対してBox2dスケールの補正を加える
-			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
-			Player& player = Player::GetInstance();//ゲットインスタンス
-			//draw
-			if (g_select_anchor_point_body->GetPosition() != player.GetOutSidePlayerBody()->GetPosition())
+			switch (objectA->need_anchor_level)
 			{
-				DrawSplittingSprite(
-					{ draw_x,
-					  draw_y },
-					0.0f,
-					{ 70 ,70 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-					15, 1, target_sheet_frame, 1.0f
-				);
+			case 0:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
+				break;
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
+				break;
+			default:
+				break;
+			}
 
-				target_sheet_frame += 0.5;
 
-				if (15 <= target_sheet_frame)
-				{
-					target_sheet_frame = 0;
-				}
+
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				g_anchor_point_body[i]->GetAngle(),
+				{ 75,75 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			);
+		}
+	}
+
+
+	if (g_select_anchor_point_body != nullptr)
+	{
+		b2Vec2 position;
+		position.x = g_select_anchor_point_body->GetPosition().x;
+		position.y = g_select_anchor_point_body->GetPosition().y;
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
+		Player& player = Player::GetInstance();//ゲットインスタンス
+		//draw
+		if (g_select_anchor_point_body->GetPosition() != player.GetOutSidePlayerBody()->GetPosition())
+		{
+			DrawSplittingSprite(
+				{ draw_x,
+				  draw_y },
+				0.0f,
+				{ 70 ,70 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				15, 1, target_sheet_frame, 1.0f
+			);
+
+			target_sheet_frame += 0.5;
+
+			if (15 <= target_sheet_frame)
+			{
+				target_sheet_frame = 0;
 			}
 		}
 	}
