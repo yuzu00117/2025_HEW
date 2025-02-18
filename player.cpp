@@ -1826,14 +1826,36 @@ void Player::DrawTamaChan()
     float draw_x = ((tamachan_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
     float draw_y = ((tamachan_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+    b2Vec2 tamachan_size;
+
+    switch (AnchorSpirit::GetAnchorLevel())
+    {
+    case 1:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv1);
+        tamachan_size = { 75.f,75.f };
+        break;
+    case 2:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv2);
+        tamachan_size = { 125.f,125.f };
+        break;
+    case 3:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+        tamachan_size = { 175.f,175.f };
+        break;
+    default:
+        break;
+    }
+
+   
 
     // スプライトを描画
     DrawDividedSpritePlayer(
         { draw_x, draw_y -100 },        // 描画位置
         0,                              // 回転角度
-        { 150, 150 },                   // サイズ
+        { tamachan_size.x, tamachan_size.y },                   // サイズ
         6, 6,                           // 分割数
         TamaChanSheetCnt,               // シートカウント
         3.0f,                           // スケール
