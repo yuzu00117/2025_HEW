@@ -157,12 +157,12 @@ void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha)
 	{
 		return;
 	}
-	if (Position.y > SCREEN_HEIGHT)
+	if (Position.y > SCREEN_HEIGHT*2)
 	{
 		return;
 	}
 
-	if (Position.y < -SCREEN_HEIGHT)
+	if (Position.y < -SCREEN_HEIGHT*2)
 	{
 		return;
 	}
@@ -332,12 +332,12 @@ void DrawDividedSpritePlayer(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, 
 	{
 		return;
 	}
-	if (Position.y > SCREEN_HEIGHT)
+	if (Position.y > SCREEN_HEIGHT*2)
 	{
 		return;
 	}
 
-	if (Position.y < -SCREEN_HEIGHT)
+	if (Position.y < -SCREEN_HEIGHT*2)
 	{
 		return;
 	}
@@ -484,12 +484,12 @@ void DrawDividedSpriteBoss(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, in
 		return;
 	}
 
-	if (Position.y > SCREEN_HEIGHT)
+	if (Position.y > SCREEN_HEIGHT*2)
 	{
 		return;
 	}
 
-	if (Position.y < -SCREEN_HEIGHT)
+	if (Position.y < -SCREEN_HEIGHT*2)
 	{
 		return;
 	}
@@ -570,12 +570,12 @@ void DrawSplittingSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int 
 		return;
 	}
 
-	if (Position.y > SCREEN_HEIGHT)
+	if (Position.y > SCREEN_HEIGHT*2)
 	{
 		return;
 	}
 
-	if (Position.y < -SCREEN_HEIGHT)
+	if (Position.y < -SCREEN_HEIGHT*2)
 	{
 		return;
 	}
