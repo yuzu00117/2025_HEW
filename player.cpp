@@ -887,7 +887,7 @@ void Player::Player_Damaged(int Change_to_HP,int invincibletime, const b2Body* a
 
     //無敵時間を付与
     invincible_time = invincibletime;
-    g_KnockBack_total_time = invincible_time * 0.23f;  //ノックバックのする時間（無敵時間と比例してる）
+    g_KnockBack_total_time = invincible_time * 0.27f;  //ノックバックのする時間（無敵時間と比例してる）
     if (attack_body != nullptr)
     {
         if (GetOutSidePlayerBody()->GetPosition().x < attack_body->GetPosition().x)
@@ -944,9 +944,9 @@ void    Player::KnockBack_Update()
     if (g_KnockBack_elapce_time < g_KnockBack_total_time)
     {
         //2回のベジエの時間や距離などの比例
-        float   Beziers_total_ratio = 4.0f;
+        float   Beziers_total_ratio = 5.0f;
         float   Beziers_A_ratio = 3.0f;
-        float   Beziers_B_ratio = 1.0f;
+        float   Beziers_B_ratio = 2.0f;
 
         //ノックバック開始直後ならパラメータの初期設定を行う
         if (g_Beziers_id == 0 && g_KnockBack_elapce_time == 0.0f)
@@ -1011,7 +1011,7 @@ void    Player::KnockBack_Update()
         case 0:
             if (g_KnockBack_elapce_time >= g_KnockBack_total_time / Beziers_total_ratio * Beziers_A_ratio)
             {
-                g_KnockBack_elapce_time = 0.0f;
+                g_KnockBack_elapce_time = 1.0f;
                 g_Beziers_id++;
             }
             break;
