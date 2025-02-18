@@ -42,6 +42,8 @@
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
+int HitStop::delay_hit_stop_time = 0;
+int HitStop::delay_time = 0;
 
 
 void Game::Initialize()
@@ -226,6 +228,9 @@ void Game::Update(void)
        if(world->GetBodyCount() > 0)
         {
             world->Step(1.0f / 60.0f, 6, 2);
+
+            //ディレイヒットストップの調整
+            HitStop::DelayCountHitStop();
 
             //ディスプレイの更新処理
             display::Update();
