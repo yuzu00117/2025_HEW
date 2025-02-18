@@ -239,15 +239,13 @@ void ItemJewel::Draw()
 {
     if (m_body != nullptr)
     {
-        // シェーダリソースを設定
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
-
-
         // コライダーと位置情報の補正をするため
         float scale = SCREEN_SCALE;
 
         if (m_collecting)
         {
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
             //描画
             DrawSpriteOld(
                 { m_position_while_collecting.x,
@@ -276,6 +274,27 @@ void ItemJewel::Draw()
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
         
+        //エフェクト描画
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Effect_Texture);
+
+        DrawDividedSpritePlayer(
+            { draw_x,
+              draw_y },
+            m_body->GetAngle(),
+            { GetSize().x * scale * 6.0f ,GetSize().y * scale * 6.0f },
+            6, 4, m_anim_id, 3.0, true
+        );
+        m_anim_count++;
+        m_anim_count %= m_anim_speed;
+        if (m_anim_count == 0)
+        {
+            m_anim_id++;
+            m_anim_id = m_anim_id % 24;
+        }
+
+
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
         //描画
         DrawSprite(
             { draw_x,
@@ -284,19 +303,6 @@ void ItemJewel::Draw()
             { GetSize().x * scale * 1.5f,GetSize().y * scale * 1.5f },
             m_Alpha
         );
-
-        //エフェクト描画
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Effect_Texture);
-
-        DrawDividedSpritePlayer(
-            { draw_x,
-              draw_y },
-            m_body->GetAngle(),
-            { GetSize().x * scale * 1.5f ,GetSize().y * scale * 1.5f },
-            6, 4, m_anim_id, 3.0, true
-        );
-        m_anim_id++;
-        m_anim_id = m_anim_id % 24;
     }
 }
 

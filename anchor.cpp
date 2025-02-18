@@ -28,7 +28,10 @@
 static ID3D11ShaderResourceView* g_Anchor_Texture_Lev1 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Anchor_Texture_Lev2 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Anchor_Texture_Lev3 = NULL;//アンカーのテクスチャ
-static ID3D11ShaderResourceView* g_Anchor_Chain_Texture = NULL;//アンカーの鎖のテクスチャ
+
+static ID3D11ShaderResourceView* g_Anchor_Chain_Texture_Lv1 = NULL;//アンカーの鎖のテクスチャ
+static ID3D11ShaderResourceView* g_Anchor_Chain_Texture_Lv2 = NULL;//アンカーの鎖のテクスチャ
+static ID3D11ShaderResourceView* g_Anchor_Chain_Texture_Lv3 = NULL;//アンカーの鎖のテクスチャ
 
 static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Texture = NULL;//アンカーのヒット時のエフェクトのテクスチャ
 
@@ -80,7 +83,10 @@ void Anchor::Initialize()
 
 
 	//アンカーの鎖
-	g_Anchor_Chain_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_chain.png");
+	g_Anchor_Chain_Texture_Lv1 = InitTexture(L"asset\\texture\\anchor_point\\chain_Blue.png");
+	g_Anchor_Chain_Texture_Lv2 = InitTexture(L"asset\\texture\\anchor_point\\chain_Yellow.png");
+	g_Anchor_Chain_Texture_Lv3 = InitTexture(L"asset\\texture\\anchor_point\\chain_Red.png");
+
 
 
 	//通常攻撃のエフェクト
@@ -350,16 +356,36 @@ void Anchor::Finalize()
 
 	if (g_Anchor_Texture_Lev1 != NULL)
 	{
-		UnInitTexture(g_Anchor_Chain_Texture);//チェーンのテクスチャの解放
-		UnInitTexture(g_Anchor_Texture_Lev1);	  //アンカーのテクスチャの解放
-		UnInitTexture(g_Anchor_Texture_Lev2);	  //アンカーのテクスチャの解放
-		UnInitTexture(g_Anchor_Texture_Lev3);	  //アンカーのテクスチャの解放
+		
+			UnInitTexture(g_Anchor_Texture_Lev1);	  // アンカーのテクスチャの解放
+			UnInitTexture(g_Anchor_Texture_Lev2);	  // アンカーのテクスチャの解放
+			UnInitTexture(g_Anchor_Texture_Lev3);	  // アンカーのテクスチャの解放
 
+			UnInitTexture(g_Anchor_Chain_Texture_Lv1); // アンカーの鎖のテクスチャの解放
+			UnInitTexture(g_Anchor_Chain_Texture_Lv2); // アンカーの鎖のテクスチャの解放
+			UnInitTexture(g_Anchor_Chain_Texture_Lv3); // アンカーの鎖のテクスチャの解放
 
-		g_Anchor_Chain_Texture = NULL;
-		g_Anchor_Texture_Lev1 = NULL;
-		g_Anchor_Texture_Lev2 = NULL;
-		g_Anchor_Texture_Lev3 = NULL;
+			UnInitTexture(g_Anchor_Hit_Effect_Texture); // アンカーのヒットエフェクトの解放
+
+			UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture); // ヒットエフェクトLv1の解放
+			UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture); // ヒットエフェクトLv2の解放
+			UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture); // ヒットエフェクトLv3の解放
+
+			// NULLにリセット
+			g_Anchor_Texture_Lev1 = NULL;
+			g_Anchor_Texture_Lev2 = NULL;
+			g_Anchor_Texture_Lev3 = NULL;
+
+			g_Anchor_Chain_Texture_Lv1 = NULL;
+			g_Anchor_Chain_Texture_Lv2 = NULL;
+			g_Anchor_Chain_Texture_Lv3 = NULL;
+
+			g_Anchor_Hit_Effect_Texture = NULL;
+
+			g_Anchor_Hit_Effect_Level1_Texture = NULL;
+			g_Anchor_Hit_Effect_Level2_Texture = NULL;
+			g_Anchor_Hit_Effect_Level3_Texture = NULL;
+		
 	}
 	
 }
@@ -618,8 +644,23 @@ void Anchor::DrawChain()
 		float draw_x = ((interpolated_position.x - player_position.x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((interpolated_position.y - player_position.y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+
+		switch (AnchorSpirit::GetAnchorLevel())
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture_Lv1); // チェーン用テクスチャ
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture_Lv2); // チェーン用テクスチャ
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture_Lv3); // チェーン用テクスチャ
+			break;
+		default:
+			break;
+		}
 		// チェーン描画
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Chain_Texture); // チェーン用テクスチャ
+		
 		DrawSprite(
 			{ draw_x, draw_y },
 			angle, // プレイヤーとアンカーの角度

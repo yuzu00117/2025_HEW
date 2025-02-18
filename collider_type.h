@@ -71,6 +71,9 @@ enum ColliderTypeList
     collider_bound_block,
 
     collider_break_block,//オブジェクトと接触したら壊れるブロック
+
+
+    collider_no_entry_block
 };
 
 

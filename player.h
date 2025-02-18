@@ -33,6 +33,8 @@ enum player_draw_state
 	player_walk_state,
 	player_normal_attack_state,
 
+	player_dead_state,
+
 };
 
 
@@ -219,6 +221,16 @@ public:
 
 
 	player_draw_state GetState() { return draw_state; }
+
+	void SetState(player_draw_state state)
+	{
+		draw_state = state;
+	}
+
+	void SetDrawCnt(int cnt)
+	{
+		draw_cnt = cnt;
+	}
 
 
 

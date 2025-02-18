@@ -101,59 +101,61 @@ void boss_field_block::Initialize()
 void boss_field_block::Update()
 {
 	Boss_1_1& boss = Boss_1_1::GetInstance();
-	if (boss.GetBossFieldLevel() > BossRoomLevel&& break_flag==false)
-	{
-		m_body->SetType(b2_dynamicBody);
 
-		// フィルターを変更
-		b2Fixture* fixture = m_body->GetFixtureList();
+		if (boss.GetBossFieldLevel() > BossRoomLevel && break_flag == false)
+		{
+			m_body->SetType(b2_dynamicBody);
+
+			// フィルターを変更
+			b2Fixture* fixture = m_body->GetFixtureList();
+
+			// フィクスチャが存在しない場合は早期リターン
+			if (!fixture) {
+				return;
+			}
+
+			// 新しいフィルターを作成
+			b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter","Boss_filter" });
+			fixture->SetFilterData(newFilter);
+
+			break_flag = true;
+
+			int x = GetRandomInt(1, 10);
+
+
+			int minus = GetRandomInt(0, 1);
+
+			if (minus == 1)
+			{
+				minus = -1;
+			}
+			else
+			{
+				minus = 1;
+			}
+
+			m_body->ApplyLinearImpulseToCenter(b2Vec2(x / 5 * minus, 0.0f), true);
+
+		}
+
+		if (break_flag == true)
+		{
+			body_delete_cnt++;
+		}
+
+		//３秒間たったらボディをけす
+		if (body_delete_cnt > 180)
+		{
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
+
+			if (m_body == nullptr)
+			{
+				world->DestroyBody(m_body);
+			}
+
+		}
 	
-		// フィクスチャが存在しない場合は早期リターン
-		if (!fixture) {
-			return;
-		}
-
-		// 新しいフィルターを作成
-		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter" });
-		fixture->SetFilterData(newFilter);
-
-		break_flag = true;
-
-		int x=GetRandomInt(1, 10);
-	
-
-		int minus = GetRandomInt(0, 1);
-
-		if (minus==1)
-		{
-			minus = -1;
-		}
-		else
-		{
-			minus = 1;
-		}
-
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(x/5*minus, 0.0f), true);
-		
-	}
-
-	if (break_flag == true)
-	{
-		body_delete_cnt++;
-	}
-
-	//３秒間たったらボディをけす
-	if (body_delete_cnt > 180)
-	{
-		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-		b2World* world = box2d_world.GetBox2dWorldPointer();
-
-		if (m_body == nullptr)
-		{
-			world->DestroyBody(m_body);
-		}
-
-	}
 
 
 

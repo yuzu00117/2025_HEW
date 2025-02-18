@@ -23,6 +23,7 @@
 
 
 
+
 //テクスチャのダウンロード グローバル変数にしてる
 ID3D11ShaderResourceView* g_player_Texture=NULL;
 
@@ -42,6 +43,9 @@ ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 //歩く時のエフェクト
 ID3D11ShaderResourceView* g_player_walk_effect = NULL;
 
+
+//プレイヤーが死んだ時
+ID3D11ShaderResourceView* g_player_dead_Texture = NULL;
 
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
@@ -147,6 +151,9 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
 
     if (g_player_Texture == NULL) {
         //テクスチャのロード
+
+        g_player_dead_Texture=InitTexture(L"asset\\texture\\player_texture\\player_dead_sheet.png");
+
         g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
         g_player_jump_sheet = InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
@@ -462,7 +469,7 @@ void Player::Update()
     //横移動
    //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-       //スティックの値を受け取って正規化する
+    //スティックの値を受け取って正規化する
     float left_stick_x = state.leftStickX / 40000.0f;
     float left_stick_y = state.leftStickY / 40000.0f;
     b2Vec2 vel = m_body->GetLinearVelocity();
@@ -649,8 +656,20 @@ void Player::Update()
     //オブジェクトに投げるアンカー処理の呼び出し
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
-        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+        if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+        {
+          
+            if (false == AnchorPoint::AnchorPointListCheck())
+            {
+                return;
+            }
+      
+
+            if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition() != m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
+            {
+               Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+            }
+        }
     }
 
 
@@ -1535,6 +1554,29 @@ void Player::Draw()
 
             );
             break;
+
+        case player_dead_state:
+
+            draw_cnt++;
+
+            if (126 < draw_cnt)
+            {
+                draw_cnt = 126;
+            }
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_dead_Texture);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x*1.7f ,GetSize().y * scale * player_scale_y },
+                8, 8, draw_cnt / 2, 3.0, m_direction
+
+            );
+
+            break;
            
         default:
             break;
@@ -1650,6 +1692,7 @@ void Player::Finalize()
 
     if (g_player_Texture != nullptr)
     {
+        UnInitTexture(g_player_dead_Texture);
         UnInitTexture(g_player_Texture);
         UnInitTexture(g_player_jump_sheet);
         UnInitTexture(g_player_throw_anchor_sheet);
@@ -1677,6 +1720,7 @@ void Player::Finalize()
         UnInitTexture(g_TamaChan_Lv2);
         UnInitTexture(g_TamaChan_Lv3);
 
+        g_player_dead_Texture = NULL;
         g_player_Texture = NULL;
         g_player_jump_sheet = NULL;
         g_player_throw_anchor_sheet = NULL;
@@ -1899,14 +1943,36 @@ void Player::DrawTamaChan()
     float draw_x = ((tamachan_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
     float draw_y = ((tamachan_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+    b2Vec2 tamachan_size;
+
+    switch (AnchorSpirit::GetAnchorLevel())
+    {
+    case 1:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv1);
+        tamachan_size = { 75.f,75.f };
+        break;
+    case 2:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv2);
+        tamachan_size = { 125.f,125.f };
+        break;
+    case 3:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+        tamachan_size = { 175.f,175.f };
+        break;
+    default:
+        break;
+    }
+
+   
 
     // スプライトを描画
     DrawDividedSpritePlayer(
         { draw_x, draw_y -100 },        // 描画位置
         0,                              // 回転角度
-        { 150, 150 },                   // サイズ
+        { tamachan_size.x, tamachan_size.y },                   // サイズ
         6, 6,                           // 分割数
         TamaChanSheetCnt,               // シートカウント
         3.0f,                           // スケール
