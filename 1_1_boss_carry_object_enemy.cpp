@@ -23,7 +23,7 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 
 	if (g_Enemy_Texture == NULL)
 	{
-		g_Enemy_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating .png");
+		g_Enemy_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating _idle.png");
 		g_Object_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//オブジェクトのテクスチャ
 	}
 	// ワールドのインスタンス

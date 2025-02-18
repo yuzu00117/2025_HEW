@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name anchor_point.cpp
-// #description ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğŠÇ—‚µ‚Ä‚¢‚é
-// #make 2024/11/22@@‰i–ì‹`–ç
+// #description ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ç®¡ç†ã—ã¦ã„ã‚‹
+// #make 2024/11/22ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/22
-// #comment ’Ç‰ÁEC³—\’è
-//          EƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ‘¼‚ÌƒIƒuƒWƒFƒNƒg‚ÆƒWƒ‡ƒCƒ“ƒg‚µ‚½‚¢
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’ä»–ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ãŸã„
 //           
 //----------------------------------------------------------------------------------------------------
 #include"anchor_point.h"
@@ -19,12 +19,12 @@
 #include <chrono>
 #include"sound.h"
 
-#define MAX_ANCHOR_POINT_IN_SENSOR (40)//ƒZƒ“ƒT[“à‚É‘¶İ‚Å‚«‚éÅ‘å‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ì”
+#define MAX_ANCHOR_POINT_IN_SENSOR (40)//ã‚»ãƒ³ã‚µãƒ¼å†…ã«å­˜åœ¨ã§ãã‚‹æœ€å¤§ã®ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®æ•°
 
 
-b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR];//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğİ’è@ƒOƒ[ƒoƒ‹•Ï”
+b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR];//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’è¨­å®šã€€ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 
-b2Body* g_select_anchor_point_body;//ƒ^[ƒQƒbƒg‚Æ‚È‚éƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB
+b2Body* g_select_anchor_point_body;//ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã¨ãªã‚‹ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£
 
 std::chrono::steady_clock::time_point lastChangeTime = std::chrono::steady_clock::now();
 const std::chrono::duration<float> changeCooldown(0.5f);
@@ -32,7 +32,7 @@ const std::chrono::duration<float> changeCooldown(0.5f);
 float AnchorPoint::target_sheet_frame = 0;
 
 
-//ƒZƒ“ƒT[‚Ì‰æ‘œ
+//ã‚»ãƒ³ã‚µãƒ¼ã®ç”»åƒ
 ID3D11ShaderResourceView* g_anchor_point_target_Texture = NULL;
 ID3D11ShaderResourceView* g_anchor_point_target_lev1_Texture = NULL;
 ID3D11ShaderResourceView* g_anchor_point_target_lev2_Texture = NULL;
@@ -43,10 +43,10 @@ ID3D11ShaderResourceView* g_anchor_point_target_lev3_Texture = NULL;
 
 
 /**
- * @brief  ƒtƒB[ƒ‹ƒh‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
- * @param position  “o˜^‚·‚éÀ•W
- * @param body_size ƒ{ƒfƒB‚Ì‘å‚«‚³AŠÖ”’†‚Å‘å‚«‚³‚Ì’²®‚ğ‚·‚é
- * @param angle     Šp“x‚ğİ’è
+ * @brief  ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ * @param position  ç™»éŒ²ã™ã‚‹åº§æ¨™
+ * @param body_size ãƒœãƒ‡ã‚£ã®å¤§ãã•ã€é–¢æ•°ä¸­ã§å¤§ãã•ã®èª¿æ•´ã‚’ã™ã‚‹
+ * @param angle     è§’åº¦ã‚’è¨­å®š
  * @param bFixed
  * @param is_sensor
  * @param texture
@@ -54,47 +54,47 @@ ID3D11ShaderResourceView* g_anchor_point_target_lev3_Texture = NULL;
 AnchorPoint::AnchorPoint(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture)
 {
 
-	//ƒeƒNƒXƒ`ƒƒ‚Ì¯•Ê—p‚ğƒZƒbƒg
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è­˜åˆ¥ç”¨ã‚’ã‚»ãƒƒãƒˆ
 	SetFieldTexture(texture);
 
 	b2BodyDef body;
-	body.type = bFixed ? b2_staticBody : b2_dynamicBody;//Ã“I‚ÈƒIƒuƒWƒFƒNƒg‚É‚·‚é‚È‚çtrue
-	body.position.Set(position.x, position.y);			//ƒ|ƒWƒVƒ‡ƒ“‚ğƒZƒbƒg
-	body.angle = angle;									//Šp“x‚Ì’è‹`
-	body.userData.pointer = (uintptr_t)this;			//userData‚Ìƒ|ƒCƒ“ƒ^‚ğ’è‹` 
-	body.fixedRotation = false;							//‰ñ“]‚ğŒÅ’è‚·‚éA@‚±‚ê‚ğƒIƒ“‚É‚·‚é‚Æ‰ñ“]‚µ‚È‚¢
+	body.type = bFixed ? b2_staticBody : b2_dynamicBody;//é™çš„ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã™ã‚‹ãªã‚‰true
+	body.position.Set(position.x, position.y);			//ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚’ã‚»ãƒƒãƒˆ
+	body.angle = angle;									//è§’åº¦ã®å®šç¾©
+	body.userData.pointer = (uintptr_t)this;			//userDataã®ãƒã‚¤ãƒ³ã‚¿ã‚’å®šç¾© 
+	body.fixedRotation = false;							//å›è»¢ã‚’å›ºå®šã™ã‚‹ã€ã€€ã“ã‚Œã‚’ã‚ªãƒ³ã«ã™ã‚‹ã¨å›è»¢ã—ãªã„
 
 
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚·‚é
-	b2World* world = box2d_world.GetBox2dWorldPointer();//ƒ[ƒ‹ƒh‚Ìƒ|ƒCƒ“ƒ^‚ğ‚Á‚Ä‚­‚é
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
+	b2World* world = box2d_world.GetBox2dWorldPointer();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒã£ã¦ãã‚‹
 
-	SetFieldBody(world->CreateBody(&body));//Body‚ğƒ[ƒ‹ƒh‚ÉŒÅ’è
+	SetFieldBody(world->CreateBody(&body));//Bodyã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰ã«å›ºå®š
 
-	SetSize(body_size);//•\¦—p‚ÉƒTƒCƒY‚ğƒZƒbƒg‚µ‚Æ‚­A•\¦‚Ì‚Æ‚«‚ÉGetSize‚ğŒÄ‚Ño‚·
+	SetSize(body_size);//è¡¨ç¤ºç”¨ã«ã‚µã‚¤ã‚ºã‚’ã‚»ãƒƒãƒˆã—ã¨ãã€è¡¨ç¤ºã®ã¨ãã«GetSizeã‚’å‘¼ã³å‡ºã™
 
 
 
 	b2Vec2 size;
-	size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ğ‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ğ‚³‚°‚ÄA•¨—‰‰Z‚Ì‹““®‚ğ‘€ì‚µ‚â‚·‚­‚·‚é
+	size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
 	size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
 
-	b2PolygonShape shape;                         //shape‚É‚ÍFX‚ÈŒ^‚ª‚ ‚é@ƒT[ƒNƒ‹‚Æ‚©‚à‚ ‚é‚æ
-	shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);//‚ ‚½‚è”»’è‚ğ“o˜^‚·‚é4“_@*0.5‚·‚é‚Ì‚Í
+	b2PolygonShape shape;                         //shapeã«ã¯è‰²ã€…ãªå‹ãŒã‚ã‚‹ã€€ã‚µãƒ¼ã‚¯ãƒ«ã¨ã‹ã‚‚ã‚ã‚‹ã‚ˆ
+	shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);//ã‚ãŸã‚Šåˆ¤å®šã‚’ç™»éŒ²ã™ã‚‹4ç‚¹ã€€*0.5ã™ã‚‹ã®ã¯
 
 	b2FixtureDef fixture;
-	fixture.shape = &shape;    //ƒVƒƒ[ƒv‚ğƒtƒBƒNƒXƒ`ƒƒ‚É“o˜^‚·‚é
-	fixture.density = 1.0f;    //–§“x
-	fixture.friction = 0.05f;  //–€C
-	fixture.restitution = 0.0f;//”½”­ŒW”
-	fixture.isSensor = false;  //ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+	fixture.shape = &shape;    //ã‚·ãƒ£ãƒ¼ãƒ—ã‚’ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã«ç™»éŒ²ã™ã‚‹
+	fixture.density = 1.0f;    //å¯†åº¦
+	fixture.friction = 0.05f;  //æ‘©æ“¦
+	fixture.restitution = 0.0f;//åç™ºä¿‚æ•°
+	fixture.isSensor = false;  //ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
-	b2Fixture* ground_fixture = GetFieldBody()->CreateFixture(&fixture);//Body‚ğ‚ÉƒtƒBƒNƒXƒ`ƒƒ‚ğ“o˜^‚·‚é
+	b2Fixture* ground_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyã‚’ã«ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã‚’ç™»éŒ²ã™ã‚‹
 
-	// ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-	// ’n–Ê‚É’l‚ğ“o˜^
-	// ’n–Ê‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+	// ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+	// åœ°é¢ã«å€¤ã‚’ç™»éŒ²
+	// åœ°é¢ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
 	ObjectData* data = new ObjectData{ collider_anchor_point };
 	ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 }
@@ -106,11 +106,11 @@ AnchorPoint::~AnchorPoint()
 
 void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 {
-	//ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğæ“¾‚µ‚½‚ç”z—ñ‚É“ü‚ê‚Æ‚­
+	//ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’å–å¾—ã—ãŸã‚‰é…åˆ—ã«å…¥ã‚Œã¨ã
 
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR ; i++)
 	{
-		if (g_anchor_point_body[i] == nullptr)//”z—ñ‚ğƒ`ƒFƒbƒN‚µ‚ÄNULL‚¾‚Á‚½‚ç‚»‚±‚É‘ã“ü
+		if (g_anchor_point_body[i] == nullptr)//é…åˆ—ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¦NULLã ã£ãŸã‚‰ãã“ã«ä»£å…¥
 		{
 			for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 			{
@@ -121,8 +121,8 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 			}
 
 
-			g_anchor_point_body[i] = new_anchor_point_body;//null‚Ì”z—ñ‚É‘ã“ü
-			return;//“ü‚êI‚í‚Á‚½‚çŠÖ”I—¹
+			g_anchor_point_body[i] = new_anchor_point_body;//nullã®é…åˆ—ã«ä»£å…¥
+			return;//å…¥ã‚Œçµ‚ã‚ã£ãŸã‚‰é–¢æ•°çµ‚äº†
 		}
 	}
 }
@@ -132,14 +132,14 @@ void AnchorPoint::InsideSensor(b2Body* new_anchor_point_body)
 
 void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 {
-	//ƒZƒ“ƒT[‚©‚ç‚Å‚½ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğ”z—ñ‚©‚çíœ‚·‚é
-   // ƒZƒ“ƒT[‚©‚ço‚½ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ìƒ{ƒfƒB‚ğ”z—ñ‚©‚çíœ‚·‚é
+	//ã‚»ãƒ³ã‚µãƒ¼ã‹ã‚‰ã§ãŸã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’é…åˆ—ã‹ã‚‰å‰Šé™¤ã™ã‚‹
+   // ã‚»ãƒ³ã‚µãƒ¼ã‹ã‚‰å‡ºãŸã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã®ãƒœãƒ‡ã‚£ã‚’é…åˆ—ã‹ã‚‰å‰Šé™¤ã™ã‚‹
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 	{
-		if (g_anchor_point_body[i] == delete_anchor_point_body) // íœ‘ÎÛ‚Ìƒ{ƒfƒB‚ªŒ©‚Â‚©‚Á‚½ê‡
+		if (g_anchor_point_body[i] == delete_anchor_point_body) // å‰Šé™¤å¯¾è±¡ã®ãƒœãƒ‡ã‚£ãŒè¦‹ã¤ã‹ã£ãŸå ´åˆ
 		{
 
-			// ‘I‘ğ’†‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ğ‰ğœ‚·‚é
+			// é¸æŠä¸­ã®ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã‚’è§£é™¤ã™ã‚‹
 			if (delete_anchor_point_body == g_select_anchor_point_body)
 			{
 				if (Anchor::GetAnchorState() == Nonexistent_state)
@@ -151,17 +151,17 @@ void AnchorPoint::OutsideSensor(b2Body* delete_anchor_point_body)
 					return;
 				}
 			}
-			g_anchor_point_body[i] = nullptr; // ”z—ñ“à‚ÌŠY“–ƒGƒ“ƒgƒŠ‚ğ–³Œø‰»
+			g_anchor_point_body[i] = nullptr; // é…åˆ—å†…ã®è©²å½“ã‚¨ãƒ³ãƒˆãƒªã‚’ç„¡åŠ¹åŒ–
 
-			// ”z—ñ‚Ì‹l‚ßˆ—
+			// é…åˆ—ã®è©°ã‚å‡¦ç†
 			for (int j = i; j < MAX_ANCHOR_POINT_IN_SENSOR - 1; j++)
 			{
 				g_anchor_point_body[j] = g_anchor_point_body[j + 1];
 			}
-			g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR - 1] = nullptr; // ”z—ñ‚ÌÅŒã‚ğƒNƒŠƒA
+			g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR - 1] = nullptr; // é…åˆ—ã®æœ€å¾Œã‚’ã‚¯ãƒªã‚¢
 
 		
-			return; // ˆ—I—¹
+			return; // å‡¦ç†çµ‚äº†
 		}
 	}
 }
@@ -177,15 +177,15 @@ void AnchorPoint::Initialize()
 void AnchorPoint::Update()
 {
 
-	//‘I‘ğ‚µ‚Ä‚¢‚éƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ª‚È‚©‚Á‚½‚çAplayer‚ÌBody‚ğŠî€“_‚É‚·‚é
+	//é¸æŠã—ã¦ã„ã‚‹ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãŒãªã‹ã£ãŸã‚‰ã€playerã®Bodyã‚’åŸºæº–ç‚¹ã«ã™ã‚‹
 	if (g_select_anchor_point_body == nullptr)
 	{
-		//ƒAƒ“ƒJ[‚ª“–‚½‚Á‚½ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ª‚Ô‚Â‚©‚Á‚ÄAƒZƒ“ƒT[ŠO‚É‚Å‚é‚ÆA
-		//À•WXV‚ÅƒAƒ“ƒJ[‚ÆƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ÆƒvƒŒƒCƒ„[‚ªˆê‘Ì‰»‚µ‚½ƒoƒO‚ª”­¶@‚¨‚¢Î‚¦‚é
-		//‰‹}ˆ’u‚Æ‚µ‚ÄAƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚ªƒWƒ‡ƒCƒ“ƒg‚µ‚Ä‚È‚¢‚Æ‚«‚É”­“®‚·‚é‚æ‚¤‚É‚µ‚½
+		//ã‚¢ãƒ³ã‚«ãƒ¼ãŒå½“ãŸã£ãŸã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãŒã¶ã¤ã‹ã£ã¦ã€ã‚»ãƒ³ã‚µãƒ¼å¤–ã«ã§ã‚‹ã¨ã€
+		//åº§æ¨™æ›´æ–°ã§ã‚¢ãƒ³ã‚«ãƒ¼ã¨ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸€ä½“åŒ–ã—ãŸãƒã‚°ãŒç™ºç”Ÿã€€ãŠã„ç¬‘ãˆã‚‹
+		//å¿œæ€¥å‡¦ç½®ã¨ã—ã¦ã€ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆãŒã‚¸ãƒ§ã‚¤ãƒ³ãƒˆã—ã¦ãªã„ã¨ãã«ç™ºå‹•ã™ã‚‹ã‚ˆã†ã«ã—ãŸ
 		if (Anchor::GetAnchorCreateJointFlag() != true)
 		{
-			Player& player = Player::GetInstance();//ƒQƒbƒgƒCƒ“ƒXƒ^ƒ“ƒX
+			Player& player = Player::GetInstance();//ã‚²ãƒƒãƒˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 			g_select_anchor_point_body = player.GetOutSidePlayerBody();
 		}
 	}
@@ -197,32 +197,32 @@ void AnchorPoint::Update()
 void AnchorPoint::Draw()
 {
 
-	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+	// ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
 	float scale = SCREEN_SCALE;
 
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+	// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
 	b2Vec2 screen_center;
 	screen_center.x = SCREEN_CENTER_X;
 	screen_center.y = SCREEN_CENTER_Y;
 
 
-	//ƒZƒ“ƒT[‚È‚¢‚Ì‚·‚×‚Ä‚ÌAP‚Éƒ}[ƒN‚ğ‚Â‚¯‚é
+	//ã‚»ãƒ³ã‚µãƒ¼ãªã„ã®ã™ã¹ã¦ã®APã«ãƒãƒ¼ã‚¯ã‚’ã¤ã‘ã‚‹
 	//---------------------------------------------------------------------------------------------------------------
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
 	{
-		if (g_anchor_point_body[i]!=nullptr)
+		if (g_anchor_point_body[i] != nullptr)
 		{
 			b2Vec2 position;
 			position.x = g_anchor_point_body[i]->GetPosition().x;
 			position.y = g_anchor_point_body[i]->GetPosition().y;
 
-			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+			//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-		
+
 			if (g_anchor_point_body[i] == AnchorPoint::GetTargetAnchorPointBody())
 			{
 				if (Anchor::GetAnchorState() == Connected_state || Anchor::GetAnchorState() == Pulling_state || Anchor::GetAnchorState() == Deleting_state)
@@ -238,11 +238,11 @@ void AnchorPoint::Draw()
 
 			void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 			if (!userData) {
-				return;  
+				return;
 			}
 			//--------------------------------------------------------------------------------------------------------------
 
-			
+
 			auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 
 			switch (objectA->need_anchor_level)
@@ -264,33 +264,33 @@ void AnchorPoint::Draw()
 			}
 
 
-			
-			
+
+
 			//draw
 			DrawSprite(
 				{ draw_x,
 				  draw_y },
 				g_anchor_point_body[i]->GetAngle(),
-				{75,75}///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+				{ 75,75 }///ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹ã™ã¹ãŒãªã„ã€€ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã«è¿½åŠ ã—ã‚ˆã†ã‹ãªï¼Ÿã£ã¦ãƒ¬ãƒ™ãƒ«
 			);
 		}
 	}
 
 
-	if (g_select_anchor_point_body != nullptr) 
+	if (g_select_anchor_point_body != nullptr)
 	{
 		b2Vec2 position;
- 		position.x = g_select_anchor_point_body->GetPosition().x;
+		position.x = g_select_anchor_point_body->GetPosition().x;
 		position.y = g_select_anchor_point_body->GetPosition().y;
 
-		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+		//å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
 		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
-		Player& player = Player::GetInstance();//ƒQƒbƒgƒCƒ“ƒXƒ^ƒ“ƒX
+		Player& player = Player::GetInstance();//ã‚²ãƒƒãƒˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 		//draw
 		if (g_select_anchor_point_body->GetPosition() != player.GetOutSidePlayerBody()->GetPosition())
 		{
@@ -298,8 +298,8 @@ void AnchorPoint::Draw()
 				{ draw_x,
 				  draw_y },
 				0.0f,
-				{ 70 ,70 },///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-				15,1,target_sheet_frame,1.0f
+				{ 70 ,70 },///ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹ã™ã¹ãŒãªã„ã€€ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã®ãƒã‚¤ãƒ³ã‚¿ãƒ¼ã«è¿½åŠ ã—ã‚ˆã†ã‹ãªï¼Ÿã£ã¦ãƒ¬ãƒ™ãƒ«
+				15, 1, target_sheet_frame, 1.0f
 			);
 
 			target_sheet_frame += 0.5;
@@ -316,8 +316,8 @@ void AnchorPoint::Draw()
 }
 void AnchorPoint::Finalize()
 {
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾‚·‚é
-	b2World* world = box2d_world.GetBox2dWorldPointer();//ƒ[ƒ‹ƒh‚Ìƒ|ƒCƒ“ƒ^‚ğ‚Á‚Ä‚­‚é
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—ã™ã‚‹
+	b2World* world = box2d_world.GetBox2dWorldPointer();//ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ãƒã‚¤ãƒ³ã‚¿ã‚’æŒã£ã¦ãã‚‹
 
 	
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++)
@@ -326,21 +326,11 @@ void AnchorPoint::Finalize()
 	}
 
 
-	if (g_select_anchor_point_body != nullptr)
-	{
-		if (Player::GetOutSidePlayerBody() != g_select_anchor_point_body)
-		{
-			world->DestroyBody(g_select_anchor_point_body);
-		}
-		else
-		{
-			g_select_anchor_point_body = nullptr;
-		}
-	}
+
 
 	if (g_anchor_point_target_lev1_Texture != NULL)
 	{
-		//ƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
 		UnInitTexture(g_anchor_point_target_lev1_Texture);
 		UnInitTexture(g_anchor_point_target_lev2_Texture);
 		UnInitTexture(g_anchor_point_target_lev3_Texture);
@@ -356,65 +346,65 @@ void AnchorPoint::Finalize()
 void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 {
 
-	//stick‚ÌÀ•W²‚É‚Â‚¢‚Ä
-	//²  ³‚Ì•ûŒü	•‰‚Ì•ûŒü
-	//X²	‰E	    ¶
-	//Y²	ã	    ‰º
+	//stickã®åº§æ¨™è»¸ã«ã¤ã„ã¦
+	//è»¸  æ­£ã®æ–¹å‘	è² ã®æ–¹å‘
+	//Xè»¸	å³	    å·¦
+	//Yè»¸	ä¸Š	    ä¸‹
 
-	//‹t‚ÉBox2d‚Å‚Í@Y²‚Í‰º‚És‚¯‚Î{‚É‚È‚é@‚±‚Ì‚½‚ß¡‰ñ‚ÍYstick‚ÌY²‚Éƒ}ƒCƒiƒX‚ğ‚Â‚¯‚é
+	//é€†ã«Box2dã§ã¯ã€€Yè»¸ã¯ä¸‹ã«è¡Œã‘ã°ï¼‹ã«ãªã‚‹ã€€ã“ã®ãŸã‚ä»Šå›ã¯Ystickã®Yè»¸ã«ãƒã‚¤ãƒŠã‚¹ã‚’ã¤ã‘ã‚‹
 
-	// ƒXƒeƒBƒbƒN•ûŒü‚ÌƒxƒNƒgƒ‹
-	if (g_select_anchor_point_body == nullptr) return;//null‚¾‚Á‚½‚ç•Ô‚·
+	// ã‚¹ãƒ†ã‚£ãƒƒã‚¯æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«
+	if (g_select_anchor_point_body == nullptr) return;//nullã ã£ãŸã‚‰è¿”ã™
 
 	if (Anchor::GetAnchorState() != Nonexistent_state)return;
 
-	// ƒXƒeƒBƒbƒN•ûŒü‚ÌƒxƒNƒgƒ‹
-	b2Vec2 stick = { stick_x, -stick_y }; // Box2D ‚Ì Y ²•ûŒü‚É‘Î‰
-	stick.Normalize(); // ³‹K‰»‚µ‚Ä’PˆÊƒxƒNƒgƒ‹‚É‚·‚é
+	// ã‚¹ãƒ†ã‚£ãƒƒã‚¯æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«
+	b2Vec2 stick = { stick_x, -stick_y }; // Box2D ã® Y è»¸æ–¹å‘ã«å¯¾å¿œ
+	stick.Normalize(); // æ­£è¦åŒ–ã—ã¦å˜ä½ãƒ™ã‚¯ãƒˆãƒ«ã«ã™ã‚‹
 
-	// ˆê“xŠî€“_‚ğ•ÏX‚µ‚½‚ç0.5•bŠÔ•ÏX‚Å‚«‚È‚¢‚æ‚¤‚É‚·‚é
+	// ä¸€åº¦åŸºæº–ç‚¹ã‚’å¤‰æ›´ã—ãŸã‚‰0.5ç§’é–“å¤‰æ›´ã§ããªã„ã‚ˆã†ã«ã™ã‚‹
 	auto now = std::chrono::steady_clock::now();
 	if (now - lastChangeTime < changeCooldown) return;
 
-	b2Vec2 currentPosition = g_select_anchor_point_body->GetPosition();//Šî€“_‚Ì’l‚ğ‚¢‚ê‚é
+	b2Vec2 currentPosition = g_select_anchor_point_body->GetPosition();//åŸºæº–ç‚¹ã®å€¤ã‚’ã„ã‚Œã‚‹
 
-	b2Body* closestBody = nullptr;//‚¢‚ÜŒ»İˆê”ÔŠp“x‚ª‚Ë‹ß‚¢ƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg
-	float closestDistanceSquared = 100000; // ”n­‚Å‚©’l‚ğ‰Šú’l‚Æ‚µ‚Äİ’è@‚»‚µ‚½‚ç‚¢‚¯‚é
-	float Allowable_Angle_MAX = cos(70.0f * M_PI / 180.0f); // 30“xˆÈ“à‚Å‚ ‚ê‚Î”»’è‹–—e‚µ‚Ä‚â‚é@‚±‚±‚Í’†g•Ï‚¦‚½‚ç•Ï”•ÏX‰Â”\‚à‚Á‚ÆŠÉ‚­‚µ‚Ä‚à‚¢‚¢
+	b2Body* closestBody = nullptr;//ã„ã¾ç¾åœ¨ä¸€ç•ªè§’åº¦ãŒã­è¿‘ã„ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆ
+	float closestDistanceSquared = 100000; // é¦¬é¹¿ã§ã‹å€¤ã‚’åˆæœŸå€¤ã¨ã—ã¦è¨­å®šã€€ãã—ãŸã‚‰ã„ã‘ã‚‹
+	float Allowable_Angle_MAX = cos(70.0f * M_PI / 180.0f); // 30åº¦ä»¥å†…ã§ã‚ã‚Œã°åˆ¤å®šè¨±å®¹ã—ã¦ã‚„ã‚‹ã€€ã“ã“ã¯ä¸­èº«å¤‰ãˆãŸã‚‰å¤‰æ•°å¤‰æ›´å¯èƒ½ã‚‚ã£ã¨ç·©ãã—ã¦ã‚‚ã„ã„
 
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++) {
-		if (g_anchor_point_body[i] == nullptr) continue;//NULL‚¾‚Á‚½‚ço‚é
+		if (g_anchor_point_body[i] == nullptr) continue;//NULLã ã£ãŸã‚‰å‡ºã‚‹
 
 		b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
 		auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 
 		if (objectA->need_anchor_level > AnchorSpirit::GetAnchorLevel())continue;
 
-		// ŠeƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg‚Ö‚ÌƒxƒNƒgƒ‹
-		b2Vec2 targetPosition = g_anchor_point_body[i]->GetPosition();//”z—ñ‚ğˆê‚Â‚¸‚Âƒ`ƒFƒbƒN‚µ‚Ä‚¢‚­
+		// å„ã‚¢ãƒ³ã‚«ãƒ¼ãƒã‚¤ãƒ³ãƒˆã¸ã®ãƒ™ã‚¯ãƒˆãƒ«
+		b2Vec2 targetPosition = g_anchor_point_body[i]->GetPosition();//é…åˆ—ã‚’ä¸€ã¤ãšã¤ãƒã‚§ãƒƒã‚¯ã—ã¦ã„ã
 
-		b2Vec2 toTarget = targetPosition - currentPosition;//ƒxƒNƒgƒ‹‚ÌZo‚ğ‚·‚é —¼•ûb2vec2Œ^‚Ë
+		b2Vec2 toTarget = targetPosition - currentPosition;//ãƒ™ã‚¯ãƒˆãƒ«ã®ç®—å‡ºã‚’ã™ã‚‹ ä¸¡æ–¹b2vec2å‹ã­
 
-		float distanceSquared = toTarget.LengthSquared();//“ñğ‚µ‚½’l‚ğ•Ô‚µ‚ÄAŒvZ‚Ì‚æ‚è³Šm‚É‚µ‚Ä‚¢‚é
+		float distanceSquared = toTarget.LengthSquared();//äºŒæ¡ã—ãŸå€¤ã‚’è¿”ã—ã¦ã€è¨ˆç®—ã®ã‚ˆã‚Šæ­£ç¢ºã«ã—ã¦ã„ã‚‹
 
-		if (distanceSquared == 0) continue; // “¯‚¶ˆÊ’u‚Í–³‹‚·‚é
+		if (distanceSquared == 0) continue; // åŒã˜ä½ç½®ã¯ç„¡è¦–ã™ã‚‹
 
-		// “àÏ‚ğŒvZ‚µ‚ÄŠp“x‚ğƒ`ƒFƒbƒN
-		toTarget.Normalize();//Box2d‚Å‚ ‚éƒxƒNƒgƒ‹‚ğ³‹K‰»‚·‚éŠÖ”
-		float dotProduct = b2Dot(stick, toTarget);//“àÏ‚ÌŒvZ®@b2Dot‚Íbox2d‚ÌŠÖ”‚¾‚æ
+		// å†…ç©ã‚’è¨ˆç®—ã—ã¦è§’åº¦ã‚’ãƒã‚§ãƒƒã‚¯
+		toTarget.Normalize();//Box2dã§ã‚ã‚‹ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã™ã‚‹é–¢æ•°
+		float dotProduct = b2Dot(stick, toTarget);//å†…ç©ã®è¨ˆç®—å¼ã€€b2Dotã¯box2dã®é–¢æ•°ã ã‚ˆ
 
 		if (dotProduct >= Allowable_Angle_MAX) {
-			// ƒXƒeƒBƒbƒN•ûŒü‚É‹ß‚¢
+			// ã‚¹ãƒ†ã‚£ãƒƒã‚¯æ–¹å‘ã«è¿‘ã„
 			if (distanceSquared < closestDistanceSquared) {
-				closestDistanceSquared = distanceSquared;//”äŠr‚Ég‚¤’l‚ğXV
-				closestBody = g_anchor_point_body[i];//Œó•â‚Ì’†‚©‚çˆê”Ô‹ß‚¢•¨‚ÉXV‚µ‚½‚Æ‚¤Œ`‚É‚È‚é
+				closestDistanceSquared = distanceSquared;//æ¯”è¼ƒã«ä½¿ã†å€¤ã‚’æ›´æ–°
+				closestBody = g_anchor_point_body[i];//å€™è£œã®ä¸­ã‹ã‚‰ä¸€ç•ªè¿‘ã„ç‰©ã«æ›´æ–°ã—ãŸã¨ã†å½¢ã«ãªã‚‹
 			}
 		}
 	}
 
 	if (closestBody != nullptr) {
 		g_select_anchor_point_body = closestBody;
-		lastChangeTime = std::chrono::steady_clock::now(); // Šî€“_•ÏXŠÔ‚ğXV
+		lastChangeTime = std::chrono::steady_clock::now(); // åŸºæº–ç‚¹å¤‰æ›´æ™‚é–“ã‚’æ›´æ–°
 		app_atomex_start(Anchor_Mark_Sound);//
 
 	}
