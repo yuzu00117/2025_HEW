@@ -31,13 +31,12 @@
 #include"geyser.h"
 #include"1_1_boss_carry_object_enemy_spawner.h"
 #include"Change_Enemy_Filter_and_Body.h"
-
 #include"bound_block.h"
-
 #include"contact_block.h"
 #include"UI_Block.h"
 #include"break_block.h"
-
+#include"boss_wall_object.h"
+#include"no_entry_block.h"
 #include"texture_block.h"
 
 // オブジェクトの種類を定義
@@ -67,6 +66,7 @@ enum ObjectType {
     Object_Geyser_Water,
     Boss_core,//ボスのこあ
     Boss_pillar,//ボスの柱
+    Boss_Wall,//ボスの柱の
     Boss_Carry_Object_Enemy,//ボス部屋のエネミーがオブジェクトを運ぶやつ
 
     Boss_field_block,
@@ -128,7 +128,13 @@ public:
     void AddBreakBlock(b2Vec2 Position, b2Vec2 block_size, int divisions_x, int divisions_y, float angle,ID3D11ShaderResourceView* g_Texture);
 
 
+    void AddBossWall(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, ID3D11ShaderResourceView* g_Texture,bool left);
+
+    void AddNoEntryBlock(b2Vec2 Position, b2Vec2 block_size, ID3D11ShaderResourceView* g_Texture);
+
+
     void AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture);
+
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -176,8 +182,12 @@ public:
 
     Break_Block* FindBreakBlock(int id);
 
+    Boss_Wall_Objcet* FindBossWallObjcet(int id);
+
+    NoEntryBlock* FindNoEntryBlokc(int id);
+
     Texture_block* FindTextureBlock(int id);
-    
+
 
     
 
@@ -244,15 +254,19 @@ private:
 
     std::vector<std::unique_ptr<boss_bound_block>>boss_bound_block_list;//バウンドブロックのリスト
 
+    std::vector<std::unique_ptr<Boss_Wall_Objcet>>boss_wall_list;//バウンドブロックのリスト
+
 
     std::vector<std::unique_ptr<contact_block>>contact_block_list;//接触ブロック
 
     std::vector<std::unique_ptr<UI_block>>Ui_block_list;//接触ブロック
 
-    std::vector<std::unique_ptr<Break_Block>>break_block_list;//壊れるブロック
+
+    std::vector<std::unique_ptr<Break_Block>>break_block_list;//オブジェクトに触れたら壊れるブロック
 
     std::vector<std::unique_ptr<Texture_block>>texture_block_list;//背景ブロック
 
+    std::vector<std::unique_ptr<NoEntryBlock>>no_enetry_block_list;//立ち入り禁止ブロック
    
     //ここにオブジェクトごとにリストを追加していく感じ
 

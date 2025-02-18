@@ -41,6 +41,7 @@
 #include"bound_block.h"
 #include"UI_Block.h"
 #include"break_block.h"
+#include"boss_wall_object.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -361,9 +362,14 @@ public:
             (objectA->collider_type == collider_object && objectB->collider_type == collider_break_block))
         {
 
+            if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar) { return; }
+
+
             //カメラシェイクとヒットストップを追加しました
             CameraShake::StartCameraShake(0, 5, 10);
+
            /* HitStop::StartHitStop(5);*/
+
             if (objectA->collider_type == collider_break_block)
             {
                 Break_Block* breakblock_instance = object_manager.FindBreakBlock(objectA->id);
@@ -375,6 +381,8 @@ public:
                 breakblock_instance->SetFlag(true);
             }
         }
+
+
 
 
 
@@ -551,6 +559,25 @@ public:
                     }
                 }
 
+
+
+
+
+                //ボスの部屋の壁
+                if (objectA->object_name == Boss_Wall || objectB->object_name == Boss_Wall)
+                {
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_Wall)//ボス戦の壁
+                    {
+                        Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);
+                        wall_instance->SetPullingFlag(true);
+                    }
+                    if (objectB->object_name == Boss_Wall)//ボス戦の壁
+                    {
+                        Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);
+                        wall_instance->SetPullingFlag(true);
+                    }
+                }
             }//end_if( Anchor::GetAnchorState() == Connected_state)
 
         
@@ -559,6 +586,26 @@ public:
        
              
         }
+
+
+        //ボスの壁と柱が触れた
+        if (objectA->collider_type == collider_object && objectB->collider_type == collider_object)
+        {
+            //どちらがボスの部屋の柱
+            if (objectA->object_name == Boss_pillar&&objectB->object_name==Boss_Wall)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);
+                pillar_instance->SetSplitting_Destroy_Flag(true);
+            }
+
+            //どちらがボスの部屋の柱
+            if (objectB->object_name == Boss_pillar && objectA->object_name == Boss_Wall)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
+                pillar_instance->SetSplitting_Destroy_Flag(true);
+            }
+        }
+
 
         //プレイヤーと静的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_body) ||
@@ -1344,19 +1391,37 @@ public:
                 {
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
-                   
                 }
 
 
-                if (objectA->object_name == Boss_Carry_Object_Enemy)
+                if (objectA->object_name == Boss_Wall)
                 {
-                 
+                    Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    wall_instance->SetSplitting_Destroy_Flag(true);
                 }
-                if (objectB->object_name == Boss_Carry_Object_Enemy)
+                if (objectB->object_name == Boss_Wall)
                 {
+                    Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    wall_instance->SetSplitting_Destroy_Flag(true);
+                }
+      
+
+            }
+            else
+            {
+
+                //ボスがぶつかったら壊れるように
+                if (objectA->object_name == Boss_pillar)
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
 
                 }
-
+                if (objectB->object_name == Boss_pillar)
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
+                }
             }
 
            
