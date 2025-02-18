@@ -640,8 +640,20 @@ void Player::Update()
     //オブジェクトに投げるアンカー処理の呼び出し
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
-        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+        if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+        {
+          
+            if (false == AnchorPoint::AnchorPointListCheck())
+            {
+                return;
+            }
+      
+
+            if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition() != m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
+            {
+               Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+            }
+        }
     }
 
 
