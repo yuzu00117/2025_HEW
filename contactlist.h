@@ -258,28 +258,22 @@ public:
         {
 
             float object_velocity=0;
+            const b2Body* object_body = nullptr;
+            
             if (objectA->collider_type == collider_object)
             {
-                object_velocity=ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().y);
+                object_body = fixtureA->GetBody();
+                object_velocity=ReturnAbsoluteValue(object_body->GetLinearVelocity().x) + ReturnAbsoluteValue(object_body->GetLinearVelocity().y);
             }
             else
             {
-                object_velocity=ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().y);
+                object_body = fixtureB->GetBody();
+                object_velocity=ReturnAbsoluteValue(object_body->GetLinearVelocity().x) + ReturnAbsoluteValue(object_body->GetLinearVelocity().y);
             }
 
-            if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
+            if (0.7f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
-               
-                player.Player_Damaged(0, 120);//被弾処理
-
-                if (objectA->collider_type == collider_object)
-                {
-                    player.Player_knockback(2, fixtureA->GetBody());
-                }
-                if (objectB->collider_type == collider_object)
-                {
-                    player.Player_knockback(2, fixtureB->GetBody());
-                }
+                    player.Player_Damaged(0, 120, object_body);//被弾処理
             }
 
         }
@@ -983,21 +977,48 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_attack))
         {
             int damage;
+            const b2Body* attack_body = nullptr;
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
                 damage = attack_instance->GetDamage();
+
+                //Player_Damaged関数の引数のために攻撃してるエネミー元のBodyを検索してる(なぜenemy_attackのbodyを使わないかというと、enemy_attackとplayerの位置順番がたまに実際とは逆になることあるから)
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                if (enemy_dynamic_instance != nullptr)
+                {
+                    attack_body = enemy_dynamic_instance->GetBody();
+                }
+                else
+                {
+                    EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                    attack_body = enemy_static_instance->GetBody();
+                }
+
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
                 damage = attack_instance->GetDamage();
+
+                //Player_Damaged関数の引数のために攻撃してるエネミー元のBodyを検索してる(なぜenemy_attackのbodyを使わないかというと、enemy_attackとplayerの位置順番がたまに実際とは逆になることあるから)
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                if (enemy_dynamic_instance != nullptr)
+                {
+                    attack_body = enemy_dynamic_instance->GetBody();
+                }
+                else
+                {
+                    EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                    attack_body = enemy_static_instance->GetBody();
+                }
             }
 
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-damage, 120);
+
+            player.Player_Damaged(-damage, 120, attack_body);
         }
 
         //動的エネミーに付属しているセンサーと地面が触れた場合
@@ -1189,7 +1210,18 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(0, 120);
+
+            const b2Body* boss_body = nullptr;
+            if (objectA->collider_type == collider_boss)
+            {
+                boss_body = fixtureA->GetBody();
+            }
+            else
+            {
+                boss_body = fixtureB->GetBody();
+            }
+
+            player.Player_Damaged(0, 120, boss_body);
             
 
         }
@@ -1206,7 +1238,18 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            /* player.Player_Damaged(-50, 120);*/
+
+            const b2Body* wave_body = nullptr;
+            if (objectA->collider_type == collider_shock_wave)
+            {
+                wave_body = fixtureA->GetBody();
+            }
+            else
+            {
+                wave_body = fixtureB->GetBody();
+            }
+
+            player.Player_Damaged(-50, 120, wave_body);
 
         }
 
@@ -1233,10 +1276,21 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            /* player.Player_Damaged(-50, 120);*/
+
+            const b2Body* attack_body = nullptr;
+            if (objectA->collider_type == collider_chage_attack)
+            {
+                attack_body = fixtureA->GetBody();
+            }
+            else
+            {
+                attack_body = fixtureB->GetBody();
+            }
+
+            player.Player_Damaged(-50, 120, attack_body);
+
           
             
-            player.Player_knockback(1, boss.GetOutSideBody());
 
         }
 
@@ -1249,16 +1303,21 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-50, 120);
 
+            b2Body* golem_body = nullptr;
             if (objectA->collider_type == collider_mini_golem)
             {
-                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+                golem_body = fixtureA->GetBody();
             }
             else
             {
-                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+                golem_body = fixtureB->GetBody();
             }
+
+            player.Player_Damaged(-50, 120, golem_body);
+
+            boss.SetDestroyMiniGolemBody(true, golem_body);
+
         }
 
         //プレイヤーの通常攻撃ととミニゴーレム
