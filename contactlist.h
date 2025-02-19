@@ -1294,6 +1294,9 @@ public:
             }
 
             player.Player_Damaged(-50, 120, wave_body);
+            
+            //ショックウェーブを破壊する
+            boss.SetShockWaveFrame(300);
 
         }
 
