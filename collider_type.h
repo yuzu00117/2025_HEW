@@ -28,6 +28,7 @@ enum ColliderTypeList
     collider_anchor,
     collider_anchor_chain,
     collider_anchor_point,
+    collider_rotate_joint,
 
     collider_ground,
 
