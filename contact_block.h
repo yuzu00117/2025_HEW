@@ -20,6 +20,8 @@ enum Contact_Block_Type
 	DEAD_BLOCK_TYPE,//触れたら死ぬ
 
 	GO_STAGE_SELECT,//ステージセレクトにいく
+
+	GO_STAGE_ISEKI,//遺跡のステージにいく
 	GO_BOSS_STAGE,//ボス戦に行く
 
 };

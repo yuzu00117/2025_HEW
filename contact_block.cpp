@@ -128,6 +128,10 @@ void contact_block::Update()
 				sceneManager.SetStageName(STAGE_BOSS);
 				sceneManager.Set_Chenge_Scene_flag(true);
 				break;
+			case GO_STAGE_ISEKI:
+				sceneManager.SetStageName(STAGE_ISEKI);
+				sceneManager.Set_Chenge_Scene_flag(true);
+				break;
 			case GO_STAGE_SELECT:
 			
 				sceneManager.SetStageName(STAGE_SELECT);
