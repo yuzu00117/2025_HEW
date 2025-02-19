@@ -67,7 +67,7 @@ contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_T
 	teleport_block_fixture.density = 3.0f;
 	teleport_block_fixture.friction = 0.5f;//摩擦
 	teleport_block_fixture.restitution = 0.0f;//反発係数
-	teleport_block_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
+	teleport_block_fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
 	teleport_block_fixture.filter = createFilterExclude("object_filter", {});
 
 	b2Fixture* object_teleport_fixture = m_body->CreateFixture(&teleport_block_fixture);
