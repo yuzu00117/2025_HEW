@@ -392,6 +392,7 @@ public:
             {
                 if (fixtureA->GetBody() == AnchorPoint::GetTargetAnchorPointBody() || fixtureB->GetBody() == AnchorPoint::GetTargetAnchorPointBody())//ぶつかった物体のどちらかが　ターゲットとしたアンカーポイントである
                 {
+                    
                     Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
                 }
                 else
@@ -502,6 +503,9 @@ public:
                 //ボスのコア
                 if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
                 {
+                    CameraShake::DelayStartCameraShake(10, 60, 20, 30);
+                    HitStop::DelayStartHitStop(30, 10);
+                   
                     //どちらが岩のオブジェクトか特定
                     if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
                     {
