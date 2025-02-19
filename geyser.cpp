@@ -179,6 +179,8 @@ geyser::geyser(b2Vec2 GeyserPosition, b2Vec2 GeyserSize, b2Vec2 RangeFlyWaterSiz
 	object_anchor_point_data->need_anchor_level = level;
 	object_anchor_point_data->object_name = Object_Geyser;
 
+	//アンカーレベルをメンバ変数で保持
+	m_need_level = level;
 
 	b2WeldJointDef jointDef;
 	jointDef.bodyA = GetGeyserBody();
