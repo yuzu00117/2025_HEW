@@ -44,7 +44,7 @@ public:
 		{
 			return;
 		}
-
+		delay_cnt=delay_time;
 		camera_shake_height = shake_height;
 		camera_shake_width = shake_width;
 		camera_shake_frame = shake_frame;
