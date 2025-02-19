@@ -5,15 +5,15 @@
  *  ACB  Ver.        : Ver.1.44.1
  *  File Path        : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound2/Public/WorkUnit_0
  *  File Name        : CueSheet_0.h
- *  File Size        : 40288000 bytes
- *  Date Time        : 2025/02/07 09:43:32
+ *  File Size        : 40525824 bytes
+ *  Date Time        : 2025/02/18 17:35:46
  *  Target           : Public
- *  Cues             : 55
+ *  Cues             : 57
  *  CueSheet Comment : 
  *  Stream Awb Path  : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound2/Public/WorkUnit_0/CueSheet_0.awb
  *===========================================================================*/
 
-#define CRI_CUESHEET_0_CUENUM (55)
+#define CRI_CUESHEET_0_CUENUM (57)
 
 /* AISAC Control List (AISAC Control ID) */
 
@@ -43,8 +43,6 @@
 #define CRI_CUESHEET_0_やられた音      (15) /*  */
 #define CRI_CUESHEET_0_コイン取得音   (20) /*  */
 #define CRI_CUESHEET_0_プレイヤーの足音 (22) /*  */
-#define CRI_CUESHEET_0_ジャンプ         (28) /*  */
-#define CRI_CUESHEET_0_着地音            (29) /*  */
 #define CRI_CUESHEET_0_打撃音            (33) /*  */
 #define CRI_CUESHEET_0_宝石取得         (38) /*  */
 #define CRI_CUESHEET_0_死亡音            (46) /*  */
@@ -52,13 +50,16 @@
 #define CRI_CUESHEET_0_落下               (43) /*  */
 #define CRI_CUESHEET_0_ワープ音         (47) /*  */
 #define CRI_CUESHEET_0_フレームアップ (49) /*  */
+#define CRI_CUESHEET_0_プレイヤーの着地音 (57) /*  */
+#define CRI_CUESHEET_0_プレイヤーのジャンプ音 (58) /*  */
 #define CRI_CUESHEET_0_岩が落ちる音   (16) /*  */
 #define CRI_CUESHEET_0_宝を取る音      (17) /*  */
 #define CRI_CUESHEET_0_木が倒れる音   (18) /*  */
 #define CRI_CUESHEET_0_岩が転がる音   (19) /*  */
-#define CRI_CUESHEET_0_間欠泉            (34) /*  */
 #define CRI_CUESHEET_0_柱倒してバラバラ音 (44) /*  */
 #define CRI_CUESHEET_0_柱とボスがぶつかる音 (45) /*  */
+#define CRI_CUESHEET_0_間欠泉            (60) /*  */
+#define CRI_CUESHEET_0_間欠泉出始め   (59) /*  */
 #define CRI_CUESHEET_0_ボス溜め攻撃衝撃時 (27) /*  */
 #define CRI_CUESHEET_0_ボスジャンプ着地音 (23) /*  */
 #define CRI_CUESHEET_0_ボス衝撃波発生中 (24) /*  */
@@ -73,6 +74,7 @@
 #define CRI_CUESHEET_0_エネミー攻撃   (51) /*  */
 #define CRI_CUESHEET_0_エネミーダウン (52) /*  */
 #define CRI_CUESHEET_0_エネミー撃墜音 (56) /*  */
+#define CRI_CUESHEET_0_浮遊敵爆発      (61) /*  */
 
 /* Block List (Block Index) */
 
