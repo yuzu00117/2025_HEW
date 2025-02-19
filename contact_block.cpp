@@ -120,7 +120,7 @@ void contact_block::Update()
 			case DEAD_BLOCK_TYPE:
 
 				//ƒvƒŒƒCƒ„[‚ª‘¦€‚·‚é
-				player.Player_Damaged(-1000, 0);
+				player.Player_Damaged(-1000, 0, nullptr);
 
 				break;
 			case GO_BOSS_STAGE:
