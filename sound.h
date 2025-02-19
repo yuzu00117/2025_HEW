@@ -85,6 +85,7 @@ typedef struct AppTag {
 
 enum Sound_Manager
 {
+	//BGM　10個
 	GAME_BGM,
 	TITLE_BGM,//Title init
 	STAGESELECT_BGM,//StageSelectScene inti
@@ -96,25 +97,26 @@ enum Sound_Manager
 	STAGE2_BGM,
 	BOSS2_BGM,
 
+	//UI音 5個
 	Select_Sound,
 	Decision_Sound,
 	Cancel_Sound,
 	Pose_Sound,
 	Result_Sound,
 
+	//アンカー周り 5個
 	Anchor_Hit_Sound,//なんやこれ
 	Anchor_Hit_Miss_Sound,//なし
 	Anchor_Pulling_Sound,//player.cpp connected
 	Anchor_Thorw_Sound,//player.cpp crate_state
 	Anchor_Mark_Sound, //anchor_point.cpp
 
+	//プレイヤーSE 14個
 	Player_Soul_Colect1_Sound,//playercpp update
 	Player_Damege_Sound, //player.cpp Player_Damaged
 	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
 	Player_Coin_Colect_Sound,//Item_coni Update
 	Player_Walk_Sound,// player.cpp Update
-	Player_Jump_Start_Sound,//player.cpp update かえたい
-	Player_Jump_End_Sound,//実装なし
 	Player_Attack_Sound,//player.cpp update CreateNormalAttack_State
 	Player_Jewelry_Colect_Sound,//Item_Jewl.cpp update
 	Player_GameOver_Sound,//ゲームおーば完成後に導入したい
@@ -122,15 +124,20 @@ enum Sound_Manager
 	Player_Fall_Sound,//実装なし
 	Player_Warp_Sound,//実装なし
 	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
+	Player_Jump_Start_Sound,//player.cpp update 変更済み
+	Player_Jump_End_Sound,//					変更済み
 
+	//環境SE 8個
 	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
 	Object_Get_Treasure_Sound,
-	Object_Wood_Fall_Sound,//wood ながい　動作とあってない
+	Object_Wood_Fall_Sound,//wood 変更済み
 	Object_Rock_Roll_Sound,//rock.cpp  Pulling_rock
-	Object_Geyser_Sound,// contact.list　　雷おちてね？
 	Object_Pillar_Break_Sound,//boss_pillar.cpp  Destroy_Splitting
 	Object_Pillar_Hit_Sound,
+	Object_Geyser_Sound,// contact.list　　 変更済み
+	Object_Geyser_Start_Sound,//			変更済み
 
+	//ボスSE 8個
 	Boss_Charge_Attack_Sound,//update charge_attack_state
 	Boss_Jump_Sound,//update jumpstate
 	Boss_Attack_Wave_Sound,//update shock_wave_state
@@ -140,13 +147,14 @@ enum Sound_Manager
 	Boss_Damege_Sound,//boss.cpp CreateBossCore
 	Boss_Stun_Sound,//Update　down_state
 
+	//エネミーSE 7個
 	Enemy_Knock_Down1_Sound,//未実装
 	Enemy_MiniGolem_Create_Sound,//boss.cpp  CreateMiniGolem
 	Enemy_MiniGolem_Explosion_Sound,//boss.cpp  DestroyMiniGolemBody
 	Enemy_Attack_Sound,//EnemyDyanamic.cpp attack
 	Enemy_Knock_Down2_Sound,//EnemyDyanamic.cpp 　update
-	Enemy_Shot_Down_Sound//ContactList.h endcontact　気に入らん
-
+	Enemy_Shot_Down_Sound,//ContactList.h endcontact　気に入らん
+	Enemy_Fly_Bomb_Sound
 };
 /***************************************************************************
  * 関数宣言
@@ -216,8 +224,6 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_やられた音,
 	CRI_CUESHEET_0_コイン取得音,
 	CRI_CUESHEET_0_プレイヤーの足音,
-	CRI_CUESHEET_0_ジャンプ,
-	CRI_CUESHEET_0_着地音,
 	CRI_CUESHEET_0_打撃音,
 	CRI_CUESHEET_0_宝石取得,
 	CRI_CUESHEET_0_死亡音,
@@ -225,13 +231,16 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_落下,
 	CRI_CUESHEET_0_ワープ音,
 	CRI_CUESHEET_0_フレームアップ,
+	CRI_CUESHEET_0_プレイヤーの着地音,
+	CRI_CUESHEET_0_プレイヤーのジャンプ音,
 	CRI_CUESHEET_0_岩が落ちる音,
 	CRI_CUESHEET_0_宝を取る音,
 	CRI_CUESHEET_0_木が倒れる音,
 	CRI_CUESHEET_0_岩が転がる音,
-	CRI_CUESHEET_0_間欠泉,
 	CRI_CUESHEET_0_柱倒してバラバラ音,
 	CRI_CUESHEET_0_柱とボスがぶつかる音,
+	CRI_CUESHEET_0_間欠泉,
+	CRI_CUESHEET_0_間欠泉出始め,
 	CRI_CUESHEET_0_ボス溜め攻撃衝撃時,
 	CRI_CUESHEET_0_ボスジャンプ着地音,
 	CRI_CUESHEET_0_ボス衝撃波発生中,
@@ -245,7 +254,8 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_ちびゴーレム爆発音,
 	CRI_CUESHEET_0_エネミー攻撃,
 	CRI_CUESHEET_0_エネミーダウン,
-	CRI_CUESHEET_0_エネミー撃墜音
+	CRI_CUESHEET_0_エネミー撃墜音,
+	CRI_CUESHEET_0_浮遊敵爆発
 };
 
 

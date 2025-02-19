@@ -119,8 +119,11 @@ private:
 	//宝石のタイプ
 	Jewel_Type	m_type;
 
-	//アニメーションid
+	//アニメーションid(エフェクト)
 	int m_anim_id = 0;
+	//エフェクト再生速度調整(何フレームで一枚絵を進めるか)
+	const int m_anim_speed = 2;
+	int m_anim_count = 0;
 };
 
 #endif // !ITEM_JEWELRY_H
