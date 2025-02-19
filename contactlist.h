@@ -376,7 +376,7 @@ public:
             }
         }
 
-
+        
 
 
 
@@ -1532,6 +1532,24 @@ public:
               
             }
      
+        }
+
+        //動いている壁とぶつかった時　止まっているボスの壁がぶつかった時
+        if (objectA->object_name == Boss_Wall && objectB->object_name == Boss_Wall)
+        {
+            //動いている方
+            if (fixtureA->GetType() == b2_dynamicBody)
+            {
+                Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);
+                wall_instance->SetSplitting_Destroy_Flag(true);
+            }
+
+
+            if (fixtureB->GetType() == b2_dynamicBody)
+            {
+                Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);
+                wall_instance->SetSplitting_Destroy_Flag(true);
+            }
         }
 
         

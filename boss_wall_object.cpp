@@ -42,6 +42,7 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 	body.type = b2_staticBody;
 	body.position.Set(position.x, position.y);
 	body.fixedRotation = false;
+	body.gravityScale=(0.0);
 
 	b2Body* m_Body = world->CreateBody(&body);
 
@@ -58,10 +59,10 @@ Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x
 	b2FixtureDef fixture;
 
 	fixture.shape = &shape;
-	fixture.density = 10.0f;
+	fixture.density = 1.0f;
 	fixture.friction = 0.5f;
 	fixture.restitution = 0.2f;
-	fixture.isSensor = false;
+	fixture.isSensor = true;
 	fixture.filter = createFilterExclude("object_filter", {"Player_filter"});
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);

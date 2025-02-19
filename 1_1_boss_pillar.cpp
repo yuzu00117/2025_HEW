@@ -60,7 +60,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	fixture.friction = 0.01f;
 	fixture.restitution = 0.0f;
 	fixture.isSensor = false;
-	fixture.filter = createFilterExclude("object_filter", {});
+	fixture.filter = createFilterExclude("object_filter", {"Player_filter"});
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 
