@@ -19,6 +19,8 @@
 #include"camera_shake.h"
 #include"display.h"
 #include<cmath>
+#include"FixtureSizeCalculate.h"
+
 
 
 
@@ -41,6 +43,9 @@ ID3D11ShaderResourceView* g_player_damaged_sheet = NULL;
 //歩く時のエフェクト
 ID3D11ShaderResourceView* g_player_walk_effect = NULL;
 
+
+//プレイヤーが死んだ時
+ID3D11ShaderResourceView* g_player_dead_Texture = NULL;
 
 //センサーの画像
 ID3D11ShaderResourceView* g_player_sensor_Texture=NULL;
@@ -92,6 +97,12 @@ b2Body* player_body;
 
 
 int g_anchor_frame_management_number = 0;
+float g_KnockBack_total_time = 0.0f;        //  ノックバック（ベジエ2回合計）に使う時間
+float g_KnockBack_elapce_time = 0.0f;       //　ノックバック（ベジエ2回合計）の経過時間
+bool    g_damage_from_right = true;         //  ダメージはプレイヤーの右から来てるのかどうか
+b2Vec2 g_Beziers_parameter_position[2][3];  //  ２回の2次ベジエのパラメータを入れるための変数（[0][0] => 1回目の始点　　　[1][2] => 2回目の終点）
+b2Vec2 g_Beziers_prev_position;             // 前フレームでのposition
+int g_Beziers_id = 0;                       //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
 
 Player::Player()
 {
@@ -128,10 +139,21 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
     m_body_position = position;
     m_body_size = body_size;
     m_initial_sensor_size = sensor_size;
+    player_alpha = 3.0f;
+
+    g_anchor_frame_management_number = 0;
+    g_KnockBack_total_time = 0.0f;        //  ノックバック（ベジエ2回合計）に使う時間
+    g_KnockBack_elapce_time = 0.0f;       //　ノックバック（ベジエ2回合計）の経過時間
+    g_damage_from_right = true;         //  ダメージはプレイヤーの右から来てるのかどうか
+    g_Beziers_prev_position = { 0.0f,0.0f };             // 前フレームでのposition
+    g_Beziers_id = 0;                       //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
 
 
     if (g_player_Texture == NULL) {
         //テクスチャのロード
+
+        g_player_dead_Texture=InitTexture(L"asset\\texture\\player_texture\\player_dead_sheet.png");
+
         g_player_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 
         g_player_jump_sheet = InitTexture(L"asset\\texture\\player_texture\\player_jump_sheet.png");
@@ -440,13 +462,14 @@ void Player::Update()
 
     //無敵時間の処理
     Invincible_time_update();
+    KnockBack_Update();
 
     
 
     //横移動
    //----------------------------------------------------------------------------------------------------------------------------------------------------
 
-       //スティックの値を受け取って正規化する
+    //スティックの値を受け取って正規化する
     float left_stick_x = state.leftStickX / 40000.0f;
     float left_stick_y = state.leftStickY / 40000.0f;
     b2Vec2 vel = m_body->GetLinearVelocity();
@@ -633,8 +656,20 @@ void Player::Update()
     //オブジェクトに投げるアンカー処理の呼び出し
     if ((Keyboard_IsKeyDown(KK_T) || (state.rightTrigger)) && Anchor::GetAnchorState() == Nonexistent_state)//何も存在しない状態でボタン入力で移行する
     {
-        if(AnchorPoint::GetTargetAnchorPointBody()->GetPosition()!=m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
-        Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+        if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+        {
+          
+            if (false == AnchorPoint::AnchorPointListCheck())
+            {
+                return;
+            }
+      
+
+            if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition() != m_body->GetPosition())//現在プレイヤーを標準としていない場合でのしょり
+            {
+               Anchor::SetAnchorState(Create_wait_draw_cnt_state);//作成状態に移行
+            }
+        }
     }
 
 
@@ -843,7 +878,7 @@ void Player::Update()
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
-        Player_Damaged(-50,120);
+        Player_Damaged(-50,120,nullptr);
 
     }
    
@@ -864,14 +899,26 @@ void Player::Update()
   
 }
 
-void Player::Player_Damaged(int Change_to_HP,int invincibletime)
+void Player::Player_Damaged(int Change_to_HP,int invincibletime, const b2Body* attack_body)
 {
     // HPを減らす
     PlayerStamina::EditPlayerStaminaValue(Change_to_HP);//HPに加算減算する　今回は減算
 
     //無敵時間を付与
     invincible_time = invincibletime;
-
+    g_KnockBack_total_time = invincible_time * 0.27f;  //ノックバックのする時間（無敵時間と比例してる）
+    if (attack_body != nullptr)
+    {
+        if (GetOutSidePlayerBody()->GetPosition().x < attack_body->GetPosition().x)
+        {
+            g_damage_from_right = true;    //ダメージはプレイやーの右から来てるかどうかをセット
+        }
+        else
+        {
+            g_damage_from_right = false;    //ダメージはプレイやーの右から来てるかどうかをセット
+        }
+    }
+    
 
     //被弾の音
     app_atomex_start(Player_Damege_Sound);
@@ -899,12 +946,105 @@ void Player::Invincible_time_update(void)
             }
         }
 
+
         if (invincible_time <= 0)
         {
+            //プレイヤーの無的状態を解除
             updateFixtureFilter("Player_filter", {});
             player_alpha = 3.0f;
         }
     }
+
+}
+
+void    Player::KnockBack_Update()
+{
+    //ノックバックが終わってないのなら更新処理に入る
+    if (g_KnockBack_elapce_time < g_KnockBack_total_time)
+    {
+        //2回のベジエの時間や距離などの比例
+        float   Beziers_total_ratio = 5.0f;
+        float   Beziers_A_ratio = 3.0f;
+        float   Beziers_B_ratio = 2.0f;
+
+        //ノックバック開始直後ならパラメータの初期設定を行う
+        if (g_Beziers_id == 0 && g_KnockBack_elapce_time == 0.0f)
+        {
+            float distance_x = 50.0f;                   //ベジエ二回全部で移動したｘ座標距離
+            float max_bounce_height = 30.0f;            //最大バウンド高さ
+
+            float distance_x_A = distance_x / Beziers_total_ratio * Beziers_A_ratio;    //一回目のベジエの時の始点と終点の距離
+            float distance_x_B = distance_x / Beziers_total_ratio * Beziers_B_ratio;    //二回目のベジエの時の始点と終点の距離
+
+            //左からの攻撃だったら、右の方に飛ばされる
+            if (!g_damage_from_right)
+            {
+                distance_x_A = -distance_x_A;
+                distance_x_B = -distance_x_B;
+            }
+
+            //ノックバック前と後と曲線を制御してる座標を設定しておく
+            g_Beziers_parameter_position[0][0] = g_Beziers_prev_position = GetOutSidePlayerBody()->GetPosition();
+            g_Beziers_parameter_position[0][1] = { g_Beziers_parameter_position[0][0].x - distance_x_A / 2, g_Beziers_parameter_position[0][0].y - max_bounce_height };
+            g_Beziers_parameter_position[0][2] = { g_Beziers_parameter_position[0][0].x - distance_x_A, g_Beziers_parameter_position[0][0].y };
+            g_Beziers_parameter_position[1][0] = g_Beziers_parameter_position[0][2];
+            g_Beziers_parameter_position[1][1] = { g_Beziers_parameter_position[1][0].x - distance_x_B / 2, g_Beziers_parameter_position[1][0].y - max_bounce_height / 2 };
+            g_Beziers_parameter_position[1][2] = { g_Beziers_parameter_position[1][0].x - distance_x_B, g_Beziers_parameter_position[1][0].y };
+        }
+        
+        //3次ベジエ計算
+        float time_elapced_ratio = 0.0f;
+        switch (g_Beziers_id)
+        {
+        case 0:
+            time_elapced_ratio = g_KnockBack_elapce_time / (g_KnockBack_total_time / Beziers_total_ratio * Beziers_A_ratio);
+            break;
+        case 1:
+            time_elapced_ratio = g_KnockBack_elapce_time / (g_KnockBack_total_time / Beziers_total_ratio * Beziers_B_ratio);
+            break;
+        }
+        float time_remained_ratio = 1 - time_elapced_ratio;
+        float parameter_time_ratio[3];
+        parameter_time_ratio[0] = time_remained_ratio * time_remained_ratio;
+        parameter_time_ratio[1] = (2 * time_elapced_ratio) * (time_remained_ratio);
+        parameter_time_ratio[2] = time_elapced_ratio * time_elapced_ratio;
+
+        b2Vec2 new_position = { 0.0f,0.0f };
+        for (int i = 0; i < 3; i++)
+        {
+            new_position.x += parameter_time_ratio[i] * g_Beziers_parameter_position[g_Beziers_id][i].x;
+            new_position.y += parameter_time_ratio[i] * g_Beziers_parameter_position[g_Beziers_id][i].y;
+        }
+
+        b2Vec2  velocity = new_position - g_Beziers_prev_position;
+
+        GetOutSidePlayerBody()->SetLinearVelocity(velocity);
+        
+
+        g_Beziers_prev_position = new_position;
+
+        //タイムの更新
+        g_KnockBack_elapce_time++;
+        switch (g_Beziers_id)
+        {
+        case 0:
+            if (g_KnockBack_elapce_time >= g_KnockBack_total_time / Beziers_total_ratio * Beziers_A_ratio)
+            {
+                g_KnockBack_elapce_time = 1.0f;
+                g_Beziers_id++;
+            }
+            break;
+        case 1:
+            if (g_KnockBack_elapce_time >= g_KnockBack_total_time / Beziers_total_ratio * Beziers_B_ratio)
+            {
+                g_KnockBack_elapce_time = g_KnockBack_total_time = 0.0f;
+                g_Beziers_id = 0;
+            }
+            break;
+        }
+
+    }
+
 }
 
 
@@ -1246,7 +1386,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                5, 5, 1, player_alpha, m_direction
+                5, 5, 0, player_alpha, m_direction
 
             );
 
@@ -1335,7 +1475,7 @@ void Player::Draw()
                   screen_center.y },
                 m_body->GetAngle(),
                 { GetSize().x * scale * player_scale_x ,GetSize().y * scale * player_scale_y },
-                2, 3, draw_cnt / 4, player_alpha, m_direction
+                3, 3, draw_cnt / 4, player_alpha, m_direction
 
             );
 
@@ -1413,6 +1553,29 @@ void Player::Draw()
                 5, 5, draw_cnt / 3, player_alpha, m_direction
 
             );
+            break;
+
+        case player_dead_state:
+
+            draw_cnt++;
+
+            if (126 < draw_cnt)
+            {
+                draw_cnt = 126;
+            }
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_dead_Texture);
+
+            DrawDividedSpritePlayer(
+                { screen_center.x,
+                  screen_center.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * player_scale_x*1.7f ,GetSize().y * scale * player_scale_y },
+                8, 8, draw_cnt / 2, 3.0, m_direction
+
+            );
+
             break;
            
         default:
@@ -1529,6 +1692,7 @@ void Player::Finalize()
 
     if (g_player_Texture != nullptr)
     {
+        UnInitTexture(g_player_dead_Texture);
         UnInitTexture(g_player_Texture);
         UnInitTexture(g_player_jump_sheet);
         UnInitTexture(g_player_throw_anchor_sheet);
@@ -1556,6 +1720,7 @@ void Player::Finalize()
         UnInitTexture(g_TamaChan_Lv2);
         UnInitTexture(g_TamaChan_Lv3);
 
+        g_player_dead_Texture = NULL;
         g_player_Texture = NULL;
         g_player_jump_sheet = NULL;
         g_player_throw_anchor_sheet = NULL;
@@ -1596,22 +1761,6 @@ b2Body* Player::GetOutSidePlayerBody()
 }
 
 
-void Player::Player_knockback(int KnockBackLevel, b2Body *touch_body)
-{
-    b2Vec2 player_pos = GetOutSidePlayerBody()->GetPosition();
-    b2Vec2 object_pos = touch_body->GetPosition();
-
-    int minus = 1;
-
-    //左右の確認 今回は左
-    if (player_pos.x < object_pos.x)
-    {
-        minus = -1;
-    }
-
-    GetOutSidePlayerBody() ->SetLinearVelocity(b2Vec2(0.5 * minus * KnockBackLevel, -1.0*KnockBackLevel));
-
-}
 
 
     
@@ -1794,14 +1943,36 @@ void Player::DrawTamaChan()
     float draw_x = ((tamachan_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
     float draw_y = ((tamachan_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-    // シェーダリソースを設定
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+    b2Vec2 tamachan_size;
+
+    switch (AnchorSpirit::GetAnchorLevel())
+    {
+    case 1:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv1);
+        tamachan_size = { 75.f,75.f };
+        break;
+    case 2:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv2);
+        tamachan_size = { 125.f,125.f };
+        break;
+    case 3:
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_TamaChan_Lv3);
+        tamachan_size = { 175.f,175.f };
+        break;
+    default:
+        break;
+    }
+
+   
 
     // スプライトを描画
     DrawDividedSpritePlayer(
         { draw_x, draw_y -100 },        // 描画位置
         0,                              // 回転角度
-        { 150, 150 },                   // サイズ
+        { tamachan_size.x, tamachan_size.y },                   // サイズ
         6, 6,                           // 分割数
         TamaChanSheetCnt,               // シートカウント
         3.0f,                           // スケール

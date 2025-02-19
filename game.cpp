@@ -88,37 +88,7 @@ void Game::Initialize()
 
     //マップによって初期リスを変える　　　これアンカーのレベル引き継いでないわ
     SceneManager& sceneManager = SceneManager::GetInstance();
-    switch (sceneManager.GetStageName())
-    {
-    case STAGE_TUTORIAL:
-        ////プレイヤーの初期化
-        //フィールドの中でやるわ
-        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
-        break;
-    case STAGE_1_1:
-
-        ////プレイヤーの初期化
-        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(),m_respawn);
-
-        break;
-    case STAGE_BOSS:
-
-        //フィールドCPPでプレイヤーのイニシャライズを行う
- 
-
-        break;
-    case STAGE_TEST:
-        ////プレイヤーの初期化
-        player.Initialize(b2Vec2(1, 0), b2Vec2(1, 2), player.GetSensorSizeLev1_2(), m_respawn);
-
-        break;
-    case STAGE_NULL:
-
-        break;
-
-    default:
-        break;
-    }
+   
 
 
 
@@ -436,23 +406,23 @@ void Game::Update(void)
 
 void Game::Respawn()
 {
-    //リスポン時の座標決め
-    //==========================================================================
-    b2Vec2 respawn_position = b2Vec2{ 1.0f, 0.0f };
-    ItemManager& item_manager = ItemManager::GetInstance();
-    ItemSavePoint* savepoint = item_manager.FindItem_SavePoint();
-    //ステージに中間地がある場合
-    if (savepoint != nullptr)
-    {
-        if (savepoint->GetIfPlayerPassed())
-        {
-            respawn_position = savepoint->GetBody()->GetPosition();
-            AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
-        }
-    }
+    ////リスポン時の座標決め
+    ////==========================================================================
+    //b2Vec2 respawn_position = b2Vec2{ 5.0f, 6.0f };
+    //ItemManager& item_manager = ItemManager::GetInstance();
+    //ItemSavePoint* savepoint = item_manager.FindItem_SavePoint();
+    ////ステージに中間地がある場合
+    //if (savepoint != nullptr)
+    //{
+    //    if (savepoint->GetIfPlayerPassed())
+    //    {
+    //        respawn_position = savepoint->GetBody()->GetPosition();
+    //        AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
+    //    }
+    //}
 
 
-    Player::GetOutSidePlayerBody()->SetTransform(respawn_position, 0.0f);
+    //Player::GetOutSidePlayerBody()->SetTransform(respawn_position, 0.0f);
 
 
 
@@ -528,8 +498,11 @@ void Game::Draw(void)
 
 	player_UI::Draw();
 
+    PillarFragmentsManager::GetInstance().DrawFragments();
 
     dead_production::Draw();
+
+
 
     //チェンジシーン
     change_scene_end_production::Draw();
@@ -539,7 +512,7 @@ void Game::Draw(void)
 
 
 
-    PillarFragmentsManager::GetInstance().DrawFragments();
+
 #ifdef _DEBUG
     //デバッグ文字
     DrawDebug();

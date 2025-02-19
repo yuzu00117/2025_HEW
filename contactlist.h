@@ -41,6 +41,7 @@
 #include"bound_block.h"
 #include"UI_Block.h"
 #include"break_block.h"
+#include"boss_wall_object.h"
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -138,6 +139,8 @@ public:
         // プレーヤーと地面が衝突したかを判定
         if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_ground) ||
             (objectA->collider_type == collider_ground && objectB->collider_type == collider_player_leg)||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_break_block) ||
+            (objectA->collider_type == collider_break_block && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
@@ -258,28 +261,22 @@ public:
         {
 
             float object_velocity=0;
+            const b2Body* object_body = nullptr;
+            
             if (objectA->collider_type == collider_object)
             {
-                object_velocity=ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureA->GetBody()->GetLinearVelocity().y);
+                object_body = fixtureA->GetBody();
+                object_velocity=ReturnAbsoluteValue(object_body->GetLinearVelocity().x) + ReturnAbsoluteValue(object_body->GetLinearVelocity().y);
             }
             else
             {
-                object_velocity=ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().x) + ReturnAbsoluteValue(fixtureB->GetBody()->GetLinearVelocity().y);
+                object_body = fixtureB->GetBody();
+                object_velocity=ReturnAbsoluteValue(object_body->GetLinearVelocity().x) + ReturnAbsoluteValue(object_body->GetLinearVelocity().y);
             }
 
-            if (1.0f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
+            if (0.7f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
-               
-                player.Player_Damaged(0, 120);//被弾処理
-
-                if (objectA->collider_type == collider_object)
-                {
-                    player.Player_knockback(2, fixtureA->GetBody());
-                }
-                if (objectB->collider_type == collider_object)
-                {
-                    player.Player_knockback(2, fixtureB->GetBody());
-                }
+                    player.Player_Damaged(0, 120, object_body);//被弾処理
             }
 
         }
@@ -359,9 +356,14 @@ public:
             (objectA->collider_type == collider_object && objectB->collider_type == collider_break_block))
         {
 
+            if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar) { return; }
+
+
             //カメラシェイクとヒットストップを追加しました
             CameraShake::StartCameraShake(0, 5, 10);
-            HitStop::StartHitStop(5);
+
+           /* HitStop::StartHitStop(5);*/
+
             if (objectA->collider_type == collider_break_block)
             {
                 Break_Block* breakblock_instance = object_manager.FindBreakBlock(objectA->id);
@@ -373,6 +375,8 @@ public:
                 breakblock_instance->SetFlag(true);
             }
         }
+
+        
 
 
 
@@ -549,6 +553,25 @@ public:
                     }
                 }
 
+
+
+
+
+                //ボスの部屋の壁
+                if (objectA->object_name == Boss_Wall || objectB->object_name == Boss_Wall)
+                {
+                    //どちらがボスの部屋の柱
+                    if (objectA->object_name == Boss_Wall)//ボス戦の壁
+                    {
+                        Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);
+                        wall_instance->SetPullingFlag(true);
+                    }
+                    if (objectB->object_name == Boss_Wall)//ボス戦の壁
+                    {
+                        Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);
+                        wall_instance->SetPullingFlag(true);
+                    }
+                }
             }//end_if( Anchor::GetAnchorState() == Connected_state)
 
         
@@ -557,6 +580,26 @@ public:
        
              
         }
+
+
+        //ボスの壁と柱が触れた
+        if (objectA->collider_type == collider_object && objectB->collider_type == collider_object)
+        {
+            //どちらがボスの部屋の柱
+            if (objectA->object_name == Boss_pillar&&objectB->object_name==Boss_Wall)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);
+                pillar_instance->SetSplitting_Destroy_Flag(true);
+            }
+
+            //どちらがボスの部屋の柱
+            if (objectB->object_name == Boss_pillar && objectA->object_name == Boss_Wall)
+            {
+                boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
+                pillar_instance->SetSplitting_Destroy_Flag(true);
+            }
+        }
+
 
         //プレイヤーと静的エネミーの衝突
         if ((objectA->collider_type == collider_enemy_static && objectB->collider_type == collider_player_body) ||
@@ -628,12 +671,20 @@ public:
             if (objectA->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
-                enemy_instance->CollisionPlayer();
+                if (enemy_instance->GetAttactCoolingTime() <= 0)
+                {
+                    enemy_instance->CollisionPlayer();
+                    enemy_instance->SetAttactCoolingTime(60);
+                }                
             }
             else if (objectB->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectB->id);
-               enemy_instance->CollisionPlayer();
+                if (enemy_instance->GetAttactCoolingTime() <= 0)
+                {
+                    enemy_instance->CollisionPlayer();
+                    enemy_instance->SetAttactCoolingTime(60);
+                }
             }
         }
 
@@ -718,7 +769,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.5 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
@@ -781,7 +832,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (1.0<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.001<(ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
@@ -816,7 +867,11 @@ public:
                 HitStop::StartHitStop(15);
                 CameraShake::StartCameraShake(5, 3, 15);
             }
-           
+            //静止状態のオブジェクトに当たると向きを反転させる
+            else
+            {
+                enemy_instance->SetDirection(!enemy_instance->GetDirection());
+            }
        
         }
 
@@ -842,7 +897,7 @@ public:
                 GetObjectVelocity = fixtureA->GetBody()->GetLinearVelocity();
             }
 
-            if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
+            if (0.5 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
 
 
@@ -963,26 +1018,55 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_attack))
         {
             int damage;
+            const b2Body* attack_body = nullptr;
             if (objectA->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectA->id);
                 damage = attack_instance->GetDamage();
+
+                //Player_Damaged関数の引数のために攻撃してるエネミー元のBodyを検索してる(なぜenemy_attackのbodyを使わないかというと、enemy_attackとplayerの位置順番がたまに実際とは逆になることあるから)
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                if (enemy_dynamic_instance != nullptr)
+                {
+                    attack_body = enemy_dynamic_instance->GetBody();
+                }
+                else
+                {
+                    EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectA->id);
+                    attack_body = enemy_static_instance->GetBody();
+                }
+
             }
             else if (objectB->collider_type == collider_enemy_attack)
             {
                 EnemyAttack* attack_instance = object_manager.FindEnemyAttackByID(objectB->id);
                 damage = attack_instance->GetDamage();
+
+                //Player_Damaged関数の引数のために攻撃してるエネミー元のBodyを検索してる(なぜenemy_attackのbodyを使わないかというと、enemy_attackとplayerの位置順番がたまに実際とは逆になることあるから)
+                EnemyDynamic* enemy_dynamic_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                if (enemy_dynamic_instance != nullptr)
+                {
+                    attack_body = enemy_dynamic_instance->GetBody();
+                }
+                else
+                {
+                    EnemyStatic* enemy_static_instance = object_manager.FindEnemyStaticByID(objectB->id);
+                    attack_body = enemy_static_instance->GetBody();
+                }
             }
 
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-damage, 120);
+
+            player.Player_Damaged(-damage, 120, attack_body);
         }
 
         //動的エネミーに付属しているセンサーと地面が触れた場合
         if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor))
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_break_block) ||
+            (objectA->collider_type == collider_break_block && objectB->collider_type == collider_enemy_sensor))
         {
             if (objectA->collider_type == collider_enemy_sensor)
             {
@@ -1043,6 +1127,7 @@ public:
                 }
             }
         }
+
 
         //プレイヤーに付属しているセンサーと浮遊エネミーが触れた場合(今のところ浮遊エネミーでこのセンサー判定使う予定まだないけど、一応)
         if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_enemy_floating) ||
@@ -1169,7 +1254,18 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(0, 120);
+
+            const b2Body* boss_body = nullptr;
+            if (objectA->collider_type == collider_boss)
+            {
+                boss_body = fixtureA->GetBody();
+            }
+            else
+            {
+                boss_body = fixtureB->GetBody();
+            }
+
+            player.Player_Damaged(0, 120, boss_body);
             
 
         }
@@ -1186,7 +1282,18 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            /* player.Player_Damaged(-50, 120);*/
+
+            const b2Body* wave_body = nullptr;
+            if (objectA->collider_type == collider_shock_wave)
+            {
+                wave_body = fixtureA->GetBody();
+            }
+            else
+            {
+                wave_body = fixtureB->GetBody();
+            }
+
+            player.Player_Damaged(-50, 120, wave_body);
 
         }
 
@@ -1213,10 +1320,21 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            /* player.Player_Damaged(-50, 120);*/
+
+            const b2Body* attack_body = nullptr;
+            if (objectA->collider_type == collider_chage_attack)
+            {
+                attack_body = fixtureA->GetBody();
+            }
+            else
+            {
+                attack_body = fixtureB->GetBody();
+            }
+
+            player.Player_Damaged(-50, 120, attack_body);
+
           
             
-            player.Player_knockback(1, boss.GetOutSideBody());
 
         }
 
@@ -1229,16 +1347,21 @@ public:
             app_atomex_start(Player_Dead_Sound);
             HitStop::StartHitStop(15);
             CameraShake::StartCameraShake(5, 3, 15);
-            player.Player_Damaged(-50, 120);
 
+            b2Body* golem_body = nullptr;
             if (objectA->collider_type == collider_mini_golem)
             {
-                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+                golem_body = fixtureA->GetBody();
             }
             else
             {
-                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+                golem_body = fixtureB->GetBody();
             }
+
+            player.Player_Damaged(-50, 120, golem_body);
+
+            boss.SetDestroyMiniGolemBody(true, golem_body);
+
         }
 
         //プレイヤーの通常攻撃ととミニゴーレム
@@ -1307,19 +1430,37 @@ public:
                 {
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
-                   
                 }
 
 
-                if (objectA->object_name == Boss_Carry_Object_Enemy)
+                if (objectA->object_name == Boss_Wall)
                 {
-                 
+                    Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    wall_instance->SetSplitting_Destroy_Flag(true);
                 }
-                if (objectB->object_name == Boss_Carry_Object_Enemy)
+                if (objectB->object_name == Boss_Wall)
                 {
+                    Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    wall_instance->SetSplitting_Destroy_Flag(true);
+                }
+      
+
+            }
+            else
+            {
+
+                //ボスがぶつかったら壊れるように
+                if (objectA->object_name == Boss_pillar)
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
 
                 }
-
+                if (objectB->object_name == Boss_pillar)
+                {
+                    boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
+                    pillar_instance->SetSplitting_Destroy_Flag(true);
+                }
             }
 
            
@@ -1371,6 +1512,24 @@ public:
               
             }
      
+        }
+
+        //動いている壁とぶつかった時　止まっているボスの壁がぶつかった時
+        if (objectA->object_name == Boss_Wall && objectB->object_name == Boss_Wall)
+        {
+            //動いている方
+            if (fixtureA->GetType() == b2_dynamicBody)
+            {
+                Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);
+                wall_instance->SetSplitting_Destroy_Flag(true);
+            }
+
+
+            if (fixtureB->GetType() == b2_dynamicBody)
+            {
+                Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);
+                wall_instance->SetSplitting_Destroy_Flag(true);
+            }
         }
 
         
@@ -1609,7 +1768,9 @@ public:
 
          //動的エネミーに付属しているセンサーと地面が離れた時
         if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_ground) ||
-            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor))
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_break_block) ||
+            (objectA->collider_type == collider_break_block && objectB->collider_type == collider_enemy_sensor))
         {
             if (objectA->collider_type == collider_enemy_sensor)
             {

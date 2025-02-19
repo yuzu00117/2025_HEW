@@ -58,22 +58,59 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 	body.type = b2_staticBody;
 	body.position.Set(Position.x, Position.y);
-	body.fixedRotation = false;//回転する
+	body.fixedRotation = true;//回転する
 
 	b2Body* m_body = world->CreateBody(&body);
-
+	SetObjectBody(m_body);//ボディを登録する
 	
 
 	b2FixtureDef fixture;//フィクスチャを作成
+	b2FixtureDef topFixture;
+	b2FixtureDef bottomFixture;
 
 	// クラス内に b2Shape をメンバーとして保持する場合の例
 	b2PolygonShape shape; // クラスのメンバー変数として保持
 	b2CircleShape circleShape;
 
+	
+
 	if (collider_type == Box_collider)
 	{
-		shape.SetAsBox(object_size.x * 0.5, object_size.y * 0.5);
-		fixture.shape = &shape; // メンバー変数を使用
+		// 上半分のボックス
+		b2PolygonShape topShape;
+		topShape.SetAsBox(object_size.x * 0.5, object_size.y * 0.25, b2Vec2(0, -object_size.y * 0.25), 0);
+		topFixture.shape = &topShape;
+		topFixture.density = 6.0f;//密度  密度を上げた
+		topFixture.friction = 0.3f;//摩擦
+		topFixture.restitution = 0.0f;//反発係数
+		topFixture.isSensor = false;//センサーかどうか
+		topFixture.filter = createFilterExclude("ground_filter", {}); // ground_filter を適用
+		b2Fixture* m_top_fixture = m_body->CreateFixture(&topFixture);
+
+		if (m_top_fixture)
+		{
+			ObjectData* object_top_data = new ObjectData{ collider_ground };
+			m_top_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_top_data);
+			object_top_data->need_anchor_level = need_anchor_level;
+		}
+
+		// 下半分のボックス
+		b2PolygonShape bottomShape;
+		bottomShape.SetAsBox(object_size.x * 0.5, object_size.y * 0.25, b2Vec2(0, object_size.y * 0.25), 0);
+		bottomFixture.shape = &bottomShape;
+		bottomFixture.density = 6.0f;//密度  密度を上げた
+		bottomFixture.friction = 0.3f;//摩擦
+		bottomFixture.restitution = 0.0f;//反発係数
+		bottomFixture.isSensor = false;//センサーかどうか
+		bottomFixture.filter = createFilterExclude("object_filter", {}); // object_filter を適用
+		b2Fixture* m_bottom_fixture = m_body->CreateFixture(&bottomFixture);
+
+		if (m_bottom_fixture)
+		{
+			ObjectData* object_bottom_data = new ObjectData{ collider_object };
+			m_bottom_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_bottom_data);
+			object_bottom_data->need_anchor_level = need_anchor_level;
+		}
 	}
 	else if (collider_type == Circle_collider)
 	{
@@ -81,19 +118,9 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 		fixture.shape = &circleShape; // メンバー変数を使用
 	}
 
-	fixture.density = 6.0f;//密度  密度を上げた
-	fixture.friction = 0.3f;//摩擦
-	fixture.restitution = 0.0f;//反発係数
-	fixture.isSensor = false;//センサーかどうか
-	fixture.filter = createFilterExclude("object_filter", {});
+	
 
-	b2Fixture* m_fixture = m_body->CreateFixture(&fixture);//フィクスチャをボディに登録
-
-	SetObjectBody(m_body);//ボディを登録する
-
-	ObjectData* object_data = new ObjectData{ collider_object };
-	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
-	object_data->need_anchor_level = need_anchor_level;
+	
 	////--------------------------------------------------------------------------------------------------
 	//アンカーポイントのフィクスチャ
 	b2FixtureDef fixture_anchorpoint;

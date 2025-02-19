@@ -157,6 +157,15 @@ void DrawSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, float Alpha)
 	{
 		return;
 	}
+	if (Position.y > SCREEN_HEIGHT*2)
+	{
+		return;
+	}
+
+	if (Position.y < -SCREEN_HEIGHT*2)
+	{
+		return;
+	}
 
 
 
@@ -323,6 +332,15 @@ void DrawDividedSpritePlayer(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, 
 	{
 		return;
 	}
+	if (Position.y > SCREEN_HEIGHT*2)
+	{
+		return;
+	}
+
+	if (Position.y < -SCREEN_HEIGHT*2)
+	{
+		return;
+	}
 
 	//頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
@@ -465,6 +483,16 @@ void DrawDividedSpriteBoss(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, in
 	{
 		return;
 	}
+
+	if (Position.y > SCREEN_HEIGHT*2)
+	{
+		return;
+	}
+
+	if (Position.y < -SCREEN_HEIGHT*2)
+	{
+		return;
+	}
 	//頂点バッファ設定
 	UINT stride = sizeof(VERTEX_3D);
 	UINT offset = 0;
@@ -538,6 +566,16 @@ void DrawSplittingSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int 
 	}
 
 	if (Position.x < -SCREEN_WIDTH)
+	{
+		return;
+	}
+
+	if (Position.y > SCREEN_HEIGHT*2)
+	{
+		return;
+	}
+
+	if (Position.y < -SCREEN_HEIGHT*2)
 	{
 		return;
 	}

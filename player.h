@@ -33,6 +33,8 @@ enum player_draw_state
 	player_walk_state,
 	player_normal_attack_state,
 
+	player_dead_state,
+
 };
 
 
@@ -76,16 +78,18 @@ public:
 
 	void Player_sensor_size_change(int anchor_level);
 
-	void Player_knockback(int KnockBackLevel, b2Body* touch_body);
 
 
 	//フィルターを変換できる
 	void updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks);
 
 	//プレイヤーがダメージ受けた瞬間呼び出す
-	void Player_Damaged(int Change_to_HP,int invincibletime);
+	void Player_Damaged(int Change_to_HP,int invincibletime, const b2Body* attack_body);
 
+	//無敵時間処理
 	void Invincible_time_update();
+	//ノックバック処理
+	void KnockBack_Update();
 
 
 	static b2Body* GetOutSidePlayerBody();
@@ -218,6 +222,16 @@ public:
 
 	player_draw_state GetState() { return draw_state; }
 
+	void SetState(player_draw_state state)
+	{
+		draw_state = state;
+	}
+
+	void SetDrawCnt(int cnt)
+	{
+		draw_cnt = cnt;
+	}
+
 
 
 private:
@@ -258,7 +272,7 @@ private:
 	static float   m_speed;
 
 	//プレイヤーの向き
-	// 右向き：1    左向き：-1
+	// 右向き：true(1)    左向き：false(0)
 	static bool		m_direction;
 
 	//アンカーを使用中よフラグ
