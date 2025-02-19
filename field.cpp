@@ -776,65 +776,65 @@ void Field::Initialize(bool respawning)
 				int jump_texture_type = 1;
 
 				if (field_map[y][x] == 51) {
-					objectManager.AddBossBoundBlock(b2Vec2((x-0.5) / BOX2D_SCALE_MANAGEMENT, (y-0.5) / BOX2D_SCALE_MANAGEMENT ), b2Vec2(2.f, 2.f),jump_power,boss_room_level_2, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f),jump_power,boss_room_level_2, jump_texture_type);
 				}
 				if (field_map[y][x] == 52) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_3, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_3, jump_texture_type);
 				}
 				if (field_map[y][x] == 53) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_4, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_4, jump_texture_type);
 				}
 				if (field_map[y][x] == 54) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_5, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_5, jump_texture_type);
 				}
 				if (field_map[y][x] == 55) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_6, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_6, jump_texture_type);
 				}
 				if (field_map[y][x] == 56) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_7, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_7, jump_texture_type);
 				}
 				if (field_map[y][x] == 57) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_8, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_8, jump_texture_type);
 				}
 				if (field_map[y][x] == 58) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_9, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_9, jump_texture_type);
 				}
 				if (field_map[y][x] == 59) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_10, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_10, jump_texture_type);
 				}
 				if (field_map[y][x] == 60) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_11, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_11, jump_texture_type);
 				}
 				if (field_map[y][x] == 61) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_12, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_12, jump_texture_type);
 				}
 				if (field_map[y][x] == 62) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_13, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_13, jump_texture_type);
 				}
 				if (field_map[y][x] == 63) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_14, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_14, jump_texture_type);
 				}
 				if (field_map[y][x] == 64) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_15, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_15, jump_texture_type);
 				}
 				if (field_map[y][x] == 65) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_16, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_16, jump_texture_type);
 				}
 				if (field_map[y][x] == 66) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_17, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_17, jump_texture_type);
 				}
 				if (field_map[y][x] == 67) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_18, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_18, jump_texture_type);
 				}
 				if (field_map[y][x] == 68) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_19, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_19, jump_texture_type);
 				}
 				if (field_map[y][x] == 69) {
-					objectManager.AddBossBoundBlock(b2Vec2((x - 0.5) / BOX2D_SCALE_MANAGEMENT, (y - 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.f, 2.f), jump_power, boss_room_level_20, jump_texture_type);
+					objectManager.AddBossBoundBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), jump_power, boss_room_level_20, jump_texture_type);
 				}
 				
 
-				b2Vec2 boss_wall_size = { 20.f,20.f };
+				b2Vec2 boss_wall_size = { 17.f,25.f };
 				if (field_map[y][x] == 70) {
 					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6, g_Ground_Texture, false);
 				}
