@@ -509,8 +509,8 @@ public:
                 //ボスのコア
                 if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
                 {
-                    CameraShake::DelayStartCameraShake(25, 60, 20, 30);
-                    HitStop::DelayStartHitStop(30, 25);
+                    CameraShake::DelayStartCameraShake(10, 60, 20, 30);
+                    HitStop::DelayStartHitStop(30, 10);
                    
                     //どちらが岩のオブジェクトか特定
                     if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
