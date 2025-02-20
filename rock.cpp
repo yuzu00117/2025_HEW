@@ -93,6 +93,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 	// カスタムデータを作成して設定
 	ObjectData* object_rock_data = new ObjectData{ collider_object };//一旦壁判定
 	object_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_rock_data);
+	object_rock_data->object_name = Object_Rock;
 
 
 	//2つめのフィクスチャを　岩の中にアンカーポイントをつくる

@@ -76,8 +76,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 	
 
-	if (collider_type == Box_collider)
-	{
+	
 		// 上半分のボックス
 		b2PolygonShape topShape;
 		topShape.SetAsBox(object_size.x * 0.5, object_size.y * 0.25, b2Vec2(0, -object_size.y * 0.25), 0);
@@ -88,12 +87,14 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 		topFixture.isSensor = false;//センサーかどうか
 		topFixture.filter = createFilterExclude("ground_filter", {}); // ground_filter を適用
 		b2Fixture* m_top_fixture = m_body->CreateFixture(&topFixture);
-
+		
+		
+		ObjectData* object_top_data = new ObjectData{ collider_ground };
 		if (m_top_fixture)
 		{
-			ObjectData* object_top_data = new ObjectData{ collider_ground };
 			m_top_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_top_data);
 			object_top_data->need_anchor_level = need_anchor_level;
+			object_top_data->object_name = Object_Static_to_Dynamic;
 		}
 
 		// 下半分のボックス
@@ -107,18 +108,16 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 		bottomFixture.filter = createFilterExclude("object_filter", {}); // object_filter を適用
 		b2Fixture* m_bottom_fixture = m_body->CreateFixture(&bottomFixture);
 
+
+		ObjectData* object_bottom_data = new ObjectData{ collider_object };
 		if (m_bottom_fixture)
 		{
-			ObjectData* object_bottom_data = new ObjectData{ collider_object };
 			m_bottom_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_bottom_data);
 			object_bottom_data->need_anchor_level = need_anchor_level;
+			object_bottom_data->object_name = Object_Static_to_Dynamic;
 		}
-	}
-	else if (collider_type == Circle_collider)
-	{
-		circleShape.m_radius = object_size.x * 0.5;
-		fixture.shape = &circleShape; // メンバー変数を使用
-	}
+	
+
 
 	
 
@@ -129,24 +128,18 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 	// クラス内に b2Shape をメンバーとして保持する場合の例
 	b2PolygonShape shape_anchorpoint; // クラスのメンバー変数として保持
-	b2CircleShape circleShape_anchorpoint;
+	
 
-	if (collider_type == Box_collider)
-	{
-		shape_anchorpoint.SetAsBox(object_size.x * 0.5*0.5, object_size.y * 0.5*0.5);
-		fixture_anchorpoint.shape = &shape_anchorpoint; // メンバー変数を使用
-	}
-	else if (collider_type == Circle_collider)
-	{
-		circleShape_anchorpoint.m_radius = object_size.x * 0.5*0.5;
-		fixture_anchorpoint.shape = &circleShape_anchorpoint; // メンバー変数を使用
-	}
+	shape_anchorpoint.SetAsBox(object_size.x * 0.5 * 0.5, object_size.y * 0.5 * 0.5);
+	fixture_anchorpoint.shape = &shape_anchorpoint; // メンバー変数を使用
+		
+	
 
 	fixture_anchorpoint.density = 3.0f;//密度
 	fixture_anchorpoint.friction = 0.5f;//摩擦
 	fixture_anchorpoint.restitution = 0.0f;//反発係数
-	fixture_anchorpoint.isSensor = false;//センサーかどうか
-	fixture_anchorpoint.filter = createFilterExclude("object_filter", {});
+	fixture_anchorpoint.isSensor = true;//センサーかどうか
+	fixture_anchorpoint.filter = createFilterExclude("object_filter",{});
 
 	b2Fixture* m_anchorpoint_fixture = m_body->CreateFixture(&fixture_anchorpoint);
 
@@ -154,6 +147,11 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	m_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
+
+	//------------------------------------------------------------------------
+	
+
+	
 
 	int ID = object_anchorpoint_data->GenerateID();
 	object_anchorpoint_data->id = ID;
@@ -164,6 +162,13 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 	object_anchorpoint_data->need_anchor_level = need_anchor_level;
 	m_need_level = need_anchor_level;
 
+
+
+	object_bottom_data->id = GetID();
+
+	object_top_data->id = GetID();
+
+	
 	Break_Flag = break_flag;
 };
 
@@ -225,6 +230,16 @@ void static_to_dynamic_block::Update()
 
 		// 次のフレーム用に現在の速度を保存
 		prevVelocity = currentVelocity;
+	}
+
+
+	if (Now_Break_Flag == true)
+	{
+		b2Body* body = GetObjectBody();
+		PillarFragmentsManager::GetInstance().Destroy_Splitting(body, g_BoxRock_Texture, GetSize());
+
+		SetObjectBody(nullptr);
+		Now_Break_Flag = false;
 	}
 
 }

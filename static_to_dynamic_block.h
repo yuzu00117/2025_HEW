@@ -93,6 +93,11 @@ public:
 	}
 
 
+	void SetNowBreakBlock(bool flag)
+	{
+		Now_Break_Flag = flag;
+	}
+
 	bool	GetIfPulling() { return m_pulling; }
 	void	SetIfPulling(bool flag) { m_pulling = flag; }
 
@@ -112,6 +117,8 @@ private:
 
 
 	bool Break_Flag;
+
+	bool Now_Break_Flag=false;
 
 	b2Vec2 prevVelocity;
 
