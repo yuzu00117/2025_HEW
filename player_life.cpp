@@ -47,10 +47,10 @@ void PlayerLife::Update()
 	}
 }
 
-void PlayerLife::Draw()
-{
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_life_Texture);
-
-	//																									　		全体の個数
-	DrawDividedSprite(XMFLOAT2(SCREEN_WIDTH - 50.0f, SCREEN_HEIGHT - 50.0f), 0.0f, XMFLOAT2(50.0f, 50.0f), 5, 2, m_life, 1.0f);
-}
+//void PlayerLife::Draw()
+//{
+//	GetDeviceContext()->PSSetShaderResources(0, 1, &g_life_Texture);
+//
+//	//																									　		全体の個数
+//	DrawDividedSprite(XMFLOAT2(SCREEN_WIDTH - 50.0f, SCREEN_HEIGHT - 50.0f), 0.0f, XMFLOAT2(50.0f, 50.0f), 5, 2, m_life, 1.0f);
+//}
