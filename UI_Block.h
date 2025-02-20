@@ -12,14 +12,21 @@
 #define UI_BLOCK_H
 
 #include"include/box2d/box2d.h"
+#include"Video.h"
 
 
 //触れたら何を表示するもの
 enum Ui_Block_Type
 {
 	NULL_UI_TYPE,//なにもないやつ
-	BOTTOM_A,
-	BOTTOM_B
+	ARROW,
+	BUTTON_A,
+	BUTTON_B,
+
+	VIDEO_BUTTON_A,
+	VIDEO_BUTTON_LEFT_STICK,
+	VIDEO_BUTTON_RIGHT_STICK,
+	VIDEO_BUTTON_ZR,
 
 };
 
@@ -93,6 +100,20 @@ public:
 		m_flag = flag;
 	}
 
+
+	bool	GetIfVideo() { return m_is_video; }
+
+	//今の動画の状態を取得（そもそもUIが動画じゃない場合は動画終わったっていう状態が返ってくる）
+	Video_State GetVideoState() { 
+		if (m_is_video) { return m_video.GetState(); } 
+		return Video_Finished;
+	}
+	//今の動画の状態をセット（そもそもUIが動画じゃない場合はセットされない）
+	void	SetVideoState(Video_State state)
+	{
+		if (m_is_video) { m_video.SetState(state); }
+	}
+
 private:
 
 	b2Body* m_body;
@@ -109,6 +130,9 @@ private:
 	Ui_Block_Type m_ui_type;
 
 	float angle;
+
+	Video m_video;	//動画インスタンス
+	bool	m_is_video;	//このUIは動画かどうか
 
 };
 

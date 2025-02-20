@@ -53,13 +53,6 @@ void Video::Draw(const XMFLOAT2& pos, float height)
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &m_video.getTexture()->shader_resource_view);
 
-        // コライダーと位置情報の補正をするため
-        float scale = SCREEN_SCALE;
-
-        b2Vec2 screen_center;
-        screen_center.x = SCREEN_CENTER_X;
-        screen_center.y = SCREEN_CENTER_Y;
-
 
         //動画サイズ
         XMFLOAT2 size;

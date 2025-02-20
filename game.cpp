@@ -225,10 +225,10 @@ void Game::Update(void)
         HitStop::CountHitStop();
     }
     else {
-       if(world->GetBodyCount() > 0)
+        if (world->GetBodyCount() > 0)
         {
             world->Step(1.0f / 60.0f, 6, 2);
-
+        }
             //ディレイヒットストップの調整
             HitStop::DelayCountHitStop();
 
@@ -286,45 +286,13 @@ void Game::Update(void)
             }
 
 
-            //シーン移行の管理
-            if (sceneManager.Get_Chenge_Scene_flag() == true)
-            {
-                //シーン移行したらfalseにする
-                sceneManager.Set_Chenge_Scene_flag(false);
-                switch (sceneManager.GetStageName())
-                {
-                case STAGE_SELECT:
-                    sceneManager.SetStageName(STAGE_SELECT);
-                    sceneManager.ChangeScene(SCENE_STAGE_SELECT);
-                    break;
-                case STAGE_TUTORIAL:
-                    sceneManager.SetStageName(STAGE_TUTORIAL);
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    break;
-                case STAGE_1_1:
-                    sceneManager.SetStageName(STAGE_1_1);
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    break;
-                case STAGE_BOSS:
-                    sceneManager.SetStageName(STAGE_BOSS);
-                    sceneManager.ChangeScene(SCENE_GAME);
-                    break;
-                default:
-                    break;
-                }
-
-              
-            }
+      
 
 
 
 
             
-        }
-       else
-       {
-           std::cerr << "[Error] No bodies exist in the Box2D world!" << std::endl;
-       }
+   
 
 
 
@@ -392,6 +360,10 @@ void Game::Update(void)
                 break;
             case STAGE_1_1:
                 sceneManager.SetStageName(STAGE_1_1);
+                sceneManager.ChangeScene(SCENE_GAME);
+                break;
+            case STAGE_ISEKI:
+                sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
