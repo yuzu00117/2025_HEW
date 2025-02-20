@@ -18,7 +18,9 @@
 #include"player.h"
 
 static ID3D11ShaderResourceView* g_Black_texture = NULL;//数字のテクスチャ
-static ID3D11ShaderResourceView* g_Black_hole_texture = NULL;//数字のテクスチャ
+static ID3D11ShaderResourceView* g_Black_hole_texture = NULL;//数字のテクスチ
+
+static ID3D11ShaderResourceView* g_player_icon_texture = NULL;//数字のテクスチ
 
 float dead_production::Dead_Cnt = 0;
 float dead_production::Black_fade_rate = 0;
@@ -31,6 +33,7 @@ void dead_production::Initialize()
 	{
 		g_Black_texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 		g_Black_hole_texture = InitTexture(L"asset\\texture\\sample_texture\\sample_fade_black.png");
+		g_player_icon_texture= InitTexture(L"asset\\texture\\UI_soul_gage\\player_icon.png");
 	}
 }
 
@@ -137,6 +140,17 @@ void dead_production::Draw()
 
 	if (210 < Dead_Cnt)
 	{
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_icon_texture);
+		DrawSpriteOld(
+			XMFLOAT2(SCREEN_WIDTH/2-200, SCREEN_HEIGHT/2),
+			0.0f,
+			XMFLOAT2(300, 300)
+		);
+	}
+
+
+	if (510 < Dead_Cnt)
+	{
 		Dead_Flag = true;
 	
 	
@@ -157,5 +171,8 @@ void dead_production::Finalize()
 
 		UnInitTexture(g_Black_hole_texture);
 		g_Black_hole_texture = NULL;
+
+		UnInitTexture(g_player_icon_texture);
+		g_player_icon_texture = NULL;
 	}
 }
