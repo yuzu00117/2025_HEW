@@ -225,10 +225,10 @@ void Game::Update(void)
         HitStop::CountHitStop();
     }
     else {
-       if(world->GetBodyCount() > 0)
+        if (world->GetBodyCount() > 0)
         {
             world->Step(1.0f / 60.0f, 6, 2);
-
+        }
             //ディレイヒットストップの調整
             HitStop::DelayCountHitStop();
 
@@ -320,11 +320,7 @@ void Game::Update(void)
 
 
             
-        }
-       else
-       {
-           std::cerr << "[Error] No bodies exist in the Box2D world!" << std::endl;
-       }
+   
 
 
 
