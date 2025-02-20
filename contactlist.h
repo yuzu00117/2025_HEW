@@ -598,6 +598,29 @@ public:
                 boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
                 pillar_instance->SetSplitting_Destroy_Flag(true);
             }
+
+
+        
+        }
+
+     
+        //転がる岩と静的動的ブロックの衝突判定じ
+        if (objectA->object_name == Object_Static_to_Dynamic && objectB->object_name == Object_Rock)
+        {
+            static_to_dynamic_block* instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);
+            instance->SetNowBreakBlock(true);
+        }
+        if (objectA->object_name == Object_Rock && objectB->collider_type == collider_static_block_break_block)
+        {
+            static_to_dynamic_block* instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);
+            instance->SetNowBreakBlock(true);
+        }
+
+      
+        if ((objectA->collider_type == collider_object && objectB->collider_type == collider_static_block_break_block) ||
+            (objectA->collider_type == collider_static_block_break_block && objectB->collider_type == collider_object))
+        {
+            
         }
 
 

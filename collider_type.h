@@ -75,6 +75,7 @@ enum ColliderTypeList
 
     collider_break_player_block,
 
+    collider_static_block_break_block,
 
     collider_no_entry_block
 };
