@@ -1016,6 +1016,19 @@ void Field::Initialize(bool respawning)
 				if (field_map[y][x] == 25) {//上から落ちるや
 					itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
 				}
+
+
+				//--------------------------------------------------------------------
+				//宝石
+				if (field_map[y][x] == 26) {
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0,RED,respawning);
+				}
+				if (field_map[y][x] == 27) {
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, BLUE, respawning);
+				}
+				if (field_map[y][x] == 28) {
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, YELLOW, respawning);
+				}
 			}
 		}
 		objectManager.InitializeAll();

@@ -279,13 +279,47 @@ void player_UI::Draw()
 	{
 
 		// シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_yellow_jewel_Texture);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_blue_jewel_fit_effect);
 
-		DrawDividedSprite(XMFLOAT2(1200, 100), 0.0f, XMFLOAT2(20, 20), 10, 1, m_blue_jewel_collected_effect_cnt, 1.0);
+		DrawDividedSprite(XMFLOAT2(75, 600), 0.0f, XMFLOAT2(50, 50), 4, 3, m_blue_jewel_collected_effect_cnt, 1.0);
+
+		m_blue_jewel_collected_effect_cnt += 0.3;
 
 		if (12 < m_blue_jewel_collected_effect_cnt)
 		{
-			m_blue_jewel_collected = 0;
+			m_blue_jewel_collected_effect_cnt = 0;
+		}
+	}
+
+	if (m_red_jewel_collected_effect_cnt != 0)
+	{
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_red_jewel_fit_effect);
+
+		DrawDividedSprite(XMFLOAT2(100, 650), 0.0f, XMFLOAT2(50, 50), 4, 3, m_red_jewel_collected_effect_cnt, 1.0);
+
+		m_red_jewel_collected_effect_cnt += 0.3;
+
+		if (12 < m_red_jewel_collected_effect_cnt)
+		{
+			m_red_jewel_collected_effect_cnt = 0;
+		}
+	}
+
+	if (m_yellow_jewel_collected_effect_cnt != 0)
+	{
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_yellow_jewel_fit_effect);
+
+		DrawDividedSprite(XMFLOAT2(50, 650), 0.0f, XMFLOAT2(50, 50), 4, 3, m_yellow_jewel_collected_effect_cnt, 1.0);
+
+		m_yellow_jewel_collected_effect_cnt += 0.3;
+
+		if (12 < m_yellow_jewel_collected_effect_cnt)
+		{
+			m_yellow_jewel_collected_effect_cnt = 0;
 		}
 	}
 	
