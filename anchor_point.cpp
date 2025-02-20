@@ -376,7 +376,7 @@ void AnchorPoint::SelectAnchorPoint(float stick_x, float stick_y)
 
 	b2Body* closestBody = nullptr;//いま現在一番角度がね近いアンカーポイント
 	float closestDistanceSquared = 100000; // 馬鹿でか値を初期値として設定　そしたらいける
-	float Allowable_Angle_MAX = cos(70.0f * M_PI / 180.0f); // 30度以内であれば判定許容してやる　ここは中身変えたら変数変更可能もっと緩くしてもいい
+	float Allowable_Angle_MAX = cos(150.0f * M_PI / 180.0f); // 30度以内であれば判定許容してやる　ここは中身変えたら変数変更可能もっと緩くしてもいい
 
 	for (int i = 0; i < MAX_ANCHOR_POINT_IN_SENSOR; i++) {
 		if (g_anchor_point_body[i] == nullptr) continue;//NULLだったら出る

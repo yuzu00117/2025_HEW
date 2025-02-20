@@ -131,7 +131,7 @@ private:
 
     int lifetime = 0;
 
-    
+    int enemy_texture_cnt;
 
     int Destroy_Cnt=0;
 

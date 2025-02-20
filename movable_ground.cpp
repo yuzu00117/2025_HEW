@@ -18,6 +18,8 @@
 //グローバル変数
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
 
+bool	g_pulled = false;	//もう引っ張られたかどうかを取得（反発した瞬間で引っ張られた扱いになる）
+
 
 movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
 {
@@ -66,10 +68,10 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//敵をけすかどうかのセンサー
 	b2PolygonShape sensor_shape;
 	b2Vec2 vertices[4];
-	vertices[0].Set(-ground_size.x * 0.5f, -ground_size.y * 0.45f );
-	vertices[1].Set( 0.0f , -ground_size.y * 0.45f);
-	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.45f);
-	vertices[3].Set(0.0f , ground_size.y*0.45f );
+	vertices[0].Set(-ground_size.x * 0.5f, -ground_size.y * 0.45f );	//左上
+	vertices[1].Set(-ground_size.x * 0.42f, -ground_size.y * 0.45f);		//右上
+	vertices[2].Set(-ground_size.x * 0.5f, ground_size.y * 0.45f);		//左下
+	vertices[3].Set(-ground_size.x * 0.42f, ground_size.y*0.45f );		//右下
 	sensor_shape.Set(vertices, 4);	//センサーのローカル位置を変更
 
 	b2FixtureDef sensor_fixture;
@@ -190,17 +192,33 @@ void movable_ground::Update()
 	{
 		Pulling_ground();
 
-		for (auto w : enemy_static)
+		if (Ground_body->GetLinearVelocity().x != 0.0f)
 		{
-			w->CollisionPulledObject();	
-		}
-		enemy_static.clear();
+			for (auto w : enemy_static)
+			{
+				w->CollisionPulledObject();
+			}
+			enemy_static.clear();
 
-		for (auto w : enemy_dynamic)
-		{
-			w->CollisionPulledObject();
+			for (auto w : enemy_dynamic)
+			{
+				w->CollisionPulledObject();
+			}
+			enemy_dynamic.clear();
+
+			for (auto w : enemy_floating)
+			{
+				w->CollisionPulledObject();
+			}
+			enemy_floating.clear();
 		}
-		enemy_dynamic.clear();
+
+
+		if (Ground_body->GetLinearVelocity().x > 0)
+		{
+			Ground_body->SetLinearVelocity({ 0.0f,0.0f });
+			g_pulled = true;
+		}
 	}
 }
 
@@ -283,5 +301,10 @@ void movable_ground::Pulling_ground()
 	}
 
 	body->SetLinearVelocity(pulling_power);
+}
+
+bool movable_ground::GetIfPulled()
+{
+	return g_pulled;
 }
 
