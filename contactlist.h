@@ -610,18 +610,14 @@ public:
             static_to_dynamic_block* instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);
             instance->SetNowBreakBlock(true);
         }
-        if (objectA->object_name == Object_Rock && objectB->collider_type == collider_static_block_break_block)
+        if (objectA->object_name == Object_Rock && objectB-> object_name == Object_Static_to_Dynamic)
         {
             static_to_dynamic_block* instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);
             instance->SetNowBreakBlock(true);
         }
 
       
-        if ((objectA->collider_type == collider_object && objectB->collider_type == collider_static_block_break_block) ||
-            (objectA->collider_type == collider_static_block_break_block && objectB->collider_type == collider_object))
-        {
-            
-        }
+      
 
 
         //プレイヤーと静的エネミーの衝突
