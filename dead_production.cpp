@@ -213,5 +213,9 @@ void dead_production::Finalize()
 
 		UnInitTexture(g_player_icon_texture);
 		g_player_icon_texture = NULL;
+
+		UnInitTexture(g_number_texture);
+		g_number_texture = NULL;
+		
 	}
 }
