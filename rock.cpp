@@ -18,6 +18,7 @@
 #include"player_position.h"
 #include"create_filter.h"
 #include"sound.h"
+#include"easing.h"
 
 
 //テクスチャの入れ物
@@ -26,6 +27,12 @@ static ID3D11ShaderResourceView* g_Rock_Texture = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Rock_Texture1 = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_Rock_Texture2 = NULL;//アンカーのテクスチャ
 
+static ID3D11ShaderResourceView* g_Rock_Texture_Lv1 = NULL;//岩のテクスチャLv1
+static ID3D11ShaderResourceView* g_Rock_Border_Texture_Lv1 = NULL;//岩のテクスチャLv1(縁のみ)
+static ID3D11ShaderResourceView* g_Rock_Texture_Lv2 = NULL;//岩のテクスチャLv1
+static ID3D11ShaderResourceView* g_Rock_Border_Texture_Lv2 = NULL;//岩のテクスチャLv1(縁のみ)
+static ID3D11ShaderResourceView* g_Rock_Texture_Lv3 = NULL;//岩のテクスチャLv1
+static ID3D11ShaderResourceView* g_Rock_Border_Texture_Lv3 = NULL;//岩のテクスチャLv1(縁のみ)
 
 
 
@@ -116,6 +123,9 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 	object_rock_anchorpoint_data->id = ID;
 	SetID(ID);
 	object_rock_anchorpoint_data->need_anchor_level = set_need_anchor_level;
+
+	//アンカーレベルをメンバ変数で保持
+	m_need_level = set_need_anchor_level;
 	
 
 
@@ -144,6 +154,13 @@ void rock::Initialize()
 		g_Rock_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big.png");
 		g_Rock_Texture1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 		g_Rock_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
+
+		g_Rock_Texture_Lv1		   = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big_lv1.png");
+		g_Rock_Border_Texture_Lv1  = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big_lv1_border.png");
+		g_Rock_Texture_Lv2		   = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big_lv2.png");
+		g_Rock_Border_Texture_Lv2  = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big_lv2_border.png");
+		g_Rock_Texture_Lv3		   = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big_lv3.png");
+		g_Rock_Border_Texture_Lv3  = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_big_lv3_border.png");
 	}
 }
 
@@ -197,9 +214,33 @@ void rock::Draw()
 	float draw_x = ((RockPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((RockPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+	{
+		//アンカーレベルに応じた縁取りを付けたテクスチャを設定
+		switch (m_need_level)
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Border_Texture_Lv1);
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Border_Texture_Lv2);
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Border_Texture_Lv3);
+			break;
+		default:
+			break;
+		}
+		//縁を描画
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			GetObjectAnchorPointBody()->GetAngle(),
+			{ GetRockSize().x * scale * 1.1f,GetRockSize().y * scale * 1.1f }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			, m_border_alpha
+		);
+	}
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Texture);
-
 	//draw
 	DrawSprite(
 		{ draw_x,
@@ -208,9 +249,12 @@ void rock::Draw()
 		{ GetRockSize().x * scale,GetRockSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
-
-
-
+	//透過率設定
+	m_border_alpha -= 0.01;
+	if (m_border_alpha <= m_border_alpha_min)
+	{
+		m_border_alpha = m_border_alpha_max;
+	}
 }
 
 void rock::Finalize()
@@ -234,9 +278,23 @@ void rock::Finalize()
 	UnInitTexture(g_Rock_Texture1);
 	UnInitTexture(g_Rock_Texture2);
 
+	UnInitTexture(g_Rock_Texture_Lv1);
+	UnInitTexture(g_Rock_Border_Texture_Lv1);
+	UnInitTexture(g_Rock_Texture_Lv2);
+	UnInitTexture(g_Rock_Border_Texture_Lv2);
+	UnInitTexture(g_Rock_Texture_Lv3);
+	UnInitTexture(g_Rock_Border_Texture_Lv3);
+
 	
 	//なんかいるみたい
 	g_Rock_Texture = NULL;
 	g_Rock_Texture1 = NULL;
 	g_Rock_Texture2 = NULL;
+
+	g_Rock_Texture_Lv1		  	= NULL;
+	g_Rock_Border_Texture_Lv1	= NULL;
+	g_Rock_Texture_Lv2			= NULL;
+	g_Rock_Border_Texture_Lv2	= NULL;
+	g_Rock_Texture_Lv3			= NULL;
+	g_Rock_Border_Texture_Lv3	= NULL;
 }

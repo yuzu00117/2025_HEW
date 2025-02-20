@@ -26,11 +26,25 @@ bool CameraShake::camera_shake_flag = false;
 int CameraShake::camera_shake_frame = 0;
 int CameraShake::camera_shake_height = 0;
 int CameraShake::camera_shake_width = 0;
+int CameraShake::delay_cnt = 0;
+
 b2Vec2 CameraShake::old_olayer_pos = { 0.0f,0.0f };
 
 
 void CameraShake::Update()
 {
+    //ディレイの時の管理
+    if (delay_cnt != 0)
+    {
+        delay_cnt--;
+        if (delay_cnt == 0)
+        {
+            camera_shake_flag = true;
+        }
+    }
+
+
+
     // カメラのオフセット変数
     static float moveOffsetX = 0.0f;
     static float moveOffsetY = 0.0f;

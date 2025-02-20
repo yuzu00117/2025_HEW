@@ -12,12 +12,18 @@
 #include"create_filter.h"
 #include"player_position.h"
 #include"sprite.h"
+#include"gokai.h"
+#include"hit_stop.h"
+#include"camera_shake.h"
 
 
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
 
+bool	g_pulled = false;	//もう引っ張られたかどうかを取得（反発した瞬間で引っ張られた扱いになる）
+
+int		g_need_level = 1;	//Updateで自分用にアンカーレベルを取っておく
 
 movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
 {
@@ -145,7 +151,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	//床を引っ張る時に必要になるForce とりあえずサイズに依存でつくる
 	b2Vec2 need_power;
 
-	need_power.x = ((GetGroundSize().x * GetGroundSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 0.8;//１は必要に応じて変更して
+	need_power.x = ((GetGroundSize().x * GetGroundSize().y) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 1.0;//１は必要に応じて変更して
 	need_power.y = 10.0f;//縦に必要な力はない
 
 
@@ -156,6 +162,7 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 
 	//アンカーレベルの設定
 	object_anchorpoint_data->need_anchor_level = need_level;
+	g_need_level = need_level;
 
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------
@@ -190,25 +197,66 @@ void movable_ground::Update()
 	{
 		Pulling_ground();
 
+		int cunt_enemy = 0;		//敵何匹倒したかのカウント
+		//敵を倒す処理
 		if (Ground_body->GetLinearVelocity().x != 0.0f)
 		{
+
 			for (auto w : enemy_static)
 			{
 				w->CollisionPulledObject();
+				app_atomex_start(Player_Dead_Sound);
+				HitStop::StartHitStop(15);
+				CameraShake::StartCameraShake(5, 3, 15);
+				cunt_enemy++;
 			}
 			enemy_static.clear();
 
 			for (auto w : enemy_dynamic)
 			{
 				w->CollisionPulledObject();
+				app_atomex_start(Player_Dead_Sound);
+				HitStop::StartHitStop(15);
+				CameraShake::StartCameraShake(5, 3, 15);
+				cunt_enemy++;
 			}
 			enemy_dynamic.clear();
 
 			for (auto w : enemy_floating)
 			{
 				w->CollisionPulledObject();
+				app_atomex_start(Player_Dead_Sound);
+				HitStop::StartHitStop(15);
+				CameraShake::StartCameraShake(5, 3, 15);
+				cunt_enemy++;
 			}
 			enemy_floating.clear();
+		}
+		
+		//豪快度関連
+		//=================================================
+		switch (g_need_level)
+		{
+		case 1:
+			Gokai_UI::AddGokaiCount(100 * cunt_enemy);
+			break;
+		case 2:
+			Gokai_UI::AddGokaiCount(500 * cunt_enemy);
+			break;
+		case 3:
+			Gokai_UI::AddGokaiCount(1000 * cunt_enemy);
+			break;
+		default:
+			break;
+		}
+
+
+		//反発しすぎないための処理
+		//=============================================================================================
+		if (Ground_body->GetLinearVelocity().x > 0)
+		{
+			Ground_body->SetLinearVelocity({ 0.0f,0.0f });
+			g_pulled = true;
 		}
 	}
 }
@@ -292,5 +340,10 @@ void movable_ground::Pulling_ground()
 	}
 
 	body->SetLinearVelocity(pulling_power);
+}
+
+bool movable_ground::GetIfPulled()
+{
+	return g_pulled;
 }
 

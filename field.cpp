@@ -54,6 +54,9 @@ static ID3D11ShaderResourceView* g_left_ground_Texture = NULL;//地面左側の�
 static ID3D11ShaderResourceView* g_under_right_ground_Texture = NULL;//地面右側のテクスチャ
 static ID3D11ShaderResourceView* g_under_left_ground_Texture = NULL;//地面左側のテクスチャ
 
+static ID3D11ShaderResourceView* g_under_right_ground_down_Texture = NULL;//地面右側下側のテクスチャ
+static ID3D11ShaderResourceView* g_under_left_ground_down_Texture = NULL;//地面左側下側のテクスチャ
+
 static ID3D11ShaderResourceView* g_sloop_left_side_texture = NULL;//地面スロープの右側
 static ID3D11ShaderResourceView* g_sloop_right_side_texture = NULL;//地面スロープの左側
 
@@ -98,19 +101,19 @@ void Field::Initialize(bool respawning)
 	g_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_right_02.png");//草のテクスチャ　右側
 	g_left_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_left_02.png");//草のテクスチャ　左側
 
-	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//右側のテクスチャ
-	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//右側のテクスチャ
+	
 
 	g_invisibility_wall_Texture=InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
 
 	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
-	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right_dwon.png");//右側のテクスチャ
+	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
 
-
+	g_under_right_ground_down_Texture=InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
+	g_under_left_ground_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
 
 	g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
 	g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
-
+	
 	//----------------------------------------------------------------------------------------
 	//遺跡のテクスチャ
 	
@@ -140,6 +143,10 @@ void Field::Initialize(bool respawning)
 	case STAGE_1_1:
 		// csvからマップチップを読み込む
 		Field::LoadCSV("asset/mapchip_stage_1_1.csv");
+		break;
+	case STAGE_ISEKI:
+		// csvからマップチップを読み込む
+		Field::LoadCSV("asset/mapchip_iseki.csv");
 		break;
 	case STAGE_BOSS:
 		// csvからマップチップを読み込む
@@ -475,11 +482,11 @@ void Field::Initialize(bool respawning)
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
 				//間欠泉
 				if (field_map[y][x] == 56) {//間欠泉
-					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT ), b2Vec2(5.f, 3.f), b2Vec2(3.f,5.f),1,1,1);
+					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y+0.3) / BOX2D_SCALE_MANAGEMENT ), b2Vec2(5.f, 3.f), b2Vec2(2.f,5.f),1,1,1);
 				}
 
 				if (field_map[y][x] == 57) {//間欠泉
-					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(7.f, 5.f), b2Vec2(3.f, 15.f), 1, 1, 3);
+					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(7.f, 5.f), b2Vec2(3.f, 20.f), 1, 1, 3);
 				}
 
 
@@ -497,10 +504,18 @@ void Field::Initialize(bool respawning)
 				}
 
 			//------------------------------------------------------------------------------------------
-			//触れたらbossステージに行く
+			//触れたら遺跡ステージに行く
 			//-------------------------------------------------------------------------------------------
 				if (field_map[y][x] == 70) {
-					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_ISEKI, b2Vec2_zero);
+				}
+
+
+
+
+				//セーブポイント
+				if (field_map[y][x] == 75) {
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 2.0f),0.0f, respawning);
 				}
 
 
@@ -543,6 +558,182 @@ void Field::Initialize(bool respawning)
 		itemManager.InitializeAll(respawning);
 	
 		break;
+
+		case STAGE_ISEKI:
+			for (int y = 0; y < m_field_height; ++y)
+			{
+				for (int x = 0; x < m_field_width; ++x)
+				{
+					if (field_map[y][x] == 1) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_TOP_BLOCK, false);
+					}
+					if (field_map[y][x] == 2) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_TOP_LEFT_BLOCK, false);
+					}
+					if (field_map[y][x] == 3) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_TOP__RIGHT_BLOCK, false);
+					}
+					if (field_map[y][x] == 4) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_BLOCK, false);
+					}
+					if (field_map[y][x] == 5) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_LEFT_BLOCK, false);
+					}
+					if (field_map[y][x] == 6) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, ISEKI_RIGHT_BLOCK, false);
+					}
+
+
+					if (field_map[y][x] == 7) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_GRASS, false);
+					}
+			
+					if (field_map[y][x] == 8) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
+					}
+			
+
+					//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+					//不可視の壁
+					if (field_map[y][x] == 12) {//動かない物
+						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
+						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
+					}
+
+
+					//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+					//プレイヤー
+					if (field_map[y][x] == 13) {//プレイヤーの表示
+
+						Player& player = Player::GetInstance();
+
+						b2Vec2 size = player.GetSensorSize();
+
+						player.Finalize();
+
+						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					}
+					//-------------------------------------------------------------------------------------------
+
+					//------------------------------------------------------------------------------------------------------------------------------------------
+					//傾斜
+
+					if (field_map[y][x] == 14) {//右下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_down);
+					}
+					if (field_map[y][x] == 15) {//左下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_down);
+					}
+					//------------------------------------------------------------------------------------------------------------------------------
+
+
+					//-----------------------------------------------------------------------------------------------------------------------------
+					//コインや宝石
+					if (field_map[y][x] == 20) {//コイン
+						itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
+					}
+					if (field_map[y][x] == 21) {//青宝石
+						itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE, respawning);
+					}
+
+					//------------------------------------------------------------------------------------------------------------------------------------------
+					//岩のオブジェクト
+
+					//-------------------------------------------------------------------------------------------
+					//転がす岩
+					if (field_map[y][x] == 25) {//岩
+						objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 2, 1, true);//左側
+					}
+					if (field_map[y][x] == 26){//岩
+						objectManager.AddRock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), 3, 3, true);//右側
+					}
+
+
+					//------------------------------------------------------------------------------------------------------------------------------------------
+					// エネミー
+					if (field_map[y][x] == 35) {//エネミーの
+						objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+					}
+					if (field_map[y][x] == 36) {//エネミーの
+						objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 2.0f), 0.0f);
+					}
+					if (field_map[y][x] == 37) {//エネミーの
+						objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+					}
+
+					if (field_map[y][x] == 38) {//動かないエネミー
+						objectManager.AddEnemyStatic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+					}
+
+					if (field_map[y][x] == 39) {//浮遊エネミー
+						objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), 0.0f);
+					}
+
+					//--------------------------------------------------------------------------------------------------------------------------------
+					//ジャンプ台
+					if (field_map[y][x] == 45) {
+						objectManager.AddBossBoundBlock(b2Vec2(x  / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 3.f), b2Vec2(0.0f,-0.8), boss_room_level_20, 0);
+					}
+
+					//大ジャンプ台
+					if (field_map[y][x] == 46) {
+						objectManager.AddBossBoundBlock(b2Vec2((x-0.5) / BOX2D_SCALE_MANAGEMENT, (y-0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.f, 4.f), b2Vec2(0.0f, -0.9), boss_room_level_20, 0);
+					}
+
+
+					//--------------------------------------------------------------------------------------------------------------------------------------------------------
+					//壊れるブロック
+					if (field_map[y][x] == 50) {//オブジェクトと接触したら壊れる
+						objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 5, 5, 0.0, g_Iseki_Texture);
+					}
+
+					if (field_map[y][x] == 51) {//オブジェクトと接触したら壊れる
+						objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 5, 5, 0.0, g_Iseki_Texture);
+					}
+
+					if (field_map[y][x] == 51) {//左下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_down);
+					}
+
+					if (field_map[y][x] == 52) {//オブジェクトと接触したら壊れる
+						objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 5, 5, 0.0, g_Iseki_Texture);
+					}
+
+					if (field_map[y][x] == 52) {//左下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_down);
+					}
+
+					if (field_map[y][x] == 53) {//オブジェクトと接触したら壊れる
+						objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 5, 5, 0.0, g_Iseki_Top_Texture);
+					}
+					
+
+
+					//------------------------------------------------------------------------------------------------------
+					//柱オブジェクト
+					if (field_map[y][x] == 60) {
+						objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f,10.0f), 1, 6, boss_room_level_20);
+					}
+
+			
+					//ボスのステージに行く
+					if (field_map[y][x] == 70) {
+						objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
+					}
+
+				}
+			}
+			objectManager.InitializeAll();
+			itemManager.InitializeAll(respawning);
+			break;
 	case STAGE_BOSS:
 		// csvからマップチップを読み込む
 	
@@ -1016,6 +1207,20 @@ void Field::Initialize(bool respawning)
 				if (field_map[y][x] == 25) {//上から落ちるや
 					itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
 				}
+
+				if (field_map[y][x] == 26) {//上から落ちるや
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(100.f, 100.f), b2Vec2(9.f,SCREEN_SCALE), b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), VIDEO_BUTTON_A, 0.0f);
+				}
+
+				if (field_map[y][x] == 27) {//上から落ちるや
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(100.f, 100.f), b2Vec2(9.f, SCREEN_SCALE), b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), VIDEO_BUTTON_LEFT_STICK, 0.0f);
+				}
+				if (field_map[y][x] == 28) {//上から落ちるや
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(100.f, 100.f), b2Vec2(9.f, SCREEN_SCALE), b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), VIDEO_BUTTON_RIGHT_STICK, 0.0f);
+				}
+
+
+
 			}
 		}
 		objectManager.InitializeAll();

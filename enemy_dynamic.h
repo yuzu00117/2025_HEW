@@ -51,6 +51,7 @@ private:
 	const int m_attack_finish = 50;
 	const int m_attack_cooltime = 60;
 	int m_attack_cooltime_counter = 60;
+	bool m_is_attack = false;
 
 	int m_anim_id = 0;
 
@@ -93,17 +94,8 @@ public:
 
 	//センサーとプレイヤーが触れた時の処理
 	void CollisionSensorPlayer();
-	void SetIsGround(bool is_ground)
-	{
-		if (is_ground)
-		{
-			m_ground_cnt++;
-		}
-		else
-		{
-			m_ground_cnt--;
-		}
-	}
+	void QuitSensorPlayer();
+	void SetIsGround(bool is_ground);
 };
 
 #endif	//ENEMY_DYNAMIC_H

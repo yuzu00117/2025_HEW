@@ -339,12 +339,14 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
@@ -392,6 +394,7 @@ public:
             {
                 if (fixtureA->GetBody() == AnchorPoint::GetTargetAnchorPointBody() || fixtureB->GetBody() == AnchorPoint::GetTargetAnchorPointBody())//ぶつかった物体のどちらかが　ターゲットとしたアンカーポイントである
                 {
+                    
                     Anchor::SetAnchorState(Connected_state);//プレイヤーアップデートの中のスイッチ文の移行よう 接続状態に移行
                 }
                 else
@@ -502,6 +505,9 @@ public:
                 //ボスのコア
                 if (objectA->object_name == Boss_core || objectB->object_name == Boss_core)
                 {
+                    CameraShake::DelayStartCameraShake(10, 60, 20, 30);
+                    HitStop::DelayStartHitStop(30, 10);
+                   
                     //どちらが岩のオブジェクトか特定
                     if (objectA->object_name == Boss_core)//Aが静的動的のオブジェクト
                     {
@@ -1249,14 +1255,27 @@ public:
             if (objectA->collider_type == collider_UI_block)
             {
                 UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
-                ui_instance->SetFlag(true);
-               
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Resume);
+                }
+                else
+                {
+                    ui_instance->SetFlag(true);
+                }               
             }
             else if (objectB->collider_type == collider_UI_block)
             {
 
                 UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
-                ui_instance->SetFlag(true);
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Resume);
+                }
+                else
+                {
+                    ui_instance->SetFlag(true);
+                }
             }
         }
         //-------------------------------------------------------------------------------------------
@@ -1313,6 +1332,9 @@ public:
             }
 
             player.Player_Damaged(-50, 120, wave_body);
+            
+            //ショックウェーブを破壊する
+            boss.SetShockWaveFrame(300);
 
         }
 
@@ -1814,7 +1836,23 @@ public:
         }
 
 
-
+        //プレイヤーと動的エネミーに付属しているセンサーが離れた場合
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->QuitSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->QuitSensorPlayer();
+            }
+        }
 
 
 
@@ -1930,14 +1968,27 @@ public:
             if (objectA->collider_type == collider_UI_block)
             {
                 UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
-                ui_instance->SetFlag(false);
-
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Pause);
+                }
+                else
+                {
+                    ui_instance->SetFlag(false);
+                }
             }
             else if (objectB->collider_type == collider_UI_block)
             {
 
                 UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
-                ui_instance->SetFlag(false);
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Pause);
+                }
+                else
+                {
+                    ui_instance->SetFlag(false);
+                }
             }
         }
 

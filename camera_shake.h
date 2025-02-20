@@ -38,6 +38,18 @@ public:
 	}
 
 
+	static void DelayStartCameraShake(int delay_time, int shake_height, int shake_width, int shake_frame)
+	{
+		if (shake_height + shake_width < camera_shake_height + camera_shake_width)
+		{
+			return;
+		}
+		delay_cnt=delay_time;
+		camera_shake_height = shake_height;
+		camera_shake_width = shake_width;
+		camera_shake_frame = shake_frame;
+	}
+
 
 
 	
@@ -55,6 +67,8 @@ private:
 	static int camera_shake_width;
 
 	static b2Vec2 old_olayer_pos;
+
+	static int delay_cnt;
 
 };
 
