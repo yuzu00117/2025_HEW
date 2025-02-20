@@ -107,7 +107,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	anchorpoint_fixture.friction = 0.05f;//摩擦
 	anchorpoint_fixture.restitution = 0.0f;//反発係数
 	anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	anchorpoint_fixture.filter = createFilterExclude("object_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter" });
+	anchorpoint_fixture.filter = createFilterExclude("object_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter","Player_filter" });
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
