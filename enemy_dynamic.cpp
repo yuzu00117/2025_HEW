@@ -149,6 +149,15 @@ void EnemyDynamic::Finalize()
 
 void EnemyDynamic::Update()
 {
+	if (m_is_attack && m_attack_cooltime_counter >= m_attack_cooltime)
+	{
+		SetDirectionBasedOnPlayer();
+		m_anim_id = 0;
+		m_attack_cooltime_counter = 0;
+		SetState(ENEMY_STATE_ATTACK);
+		
+	}
+
 	if (GetUse())
 	{
 		switch (GetState())
@@ -315,7 +324,7 @@ void EnemyDynamic::Move()
 	{
 		//移動していないかつ、前回移動中だった場合ジャンプ
 		GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
-		if (((liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE) && m_is_ground) ||
+		if (((liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE) && m_is_ground && !m_is_attack) ||
 			((m_ground_cnt > m_sensor_move_size + 3 && m_old_state == ENEMY_STATE_MOVE) && m_is_ground))
 		{
 			if (GetDirection())
@@ -394,7 +403,6 @@ void EnemyDynamic::Attack()
 		GetBody()->SetType(b2_dynamicBody);
 		SetState(ENEMY_STATE_NULL);
 		m_anim_id = 0;
-		m_attack_cooltime_counter = 0;
 		return;
 	}
 }
@@ -402,14 +410,12 @@ void EnemyDynamic::Attack()
 //センサーとプレイヤーが触れた時の処理
 void EnemyDynamic::CollisionSensorPlayer()
 {
-	//エネミーが攻撃中なら何もしない
-	if ((GetState() != ENEMY_STATE_ATTACK) && (m_is_ground) && m_attack_cooltime_counter >= m_attack_cooltime)
-	{
-		SetDirectionBasedOnPlayer();
-		m_anim_id = 0;
-		//攻撃状態に移行
-		SetState(ENEMY_STATE_ATTACK);
-	}
+	m_is_attack = true;
+}
+
+void EnemyDynamic::QuitSensorPlayer()
+{
+	m_is_attack = false;
 }
 
 void EnemyDynamic::SetDirectionBasedOnPlayer()
@@ -438,3 +444,14 @@ void EnemyDynamic::SetDirectionBasedOnPlayer()
 	}
 }
 
+void EnemyDynamic::SetIsGround(bool is_ground)
+{
+	if (is_ground)
+	{
+		m_ground_cnt++;
+	}
+	else
+	{
+		m_ground_cnt--;
+	}
+}

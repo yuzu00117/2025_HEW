@@ -1804,7 +1804,23 @@ public:
         }
 
 
-
+        //プレイヤーと動的エネミーに付属しているセンサーが離れた場合
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->QuitSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->QuitSensorPlayer();
+            }
+        }
 
 
 
