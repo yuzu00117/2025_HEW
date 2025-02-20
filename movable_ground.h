@@ -58,6 +58,16 @@ public:
 		}
 	}
 
+	//　当たっている敵リストから敵の情報を消す（例えば敵と離れた時とか）
+	void	DeleteContactedEnemyList(EnemyFloating* enemy)
+	{
+		auto it = enemy_floating.begin();
+		it = std::find(enemy_floating.begin(), enemy_floating.end(), enemy);
+		if (it != enemy_floating.end() && *it == enemy)
+		{
+			enemy_floating.erase(it);
+		}
+	}
 
 
 	// ID を取得する
@@ -134,6 +144,8 @@ public:
 	void	SetIfPulling(bool flag) {
 		pulling = flag;
 	}
+	//もう引っ張られたかどうかを取得（反発した瞬間で引っ張られた扱いになる）
+	bool	GetIfPulled();
 
 	void	AddContactedEnemyList(EnemyStatic* enemy)
 	{

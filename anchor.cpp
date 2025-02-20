@@ -490,7 +490,7 @@ void Anchor::CreateRotateJoint()
 			b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
 
 			// カスタムデータを作成して設定
-			ObjectData* anchordata = new ObjectData{ collider_object };
+			ObjectData* anchordata = new ObjectData{ collider_rotate_joint };
 			anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
 		}
 
