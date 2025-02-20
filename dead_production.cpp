@@ -16,9 +16,18 @@
 #include"player_position.h"
 #include"world_box2d.h"
 #include"player.h"
+#include"player_life.h"
 
-static ID3D11ShaderResourceView* g_Black_texture = NULL;//数字のテクスチャ
-static ID3D11ShaderResourceView* g_Black_hole_texture = NULL;//数字のテクスチャ
+static ID3D11ShaderResourceView* g_Black_texture = NULL;//黒のテクスチャ
+static ID3D11ShaderResourceView* g_Black_hole_texture = NULL;//真ん中が空いてる黒のテクスチャ
+
+static ID3D11ShaderResourceView* g_player_icon_texture = NULL;//プレイヤーのアイコン
+
+static ID3D11ShaderResourceView* g_batten_texture = NULL;//真ん中のばってん
+
+static ID3D11ShaderResourceView* g_number_texture = NULL;//数字のテクスチ
+
+
 
 float dead_production::Dead_Cnt = 0;
 float dead_production::Black_fade_rate = 0;
@@ -31,6 +40,10 @@ void dead_production::Initialize()
 	{
 		g_Black_texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 		g_Black_hole_texture = InitTexture(L"asset\\texture\\sample_texture\\sample_fade_black.png");
+		g_player_icon_texture= InitTexture(L"asset\\texture\\UI_soul_gage\\player_icon.png");
+		g_batten_texture = InitTexture(L"asset\\texture\\sample_texture\\batten.png");
+
+		g_number_texture= InitTexture(L"asset\\texture\\sample_texture\\sample_number_white.png");
 	}
 }
 
@@ -135,7 +148,47 @@ void dead_production::Draw()
 		);
 	}
 
+
+	//残機表示
 	if (210 < Dead_Cnt)
+	{
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_icon_texture);
+		DrawSpriteOld(
+			XMFLOAT2(SCREEN_WIDTH/2-150, SCREEN_HEIGHT/2),
+			0.0f,
+			XMFLOAT2(200, 200)
+		);
+
+
+		//ばってんを表示
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_batten_texture);
+		DrawSpriteOld(
+			XMFLOAT2(SCREEN_WIDTH / 2 , SCREEN_HEIGHT / 2),
+			0.73f,
+			XMFLOAT2(50, 50)
+		);
+
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_number_texture);
+
+
+		int cnt = PlayerLife::GetLife();
+
+		if ( Dead_Cnt<250)
+		{
+			
+			DrawDividedSprite(XMFLOAT2(SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2), 0.0f, XMFLOAT2(100, 100), 10, 1, cnt, 1.0);
+		}
+		else
+		{
+			
+			DrawDividedSprite(XMFLOAT2(SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2), 0.0f, XMFLOAT2(100, 100), 10, 1, cnt-1, 1.0);
+		}
+
+	}
+
+	if (300 < Dead_Cnt)
 	{
 		Dead_Flag = true;
 	
@@ -157,5 +210,12 @@ void dead_production::Finalize()
 
 		UnInitTexture(g_Black_hole_texture);
 		g_Black_hole_texture = NULL;
+
+		UnInitTexture(g_player_icon_texture);
+		g_player_icon_texture = NULL;
+
+		UnInitTexture(g_number_texture);
+		g_number_texture = NULL;
+		
 	}
 }
