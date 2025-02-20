@@ -144,6 +144,8 @@ public:
 	void	SetIfPulling(bool flag) {
 		pulling = flag;
 	}
+	//‚à‚¤ˆø‚Á’£‚ç‚ê‚½‚©‚Ç‚¤‚©‚ğæ“¾i”½”­‚µ‚½uŠÔ‚Åˆø‚Á’£‚ç‚ê‚½ˆµ‚¢‚É‚È‚éj
+	bool	GetIfPulled();
 
 	void	AddContactedEnemyList(EnemyStatic* enemy)
 	{
