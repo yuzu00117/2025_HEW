@@ -41,6 +41,20 @@ static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level2_Texture = NULL;//ƒAƒ
 static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level3_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
 
 
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level1_Texture1 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level1_Texture2 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level1_Texture3 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level2_Texture1 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level2_Texture2 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level2_Texture3 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level3_Texture1 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level3_Texture2 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+static ID3D11ShaderResourceView* g_Anchor_Chain_Effect_Level3_Texture3 = NULL;//ƒ`ƒF[ƒ“‚ÌˆÊ’u‚É•\¦‚·‚é
+
+
+
 
 
 //ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğ‚à‚Á‚Æ‚­
@@ -356,35 +370,66 @@ void Anchor::Finalize()
 
 	if (g_Anchor_Texture_Lev1 != NULL)
 	{
+		// ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		UnInitTexture(g_Anchor_Texture_Lev1);
+		UnInitTexture(g_Anchor_Texture_Lev2);
+		UnInitTexture(g_Anchor_Texture_Lev3);
+
+		// ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		UnInitTexture(g_Anchor_Chain_Texture_Lv1);
+		UnInitTexture(g_Anchor_Chain_Texture_Lv2);
+		UnInitTexture(g_Anchor_Chain_Texture_Lv3);
+
+		// ƒAƒ“ƒJ[‚ÌƒqƒbƒgƒGƒtƒFƒNƒg‚Ì‰ğ•ú
+		UnInitTexture(g_Anchor_Hit_Effect_Texture);
+		UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture);
+		UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture);
+		UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture);
+
+		// ƒ`ƒF[ƒ“ƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•úiƒŒƒxƒ‹1j
+		UnInitTexture(g_Anchor_Chain_Effect_Level1_Texture1);
+		UnInitTexture(g_Anchor_Chain_Effect_Level1_Texture2);
+		UnInitTexture(g_Anchor_Chain_Effect_Level1_Texture3);
+
+		// ƒ`ƒF[ƒ“ƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•úiƒŒƒxƒ‹2j
+		UnInitTexture(g_Anchor_Chain_Effect_Level2_Texture1);
+		UnInitTexture(g_Anchor_Chain_Effect_Level2_Texture2);
+		UnInitTexture(g_Anchor_Chain_Effect_Level2_Texture3);
+
+		// ƒ`ƒF[ƒ“ƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•úiƒŒƒxƒ‹3j
+		UnInitTexture(g_Anchor_Chain_Effect_Level3_Texture1);
+		UnInitTexture(g_Anchor_Chain_Effect_Level3_Texture2);
+		UnInitTexture(g_Anchor_Chain_Effect_Level3_Texture3);
+
+		// NULL‚ÉƒŠƒZƒbƒg
+		g_Anchor_Texture_Lev1 = NULL;
+		g_Anchor_Texture_Lev2 = NULL;
+		g_Anchor_Texture_Lev3 = NULL;
+
+		g_Anchor_Chain_Texture_Lv1 = NULL;
+		g_Anchor_Chain_Texture_Lv2 = NULL;
+		g_Anchor_Chain_Texture_Lv3 = NULL;
+
+		g_Anchor_Hit_Effect_Texture = NULL;
+		g_Anchor_Hit_Effect_Level1_Texture = NULL;
+		g_Anchor_Hit_Effect_Level2_Texture = NULL;
+		g_Anchor_Hit_Effect_Level3_Texture = NULL;
+
+		g_Anchor_Chain_Effect_Level1_Texture1 = NULL;
+		g_Anchor_Chain_Effect_Level1_Texture2 = NULL;
+		g_Anchor_Chain_Effect_Level1_Texture3 = NULL;
+
+		g_Anchor_Chain_Effect_Level2_Texture1 = NULL;
+		g_Anchor_Chain_Effect_Level2_Texture2 = NULL;
+		g_Anchor_Chain_Effect_Level2_Texture3 = NULL;
+
+		g_Anchor_Chain_Effect_Level3_Texture1 = NULL;
+		g_Anchor_Chain_Effect_Level3_Texture2 = NULL;
+		g_Anchor_Chain_Effect_Level3_Texture3 = NULL;
+
 		
-			UnInitTexture(g_Anchor_Texture_Lev1);	  // ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Texture_Lev2);	  // ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Texture_Lev3);	  // ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		
 
-			UnInitTexture(g_Anchor_Chain_Texture_Lv1); // ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Chain_Texture_Lv2); // ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Chain_Texture_Lv3); // ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-
-			UnInitTexture(g_Anchor_Hit_Effect_Texture); // ƒAƒ“ƒJ[‚ÌƒqƒbƒgƒGƒtƒFƒNƒg‚Ì‰ğ•ú
-
-			UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture); // ƒqƒbƒgƒGƒtƒFƒNƒgLv1‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture); // ƒqƒbƒgƒGƒtƒFƒNƒgLv2‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture); // ƒqƒbƒgƒGƒtƒFƒNƒgLv3‚Ì‰ğ•ú
-
-			// NULL‚ÉƒŠƒZƒbƒg
-			g_Anchor_Texture_Lev1 = NULL;
-			g_Anchor_Texture_Lev2 = NULL;
-			g_Anchor_Texture_Lev3 = NULL;
-
-			g_Anchor_Chain_Texture_Lv1 = NULL;
-			g_Anchor_Chain_Texture_Lv2 = NULL;
-			g_Anchor_Chain_Texture_Lv3 = NULL;
-
-			g_Anchor_Hit_Effect_Texture = NULL;
-
-			g_Anchor_Hit_Effect_Level1_Texture = NULL;
-			g_Anchor_Hit_Effect_Level2_Texture = NULL;
-			g_Anchor_Hit_Effect_Level3_Texture = NULL;
 		
 	}
 	
