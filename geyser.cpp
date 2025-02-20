@@ -256,7 +256,7 @@ void geyser::Update()
 			isUse = false;
 		}
 
-		Destroy_Splitting();
+		/*Destroy_Splitting();*/
 	}
 }
 
@@ -275,9 +275,9 @@ void geyser::JumpPlayer()
 			//上に上げる所
 			easing_rate += 0.02;
 
-			if (1.5 < easing_rate)
+			if (1.3 < easing_rate)
 			{
-				easing_rate = 1.5;
+				easing_rate = 1.3;
 			}
 
 			// イージングがかかった値を保存する変数
@@ -494,7 +494,7 @@ void geyser::Draw()
 				//draw
 				DrawSplittingSprite(
 					{ draw_x,
-					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+20},
+					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+40},
 					GetGeyserBody()->GetAngle(),
 					{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale * 1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 					10, 5, water_sheet_cnt / 3, 3.0f
