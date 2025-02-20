@@ -119,5 +119,11 @@ private:
 	bool	m_pulling = false;
 
 	bool left_flag;
+
+	int m_need_level = 0;
+	float m_border_alpha = 0;
+	const float m_border_alpha_max = 0.75f;
+	const float m_border_alpha_min = 0.0f;
+
 };
 #endif // !WOOD_H

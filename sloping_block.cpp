@@ -128,18 +128,28 @@ void sloping_block::Initialize()
 		SceneManager& sceneManager = SceneManager::GetInstance();
 	
 		//ステージによって代入する
-		if (sceneManager.GetStageName() == STAGE_BOSS)
+		switch (sceneManager.GetStageName())
 		{
-			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//右側のテクスチャ
-			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_left.png");//右側のテクスチャ
-		}
-		else
-		{
+		case STAGE_TUTORIAL:
 			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
 			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
-		}
-	
+			break;
+		case STAGE_1_1:
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
+			break;
+		case STAGE_ISEKI:
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_blokc_left.png");//右側のテクスチャ
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//右側のテクスチャ
+			break;
+		case STAGE_BOSS:
+			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_blokc_left.png");//右側のテクスチャ
+			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//右側のテクスチャ
+			break;
 
+		default:
+			break;
+		}	
 
 	}
 }
@@ -273,7 +283,6 @@ void sloping_block::Draw()
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_down_Texture);
 		break;
 
-
 	case left_down:
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_down_Texture);
 		break;
@@ -287,7 +296,8 @@ void sloping_block::Draw()
 		{ draw_x,
 		  draw_y },
 		GetObjectSlopingBlockBody()->GetAngle(),
-		{ GetSlopingBlockSize().x * scale,GetSlopingBlockSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		{ GetSlopingBlockSize().x * scale,GetSlopingBlockSize().y * scale },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+		3.0f
 	);
 }
 
