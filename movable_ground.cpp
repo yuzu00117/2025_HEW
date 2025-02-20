@@ -18,6 +18,8 @@
 //グローバル変数
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
 
+bool	g_pulled = false;	//もう引っ張られたかどうかを取得（反発した瞬間で引っ張られた扱いになる）
+
 
 movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 AnchorPoint_size, int need_level)
 {
@@ -210,6 +212,13 @@ void movable_ground::Update()
 			}
 			enemy_floating.clear();
 		}
+
+
+		if (Ground_body->GetLinearVelocity().x > 0)
+		{
+			Ground_body->SetLinearVelocity({ 0.0f,0.0f });
+			g_pulled = true;
+		}
 	}
 }
 
@@ -292,5 +301,10 @@ void movable_ground::Pulling_ground()
 	}
 
 	body->SetLinearVelocity(pulling_power);
+}
+
+bool movable_ground::GetIfPulled()
+{
+	return g_pulled;
 }
 

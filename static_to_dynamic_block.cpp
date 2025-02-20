@@ -26,7 +26,9 @@ static ID3D11ShaderResourceView* g_BoxRock_Texture = NULL;//四角のコライダーのテ
 static ID3D11ShaderResourceView* g_Dameged_BoxRock_Texture = NULL;//四角のコライダーのテクスチャ
 static ID3D11ShaderResourceView* g_coconut_Texture = NULL;//丸のコライダーのテクスチャ
 
-
+static ID3D11ShaderResourceView* g_Rock_Border_Texture_Lv1;
+static ID3D11ShaderResourceView* g_Rock_Border_Texture_Lv2;
+static ID3D11ShaderResourceView* g_Rock_Border_Texture_Lv3;
 
 
 
@@ -160,6 +162,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 	object_anchorpoint_data->object_name = Object_Static_to_Dynamic;
 
 	object_anchorpoint_data->need_anchor_level = need_anchor_level;
+	m_need_level = need_anchor_level;
 
 	Break_Flag = break_flag;
 };
@@ -177,6 +180,10 @@ void static_to_dynamic_block::Initialize()
 
 		g_BoxRock_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down.png");
 		g_Dameged_BoxRock_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down_damege.png");
+
+		g_Rock_Border_Texture_Lv1 = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down_lv1_border_TEST.png");
+		g_Rock_Border_Texture_Lv2 = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down_lv2_border_TEST.png");
+		g_Rock_Border_Texture_Lv3 = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down_lv3_border_TEST.png");
 	}
 
 }
@@ -255,6 +262,32 @@ void static_to_dynamic_block::Draw()
 		float draw_x = ((RockPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((RockPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+		{
+			//アンカーレベルに応じた縁取りを付けたテクスチャを設定
+			switch (m_need_level)
+			{
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Border_Texture_Lv1);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Border_Texture_Lv2);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Border_Texture_Lv3);
+				break;
+			default:
+				break;
+			}
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				GetObjectBody()->GetAngle(),
+				{ GetSize().x * scale * 1.1f,GetSize().y * scale * 1.1f }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				,m_border_alpha
+			);
+		}
+
 		if (GetBox_or_Circle() == Box_collider)
 		{
 			if (Break_Flag == true)
@@ -278,6 +311,13 @@ void static_to_dynamic_block::Draw()
 			GetObjectBody()->GetAngle(),
 			{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 		);
+
+
+		m_border_alpha -= 0.01;
+		if (m_border_alpha <= m_border_alpha_min)
+		{
+			m_border_alpha = m_border_alpha_max;
+		}
 
 	}
 
@@ -306,12 +346,17 @@ void static_to_dynamic_block::Finalize()
 		UnInitTexture(g_BoxRock_Texture);
 		UnInitTexture(g_coconut_Texture);
 		UnInitTexture(g_Dameged_BoxRock_Texture);
+		UnInitTexture(g_Rock_Border_Texture_Lv1);
+		UnInitTexture(g_Rock_Border_Texture_Lv2);
+		UnInitTexture(g_Rock_Border_Texture_Lv3);
 
 
 		g_BoxRock_Texture = NULL;
 		g_coconut_Texture = NULL;
 		g_Dameged_BoxRock_Texture = NULL;	
-
+		g_Rock_Border_Texture_Lv1 = NULL;
+		g_Rock_Border_Texture_Lv2 = NULL;
+		g_Rock_Border_Texture_Lv3 = NULL;
 	}
 
 }

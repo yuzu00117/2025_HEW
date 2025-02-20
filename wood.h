@@ -206,6 +206,11 @@ private:
 
 	int now_delete_leaf_countDown=0;
 
+	int m_need_level = 0;
+	float m_border_alpha = 0;
+	const float m_border_alpha_max = 0.75f;
+	const float m_border_alpha_min = 0.0f;
+
 	//音源
 	//----------------------------------------
 	Sound_Manager m_sound_FalledDown = Object_Wood_Fall_Sound;	//倒れた時の音
