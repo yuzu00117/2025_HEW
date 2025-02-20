@@ -27,7 +27,12 @@ static ID3D11ShaderResourceView* g_Wood_Texture1 = NULL;//木のテクスチャ�
 static ID3D11ShaderResourceView* g_Wood_Texture2 = NULL;//木ののテクスチャ３
 static ID3D11ShaderResourceView* g_Stump_Texture = NULL;//木の切り株のテクスチャ
 
-
+static ID3D11ShaderResourceView* g_Wood_Texture_Lv1 = NULL;//木のテクスチャLv1
+static ID3D11ShaderResourceView* g_Stump_Texture_Lv1 = NULL;//木の切り株のテクスチャLv1
+static ID3D11ShaderResourceView* g_Wood_Texture_Lv2 = NULL;//木のテクスチャLv2
+static ID3D11ShaderResourceView* g_Stump_Texture_Lv2 = NULL;//木の切り株のテクスチャLv2
+static ID3D11ShaderResourceView* g_Wood_Texture_Lv3 = NULL;//木のテクスチャLv3
+static ID3D11ShaderResourceView* g_Stump_Texture_Lv3 = NULL;//木の切り株のテクスチャLv3
 
 static ID3D11ShaderResourceView* g_leaf_Texture1 = NULL;//葉っぱのテクスチャ
 static ID3D11ShaderResourceView* g_leaf_Texture2 = NULL;//葉っぱのテクスチャ
@@ -227,6 +232,9 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	//アンカーレベルの設定
 	object_anchorpoint_data->need_anchor_level = need_level;
 
+	//アンカーレベルをメンバ変数で保持
+	m_need_level = need_level;
+
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 	//ジョイントする
@@ -303,6 +311,12 @@ void wood::Initialize()
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
 		g_Stump_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood_stump.png");
 
+		g_Wood_Texture_Lv1 = InitTexture(L"asset\\texture\\wood_texture\\wood_Lv1.png");
+		g_Stump_Texture_Lv1 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_Lv1.png");
+		g_Wood_Texture_Lv2 = InitTexture(L"asset\\texture\\wood_texture\\wood_Lv2_TEST.png");
+		g_Stump_Texture_Lv2 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_Lv2_TEST.png");
+		g_Wood_Texture_Lv3 = InitTexture(L"asset\\texture\\wood_texture\\wood_Lv3_TEST.png");
+		g_Stump_Texture_Lv3 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_Lv3_TEST.png");
 
 		g_leaf_Texture1 = InitTexture(L"asset\\texture\\wood_texture\\three_happa1.png");
 		g_leaf_Texture2 = InitTexture(L"asset\\texture\\wood_texture\\three_happa2.png");
@@ -508,9 +522,32 @@ void wood::Draw()
 	float draw_x = ((Stump_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((Stump_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-
+	{
+		//アンカーレベルに応じた縁取りを付けたテクスチャを設定
+		switch (m_need_level)
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture_Lv1);
+			break;											  
+		case 2:												 
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture_Lv2);
+			break;											  
+		case 3:												  
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture_Lv3);
+			break;
+		default:
+			break;
+		}
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			GetObjectStumpBody()->GetAngle(),
+			{ GetStumpSize().x * scale*1.1f,GetStumpSize().y * scale*1.1f }
+			, m_border_alpha
+		);
+	}
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Stump_Texture);
-
 	//描画
 	DrawSprite(
 		{ draw_x,
@@ -565,9 +602,32 @@ void wood::Draw()
 	draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-
+	{
+		//アンカーレベルに応じた縁取りを付けたテクスチャを設定
+		switch (m_need_level)
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture_Lv1);
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture_Lv2);
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture_Lv3);
+			break;
+		default:
+			break;
+		}
+		//draw
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			GetObjectAnchorPointBody()->GetAngle(),
+			{ GetWoodSize().x * scale * 1.1f,GetWoodSize().y * scale * 1.1f }
+			,m_border_alpha
+		);
+	}
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture);
-
 	//draw
 	DrawSprite(
 		{ draw_x,
@@ -576,6 +636,11 @@ void wood::Draw()
 		{ GetWoodSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
+	m_border_alpha -= 0.01;
+	if (m_border_alpha <= m_border_alpha_min)
+	{
+		m_border_alpha = m_border_alpha_max;
+	}
 
 	for (size_t i = 0; i < leaf_bodies.size(); i++) {
 		b2Vec2 position = leaf_bodies[i]->GetPosition();
@@ -642,6 +707,13 @@ void wood::Finalize()
 		UnInitTexture(g_Wood_Texture2);
 		UnInitTexture(g_Stump_Texture);
 
+		UnInitTexture(g_Wood_Texture_Lv1);
+		UnInitTexture(g_Stump_Texture_Lv1);
+		UnInitTexture(g_Wood_Texture_Lv2);
+		UnInitTexture(g_Stump_Texture_Lv2);
+		UnInitTexture(g_Wood_Texture_Lv3);
+		UnInitTexture(g_Stump_Texture_Lv3);
+
 		UnInitTexture(g_leaf_Texture1);
 		UnInitTexture(g_leaf_Texture2);
 		UnInitTexture(g_leaf_Texture3);
@@ -658,6 +730,13 @@ void wood::Finalize()
 		g_Wood_Texture1 = NULL;
 		g_Wood_Texture2 = NULL;
 		g_Stump_Texture = NULL;
+
+		g_Wood_Texture_Lv1 =NULL;
+		g_Stump_Texture_Lv1=NULL;
+		g_Wood_Texture_Lv2 =NULL;
+		g_Stump_Texture_Lv2=NULL;
+		g_Wood_Texture_Lv3 =NULL;
+		g_Stump_Texture_Lv3=NULL;
 
 		g_leaf_Texture1 = NULL;
 		g_leaf_Texture2 = NULL;
