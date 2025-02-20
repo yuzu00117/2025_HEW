@@ -1234,14 +1234,27 @@ public:
             if (objectA->collider_type == collider_UI_block)
             {
                 UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
-                ui_instance->SetFlag(true);
-               
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Resume);
+                }
+                else
+                {
+                    ui_instance->SetFlag(true);
+                }               
             }
             else if (objectB->collider_type == collider_UI_block)
             {
 
                 UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
-                ui_instance->SetFlag(true);
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Resume);
+                }
+                else
+                {
+                    ui_instance->SetFlag(true);
+                }
             }
         }
         //-------------------------------------------------------------------------------------------
@@ -1915,14 +1928,27 @@ public:
             if (objectA->collider_type == collider_UI_block)
             {
                 UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
-                ui_instance->SetFlag(false);
-
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Pause);
+                }
+                else
+                {
+                    ui_instance->SetFlag(false);
+                }
             }
             else if (objectB->collider_type == collider_UI_block)
             {
 
                 UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
-                ui_instance->SetFlag(false);
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Pause);
+                }
+                else
+                {
+                    ui_instance->SetFlag(false);
+                }
             }
         }
 

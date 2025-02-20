@@ -25,9 +25,11 @@ static ID3D11ShaderResourceView* g_Texture = NULL;//センサーのテクスチャ
 static ID3D11ShaderResourceView* g_UI_texture = NULL;//UIのテクスチャ
 static ID3D11ShaderResourceView* g_arrow_Texture = NULL;//矢印のテクスチャ
 
+
 //センサーに触れたらUIを表示する
 UI_block::UI_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle)
 {
+
 	//サイズをセット
 	SetSize(block_size);
 	SetSensorSize(Sensor_size);
@@ -62,7 +64,7 @@ UI_block::UI_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec
 
 	//フィクスチャを付ける
 	b2PolygonShape block_shape;
-
+	
 	block_shape.SetAsBox(size.x * 0.5, size.y * 0.5);
 
 	b2FixtureDef block_fixture;
@@ -108,15 +110,48 @@ void UI_block::Initialize()
 		g_UI_texture = InitTexture(L"asset\\texture\\sample_texture\\Sample_ui_a_bottom.png");
 	}
 
+	switch (m_ui_type)
+	{
+	case VIDEO_BUTTON_A:
+		m_video.Initialize("asset/movie/A.mp4", true);
+		m_is_video = true;
+		m_flag = true;
+		break;
+	case VIDEO_BUTTON_LEFT_STICK:
+		m_video.Initialize("asset/movie/LeftStick.mp4", true);
+		m_is_video = true;
+		m_flag = true;
+		break;
+	case VIDEO_BUTTON_RIGHT_STICK:
+		m_video.Initialize("asset/movie/RightStick.mp4", true);
+		m_is_video = true;
+		m_flag = true;
+		break;
+	case VIDEO_BUTTON_ZR:
+		m_video.Initialize("asset/movie/ZR.mp4", true);
+		m_is_video = true;
+		m_flag = true;
+		break;
+	default:
+		m_is_video = false;
+		break;
+	}
+
+	m_video.SetState(Video_Pause);
 }
 
 void UI_block::Update()
 {
+
 	if (m_body != nullptr)
 	{
 		if (m_flag == true)
 		{
-		
+
+			if (m_is_video)
+			{
+				m_video.Update();
+			}
 
 
 			
@@ -151,15 +186,6 @@ void UI_block::Draw()
 	float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_arrow_Texture);
-
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		angle,
-		{ GetSize().x * scale,GetSize().y * scale }
-	);
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 	//draw
@@ -169,6 +195,8 @@ void UI_block::Draw()
 		GetBody()->GetAngle(),
 		{ GetSensorSize().x * scale,GetSensorSize().y * scale }
 	);
+
+	
 
 
 	if (m_flag)
@@ -184,11 +212,23 @@ void UI_block::Draw()
 		float UI_draw_x = ((player_Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float UI_draw_y = ((player_Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+
 		switch (m_ui_type)
 		{
 		case NULL_UI_TYPE:
 			break;
-		case BOTTOM_A:
+		case ARROW:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_arrow_Texture);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+		case BUTTON_A:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_UI_texture);
 			DrawSprite(
 				{ UI_draw_x + 50,
@@ -197,7 +237,14 @@ void UI_block::Draw()
 				{ 100,100 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 			);
 			break;
-		case BOTTOM_B:
+		case BUTTON_B:
+			break;
+
+		case VIDEO_BUTTON_A:
+		case VIDEO_BUTTON_LEFT_STICK:
+		case VIDEO_BUTTON_RIGHT_STICK:
+		case VIDEO_BUTTON_ZR:
+			m_video.Draw({draw_x,draw_y}, m_size.y);
 			break;
 		default:
 			break;
@@ -205,6 +252,7 @@ void UI_block::Draw()
 
 	
 	}
+
 
 
 }
@@ -232,5 +280,7 @@ void UI_block::Finalize()
 		UnInitTexture(g_arrow_Texture);
 		g_arrow_Texture = NULL;
 	}
+
+	m_video.Finalize();
 
 }
