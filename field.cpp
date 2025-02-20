@@ -506,6 +506,14 @@ void Field::Initialize(bool respawning)
 
 
 
+				//セーブポイント
+				if (field_map[y][x] == 75) {
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 2.0f),0.0f, respawning);
+				}
+
+
+
+
 
 
 
