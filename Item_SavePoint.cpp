@@ -19,6 +19,8 @@
 
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_get_save_point_effect = NULL;//セーブポイントを取得した時のエフェクト
+
 
 ItemSavePoint::ItemSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
     :m_body_position(position), m_size(body_size), m_angle(angle), m_shape_polygon(shape_polygon), m_Alpha(Alpha)
@@ -112,13 +114,18 @@ void    ItemSavePoint::Function()
     //初回通過時の効果音
     app_atomex_start(Player_Coin_Colect_Sound);
 
+
+    effect_cnt = 1;
 }
 
 
 void ItemSavePoint::Initialize()
 {
-
-    g_Texture = InitTexture(L"asset\\texture\\sample_texture\\SavePoint.png");
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\SavePoint.png");
+        g_get_save_point_effect = InitTexture(L"asset\\texture\\stage_1_1_object\\get_save_point_effect.png");//取得した時のエフェクト
+    }
 
 }
 
@@ -160,6 +167,31 @@ void ItemSavePoint::Draw()
             m_Alpha
         );
 
+
+
+        if (effect_cnt != 0)
+        {
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_get_save_point_effect);
+
+            DrawSplittingSprite(
+                { draw_x,
+                draw_y },
+                0.0f,
+                {GetSize().x * scale * 3.0f  ,GetSize().y * scale * 1.5f },
+                6, 4,
+               effect_cnt ,
+                2.0f
+            );
+
+            effect_cnt += 0.3;
+
+
+            if (36 < effect_cnt)
+            {
+                effect_cnt = 0;
+            }
+
+        }
     }
 }
 
