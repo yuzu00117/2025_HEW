@@ -330,8 +330,10 @@ void AnchorPoint::Finalize()
 		g_anchor_point_body[i] = NULL;
 		g_anchor_point_body[i] = nullptr;
 	}
+	
 
-
+	//標記漏れ
+	g_select_anchor_point_body = nullptr;
 
 
 	if (g_anchor_point_target_lev1_Texture != NULL)
