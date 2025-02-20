@@ -339,12 +339,14 @@ public:
             if (objectA->object_name == Object_Movable_Ground)//Aが岩のオブジェクト
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectA->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
             else
             {
                 movable_ground* ground_instance = object_manager.FindMovable_GroundID(objectB->id);//movable_groundで同じIDのを探してインスタンスをもらう
+                if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
             }
@@ -1311,6 +1313,9 @@ public:
             }
 
             player.Player_Damaged(-50, 120, wave_body);
+            
+            //ショックウェーブを破壊する
+            boss.SetShockWaveFrame(300);
 
         }
 

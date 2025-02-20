@@ -12,6 +12,7 @@
 #include "texture.h"
 #include "collider_type.h"
 #include "player_position.h"
+#include "tool.h"
 
 
 static ID3D11ShaderResourceView* g_EnemyFloating_Texture = NULL;	//動的エネミーの移動中のテクスチャ
@@ -155,7 +156,11 @@ void EnemyFloating::Update()
 
 		b2Vec2 now_positon = GetBody()->GetPosition();
 		b2Vec2 now_size = GetSize();
-		b2Vec2 now_vec = GetBody()->GetLinearVelocity();
+		b2Vec2 now_vec = GetRandomVelocity(47.0f);
+		while (now_vec.x < 1.2f && now_vec.x >-1.2f)
+		{
+			now_vec = GetRandomVelocity(47.0f);
+		}
 
 		//ワールドに登録したbodyの削除
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -167,7 +172,7 @@ void EnemyFloating::Update()
 		ObjectManager& object_manager = ObjectManager::GetInstance();
 		object_manager.DestroyEnemyFloating(GetID());
 
-
+		
 		object_manager.AddChangeEnemyFilterAndBody(now_positon, b2Vec2(now_size.x * 2, now_size.y * 2), b2Vec2_zero, g_EnemyFloating_Die_Texture, 4, 4, now_vec);
 
 	}
