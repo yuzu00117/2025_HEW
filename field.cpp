@@ -54,6 +54,9 @@ static ID3D11ShaderResourceView* g_left_ground_Texture = NULL;//地面左側の�
 static ID3D11ShaderResourceView* g_under_right_ground_Texture = NULL;//地面右側のテクスチャ
 static ID3D11ShaderResourceView* g_under_left_ground_Texture = NULL;//地面左側のテクスチャ
 
+static ID3D11ShaderResourceView* g_under_right_ground_down_Texture = NULL;//地面右側下側のテクスチャ
+static ID3D11ShaderResourceView* g_under_left_ground_down_Texture = NULL;//地面左側下側のテクスチャ
+
 static ID3D11ShaderResourceView* g_sloop_left_side_texture = NULL;//地面スロープの右側
 static ID3D11ShaderResourceView* g_sloop_right_side_texture = NULL;//地面スロープの左側
 
@@ -98,19 +101,19 @@ void Field::Initialize(bool respawning)
 	g_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_right_02.png");//草のテクスチャ　右側
 	g_left_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_left_02.png");//草のテクスチャ　左側
 
-	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//右側のテクスチャ
-	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");//右側のテクスチャ
+	
 
 	g_invisibility_wall_Texture=InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
 
 	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
-	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right_dwon.png");//右側のテクスチャ
+	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
 
-
+	g_under_right_ground_down_Texture=InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
+	g_under_left_ground_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
 
 	g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
 	g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
-
+	
 	//----------------------------------------------------------------------------------------
 	//遺跡のテクスチャ
 	
