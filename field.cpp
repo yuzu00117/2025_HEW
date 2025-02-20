@@ -482,11 +482,11 @@ void Field::Initialize(bool respawning)
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
 				//間欠泉
 				if (field_map[y][x] == 56) {//間欠泉
-					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT ), b2Vec2(5.f, 3.f), b2Vec2(3.f,5.f),1,1,1);
+					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y+0.3) / BOX2D_SCALE_MANAGEMENT ), b2Vec2(5.f, 3.f), b2Vec2(2.f,5.f),1,1,1);
 				}
 
 				if (field_map[y][x] == 57) {//間欠泉
-					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(7.f, 5.f), b2Vec2(3.f, 15.f), 1, 1, 3);
+					objectManager.AddGeyser(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(7.f, 5.f), b2Vec2(3.f, 20.f), 1, 1, 3);
 				}
 
 
