@@ -74,6 +74,9 @@ private:
 	bool m_shape_polygon;
 
 
+	//エフェクトを表示する
+	float effect_cnt;
+
 	//セーブポイントのサイズ（描画用）
 	b2Vec2 m_size;
 
