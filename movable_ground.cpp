@@ -20,6 +20,10 @@
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//床のテクスチャ１
+static ID3D11ShaderResourceView* g_Border_Texture_Lv1 = NULL;
+static ID3D11ShaderResourceView* g_Border_Texture_Lv2 = NULL;
+static ID3D11ShaderResourceView* g_Border_Texture_Lv3 = NULL;
+
 
 bool	g_pulled = false;	//もう引っ張られたかどうかを取得（反発した瞬間で引っ張られた扱いになる）
 
@@ -164,6 +168,9 @@ movable_ground::movable_ground(b2Vec2 Position, b2Vec2 Ground_size, b2Vec2 Ancho
 	object_anchorpoint_data->need_anchor_level = need_level;
 	g_need_level = need_level;
 
+	//アンカーレベルをメンバ変数で保持
+	m_need_level = need_level;
+
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------
 	//ジョイントする
@@ -189,6 +196,9 @@ movable_ground::~movable_ground()
 void movable_ground::Initialize()
 {
 	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
+	g_Border_Texture_Lv1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
+	g_Border_Texture_Lv2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
+	g_Border_Texture_Lv3 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
 }
 
 void movable_ground::Update()
@@ -286,11 +296,42 @@ void movable_ground::Draw()
 	//取得したbodyのポジションに対してBox2dスケールの補正を加える
 	float draw_x = ((GroundPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((GroundPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+	
+	b2Vec2 size = GetGroundSize();
 
+	if (m_is_border)
+	{
+		switch (m_need_level)
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Border_Texture_Lv1);
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Border_Texture_Lv2);
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Border_Texture_Lv3);
+			break;
+		default:
+			break;
+		}
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			GetObjectAnchorPointBody()->GetAngle(),
+			{ GetGroundSize().x * scale*1.1f,GetGroundSize().y * scale*1.1f }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			, m_border_alpha
+		);
+
+		//透過率設定
+		m_border_alpha -= 0.01;
+		if (m_border_alpha <= m_border_alpha_min)
+		{
+			m_border_alpha = m_border_alpha_max;
+		}
+	}
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Texture);
-
-	b2Vec2 size = GetGroundSize();
 
 	//draw
 	DrawSprite(
@@ -317,8 +358,14 @@ void movable_ground::Finalize()
 	if (g_Ground_Texture != NULL)
 	{
 		UnInitTexture(g_Ground_Texture);
-		g_Ground_Texture = NULL;
+		UnInitTexture(g_Border_Texture_Lv1);
+		UnInitTexture(g_Border_Texture_Lv2);
+		UnInitTexture(g_Border_Texture_Lv3);
 
+		g_Ground_Texture = NULL;
+		g_Border_Texture_Lv1 = NULL;
+		g_Border_Texture_Lv2 = NULL;
+		g_Border_Texture_Lv3 = NULL;
 	}
 
 
@@ -340,6 +387,9 @@ void movable_ground::Pulling_ground()
 	}
 
 	body->SetLinearVelocity(pulling_power);
+
+	//縁の描画終了
+	m_is_border = false;
 }
 
 bool movable_ground::GetIfPulled()

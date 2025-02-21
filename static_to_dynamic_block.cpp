@@ -247,6 +247,8 @@ void static_to_dynamic_block::Change_dynamic()
 {
 	Set_Change_Dynamic_flag(true);
 	SetIfPulling(true);
+	//縁の描画終了
+	m_is_border = false;
 }
 
 
@@ -277,6 +279,7 @@ void static_to_dynamic_block::Draw()
 		float draw_x = ((RockPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((RockPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+		if (m_is_border)
 		{
 			//アンカーレベルに応じた縁取りを付けたテクスチャを設定
 			switch (m_need_level)
@@ -301,6 +304,12 @@ void static_to_dynamic_block::Draw()
 				{ GetSize().x * scale * 1.1f,GetSize().y * scale * 1.1f }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 				,m_border_alpha
 			);
+
+			m_border_alpha -= 0.01;
+			if (m_border_alpha <= m_border_alpha_min)
+			{
+				m_border_alpha = m_border_alpha_max;
+			}
 		}
 
 		if (GetBox_or_Circle() == Box_collider)
@@ -326,14 +335,6 @@ void static_to_dynamic_block::Draw()
 			GetObjectBody()->GetAngle(),
 			{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 		);
-
-
-		m_border_alpha -= 0.01;
-		if (m_border_alpha <= m_border_alpha_min)
-		{
-			m_border_alpha = m_border_alpha_max;
-		}
-
 	}
 
 
