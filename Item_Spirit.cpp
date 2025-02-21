@@ -14,7 +14,7 @@
 #include "player_position.h"
 #include"world_box2d.h"
 #include"collider_type.h"
-#include"player_stamina.h"
+#include "anchor_spirit.h"
 #include"create_filter.h"
 #include"player.h"
 
@@ -151,22 +151,27 @@ void ItemSpirit::SetState(SpiritState state)
 
 void    ItemSpirit::Function()
 {
+
+    Player& player = Player::GetInstance();
     float recovery = 0;
     switch (m_type)
     {
     case Spirit_L:
         recovery = 100;
+        player.SetSoulGetEffectType(3);
         break;
     case Spirit_M:
         recovery = 50;
+        player.SetSoulGetEffectType(2);
         break;
     case Spirit_S:
         recovery = 25;
+        player.SetSoulGetEffectType(1);
         break;
     }
 
 
-    PlayerStamina::EditPlayerStaminaValue(recovery);
+    AnchorSpirit::EditAnchorSpiritValue(recovery);
 }
 
 

@@ -36,11 +36,21 @@ float	PlayerStamina::GetPlayerStaminaValue()
 
 void PlayerStamina::SetPlayerStaminaValueDirectly(float value)
 {
-	if (value > MAX_STAMINA) {
-
-		value = MAX_STAMINA;
-	}
+	//体力値が最大値を超えた時の処理
 	m_stamina = value;
+	if (m_stamina > MAX_STAMINA) {
+
+		m_stamina = MAX_STAMINA;
+	}
+	if (m_stamina <= 0)
+	{
+		m_stamina = 0.0f;
+		//ここで残機を減らす処理
+		app_atomex_start(Player_Dead_Sound);
+
+		//画面遷移のためにプレイヤーの死亡フラグを立てる
+		m_isdead = true;
+	}
 }
 
 
@@ -50,13 +60,6 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	if (value < 0 && m_avoid_damage_once)
 	{
 		m_avoid_damage_once = false;
-		return;
-	}
-
-	float anchor_spirit = AnchorSpirit::GetAnchorSpiritValue();
-	if (value < 0 && anchor_spirit > 0)
-	{
-		AnchorSpirit::EditAnchorSpiritValue(value);
 		return;
 	}
 
@@ -75,8 +78,6 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	//体力が最大体力を超えた時の処理
 	else if (m_stamina > MAX_STAMINA)
 	{
-		//余った分はソウルゲージをプラス
-		AnchorSpirit::EditAnchorSpiritValue(m_stamina - MAX_STAMINA);
 		m_stamina = MAX_STAMINA;
 	}
 }
