@@ -31,9 +31,11 @@ Bg bg;
 #define STAGE_1_1_BACK_GROUND_SIZE_X (1280*1.7)
 #define STAGE_1_1_BACK_GROUND_SIZE_Y (720*1.7)
 
+//tutorial
 #define TUTORIAL_BACK_GROUND_HEIGHT (0)
 #define TUTORIAL_BACK_GROUND_SIZE_X (1280*1.1)
 #define TUTORIAL_BACK_GROUND_SIZE_Y (720*1.1)
+
 void Bg::Initialize()
 {
 
@@ -49,7 +51,20 @@ void Bg::Initialize()
 
     switch (sceneManager.GetStageName())
     {
-    case STAGE_1_1:
+    case STAGE_TUTORIAL: // チュートリアル
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\tutorial\\background_1.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
+        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\tutorial\\background_2.png");
+        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\tutorial\\background_3.png");
+
+        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+
+        height = TUTORIAL_BACK_GROUND_HEIGHT;
+        width = TUTORIAL_BACK_GROUND_SIZE_X;
+        break;
+
+    case STAGE_1_1: // 1-1森
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
         g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
@@ -62,17 +77,14 @@ void Bg::Initialize()
         height= STAGE_1_1_BACK_GROUND_HEIGHT;
         width = STAGE_1_1_BACK_GROUND_SIZE_X;
         break;
-    case STAGE_TUTORIAL:
-        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\tutorial\\background_1.png");
-        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
-        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\tutorial\\background_2.png");
-        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\tutorial\\background_3.png");
 
-        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
-        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+    case STAGE_ISEKI: // 1-1遺跡
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
 
-        height = TUTORIAL_BACK_GROUND_HEIGHT;
-        width = TUTORIAL_BACK_GROUND_SIZE_X;
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\remains_background01.png");
+        height= STAGE_1_1_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_BACK_GROUND_SIZE_X;
         break;
 
     default:
@@ -115,13 +127,19 @@ void Bg::Update()
     SceneManager & sceneManager = SceneManager::GetInstance();
     switch (sceneManager.GetStageName())
     {
+    case STAGE_TUTORIAL:
+        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
+        break;
+
     case STAGE_1_1:
         BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y= STAGE_1_1_BACK_GROUND_SIZE_Y;
         break;
-    case STAGE_TUTORIAL:
-        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
+
+    case STAGE_ISEKI:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y= STAGE_1_1_BACK_GROUND_SIZE_Y;
         break;
     default:
         BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
@@ -165,14 +183,21 @@ void Bg::Draw()
     SceneManager& sceneManager = SceneManager::GetInstance();
     switch (sceneManager.GetStageName())
     {
-    case STAGE_1_1:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
-        break;
     case STAGE_TUTORIAL:
         BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
         break;
+
+    case STAGE_1_1:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        break;
+
+    case STAGE_ISEKI:
+        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        break;
+        
     default:
         BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
