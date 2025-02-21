@@ -191,7 +191,7 @@
     <ClCompile Include="player_life.cpp" />
     <ClCompile Include="player_position.cpp" />
     <ClCompile Include="player_stamina.cpp" />
-    <ClCompile Include="player_UI.cpp" />
+    <ClCompile Include="Gauge_UI.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="rock.cpp" />
@@ -282,7 +282,7 @@
     <ClInclude Include="player_life.h" />
     <ClInclude Include="player_position.h" />
     <ClInclude Include="player_stamina.h" />
-    <ClInclude Include="player_UI.h" />
+    <ClInclude Include="Gauge_UI.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="rock.h" />
     <ClInclude Include="scene.h" />
