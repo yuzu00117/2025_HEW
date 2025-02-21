@@ -66,6 +66,8 @@ private:
 
 	//ソールゲージ（後でアンカーに移動するかも）
 	static float	m_spirit;
+	//ソールこれから減る値
+	static float	m_damage;
 
 	//自動回復のフラグ
 	static bool		m_auto_heal;

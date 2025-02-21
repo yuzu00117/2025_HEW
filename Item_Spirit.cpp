@@ -14,7 +14,7 @@
 #include "player_position.h"
 #include"world_box2d.h"
 #include"collider_type.h"
-#include"player_stamina.h"
+#include "anchor_spirit.h"
 #include"create_filter.h"
 #include"player.h"
 
@@ -166,7 +166,7 @@ void    ItemSpirit::Function()
     }
 
 
-    PlayerStamina::EditPlayerStaminaValue(recovery);
+    AnchorSpirit::EditAnchorSpiritValue(recovery);
 }
 
 
