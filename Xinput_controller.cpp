@@ -1,6 +1,8 @@
 ﻿#include"Xinput_controller.h"
 #include <iostream>
 #include <Xinput.h>
+#include <windows.h>
+#include <thread>
 
 #pragma comment(lib, "Xinput.lib")
 
@@ -73,4 +75,45 @@ void PrintControllerState(const ControllerState& state) {
     if (state.back) std::cout << "Back Button Pressed" << std::endl;
     if (state.leftThumb) std::cout << "Left Thumbstick Pressed" << std::endl;
     if (state.rightThumb) std::cout << "Right Thumbstick Pressed" << std::endl;
+}
+
+float VibrationController::leftMotorSpeed = 0.0f;
+float VibrationController::rightMotorSpeed = 0.0f;
+int VibrationController::remainingFrames = 0;
+bool VibrationController::isActive = false;
+
+// 振動を適用
+void VibrationController::ApplyVibration() {
+    XINPUT_VIBRATION vibration = {};
+    vibration.wLeftMotorSpeed = static_cast<WORD>(leftMotorSpeed * 65535);
+    vibration.wRightMotorSpeed = static_cast<WORD>(rightMotorSpeed * 65535);
+    XInputSetState(0, &vibration); // 0番コントローラーに適用
+}
+
+// 振動を開始（フレーム数指定）
+void VibrationController::StartVibration(float leftMotor, float rightMotor, int frames) {
+    leftMotorSpeed = leftMotor;
+    rightMotorSpeed = rightMotor;
+    remainingFrames = frames;
+    isActive = true;
+    ApplyVibration();
+}
+
+// 振動を即停止
+void VibrationController::StopVibration() {
+    leftMotorSpeed = 0.0f;
+    rightMotorSpeed = 0.0f;
+    remainingFrames = 0;
+    isActive = false;
+    ApplyVibration();
+}
+
+// フレームごとの更新
+void VibrationController::UpdateVibration() {
+    if (isActive && remainingFrames > 0) {
+        remainingFrames--;
+        if (remainingFrames <= 0) {
+            StopVibration();
+        }
+    }
 }
