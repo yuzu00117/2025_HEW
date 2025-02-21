@@ -610,7 +610,7 @@ void Player::Update()
         // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
         m_is_jumping = true;
 
-        
+        VibrationController::StartVibration(0.5,0.5,6);
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 

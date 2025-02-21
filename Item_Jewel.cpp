@@ -20,7 +20,7 @@
 #include"Item_Manager.h"
 #include"object_manager.h"
 #include"sound.h"
-#include"player_UI.h"
+#include"Gauge_UI.h"
 #include"easing.h"
 
 //ÉOÉçÅ[ÉoÉãïœêî
@@ -117,7 +117,7 @@ void	ItemJewel::Update()
 
     if (m_collecting)
     {
-        auto ring_position = player_UI::GetRingPosition();
+        auto ring_position = Gauge_UI::GetRingPosition();
         ring_position.y += 170.0f;
 
 
@@ -138,7 +138,7 @@ void	ItemJewel::Update()
         if (m_position_while_collecting.x <= ring_position.x)
         {
             SetDestory(true);
-            player_UI::SetJewelCollected(m_type, true);
+            Gauge_UI::SetJewelCollected(m_type, true);
         }
 
     }

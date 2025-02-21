@@ -15,7 +15,7 @@
 #ifndef ANCHOR_SPIRIT_H
 #define ANCHOR_SPIRIT_H
 
-#define		MAX_ANCHOR_SPIRIT (400.0)
+#define		MAX_ANCHOR_SPIRIT (300.0)
 
 class AnchorSpirit
 {
@@ -45,10 +45,10 @@ public:
 		int anchor_level;//アンカーのレベル
 		int spirit = GetAnchorSpiritValue();
 
-		if (spirit < 100) {
+		if (spirit < 101) {
 			anchor_level = 1;
 		}
-		else if (spirit < 300)
+		else if (spirit < 201)
 		{
 			anchor_level = 2;
 		}
@@ -66,6 +66,8 @@ private:
 
 	//ソールゲージ（後でアンカーに移動するかも）
 	static float	m_spirit;
+	//ソールこれから減る値
+	static float	m_damage;
 
 	//自動回復のフラグ
 	static bool		m_auto_heal;
