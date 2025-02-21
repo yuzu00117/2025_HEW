@@ -363,10 +363,12 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_ISEKI:
+                m_respawn = true;
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
+                m_respawn = true;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
