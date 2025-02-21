@@ -1663,14 +1663,14 @@ void Player::DrawSoulGetEffect()
         float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y+20;
 
-        float effect_scale = 4.0f;
+        float effect_scale = 0.0;
 
         soul_get_effect_sheet_cnt += 0.2;
 
         switch (soul_get_effect_type)
         {
         case 1:
-
+            effect_scale = 6.0f;
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_SoulGet_Lv1_Effect);
 
@@ -1689,6 +1689,7 @@ void Player::DrawSoulGetEffect()
 
             break;
         case 2:
+            effect_scale = 8.0f;
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_SoulGet_Lv2_Effect);
 
@@ -1706,6 +1707,7 @@ void Player::DrawSoulGetEffect()
             }
             break;
         case 3:
+            effect_scale = 10.0f;
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_SoulGet_Lv3_Effect);
 
