@@ -41,6 +41,19 @@ static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level2_Texture = NULL;//ƒAƒ
 static ID3D11ShaderResourceView* g_Anchor_Hit_Effect_Level3_Texture = NULL;//ƒAƒ“ƒJ[‚ªƒIƒuƒWƒFƒNƒg‚Éƒqƒbƒg‚µ‚½‚ÌƒŒƒxƒ‹•Ê‚ÌƒGƒtƒFƒNƒg
 
 
+static ID3D11ShaderResourceView* g_Anchor_Effect_S1 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Effect_S2 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Effect_S3 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+
+static ID3D11ShaderResourceView* g_Anchor_Effect_M1 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Effect_M2 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Effect_M3 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+
+
+static ID3D11ShaderResourceView* g_Anchor_Effect_L1 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Effect_L2 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒg
+
 
 
 //ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğ‚à‚Á‚Æ‚­
@@ -51,8 +64,7 @@ b2Body* Target_anchor_point_body;
 
 
 
-//ƒAƒ“ƒJ[‚Ì½‚Ì•”•ª‚Ìƒ{ƒfƒB‚Ì“ü‚ê•¨
-#define MAX_CHAIN_NUM (40)//ƒ`ƒF[ƒ“‚ÌÅ‘åŒÂ”
+
 b2Body* anchor_chain[MAX_CHAIN_NUM];
 
 
@@ -99,6 +111,18 @@ void Anchor::Initialize()
 
 
 
+	g_Anchor_Effect_S1 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL01_blue_2x4.png");
+	g_Anchor_Effect_S2 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL02_blue_2x5.png");
+	g_Anchor_Effect_S3 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL03_blue2x5.png");
+
+
+	g_Anchor_Effect_M1 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL01_yellow_2x4.png");
+	g_Anchor_Effect_M2 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL02_yellow_2x5.png");
+	g_Anchor_Effect_M3 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL03_yellow_2x5.png");
+
+	g_Anchor_Effect_L1 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL01_red_2x4.png");
+	g_Anchor_Effect_L2 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL02_red_2x5.png");
+	g_Anchor_Effect_L3 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncL03_red_2x5.png");
 
 }
 
@@ -213,7 +237,7 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 	ObjectData* anchordata = new ObjectData{ collider_anchor };
 	anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
 
-
+	SetChainEffect();
 }
 
 void Anchor::DestroyAnchorBody()
@@ -356,35 +380,58 @@ void Anchor::Finalize()
 
 	if (g_Anchor_Texture_Lev1 != NULL)
 	{
+		// ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		UnInitTexture(g_Anchor_Texture_Lev1);
+		UnInitTexture(g_Anchor_Texture_Lev2);
+		UnInitTexture(g_Anchor_Texture_Lev3);
+
+		// ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		UnInitTexture(g_Anchor_Chain_Texture_Lv1);
+		UnInitTexture(g_Anchor_Chain_Texture_Lv2);
+		UnInitTexture(g_Anchor_Chain_Texture_Lv3);
+
+		// ƒAƒ“ƒJ[‚ÌƒqƒbƒgƒGƒtƒFƒNƒg‚Ì‰ğ•ú
+		UnInitTexture(g_Anchor_Hit_Effect_Texture);
+		UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture);
+		UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture);
+		UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture);
+
+		UnInitTexture(g_Anchor_Effect_S1);
+		UnInitTexture(g_Anchor_Effect_S2);
+		UnInitTexture(g_Anchor_Effect_S3);
+		UnInitTexture(g_Anchor_Effect_M1);
+		UnInitTexture(g_Anchor_Effect_M2);
+		UnInitTexture(g_Anchor_Effect_M3);
+		UnInitTexture(g_Anchor_Effect_L1);
+		UnInitTexture(g_Anchor_Effect_L2);
+		UnInitTexture(g_Anchor_Effect_L3);
+
+		// NULL‚ÉƒŠƒZƒbƒg
+		g_Anchor_Texture_Lev1 = NULL;
+		g_Anchor_Texture_Lev2 = NULL;
+		g_Anchor_Texture_Lev3 = NULL;
+
+		g_Anchor_Chain_Texture_Lv1 = NULL;
+		g_Anchor_Chain_Texture_Lv2 = NULL;
+		g_Anchor_Chain_Texture_Lv3 = NULL;
+
+		g_Anchor_Hit_Effect_Texture = NULL;
+		g_Anchor_Hit_Effect_Level1_Texture = NULL;
+		g_Anchor_Hit_Effect_Level2_Texture = NULL;
+		g_Anchor_Hit_Effect_Level3_Texture = NULL;
+
+		g_Anchor_Effect_S1 = NULL;
+		g_Anchor_Effect_S2 = NULL;
+		g_Anchor_Effect_S3 = NULL;
+		g_Anchor_Effect_M1 = NULL;
+		g_Anchor_Effect_M2 = NULL;
+		g_Anchor_Effect_M3 = NULL;
+		g_Anchor_Effect_L1 = NULL;
+		g_Anchor_Effect_L2 = NULL;
+		g_Anchor_Effect_L3 = NULL;
 		
-			UnInitTexture(g_Anchor_Texture_Lev1);	  // ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Texture_Lev2);	  // ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Texture_Lev3);	  // ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+		
 
-			UnInitTexture(g_Anchor_Chain_Texture_Lv1); // ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Chain_Texture_Lv2); // ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Chain_Texture_Lv3); // ƒAƒ“ƒJ[‚Ì½‚ÌƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
-
-			UnInitTexture(g_Anchor_Hit_Effect_Texture); // ƒAƒ“ƒJ[‚ÌƒqƒbƒgƒGƒtƒFƒNƒg‚Ì‰ğ•ú
-
-			UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture); // ƒqƒbƒgƒGƒtƒFƒNƒgLv1‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture); // ƒqƒbƒgƒGƒtƒFƒNƒgLv2‚Ì‰ğ•ú
-			UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture); // ƒqƒbƒgƒGƒtƒFƒNƒgLv3‚Ì‰ğ•ú
-
-			// NULL‚ÉƒŠƒZƒbƒg
-			g_Anchor_Texture_Lev1 = NULL;
-			g_Anchor_Texture_Lev2 = NULL;
-			g_Anchor_Texture_Lev3 = NULL;
-
-			g_Anchor_Chain_Texture_Lv1 = NULL;
-			g_Anchor_Chain_Texture_Lv2 = NULL;
-			g_Anchor_Chain_Texture_Lv3 = NULL;
-
-			g_Anchor_Hit_Effect_Texture = NULL;
-
-			g_Anchor_Hit_Effect_Level1_Texture = NULL;
-			g_Anchor_Hit_Effect_Level2_Texture = NULL;
-			g_Anchor_Hit_Effect_Level3_Texture = NULL;
 		
 	}
 	
@@ -620,7 +667,98 @@ AnchorState Anchor::GetAnchorState()
 	return now_anchor_state;
 }
 
+void Anchor::SetChainEffect()
+{
+	int rand = GetRandomInt(1, 3);;
 
+	int anchorlevel = AnchorSpirit::GetAnchorLevel();
+
+	//‚O‚ğ‘ã“ü
+	for (int i = 0; i < MAX_CHAIN_NUM; i++)
+	{
+		g_anchor_instance->Anchor_effect_sheet[i] = 0;
+	}
+
+
+	switch (anchorlevel)
+	{
+		//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚P
+	case 1:
+		g_anchor_instance->chain_effect_scale = 10.0f;
+		switch (rand)
+		{
+		case 1:
+			g_anchor_instance->Anchor_Effect_Type = 1;
+			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+
+			break;
+		case 2:
+			g_anchor_instance->Anchor_Effect_Type = 2;
+			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			break;
+		case 3:
+			g_anchor_instance->Anchor_Effect_Type = 3;
+			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			break;
+
+
+		default:
+			break;
+		}
+		break;
+		//ƒAƒ“ƒJ[ƒŒƒxƒ‹2
+	case 2:
+		g_anchor_instance->chain_effect_scale = 10.0f;
+		switch (rand)
+		{
+		case 1:
+			g_anchor_instance->Anchor_Effect_Type = 4;
+			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+
+			break;
+		case 2:
+			g_anchor_instance->Anchor_Effect_Type = 5;
+			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			break;
+		case 3:
+			g_anchor_instance->Anchor_Effect_Type = 6;
+			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			break;
+
+
+		default:
+			break;
+		}
+		break;
+		//ƒAƒ“ƒJ[ƒŒƒxƒ‹3
+	case 3:
+		g_anchor_instance->chain_effect_scale = 8.0f;
+		switch (rand)
+		{
+		case 1:
+			g_anchor_instance->Anchor_Effect_Type = 7;
+			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+
+			break;
+		case 2:
+			g_anchor_instance->Anchor_Effect_Type = 8;
+			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			break;
+		case 3:
+			g_anchor_instance->Anchor_Effect_Type = 9;
+			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			break;
+
+
+		default:
+			break;
+		}
+		break;
+
+	default:
+		break;
+	}
+}
 
 void Anchor::DrawChain() 
 {
@@ -691,6 +829,145 @@ void Anchor::DrawChain()
 			angle, // ƒvƒŒƒCƒ„[‚ÆƒAƒ“ƒJ[‚ÌŠp“x
 			{ chain_size.x * BOX2D_SCALE_MANAGEMENT * scale, chain_size.y * BOX2D_SCALE_MANAGEMENT * scale }
 		);
+		
+		
+
+
+		
+
+			int player_scale_x = g_anchor_instance->chain_effect_scale*2.0f;
+			int player_scale_y = g_anchor_instance->chain_effect_scale*2.0f;
+
+			float chain_alpha=1.0f;
+
+			bool m_direction=true;
+		
+			if (i % 2 == 0)
+			{
+
+				if (g_anchor_instance->Anchor_effect_sheet[i] < g_anchor_instance->Max_Anchor_effect_sheet)
+				{
+
+					switch (g_anchor_instance->Anchor_Effect_Type)
+					{
+					case 1:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S1);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x , chain_size.x * scale * player_scale_y },
+							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 2:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S2);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 3:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S3);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 4:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M1);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							 draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 5:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M2);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 6:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M3);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							 draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.y * scale * player_scale_y },
+							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 7:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L1);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					case 8:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L2);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+
+					case 9:
+						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L3);
+
+						DrawDividedSpritePlayer(
+							{ draw_x,
+							  draw_y },
+							angle,
+							{ chain_size.x * scale * player_scale_x, chain_size.x * scale * player_scale_y },
+							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						);
+						break;
+					default:
+						break;
+					}
+
+
+					g_anchor_instance->Anchor_effect_sheet[i] += 0.3;
+				}
+			}
+		
 	}
 
 
