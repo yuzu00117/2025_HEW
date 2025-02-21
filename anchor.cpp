@@ -111,16 +111,16 @@ void Anchor::Initialize()
 
 
 
-	g_Anchor_Effect_S1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_1_3_2.png");
+	g_Anchor_Effect_S1 = InitTexture(L"asset\\texture\\anchor_point\\EFF_Ancbllu03_2x5.png");
 	g_Anchor_Effect_S2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_2_3_2.png");
 	g_Anchor_Effect_S3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_S_3_4_2.png");
 
 
-	g_Anchor_Effect_M1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_M_1_5_2.png");
+	g_Anchor_Effect_M1 = InitTexture(L"asset\\texture\\anchor_point\\EFF_AncYearoo02_2x5.png");
 	g_Anchor_Effect_M2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_M_2_5_2.png");
 	g_Anchor_Effect_M3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_M_3_4_2.png");
 
-	g_Anchor_Effect_L1 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_1_4_2.png");
+	g_Anchor_Effect_L1 = InitTexture(L"asset\\texture\\anchor_point\\EFF_Ancled02_2x5.png");
 	g_Anchor_Effect_L2 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_2_5_2.png");
 	g_Anchor_Effect_L3 = InitTexture(L"asset\\texture\\anchor_point\\Effect_Anchor_L_3_5_2.png");
 
@@ -669,7 +669,7 @@ AnchorState Anchor::GetAnchorState()
 
 void Anchor::SetChainEffect()
 {
-	int rand = GetRandomInt(1, 3);
+	int rand = 1;
 
 	int anchorlevel = AnchorSpirit::GetAnchorLevel();
 
@@ -856,7 +856,7 @@ void Anchor::DrawChain()
 						  draw_y },
 						angle,
 						{ chain_size.x * scale * player_scale_x , chain_size.x * scale * player_scale_y },
-						3, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 					);
 					break;
 				case 2:
@@ -928,7 +928,7 @@ void Anchor::DrawChain()
 						  draw_y },
 						angle,
 						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-						4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+						5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 					);
 					break;
 				case 8:
