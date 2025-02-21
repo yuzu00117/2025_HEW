@@ -337,6 +337,15 @@ private:
 	float TamaChanSheetCnt = 0.0f;
 	// たまちゃんの向き管理用
 	bool is_left = true;
+	// アンカーを投げたときのたまちゃん削除フラグ
+	bool is_throw_anchor = false;
+	// たまちゃんが消えるエフェクトのフラグ
+	bool is_tamachan_disappearing = false;
+	// たまちゃんが消えるエフェクトのカウント
+	float tamachan_disappear_effect_cnt = 0.0f;
+	// たまちゃん描画用ポジション
+	float tamachan_pos_x = 0.0f;
+	float tamachan_pos_y = 0.0f;
 
 	//-----------------------------------------
 	//プレイヤーのサウンドの管理
