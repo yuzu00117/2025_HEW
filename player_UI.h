@@ -22,12 +22,15 @@ public:
         {
         case BLUE:
             m_blue_jewel_collected = flag;
+            m_blue_jewel_collected_effect_cnt = 1;
             break;
         case RED:
             m_red_jewel_collected = flag;
+            m_red_jewel_collected_effect_cnt = 1;
             break;
         case YELLOW:
             m_yellow_jewel_collected = flag;
+            m_yellow_jewel_collected_effect_cnt = 1;
             break;
         }
     }
@@ -45,6 +48,10 @@ private:
     static bool    m_blue_jewel_collected;
     static bool    m_red_jewel_collected;
     static bool    m_yellow_jewel_collected;
+
+    static float    m_blue_jewel_collected_effect_cnt;
+    static float    m_red_jewel_collected_effect_cnt;
+    static float    m_yellow_jewel_collected_effect_cnt;
 
     static DirectX::XMFLOAT2 m_ring_position;
 };
