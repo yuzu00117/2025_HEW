@@ -44,6 +44,8 @@ public:
 	static void Finalize();
 
 
+	static void SetChainEffect();
+
 	static void DrawChain();
 
 	/**
@@ -198,6 +200,16 @@ private:
 	int anchor_hit_effect_sheet_cnt;
 
 	float anchor_nomal_attack_effect = 0;
+
+	
+
+	int Anchor_Effect_Type;
+
+	float Anchor_effect_sheet;
+
+	int Max_Anchor_effect_sheet;
+
+	float chain_effect_scale;
 };
 
 
