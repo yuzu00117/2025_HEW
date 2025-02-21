@@ -1,4 +1,4 @@
-#include"player_UI.h"
+#include"Gauge_UI.h"
 #include"texture.h"
 #include"sprite.h"
 #include"anchor_spirit.h"
@@ -27,29 +27,29 @@ ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒ
 ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO‘¤‚Ì‘•ü
 
 // Ã“Iƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
-DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
-DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
+DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
+DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
 
-DirectX::XMFLOAT2 player_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);
-DirectX::XMFLOAT2 player_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);
 
-float player_UI::player_ui_alpha = 1.0f;
+float Gauge_UI::player_ui_alpha = 1.0f;
 
-bool	player_UI::m_blue_jewel_collected = false;
-bool	player_UI::m_red_jewel_collected = false;
-bool	player_UI::m_yellow_jewel_collected = false;
+bool	Gauge_UI::m_blue_jewel_collected = false;
+bool	Gauge_UI::m_red_jewel_collected = false;
+bool	Gauge_UI::m_yellow_jewel_collected = false;
 
-DirectX::XMFLOAT2 player_UI::m_ring_position = player_ui_position;
+DirectX::XMFLOAT2 Gauge_UI::m_ring_position = player_ui_position;
 
-player_UI::player_UI()
+Gauge_UI::Gauge_UI()
 {
 }
 
-player_UI::~player_UI()
+Gauge_UI::~Gauge_UI()
 {
 }
 
-void player_UI::Initialize()
+void Gauge_UI::Initialize()
 {
 	//ƒeƒNƒXƒ`ƒƒ‚Ìƒ[ƒh
 
@@ -83,12 +83,12 @@ void player_UI::Initialize()
 
 }
 
-void player_UI::Update()
+void Gauge_UI::Update()
 {
 
 }
 
-void player_UI::Draw()
+void Gauge_UI::Draw()
 {	
 	float temp_stamina_position_y;	//‘Ì—ÍƒQ[ƒW‚ªˆÚ“®‚µ‚½Œã‚ÌÀ•W
 	float temp_stamina_scale_y;		//‘Ì—ÍƒQ[ƒW‚Ì¡‚Ì‘å‚«‚³
@@ -328,7 +328,7 @@ void player_UI::Draw()
 
 }
 
-void player_UI::Finalize()
+void Gauge_UI::Finalize()
 {
 
 	if (g_ring_Texture != NULL)

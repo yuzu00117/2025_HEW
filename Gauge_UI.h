@@ -4,10 +4,10 @@
 #include <DirectXMath.h> // 必要なヘッダーをインクルード
 #include "Item_Jewel.h"
 
-class player_UI {
+class Gauge_UI {
 public:
-    player_UI();  // コンストラクタ
-    ~player_UI(); // デストラクタ
+    Gauge_UI();  // コンストラクタ
+    ~Gauge_UI(); // デストラクタ
 
     // プレイヤーの初期化
     static void Initialize();
