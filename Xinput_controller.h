@@ -41,4 +41,29 @@ ControllerState GetControllerInput();
 // 入力状態を表示する関数
 void PrintControllerState(const ControllerState& state);
 
+
+#include <Xinput.h>
+
+class VibrationController {
+public:
+    // 振動を開始（フレーム数指定）
+    static void StartVibration(float leftMotor, float rightMotor, int frames);
+
+    // 振動を即停止
+    static void StopVibration();
+
+    // フレームごとの更新（一定フレーム後に振動停止）
+    static void UpdateVibration();
+
+private:
+    static float leftMotorSpeed;
+    static float rightMotorSpeed;
+    static int remainingFrames;
+    static bool isActive;
+
+    static void ApplyVibration();
+};
+
+
+
 #endif // XINPUT_H

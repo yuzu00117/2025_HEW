@@ -80,7 +80,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	//サイズの補正をいれる
 	b2Vec2 anchorpoint_size;
 	anchorpoint_size.x = body_size.x;
-	anchorpoint_size.y =0.5/ BOX2D_SCALE_MANAGEMENT;
+	anchorpoint_size.y = 0.5 / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -106,8 +106,8 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	anchorpoint_fixture.density = 1.0f;
 	anchorpoint_fixture.friction = 0.05f;//摩擦
 	anchorpoint_fixture.restitution = 0.0f;//反発係数
-	anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	anchorpoint_fixture.filter = createFilterExclude("object_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter","Player_filter" });
+	anchorpoint_fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+	anchorpoint_fixture.filter = createFilterExclude("object_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter" });
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
@@ -115,10 +115,10 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	// カスタムデータを作成して設定
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
-	
-	
+
+
 	object_anchorpoint_data->id = ID;
-	
+
 
 	object_anchorpoint_data->object_name = Boss_pillar;
 	object_anchorpoint_data->need_anchor_level = 1;
@@ -149,11 +149,11 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	boss_room_level = level;
 
 	//ボディの領域を事前に確保しておく
-	boss_pillar_body_Splitting.reserve(Splitting_x* Splitting_y);
+	boss_pillar_body_Splitting.reserve(Splitting_x * Splitting_y);
 
 
 
-	
+
 	isUse = true;
 }
 

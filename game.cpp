@@ -30,7 +30,7 @@
 #include"bg.h"
 #include"hit_stop.h"
 #include"camera_shake.h"
-#include"player_UI.h"
+#include"Gauge_UI.h"
 #include"impact_effect.h"
 #include"gokai.h"
 #include"blown_away_effect.h"
@@ -39,6 +39,7 @@
 #include"change_scene_end_production.h"
 #include"change_scene_start_production.h"
 #include"UI_StaminaSpirit_Gauge.h"
+#include"Xinput_controller.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -96,7 +97,7 @@ void Game::Initialize()
 
 
 	//プレイヤーUIの初期化
-    player_UI::Initialize();
+    Gauge_UI::Initialize();
     //プレイヤーの体力の初期化
     PlayerStamina::Initialize();
 
@@ -153,7 +154,7 @@ void Game::Finalize(void)
         PlayerLife::Finalize();
     }
 	//プレイヤーUIの終了処理
-    player_UI::Finalize();
+    Gauge_UI::Finalize();
 	//プレイヤーの終了処理
     player.Finalize();
 
@@ -239,7 +240,7 @@ void Game::Update(void)
             //プレイヤーライフの更新処理
             PlayerLife::Update();
             //プレイヤーUIの更新処理
-            player_UI::Update();
+            Gauge_UI::Update();
 
             AnchorSpirit::Update();
 
@@ -305,6 +306,8 @@ void Game::Update(void)
 #endif // _DEBUG
     }
 
+
+    VibrationController::UpdateVibration(); // 毎フレーム振動を管理
 	//カメラシェイクの更新処理
     CameraShake::Update();
 
@@ -364,10 +367,12 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_ISEKI:
+                m_respawn = true;
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
+                m_respawn = true;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
@@ -452,13 +457,13 @@ void Game::Draw(void)
 
 
 
-	player_UI::Draw();
+	Gauge_UI::Draw();
 
     Gokai_UI::Draw();
 
 
 
-	player_UI::Draw();
+	Gauge_UI::Draw();
 
     PillarFragmentsManager::GetInstance().DrawFragments();
 

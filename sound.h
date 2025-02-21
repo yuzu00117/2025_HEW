@@ -111,7 +111,7 @@ enum Sound_Manager
 	Anchor_Thorw_Sound,//player.cpp crate_state
 	Anchor_Mark_Sound, //anchor_point.cpp
 
-	//プレイヤーSE 14個
+	//プレイヤーSE 17個
 	Player_Soul_Colect1_Sound,//playercpp update
 	Player_Damege_Sound, //player.cpp Player_Damaged
 	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
@@ -126,6 +126,10 @@ enum Sound_Manager
 	Player_Frame_Up_Sound,//player.cpp DrawAnchorLevel3Frame
 	Player_Jump_Start_Sound,//player.cpp update 変更済み
 	Player_Jump_End_Sound,//					変更済み
+	Player_Stock_Decrease_Sound,//		2/21追加　残機減少
+	Player_Buff_AnchorSpeedUp_Sound,//	2/21追加　錨のスピードアップ
+	Player_Buff_Invincible_Sound,//		2/21追加　攻撃無効
+	Player_Buff_SpeedUp_Sound,//		2/21追加　プレイヤーのスピードアップ
 
 	//環境SE 8個
 	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
@@ -233,6 +237,10 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_フレームアップ,
 	CRI_CUESHEET_0_プレイヤーの着地音,
 	CRI_CUESHEET_0_プレイヤーのジャンプ音,
+	CRI_CUESHEET_0_残機減少,
+	CRI_CUESHEET_0_錨のスピードアップ,
+	CRI_CUESHEET_0_攻撃無効,
+	CRI_CUESHEET_0_移動スピードアップ,
 	CRI_CUESHEET_0_岩が落ちる音,
 	CRI_CUESHEET_0_宝を取る音,
 	CRI_CUESHEET_0_木が倒れる音,
