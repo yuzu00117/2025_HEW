@@ -491,55 +491,80 @@ void Anchor::CreateRotateJoint()
 	// まず現在のフィクスチャのサイズを取得する
 	if (targetBody != nullptr)
 	{
-
 		b2Fixture* fixture = targetBody->GetFixtureList();
 		if (fixture != nullptr) {
 			bool sensor_on_off = fixture->IsSensor();
 			float m_density = fixture->GetDensity();
 			float m_friction = fixture->GetFriction();
 			float m_restitution = fixture->GetRestitution();
-			// 形状を取得し、ポリゴンであることを確認
-			b2Shape* baseShape = fixture->GetShape();
-			if (baseShape->GetType() != b2Shape::e_polygon) {
-				return; // ポリゴン形状でなければ処理しない
-			}
-			// 元の b2PolygonShapeをコピー
-			b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
-			if (originalShape == nullptr) {
 
+			// 形状を取得
+			b2Shape* baseShape = fixture->GetShape();
+			if (baseShape == nullptr) {
 				return;
 			}
 
-			b2PolygonShape newShape;
-			b2Vec2 vertices[b2_maxPolygonVertices];
-			int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+			// 新しい形状用ポインタ
+			b2Shape* newShape = nullptr;
 
-			for (int i = 0; i < vertexCount; ++i) {
-				vertices[i] = originalShape->m_vertices[i]; // GetVertex(i) は無いので `m_vertices` を使用
+			// 形状タイプの判定
+			if (baseShape->GetType() == b2Shape::e_polygon) {
+				// ポリゴン形状の場合
+				b2PolygonShape* originalShape = static_cast<b2PolygonShape*>(baseShape);
+				if (originalShape == nullptr) {
+					return;
+				}
+
+				b2PolygonShape* newPolygonShape = new b2PolygonShape();
+				b2Vec2 vertices[b2_maxPolygonVertices];
+				int vertexCount = min(originalShape->m_count, b2_maxPolygonVertices);
+
+				for (int i = 0; i < vertexCount; ++i) {
+					vertices[i] = originalShape->m_vertices[i];
+				}
+
+				newPolygonShape->Set(vertices, vertexCount);
+				newShape = newPolygonShape;
+
 			}
+			else if (baseShape->GetType() == b2Shape::e_circle) {
+				// サークル形状の場合
+				b2CircleShape* originalShape = static_cast<b2CircleShape*>(baseShape);
+				if (originalShape == nullptr) {
+					return;
+				}
 
-			newShape.Set(vertices, vertexCount);
-
+				b2CircleShape* newCircleShape = new b2CircleShape();
+				newCircleShape->m_radius = originalShape->m_radius;
+				newCircleShape->m_p = originalShape->m_p; // 位置もコピー
+				newShape = newCircleShape;
+			}
+			else {
+				// 他の形状は対応しない
+				return;
+			}
 
 			// 既存のフィクスチャを削除
 			targetBody->DestroyFixture(fixture);
 
 			// 新しいフィクスチャを作成
 			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &newShape;
-			fixtureDef.density = m_density;     // 密度
-			fixtureDef.friction = m_friction;   // 摩擦
-			fixtureDef.restitution = m_restitution; // 反発係数
-			fixtureDef.isSensor = sensor_on_off;    // センサーかどうか、trueなら当たり判定なし
+			fixtureDef.shape = newShape;
+			fixtureDef.density = m_density;
+			fixtureDef.friction = m_friction;
+			fixtureDef.restitution = m_restitution;
+			fixtureDef.isSensor = sensor_on_off;
 
 			b2Fixture* anchor_fixture = targetBody->CreateFixture(&fixtureDef);
 
 			// カスタムデータを作成して設定
 			ObjectData* anchordata = new ObjectData{ collider_rotate_joint };
 			anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+
+			// 動的に確保した形状を削除
+			delete newShape;
 		}
-
-
+	}
 
 		if (anchorBody == nullptr || targetBody == nullptr) {
 			return; // ターゲットが存在しない場合は何もしない
@@ -563,7 +588,7 @@ void Anchor::CreateRotateJoint()
 
 		//エフェクトスタート
 		g_anchor_instance->anchor_hit_effect_flag = true;
-	}
+	
 }
 
 /**

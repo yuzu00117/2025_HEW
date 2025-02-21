@@ -93,6 +93,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 	// カスタムデータを作成して設定
 	ObjectData* object_rock_data = new ObjectData{ collider_object };//一旦壁判定
 	object_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_rock_data);
+	object_rock_data->object_name = Object_Rock;
 
 
 	//2つめのフィクスチャを　岩の中にアンカーポイントをつくる
@@ -183,6 +184,9 @@ void rock::Pulling_rock()
 	body->SetLinearVelocity(pulling_power);
 	SetIfPulling(true);
 
+	//縁の描画終了
+	m_is_border = false;
+
 	//サウンドを再生
 	app_atomex_start(Object_Rock_Roll_Sound);
 }
@@ -213,6 +217,7 @@ void rock::Draw()
 	float draw_x = ((RockPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((RockPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+	if(m_is_border)
 	{
 		//アンカーレベルに応じた縁取りを付けたテクスチャを設定
 		switch (m_need_level)
@@ -237,6 +242,13 @@ void rock::Draw()
 			{ GetRockSize().x * scale * 1.1f,GetRockSize().y * scale * 1.1f }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 			, m_border_alpha
 		);
+
+		//透過率設定
+		m_border_alpha -= 0.01;
+		if (m_border_alpha <= m_border_alpha_min)
+		{
+			m_border_alpha = m_border_alpha_max;
+		}
 	}
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Rock_Texture);
@@ -247,13 +259,6 @@ void rock::Draw()
 		GetObjectAnchorPointBody()->GetAngle(),
 		{ GetRockSize().x * scale,GetRockSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
-
-	//透過率設定
-	m_border_alpha -= 0.01;
-	if (m_border_alpha <= m_border_alpha_min)
-	{
-		m_border_alpha = m_border_alpha_max;
-	}
 }
 
 void rock::Finalize()

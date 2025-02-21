@@ -472,6 +472,9 @@ void wood::Pulling_wood()
 
 	body->SetLinearVelocity(pulling_power);
 	SetIfPulling(true);
+
+	//縁の描画終了
+	m_is_border = false;
 }
 
 
@@ -522,6 +525,7 @@ void wood::Draw()
 	float draw_x = ((Stump_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	float draw_y = ((Stump_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+	if (m_is_border)
 	{
 		//アンカーレベルに応じた縁取りを付けたテクスチャを設定
 		switch (m_need_level)
@@ -602,6 +606,7 @@ void wood::Draw()
 	draw_x = ((textureCenter.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 	draw_y = ((textureCenter.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+	if (m_is_border)
 	{
 		//アンカーレベルに応じた縁取りを付けたテクスチャを設定
 		switch (m_need_level)
@@ -626,6 +631,12 @@ void wood::Draw()
 			{ GetWoodSize().x * scale * 1.1f,GetWoodSize().y * scale * 1.1f }
 			,m_border_alpha
 		);
+
+		m_border_alpha -= 0.01;
+		if (m_border_alpha <= m_border_alpha_min)
+		{
+			m_border_alpha = m_border_alpha_max;
+		}
 	}
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Wood_Texture);
 	//draw
@@ -636,11 +647,6 @@ void wood::Draw()
 		{ GetWoodSize().x * scale,totalHeight * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 	);
 
-	m_border_alpha -= 0.01;
-	if (m_border_alpha <= m_border_alpha_min)
-	{
-		m_border_alpha = m_border_alpha_max;
-	}
 
 	for (size_t i = 0; i < leaf_bodies.size(); i++) {
 		b2Vec2 position = leaf_bodies[i]->GetPosition();

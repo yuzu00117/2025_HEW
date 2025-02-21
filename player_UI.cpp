@@ -12,6 +12,10 @@ ID3D11ShaderResourceView* g_red_jewel_Texture = NULL;	//•óÎ@Ô
 ID3D11ShaderResourceView* g_blue_jewel_Texture = NULL;	//•óÎ@Â
 ID3D11ShaderResourceView* g_yellow_jewel_Texture = NULL;//•óÎ@‰©
 
+ID3D11ShaderResourceView* g_red_jewel_fit_effect = NULL;	//•óÎ@Ô
+ID3D11ShaderResourceView* g_blue_jewel_fit_effect = NULL;	//•óÎ@Â
+ID3D11ShaderResourceView* g_yellow_jewel_fit_effect = NULL;//•óÎ@‰©
+
 
 ID3D11ShaderResourceView* g_soul_gage_Texture = NULL;           //ƒ\ƒEƒ‹ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒ
 ID3D11ShaderResourceView* g_soul_gage_HP_Texture = NULL;		//ƒ\ƒEƒ‹ƒQ[ƒW‚ÌHP•”•ª
@@ -26,6 +30,9 @@ ID3D11ShaderResourceView* g_anchor_level_border_Texture = NULL;	   //ƒAƒ“ƒJ[ƒŒƒ
 ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŽdØ‚è
 ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO‘¤‚Ì‘•ü
 
+
+
+
 // Ã“Iƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
 DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
 DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
@@ -38,6 +45,10 @@ float player_UI::player_ui_alpha = 1.0f;
 bool	player_UI::m_blue_jewel_collected = false;
 bool	player_UI::m_red_jewel_collected = false;
 bool	player_UI::m_yellow_jewel_collected = false;
+
+float	player_UI::m_blue_jewel_collected_effect_cnt = 0;
+float	player_UI::m_red_jewel_collected_effect_cnt = 0;
+float	player_UI::m_yellow_jewel_collected_effect_cnt = 0;
 
 DirectX::XMFLOAT2 player_UI::m_ring_position = player_ui_position;
 
@@ -61,8 +72,12 @@ void player_UI::Initialize()
 	g_blue_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\blue_jewel.png");
 	g_yellow_jewel_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\yellow_jewel.png");
 
+	//•óÎ‚ðƒQƒbƒg‚µ‚½Žž‚ÌƒGƒtƒFƒNƒg
+	g_red_jewel_fit_effect = InitTexture(L"asset\\texture\\UI_soul_gage\\EFF_GemFit_Red_3x4.png");
+	g_blue_jewel_fit_effect = InitTexture(L"asset\\texture\\UI_soul_gage\\EFF_GemFit_Blue_3x4.png");
+	g_yellow_jewel_fit_effect = InitTexture(L"asset\\texture\\UI_soul_gage\\EFF_GemFit_Yellow_3x4.png");
+
 	//ƒ\ƒEƒ‹ƒQ[ƒW’B
-	/*g_soul_gage_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_back_ground.png");*/
 	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul_no_white.png");
 	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP_no_white.png");
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
@@ -229,6 +244,7 @@ void player_UI::Draw()
 			{ player_ui_size },
 			player_ui_alpha
 		);
+
 	}
 
 	if (m_blue_jewel_collected)//Â‚Ì•óÎ
@@ -257,6 +273,58 @@ void player_UI::Draw()
 		);
 	}
 	//-------------------------------------------------------------------------------------------
+	//•óÎ‚ðŽæ“¾‚µ‚½Žž‚ÌƒGƒtƒFƒNƒg‚Ì•\Ž¦
+
+	if (m_blue_jewel_collected_effect_cnt != 0)
+	{
+
+		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ðÝ’è
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_blue_jewel_fit_effect);
+
+		DrawDividedSprite(XMFLOAT2(75, 600), 0.0f, XMFLOAT2(50, 50), 4, 3, m_blue_jewel_collected_effect_cnt, 1.0);
+
+		m_blue_jewel_collected_effect_cnt += 0.3;
+
+		if (12 < m_blue_jewel_collected_effect_cnt)
+		{
+			m_blue_jewel_collected_effect_cnt = 0;
+		}
+	}
+
+	if (m_red_jewel_collected_effect_cnt != 0)
+	{
+
+		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ðÝ’è
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_red_jewel_fit_effect);
+
+		DrawDividedSprite(XMFLOAT2(100, 650), 0.0f, XMFLOAT2(50, 50), 4, 3, m_red_jewel_collected_effect_cnt, 1.0);
+
+		m_red_jewel_collected_effect_cnt += 0.3;
+
+		if (12 < m_red_jewel_collected_effect_cnt)
+		{
+			m_red_jewel_collected_effect_cnt = 0;
+		}
+	}
+
+	if (m_yellow_jewel_collected_effect_cnt != 0)
+	{
+
+		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ðÝ’è
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_yellow_jewel_fit_effect);
+
+		DrawDividedSprite(XMFLOAT2(50, 650), 0.0f, XMFLOAT2(50, 50), 4, 3, m_yellow_jewel_collected_effect_cnt, 1.0);
+
+		m_yellow_jewel_collected_effect_cnt += 0.3;
+
+		if (12 < m_yellow_jewel_collected_effect_cnt)
+		{
+			m_yellow_jewel_collected_effect_cnt = 0;
+		}
+	}
+	
+
+
 
 	//---------------------------------------------------------------------------------------
 	//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚Ì•\Ž¦
@@ -333,36 +401,44 @@ void player_UI::Finalize()
 
 	if (g_ring_Texture != NULL)
 	{
-		//–{‘Ì‚Û‚¢‚â‚Â
+		// ƒŠƒ“ƒO‚ÌƒeƒNƒXƒ`ƒƒ‰ð•ú
 		UnInitTexture(g_ring_Texture);
-		//•óÎ
+
+		// •óÎ‚ÌƒeƒNƒXƒ`ƒƒ‰ð•ú
 		UnInitTexture(g_red_jewel_Texture);
 		UnInitTexture(g_blue_jewel_Texture);
 		UnInitTexture(g_yellow_jewel_Texture);
 
-		//ƒ\ƒEƒ‹ƒQ[ƒW’B
-	
+		// •óÎ‚ÌƒtƒBƒbƒgƒGƒtƒFƒNƒg‚Ì‰ð•ú
+		UnInitTexture(g_red_jewel_fit_effect);
+		UnInitTexture(g_blue_jewel_fit_effect);
+		UnInitTexture(g_yellow_jewel_fit_effect);
+
+		// ƒ\ƒEƒ‹ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒ‰ð•ú
 		UnInitTexture(g_soul_gage_Texture);
 		UnInitTexture(g_soul_gage_HP_Texture);
 		UnInitTexture(g_soul_gage_border_Texture);
 
-		//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌƒeƒNƒXƒ`ƒƒ‚½‚¿
+		// ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌƒeƒNƒXƒ`ƒƒ‰ð•ú
 		UnInitTexture(g_anchor_level_background_Texture);
 		UnInitTexture(g_anchor_level_1_Texture);
 		UnInitTexture(g_anchor_level_2_Texture);
 		UnInitTexture(g_anchor_level_3_Texture);
 		UnInitTexture(g_anchor_level_border_Texture);
-
 		UnInitTexture(g_anchor_level_division_Texture);
 		UnInitTexture(g_anchor_level_outline_Texture);
 
+		// NULL‚ÉƒŠƒZƒbƒg
 		g_ring_Texture = NULL;
 
 		g_red_jewel_Texture = NULL;
 		g_blue_jewel_Texture = NULL;
 		g_yellow_jewel_Texture = NULL;
 
-	
+		g_red_jewel_fit_effect = NULL;
+		g_blue_jewel_fit_effect = NULL;
+		g_yellow_jewel_fit_effect = NULL;
+
 		g_soul_gage_Texture = NULL;
 		g_soul_gage_HP_Texture = NULL;
 		g_soul_gage_border_Texture = NULL;
@@ -372,8 +448,6 @@ void player_UI::Finalize()
 		g_anchor_level_2_Texture = NULL;
 		g_anchor_level_3_Texture = NULL;
 		g_anchor_level_border_Texture = NULL;
-
-
 		g_anchor_level_division_Texture = NULL;
 		g_anchor_level_outline_Texture = NULL;
 		

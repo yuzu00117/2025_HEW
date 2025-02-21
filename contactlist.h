@@ -604,7 +604,26 @@ public:
                 boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
                 pillar_instance->SetSplitting_Destroy_Flag(true);
             }
+
+
+        
         }
+
+     
+        //転がる岩と静的動的ブロックの衝突判定じ
+        if (objectA->object_name == Object_Static_to_Dynamic && objectB->object_name == Object_Rock)
+        {
+            static_to_dynamic_block* instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectA->id);
+            instance->SetNowBreakBlock(true);
+        }
+        if (objectA->object_name == Object_Rock && objectB-> object_name == Object_Static_to_Dynamic)
+        {
+            static_to_dynamic_block* instance = object_manager.FindStatic_to_Dynamic_BlcokID(objectB->id);
+            instance->SetNowBreakBlock(true);
+        }
+
+      
+      
 
 
         //プレイヤーと静的エネミーの衝突
@@ -1236,14 +1255,27 @@ public:
             if (objectA->collider_type == collider_UI_block)
             {
                 UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
-                ui_instance->SetFlag(true);
-               
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Resume);
+                }
+                else
+                {
+                    ui_instance->SetFlag(true);
+                }               
             }
             else if (objectB->collider_type == collider_UI_block)
             {
 
                 UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
-                ui_instance->SetFlag(true);
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Resume);
+                }
+                else
+                {
+                    ui_instance->SetFlag(true);
+                }
             }
         }
         //-------------------------------------------------------------------------------------------
@@ -1804,7 +1836,23 @@ public:
         }
 
 
-
+        //プレイヤーと動的エネミーに付属しているセンサーが離れた場合
+        if ((objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_enemy_sensor) ||
+            (objectA->collider_type == collider_enemy_sensor && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_sensor))
+        {
+            if (objectA->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectA->id);
+                enemy_instance->QuitSensorPlayer();
+            }
+            else if (objectB->collider_type == collider_enemy_sensor)
+            {
+                EnemyDynamic* enemy_instance = object_manager.FindEnemyDynamicByID(objectB->id);
+                enemy_instance->QuitSensorPlayer();
+            }
+        }
 
 
 
@@ -1920,14 +1968,27 @@ public:
             if (objectA->collider_type == collider_UI_block)
             {
                 UI_block* ui_instance = object_manager.FindUiBlock(objectA->id);
-                ui_instance->SetFlag(false);
-
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Pause);
+                }
+                else
+                {
+                    ui_instance->SetFlag(false);
+                }
             }
             else if (objectB->collider_type == collider_UI_block)
             {
 
                 UI_block* ui_instance = object_manager.FindUiBlock(objectB->id);
-                ui_instance->SetFlag(false);
+                if (ui_instance->GetIfVideo())
+                {
+                    ui_instance->SetVideoState(Video_Pause);
+                }
+                else
+                {
+                    ui_instance->SetFlag(false);
+                }
             }
         }
 

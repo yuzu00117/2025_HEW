@@ -33,6 +33,9 @@ static ID3D11ShaderResourceView* g_Geyser_Start_Water_Texture = NULL;//ŠÔŒ‡ò‚Ì
 
 //ŠÔŒ‡ò‚ÌƒeƒNƒXƒ`ƒƒ@ƒAƒ“ƒJ[‚Ì‘Å‚Â‘O
 static ID3D11ShaderResourceView* g_Geyser_Close_Texture = NULL;
+static ID3D11ShaderResourceView* g_Geyser_Border_Texture_Lv1 = NULL;
+static ID3D11ShaderResourceView* g_Geyser_Border_Texture_Lv2 = NULL;
+static ID3D11ShaderResourceView* g_Geyser_Border_Texture_Lv3 = NULL;
 
 //ŠÔŒ‡ò‚ÌƒeƒNƒXƒ`ƒƒ@ƒAƒ“ƒJ[‚Ì‘Å‚Á‚½‚ ‚Æ
 static ID3D11ShaderResourceView* g_Geyser_Open_Texture = NULL;
@@ -220,6 +223,9 @@ void geyser::Initialize()
 	
 		g_Geyser_Open_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Open_Texture.png");
 		g_Geyser_Close_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture.png");
+		g_Geyser_Border_Texture_Lv1 = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture_border_lv1_TEST.png");
+		g_Geyser_Border_Texture_Lv2 = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture_border_lv2_TEST.png");
+		g_Geyser_Border_Texture_Lv3 = InitTexture(L"asset\\texture\\stage_1_1_object\\Geyser_Close_Texture_border_lv3_TEST.png");
 		g_Geyser_Start_Water_Texture= InitTexture(L"asset\\texture\\stage_1_1_object\\geyser_start_water.png");
 		g_Geyser_Water_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\geyser_loop_water.png");
 	}
@@ -256,7 +262,7 @@ void geyser::Update()
 			isUse = false;
 		}
 
-		Destroy_Splitting();
+		/*Destroy_Splitting();*/
 	}
 }
 
@@ -275,9 +281,9 @@ void geyser::JumpPlayer()
 			//ã‚Éã‚°‚éŠ
 			easing_rate += 0.02;
 
-			if (1.5 < easing_rate)
+			if (1.3 < easing_rate)
 			{
-				easing_rate = 1.5;
+				easing_rate = 1.3;
 			}
 
 			// ƒC[ƒWƒ“ƒO‚ª‚©‚©‚Á‚½’l‚ğ•Û‘¶‚·‚é•Ï”
@@ -494,7 +500,7 @@ void geyser::Draw()
 				//draw
 				DrawSplittingSprite(
 					{ draw_x,
-					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+20},
+					  draw_y - (GetGeyserSize().y * scale) - (GetRangeFlyWaterSize().y / 2 * scale)+40},
 					GetGeyserBody()->GetAngle(),
 					{ GetRangeFlyWaterSize().x * scale * 2,GetRangeFlyWaterSize().y * scale * 1.5f },///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
 					10, 5, water_sheet_cnt / 3, 3.0f
@@ -524,6 +530,40 @@ void geyser::Draw()
 			}
 			else
 			{
+				//‰‚Ì•`‰æ
+				if (m_is_border)
+				{
+					switch (m_need_level)
+					{
+					case 1:
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Border_Texture_Lv1);
+						break;
+					case 2:
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Border_Texture_Lv2);
+						break;
+					case 3:
+						GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Border_Texture_Lv3);
+						break;
+					default:
+						break;
+					}
+					//draw
+					DrawSplittingSprite(
+						{ draw_x,
+						  draw_y + geyser_Draw_y },
+						GetGeyserBody()->GetAngle(),
+						{ GetGeyserSize().x * scale * 1.5f,GetGeyserSize().y * scale * 1.5f },///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+						15, 1, draw_cnt, m_border_alpha
+					);
+
+					//“§‰ß—¦İ’è
+					m_border_alpha -= 0.01;
+					if (m_border_alpha <= m_border_alpha_min)
+					{
+						m_border_alpha = m_border_alpha_max;
+					}
+				}
+
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Geyser_Open_Texture);
 
 				//draw
@@ -605,12 +645,20 @@ void geyser::Finalize()
 	if (g_Geyser_Close_Texture != NULL)
 	{
 		UnInitTexture(g_Geyser_Close_Texture);
+		UnInitTexture(g_Geyser_Border_Texture_Lv1);
+		UnInitTexture(g_Geyser_Border_Texture_Lv2);
+		UnInitTexture(g_Geyser_Border_Texture_Lv3);
 		UnInitTexture(g_Geyser_Open_Texture);
 		UnInitTexture(g_Geyser_Water_Texture);
+		UnInitTexture(g_Geyser_Start_Water_Texture);
 
 		g_Geyser_Close_Texture = NULL;
+		g_Geyser_Border_Texture_Lv1 = NULL;
+		g_Geyser_Border_Texture_Lv2 = NULL;
+		g_Geyser_Border_Texture_Lv3 = NULL;
 		g_Geyser_Open_Texture = NULL;
 		g_Geyser_Water_Texture = NULL;
+		g_Geyser_Start_Water_Texture = NULL;
 
 	}
 }

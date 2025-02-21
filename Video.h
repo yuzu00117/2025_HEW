@@ -14,11 +14,11 @@
 
 enum Video_State
 {
-	Video_Start,
-	Video_Pause,
-	Video_Resume,
-	Video_Skip,
-	Video_Finished,
+	Video_Start,	//動画開始
+	Video_Pause,	//動画一時停止
+	Video_Resume,	//動画再開
+	Video_Skip,		//動画スキップ
+	Video_Finished,	//動画終了
 };
 
 class Video
