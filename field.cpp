@@ -1076,6 +1076,7 @@ void Field::Initialize(bool respawning)
 
 		objectManager.InitializeAll();
 		itemManager.InitializeAll(respawning);
+		itemManager.UseAllJewel();
 
 		break;
 	case STAGE_TEST:
@@ -1218,6 +1219,20 @@ void Field::Initialize(bool respawning)
 				}
 				if (field_map[y][x] == 28) {//上から落ちるや
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(100.f, 100.f), b2Vec2(9.f, SCREEN_SCALE), b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), VIDEO_BUTTON_RIGHT_STICK, 0.0f);
+				}
+				if (field_map[y][x] == 46) {//青宝石
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE, respawning);
+				}
+				if (field_map[y][x] == 47) {//赤宝石
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, RED, respawning);
+				}
+				if (field_map[y][x] == 48) {//黄色宝石
+					itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, YELLOW, respawning);
+				}
+
+
+				if (field_map[y][x] == 70) {
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
 				}
 
 
