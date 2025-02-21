@@ -732,7 +732,7 @@ void Anchor::SetChainEffect()
 		break;
 		//アンカーレベル3
 	case 3:
-		g_anchor_instance->chain_effect_scale = 5.0f;
+		g_anchor_instance->chain_effect_scale = 8.0f;
 		switch (rand)
 		{
 		case 1:
@@ -835,10 +835,10 @@ void Anchor::DrawChain()
 
 		
 
-			int player_scale_x = g_anchor_instance->chain_effect_scale*1.5f;
-			int player_scale_y = g_anchor_instance->chain_effect_scale*1.5f;
+			int player_scale_x = g_anchor_instance->chain_effect_scale*2.0f;
+			int player_scale_y = g_anchor_instance->chain_effect_scale*2.0f;
 
-			float chain_alpha=3.0f;
+			float chain_alpha=1.0f;
 
 			bool m_direction=true;
 		
