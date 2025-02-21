@@ -46,6 +46,7 @@ int HitStop::delay_hit_stop_time = 0;
 int HitStop::delay_time = 0;
 
 
+
 void Game::Initialize()
 {
     //ゲームシーンに入って初回はInitialize要らない（BeforeGameScene.cppで事前にInitializeした）（目的：リスポンする時Initializeしたくない物があるから）
@@ -383,26 +384,10 @@ void Game::Update(void)
 
 void Game::Respawn()
 {
-    ////リスポン時の座標決め
-    ////==========================================================================
-    //b2Vec2 respawn_position = b2Vec2{ 5.0f, 6.0f };
-    //ItemManager& item_manager = ItemManager::GetInstance();
-    //ItemSavePoint* savepoint = item_manager.FindItem_SavePoint();
-    ////ステージに中間地がある場合
-    //if (savepoint != nullptr)
-    //{
-    //    if (savepoint->GetIfPlayerPassed())
-    //    {
-    //        respawn_position = savepoint->GetBody()->GetPosition();
-    //        AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
-    //    }
-    //}
-
-
-    //Player::GetOutSidePlayerBody()->SetTransform(respawn_position, 0.0f);
-
-
-
+    //リスポン時の座標決め
+    //==========================================================================
+    PlayerStamina::SetPlayerStaminaValueDirectly(MAX_STAMINA);  //体力をマックスに戻す
+    AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
     //リスポンした時の効果音
     app_atomex_start(Player_Jewelry_Colect_Sound);
 }

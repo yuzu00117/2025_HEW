@@ -192,6 +192,13 @@ public:
 	}
 
 
+	//プレイヤーのリスポン位置を取得（座標ｘとｙがゼロの時はCSVの初期位置になる）
+	b2Vec2	GetRespawnPosition() { return m_respawn_position; }
+	//プレイヤーのリスポン位置をセット（座標ｘとｙがゼロの時はCSVの初期位置になる）
+	void	SetRespawnPosition(b2Vec2 position) { m_respawn_position = position; }
+
+
+
 	//今のプレイヤーの向きを取得
 	// 右向き：1    左向き：0
 	bool GetDirection() {
@@ -257,6 +264,10 @@ private:
 
 	//センサー用のサイズ
 	b2Vec2 m_sensor_size;
+
+
+	//リスポンする時プレイヤーの位置指定
+	b2Vec2  m_respawn_position;
 
 
 	//アンカー投げる時の速度の倍率

@@ -15,6 +15,7 @@
 #include "player_position.h"
 #include "anchor_spirit.h"
 #include "player_stamina.h"
+#include "player.h"
 #include "sound.h"
 
 
@@ -110,6 +111,10 @@ void    ItemSavePoint::Function()
         float stamina = PlayerStamina::GetPlayerStaminaValue();
         //体力がまだマックスじゃない
         AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
+
+        //プレイヤーのリスポン位置を更新する
+        Player& player = Player::GetInstance();
+        player.SetRespawnPosition(m_body_position);
     }
     //初回通過時の効果音
     app_atomex_start(Player_Coin_Colect_Sound);
