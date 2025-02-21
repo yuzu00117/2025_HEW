@@ -80,6 +80,8 @@ static ID3D11ShaderResourceView* g_TamaChan_Lv2 = NULL;//たまちゃんLv2
 static ID3D11ShaderResourceView* g_TamaChan_Lv3 = NULL;//たまちゃんLv3
 
 
+//
+
 
 //staticメンバー変数の初期化
 float   Player::m_AnchorThrowing_SpeedUp = 1.0f;
