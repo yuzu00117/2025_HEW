@@ -64,8 +64,7 @@ b2Body* Target_anchor_point_body;
 
 
 
-//アンカーの鎖の部分のボディの入れ物
-#define MAX_CHAIN_NUM (40)//チェーンの最大個数
+
 b2Body* anchor_chain[MAX_CHAIN_NUM];
 
 
@@ -674,7 +673,13 @@ void Anchor::SetChainEffect()
 
 	int anchorlevel = AnchorSpirit::GetAnchorLevel();
 
-	g_anchor_instance->Anchor_effect_sheet = 0;
+	//０を代入
+	for (int i = 0; i < MAX_CHAIN_NUM; i++)
+	{
+		g_anchor_instance->Anchor_effect_sheet[i] = 0;
+	}
+
+
 	switch (anchorlevel)
 	{
 		//アンカーレベル１
@@ -837,123 +842,127 @@ void Anchor::DrawChain()
 
 			bool m_direction=true;
 		
-			switch (g_anchor_instance->Anchor_Effect_Type)
+			if (g_anchor_instance->Anchor_effect_sheet[i] < g_anchor_instance->Max_Anchor_effect_sheet)
 			{
-			case 1:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S1);
 
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x *scale * player_scale_x , chain_size.x * scale * player_scale_y },
-					3, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 2:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S2);
+				switch (g_anchor_instance->Anchor_Effect_Type)
+				{
+				case 1:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S1);
 
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-					3, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 3:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S3);
-
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-					4, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 4:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M1);
-
-				DrawDividedSpritePlayer(
-					{ draw_x,
+					DrawDividedSpritePlayer(
+						{ draw_x,
 						  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-					5, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 5:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M2);
+						angle,
+						{ chain_size.x * scale * player_scale_x , chain_size.x * scale * player_scale_y },
+						3, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 2:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S2);
 
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-					4, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 6:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M3);
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+						3, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 3:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_S3);
 
-				DrawDividedSpritePlayer(
-					 { draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.y * scale * player_scale_y },
-					4, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 7:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L1);
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+						4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 4:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M1);
 
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y }, 
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-					4, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			case 8:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L2);
+					DrawDividedSpritePlayer(
+						{ draw_x,
+							  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+						5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 5:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M2);
 
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-					5, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+						4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 6:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_M3);
 
-			case 9:
-				// シェーダリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L3);
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						 draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.y * scale * player_scale_y },
+						4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 7:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L1);
 
-				DrawDividedSpritePlayer(
-					{ draw_x,
-					  draw_y },
-					angle,
-					{ chain_size.x * scale * player_scale_x, chain_size.x * scale * player_scale_y },
-					5, 2, g_anchor_instance->Anchor_effect_sheet / 4, chain_alpha, m_direction
-				);
-				break;
-			default:
-				break;
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+						4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				case 8:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L2);
+
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
+						5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+
+				case 9:
+					// シェーダリソースを設定
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Effect_L3);
+
+					DrawDividedSpritePlayer(
+						{ draw_x,
+						  draw_y },
+						angle,
+						{ chain_size.x * scale * player_scale_x, chain_size.x * scale * player_scale_y },
+						5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+					);
+					break;
+				default:
+					break;
+				}
+
+
+				g_anchor_instance->Anchor_effect_sheet[i] += 0.5;
 			}
-
-
-			g_anchor_instance->Anchor_effect_sheet += 0.5;
 		
 	}
 

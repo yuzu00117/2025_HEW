@@ -10,6 +10,8 @@
 #ifndef ANCHOR_H
 #define ANCHOR_H
 
+//アンカーの鎖の部分のボディの入れ物
+#define MAX_CHAIN_NUM (40)//チェーンの最大個数
 
 enum AnchorState        //player.cppないのupdateで管理する際に利用している
 {
@@ -205,7 +207,7 @@ private:
 
 	int Anchor_Effect_Type;
 
-	float Anchor_effect_sheet;
+	float Anchor_effect_sheet[MAX_CHAIN_NUM];
 
 	int Max_Anchor_effect_sheet;
 
