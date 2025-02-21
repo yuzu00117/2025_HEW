@@ -835,8 +835,8 @@ void Anchor::DrawChain()
 
 		
 
-			int player_scale_x = g_anchor_instance->chain_effect_scale;
-			int player_scale_y = g_anchor_instance->chain_effect_scale;
+			int player_scale_x = g_anchor_instance->chain_effect_scale*1.5f;
+			int player_scale_y = g_anchor_instance->chain_effect_scale*1.5f;
 
 			float chain_alpha=3.0f;
 
@@ -961,7 +961,7 @@ void Anchor::DrawChain()
 				}
 
 
-				g_anchor_instance->Anchor_effect_sheet[i] += 0.5;
+				g_anchor_instance->Anchor_effect_sheet[i] += 0.3;
 			}
 		
 	}
