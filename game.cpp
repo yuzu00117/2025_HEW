@@ -39,6 +39,7 @@
 #include"change_scene_end_production.h"
 #include"change_scene_start_production.h"
 #include"UI_StaminaSpirit_Gauge.h"
+#include"Xinput_controller.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -304,6 +305,8 @@ void Game::Update(void)
 #endif // _DEBUG
     }
 
+
+    VibrationController::UpdateVibration(); // 毎フレーム振動を管理
 	//カメラシェイクの更新処理
     CameraShake::Update();
 
