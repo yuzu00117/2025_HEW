@@ -151,17 +151,22 @@ void ItemSpirit::SetState(SpiritState state)
 
 void    ItemSpirit::Function()
 {
+
+    Player& player = Player::GetInstance();
     float recovery = 0;
     switch (m_type)
     {
     case Spirit_L:
         recovery = 100;
+        player.SetSoulGetEffectType(3);
         break;
     case Spirit_M:
         recovery = 50;
+        player.SetSoulGetEffectType(2);
         break;
     case Spirit_S:
         recovery = 25;
+        player.SetSoulGetEffectType(1);
         break;
     }
 

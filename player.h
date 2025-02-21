@@ -123,6 +123,8 @@ public:
 
 	int GetAnchorFrameManagement();
 
+	void DrawSoulGetEffect(void);
+
 
 	//描画用にサイズを持たせておく
 	b2Vec2 GetSize() const 
@@ -232,7 +234,11 @@ public:
 		draw_cnt = cnt;
 	}
 
-
+	void SetSoulGetEffectType(int effect_type)
+	{
+		soul_get_effect_type = effect_type;
+		soul_get_effect_sheet_cnt = 1;
+	}
 
 private:
 
@@ -335,6 +341,16 @@ private:
 	//-----------------------------------------
 	//プレイヤーのサウンドの管理
 	int walk_state_sound_cnt;
+
+
+	//------------------------------------------
+	//ソウルのゲットした時の関数
+
+	int soul_get_effect_type;
+
+	float soul_get_effect_sheet_cnt;
+
+	
 
 };
 

@@ -79,8 +79,10 @@ static ID3D11ShaderResourceView* g_TamaChan_Lv1 = NULL;//たまちゃんLv1
 static ID3D11ShaderResourceView* g_TamaChan_Lv2 = NULL;//たまちゃんLv2
 static ID3D11ShaderResourceView* g_TamaChan_Lv3 = NULL;//たまちゃんLv3
 
-
-//
+//ソウルのゲットのやつ
+static ID3D11ShaderResourceView* g_SoulGet_Lv1_Effect = NULL;//ソウルのゲット時に表示Lv1
+static ID3D11ShaderResourceView* g_SoulGet_Lv2_Effect = NULL;//ソウルのゲット時に表示Lv2
+static ID3D11ShaderResourceView* g_SoulGet_Lv3_Effect = NULL;//ソウルのゲット時に表示Lv3
 
 
 //staticメンバー変数の初期化
@@ -201,6 +203,12 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, b
         g_TamaChan_Lv1 = InitTexture(L"asset\\texture\\anchor_point\\tama_Lv1.png");
         g_TamaChan_Lv2 = InitTexture(L"asset\\texture\\anchor_point\\tama_Lv2.png");
         g_TamaChan_Lv3 = InitTexture(L"asset\\texture\\anchor_point\\tama_Lv3.png");
+
+
+        //ソウルのゲット時に表示
+        g_SoulGet_Lv1_Effect = InitTexture(L"asset\\texture\\player_texture\\EFF_soulget_S_2x4.png");
+        g_SoulGet_Lv2_Effect = InitTexture(L"asset\\texture\\player_texture\\EFF_soulget_M_2x3.png");
+        g_SoulGet_Lv3_Effect = InitTexture(L"asset\\texture\\player_texture\\EFF_soulget_L_3x5.png");
     }
 
 
@@ -1617,16 +1625,116 @@ void Player::Draw()
         );
        
 
-        //エフェクト
+        //エフェクトレベル３になった時のフレーム
         DrawAnchorLevel3Frame();
 
 
         //たまちゃん
         DrawTamaChan();
 
+        //ソウルをゲットした時のエフェクト
+        DrawSoulGetEffect();
     }
 }
 
+
+void Player::DrawSoulGetEffect()
+{
+    if (soul_get_effect_sheet_cnt != 0)
+    {
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
+
+        // スクリーン中央位置 (16m x 9m の解像度で、中央は x = 8, y = 4.5 と仮定)
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+
+
+        // コライダーの位置の取得（プレイヤーの位置）
+        b2Vec2 player_position;
+        player_position.x = m_body->GetPosition().x;
+        player_position.y = m_body->GetPosition().y;
+
+        b2Vec2 Pos = GetPlayerBody()->GetPosition();
+
+
+        float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y+20;
+
+        float effect_scale = 4.0f;
+
+        soul_get_effect_sheet_cnt += 0.2;
+
+        switch (soul_get_effect_type)
+        {
+        case 1:
+
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_SoulGet_Lv1_Effect);
+
+            DrawDividedSpritePlayer(
+                { draw_x,
+                  draw_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * effect_scale ,GetSize().x * scale * effect_scale },
+                4, 2, soul_get_effect_sheet_cnt , 1.0, m_direction
+            );
+
+            if (7 <= soul_get_effect_sheet_cnt)
+            {
+                soul_get_effect_sheet_cnt = 0;
+            }
+
+            break;
+        case 2:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_SoulGet_Lv2_Effect);
+
+            DrawDividedSpritePlayer(
+                { draw_x,
+                  draw_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * effect_scale ,GetSize().x * scale * effect_scale },
+                3, 2, soul_get_effect_sheet_cnt , 1.0, m_direction
+
+            );
+            if (5 <= soul_get_effect_sheet_cnt)
+            {
+                soul_get_effect_sheet_cnt = 0;
+            }
+            break;
+        case 3:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_SoulGet_Lv3_Effect);
+
+            DrawDividedSpritePlayer(
+                { draw_x,
+                  draw_y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * effect_scale ,GetSize().x * scale * effect_scale },
+                5, 3, soul_get_effect_sheet_cnt , 1.0, m_direction
+
+            );
+            if (14 <= soul_get_effect_sheet_cnt)
+            {
+                soul_get_effect_sheet_cnt = 0;
+            }
+            break;
+        default:
+            break;
+        }
+
+      
+
+
+
+    }
+
+
+
+}
 
 
 void Player::UpdateDustEffect() {
@@ -1722,6 +1830,11 @@ void Player::Finalize()
         UnInitTexture(g_TamaChan_Lv2);
         UnInitTexture(g_TamaChan_Lv3);
 
+        // ソウルゲット時のエフェクト解放
+        UnInitTexture(g_SoulGet_Lv1_Effect);
+        UnInitTexture(g_SoulGet_Lv2_Effect);
+        UnInitTexture(g_SoulGet_Lv3_Effect);
+
         g_player_dead_Texture = NULL;
         g_player_Texture = NULL;
         g_player_jump_sheet = NULL;
@@ -1749,6 +1862,12 @@ void Player::Finalize()
         g_TamaChan_Lv1 = NULL;
         g_TamaChan_Lv2 = NULL;
         g_TamaChan_Lv3 = NULL;
+
+
+
+        g_SoulGet_Lv1_Effect = NULL;
+        g_SoulGet_Lv2_Effect = NULL;
+        g_SoulGet_Lv3_Effect = NULL;
     }
 
 }
