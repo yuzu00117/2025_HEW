@@ -1,4 +1,4 @@
-#include"player_UI.h"
+#include"Gauge_UI.h"
 #include"texture.h"
 #include"sprite.h"
 #include"anchor_spirit.h"
@@ -34,33 +34,31 @@ ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベ
 
 
 // 静的メンバー変数の初期化
-DirectX::XMFLOAT2 player_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
-DirectX::XMFLOAT2 player_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
+DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
+DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
 
-DirectX::XMFLOAT2 player_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);
-DirectX::XMFLOAT2 player_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);
 
-float player_UI::player_ui_alpha = 1.0f;
+float Gauge_UI::player_ui_alpha = 1.0f;
 
-bool	player_UI::m_blue_jewel_collected = false;
-bool	player_UI::m_red_jewel_collected = false;
-bool	player_UI::m_yellow_jewel_collected = false;
+bool	Gauge_UI::m_blue_jewel_collected = false;
+bool	Gauge_UI::m_red_jewel_collected = false;
+bool	Gauge_UI::m_yellow_jewel_collected = false;
+float	Gauge_UI::m_blue_jewel_collected_effect_cnt = 0;
+float	Gauge_UI::m_red_jewel_collected_effect_cnt = 0;
+float	Gauge_UI::m_yellow_jewel_collected_effect_cnt = 0;
+DirectX::XMFLOAT2 Gauge_UI::m_ring_position = player_ui_position;
 
-float	player_UI::m_blue_jewel_collected_effect_cnt = 0;
-float	player_UI::m_red_jewel_collected_effect_cnt = 0;
-float	player_UI::m_yellow_jewel_collected_effect_cnt = 0;
-
-DirectX::XMFLOAT2 player_UI::m_ring_position = player_ui_position;
-
-player_UI::player_UI()
+Gauge_UI::Gauge_UI()
 {
 }
 
-player_UI::~player_UI()
+Gauge_UI::~Gauge_UI()
 {
 }
 
-void player_UI::Initialize()
+void Gauge_UI::Initialize()
 {
 	//テクスチャのロード
 
@@ -98,12 +96,12 @@ void player_UI::Initialize()
 
 }
 
-void player_UI::Update()
+void Gauge_UI::Update()
 {
 
 }
 
-void player_UI::Draw()
+void Gauge_UI::Draw()
 {	
 	float temp_stamina_position_y;	//体力ゲージが移動した後の座標
 	float temp_stamina_scale_y;		//体力ゲージの今の大きさ
@@ -396,7 +394,7 @@ void player_UI::Draw()
 
 }
 
-void player_UI::Finalize()
+void Gauge_UI::Finalize()
 {
 
 	if (g_ring_Texture != NULL)
