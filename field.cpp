@@ -1208,6 +1208,7 @@ void Field::Initialize(bool respawning)
 					itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
 				}
 
+
 				if (field_map[y][x] == 26) {//上から落ちるや
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(100.f, 100.f), b2Vec2(9.f,SCREEN_SCALE), b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), VIDEO_BUTTON_A, 0.0f);
 				}
@@ -1218,6 +1219,7 @@ void Field::Initialize(bool respawning)
 				if (field_map[y][x] == 28) {//上から落ちるや
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(100.f, 100.f), b2Vec2(9.f, SCREEN_SCALE), b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), VIDEO_BUTTON_RIGHT_STICK, 0.0f);
 				}
+
 
 
 

@@ -120,6 +120,7 @@ private:
 
 	bool left_flag;
 
+	bool m_is_border = true;
 	int m_need_level = 0;
 	float m_border_alpha = 0;
 	const float m_border_alpha_max = 0.75f;

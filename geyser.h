@@ -142,6 +142,8 @@ public:
 	void SetOpenGyserFlag(bool flag)
 	{
 		open_gyeser_flag = flag;
+		//縁の描画終了
+		m_is_border = false;
 	}
 
 
@@ -197,7 +199,7 @@ private:
 	//柱がバラバラになったときに使う
 	std::vector<b2Body*> boss_geyser_body_Splitting;
 
-
+	bool m_is_border = true;
 	int m_need_level = 0;
 	float m_border_alpha = 0;
 	const float m_border_alpha_max = 0.75f;
