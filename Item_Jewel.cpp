@@ -192,7 +192,7 @@ void    ItemJewel::Function()
         player.SetSpeed(speed_change_value);
         //プレイヤーのジャンプ力が1.5倍
         jump_force = player.GetJumpForce();
-        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 1.2f - jump_force.y };
+        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 2.0f - jump_force.y };
         player.SetJumpForce(jump_force_change_value);
         break;
     case RED:
