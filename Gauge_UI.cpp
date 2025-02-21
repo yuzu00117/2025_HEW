@@ -15,18 +15,10 @@ ID3D11ShaderResourceView* g_yellow_jewel_Texture = NULL;//宝石　黄
 ID3D11ShaderResourceView* g_red_jewel_fit_effect = NULL;	//宝石　赤
 ID3D11ShaderResourceView* g_blue_jewel_fit_effect = NULL;	//宝石　青
 ID3D11ShaderResourceView* g_yellow_jewel_fit_effect = NULL;//宝石　黄
-
-
-ID3D11ShaderResourceView* g_soul_gage_Texture = NULL;           //ソウルゲージのテクスチャ
-ID3D11ShaderResourceView* g_soul_gage_HP_Texture = NULL;		//ソウルゲージのHP部分
+ID3D11ShaderResourceView* g_soul_gage_blue_Texture = NULL;          //ソウルゲージのテクスチャ（青）
+ID3D11ShaderResourceView* g_soul_gage_yellow_Texture = NULL;        //ソウルゲージのテクスチャ（黄色）
+ID3D11ShaderResourceView* g_soul_gage_red_Texture = NULL;           //ソウルゲージのテクスチャ（赤）
 ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ソウルゲージの外枠
-
-
-ID3D11ShaderResourceView* g_anchor_level_background_Texture = NULL;//アンカーのゲージのバックグランド
-ID3D11ShaderResourceView* g_anchor_level_1_Texture = NULL;		   //アンカーレベル１のテクスチャ
-ID3D11ShaderResourceView* g_anchor_level_2_Texture = NULL;		   //アンカーレベル2のテクスチャ
-ID3D11ShaderResourceView* g_anchor_level_3_Texture = NULL;		   //アンカーレベル3のテクスチャ
-ID3D11ShaderResourceView* g_anchor_level_border_Texture = NULL;	   //アンカーレベルの外枠
 ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //アンカーレベルの仕切り
 ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベルの外側の装飾
 
@@ -37,8 +29,8 @@ ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベ
 DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
 DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
 
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);	//枠を除いたゲージ色の部分のみの位置
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);		//枠を除いたゲージ色の部分のみのサイズ
 
 float Gauge_UI::player_ui_alpha = 1.0f;
 
@@ -76,16 +68,12 @@ void Gauge_UI::Initialize()
 	g_yellow_jewel_fit_effect = InitTexture(L"asset\\texture\\UI_soul_gage\\EFF_GemFit_Yellow_3x4.png");
 
 	//ソウルゲージ達
-	g_soul_gage_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_soul_no_white.png");
-	g_soul_gage_HP_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_HP_no_white.png");
+	g_soul_gage_blue_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gauge_blue.png");
+	g_soul_gage_yellow_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gauge_yellow.png");
+	g_soul_gage_red_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gauge_red.png");
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
 
 	//アンカーレベルのテクスチャたち
-	g_anchor_level_background_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\level_back_ground.png");
-	g_anchor_level_1_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\level1.png");
-	g_anchor_level_2_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\level2.png");
-	g_anchor_level_3_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\level3.png");
-	g_anchor_level_border_Texture= InitTexture(L"asset\\texture\\UI_soul_gage\\level_line.png");
 	g_anchor_level_division_Texture= InitTexture(L"asset\\texture\\UI_soul_gage\\gage_division.png");
 	g_anchor_level_outline_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_out_line.png");
 
@@ -142,46 +130,78 @@ void Gauge_UI::Draw()
 	//);
 
 
-	if (true) //ここはアンカーゲージのHP　数値によって変更が必要
-	{
-		//今のアンカーのソウル値を取る
-		float stamina = PlayerStamina::GetPlayerStaminaValue();
-
-		//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
-		//Max状態の時の長さに比例して、今のソウル値の長さを調整
-		temp_stamina_scale_y = (stamina / (MAX_ANCHOR_SPIRIT + MAX_STAMINA)) * gauge_only_size.y;
-		scale = XMFLOAT2(gauge_only_size.x, temp_stamina_scale_y);
-		//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
-		//temp_position_x = (stamina / (MAX_ANCHOR_SPIRIT + MAX_STAMINA)) * m_position.x;
-		temp_stamina_position_y = (gauge_only_size.y / 2) - (temp_stamina_scale_y / 2) + gauge_only_position.y;
-
-
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_HP_Texture);
-		DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_stamina_position_y), 0.0f, scale, (int)MAX_STAMINA + (int)MAX_ANCHOR_SPIRIT, 1, (int)MAX_STAMINA + 1, (int)stamina);
-
-	}
-
 
 
 	if (true) //ここはアンカーゲージの　数値によって変更が必要
 	{
+		//青色ゲージ
+		if (AnchorSpirit::GetAnchorLevel() < 3)
+		{
+			//今のゲージ枠に相当するアンカーのソウル値を計算
+			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue();
+			if (virtual_spirit > 100) { virtual_spirit = 100.0f; }
 
-		//今のアンカーのソウル値を取る
-		float spirit = AnchorSpirit::GetAnchorSpiritValue();
-
-		//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
-		//Max状態の時の長さに比例して、今のソウル値の長さを調整
-		temp_spirit_scale_y = (spirit / (MAX_ANCHOR_SPIRIT + MAX_STAMINA)) * gauge_only_size.y;
-		scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
-		//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
-		temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
+			//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
+			//Max状態の時の長さに比例して、今のソウル値の長さを調整
+			temp_spirit_scale_y = (virtual_spirit / 100) * gauge_only_size.y;
+			scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
+			//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
+		//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
+			temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
 
 
-		// シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_Texture);
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_blue_Texture);
 
-		DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, (int)MAX_STAMINA + (int)MAX_ANCHOR_SPIRIT, 1, (int)MAX_STAMINA + 1, (int)spirit);
+			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+
+		}
+		//黄色ゲージ
+		if (AnchorSpirit::GetAnchorLevel() > 1)
+		{
+			//今のゲージ枠に相当するアンカーのソウル値を計算
+			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 100;
+			if (virtual_spirit > 100) { virtual_spirit = 100.0f; }
+
+			//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
+			//Max状態の時の長さに比例して、今のソウル値の長さを調整
+			temp_spirit_scale_y = (virtual_spirit / 100) * gauge_only_size.y;
+			scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
+			//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
+		//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
+			temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
+
+
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_yellow_Texture);
+
+			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+
+		}
+		//赤色ゲージ
+		if (AnchorSpirit::GetAnchorLevel() == 3)
+		{
+			//今のゲージ枠に相当するアンカーのソウル値を計算
+			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 200;
+
+			//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
+			//Max状態の時の長さに比例して、今のソウル値の長さを調整
+			temp_spirit_scale_y = (virtual_spirit / 100) * gauge_only_size.y;
+			scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
+			//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
+		//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
+			temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
+
+
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_red_Texture);
+
+			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+
+		}
 	}
+
+
 
 
 
@@ -324,74 +344,6 @@ void Gauge_UI::Draw()
 
 
 
-	//---------------------------------------------------------------------------------------
-	//アンカーレベルの表示
-
-	//アンカーレベルの背景
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_background_Texture);
-
-	DrawSpriteOld(
-		{ player_ui_position },
-		0,
-		{ player_ui_size },
-		player_ui_alpha
-	);
-
-	//アンカーレベル1
-	if (AnchorSpirit::GetAnchorLevel() >= 1)
-	{
-
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_1_Texture);
-
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	}
-
-	//アンカーレベル2
-	if (AnchorSpirit::GetAnchorLevel() >= 2)
-	{
-		
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_2_Texture);
-
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	}
-
-
-	//アンカーレベル1
-	if (AnchorSpirit::GetAnchorLevel() >= 3)
-	{
-		
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_3_Texture);
-
-		DrawSpriteOld(
-			{ player_ui_position },
-			0,
-			{ player_ui_size },
-			player_ui_alpha
-		);
-	}
-
-
-	//アンカーレベルの外枠
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_border_Texture);
-
-	DrawSpriteOld(
-		{ player_ui_position },
-		0,
-		{ player_ui_size },
-		player_ui_alpha
-	);
-
-
 }
 
 void Gauge_UI::Finalize()
@@ -413,16 +365,12 @@ void Gauge_UI::Finalize()
 		UnInitTexture(g_yellow_jewel_fit_effect);
 
 		// ソウルゲージのテクスチャ解放
-		UnInitTexture(g_soul_gage_Texture);
-		UnInitTexture(g_soul_gage_HP_Texture);
+		UnInitTexture(g_soul_gage_blue_Texture);
+		UnInitTexture(g_soul_gage_yellow_Texture);
+		UnInitTexture(g_soul_gage_red_Texture);
 		UnInitTexture(g_soul_gage_border_Texture);
 
 		// アンカーレベルのテクスチャ解放
-		UnInitTexture(g_anchor_level_background_Texture);
-		UnInitTexture(g_anchor_level_1_Texture);
-		UnInitTexture(g_anchor_level_2_Texture);
-		UnInitTexture(g_anchor_level_3_Texture);
-		UnInitTexture(g_anchor_level_border_Texture);
 		UnInitTexture(g_anchor_level_division_Texture);
 		UnInitTexture(g_anchor_level_outline_Texture);
 
@@ -437,15 +385,11 @@ void Gauge_UI::Finalize()
 		g_blue_jewel_fit_effect = NULL;
 		g_yellow_jewel_fit_effect = NULL;
 
-		g_soul_gage_Texture = NULL;
-		g_soul_gage_HP_Texture = NULL;
+		g_soul_gage_blue_Texture = NULL;
+		g_soul_gage_yellow_Texture = NULL;
+		g_soul_gage_red_Texture = NULL;
 		g_soul_gage_border_Texture = NULL;
 
-		g_anchor_level_background_Texture = NULL;
-		g_anchor_level_1_Texture = NULL;
-		g_anchor_level_2_Texture = NULL;
-		g_anchor_level_3_Texture = NULL;
-		g_anchor_level_border_Texture = NULL;
 		g_anchor_level_division_Texture = NULL;
 		g_anchor_level_outline_Texture = NULL;
 		
