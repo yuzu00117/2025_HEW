@@ -107,10 +107,14 @@ void	ItemJewel::Update()
     {
         app_atomex_start(Player_Jewelry_Colect_Sound);
         SetIfCollecting(false);
+        //ゲットエフェクトスタート
+        
         //ボディの情報を消す
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
+
+        
         
         return;
     }
@@ -141,7 +145,12 @@ void	ItemJewel::Update()
             Gauge_UI::SetJewelCollected(m_type, true);
         }
 
+     
+
     }
+
+
+ 
 
 }
 
@@ -171,6 +180,7 @@ void ItemJewel::SetIfCollecting(bool flag)
         app_atomex_start(Player_Jewelry_Colect_Sound);
 
 
+
     }
 }
 
@@ -182,6 +192,9 @@ void    ItemJewel::Function()
     float speed_change_value;
     b2Vec2 jump_force;
     b2Vec2 jump_force_change_value;
+
+
+  
 
     switch (m_type)
     {
@@ -218,12 +231,15 @@ void ItemJewel::Initialize()
     {
     case BLUE:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
+        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Blue_3x4.png");
         break;
     case RED:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
+        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Red_3x4.png");
         break;
     case YELLOW:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
+        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Yellow_3x4.png");
         break;
     }
 
@@ -304,6 +320,49 @@ void ItemJewel::Draw()
             m_Alpha
         );
     }
+
+    if (jem_get_sheet_cnt != 0)
+    {
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
+
+
+
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+
+        // コライダーの位置の取得（アイテムーの位置）
+        b2Vec2 position;
+        position.x = get_effect_pos.x;
+        position.y = get_effect_pos.y;
+
+
+        // プレイヤー位置を考慮してスクロール補正を加える
+        //取得したbodyのポジションに対してBox2dスケールの補正を加える
+        float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+        float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+        //エフェクト描画
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_get_effect_texture);
+
+        DrawSplittingSprite(
+            { draw_x,
+              draw_y },
+            0.0f,
+            { 300 ,300 },
+            4, 3, jem_get_sheet_cnt, 3.0
+        );
+
+        jem_get_sheet_cnt += 1;
+
+        if (12 <= jem_get_sheet_cnt)
+        {
+            jem_get_sheet_cnt = 0;
+        }
+    }
+
 }
 
 
@@ -321,10 +380,17 @@ void ItemJewel::Finalize()
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
+        g_Texture = NULL;
     }
     if (g_Effect_Texture)
     {
         UnInitTexture(g_Effect_Texture);
+        g_Effect_Texture = NULL;
+    }
+    if (g_get_effect_texture)
+    {
+        UnInitTexture(g_get_effect_texture);
+        g_get_effect_texture = NULL;
     }
 }
 
