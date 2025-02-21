@@ -5,15 +5,15 @@
  *  ACB  Ver.        : Ver.1.44.1
  *  File Path        : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound2/Public/WorkUnit_0
  *  File Name        : CueSheet_0.h
- *  File Size        : 40525824 bytes
- *  Date Time        : 2025/02/18 17:35:46
+ *  File Size        : 40873440 bytes
+ *  Date Time        : 2025/02/21 11:43:22
  *  Target           : Public
- *  Cues             : 57
+ *  Cues             : 61
  *  CueSheet Comment : 
  *  Stream Awb Path  : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound2/Public/WorkUnit_0/CueSheet_0.awb
  *===========================================================================*/
 
-#define CRI_CUESHEET_0_CUENUM (57)
+#define CRI_CUESHEET_0_CUENUM (61)
 
 /* AISAC Control List (AISAC Control ID) */
 
@@ -52,6 +52,10 @@
 #define CRI_CUESHEET_0_フレームアップ (49) /*  */
 #define CRI_CUESHEET_0_プレイヤーの着地音 (57) /*  */
 #define CRI_CUESHEET_0_プレイヤーのジャンプ音 (58) /*  */
+#define CRI_CUESHEET_0_残機減少         (63) /*  */
+#define CRI_CUESHEET_0_錨のスピードアップ (62) /*  */
+#define CRI_CUESHEET_0_攻撃無効         (64) /*  */
+#define CRI_CUESHEET_0_移動スピードアップ (65) /*  */
 #define CRI_CUESHEET_0_岩が落ちる音   (16) /*  */
 #define CRI_CUESHEET_0_宝を取る音      (17) /*  */
 #define CRI_CUESHEET_0_木が倒れる音   (18) /*  */
