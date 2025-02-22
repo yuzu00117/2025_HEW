@@ -444,6 +444,8 @@ void Game::Draw(void)
     //フィールドの描画処理
     Field::Draw();
 
+    boss.DrawObjectFront();
+
  
 
     //プレイヤーの描画処理
