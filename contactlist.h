@@ -532,12 +532,12 @@ public:
                     if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
                     {
                         boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                        pillar_instance->Pulling_pillar();//木を引っ張る処理を呼び出す
+                        pillar_instance->SetPullingFlag(true);
                     }
                     else
                     {
                         boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
-                        pillar_instance->Pulling_pillar();
+                        pillar_instance->SetPullingFlag(true);
                     }
                 }
 
@@ -1349,6 +1349,14 @@ public:
             boss.SetShockWaveFrame(300);
         }
 
+        //柱とショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_shock_wave))
+        {
+
+            boss.SetShockWaveFrame(300);
+        }
+
 
 
         //プレイヤーとチャージ攻撃
@@ -1423,6 +1431,46 @@ public:
                 boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
             }
         }
+
+
+        //ミニゴーレムとオブジェクト
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_mini_golem))
+        {
+          
+           
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
+            }
+        }
+
+        //ミニゴーレムとボスの壁
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_mini_golem))
+        {
+            if (objectA->object_name == Boss_Wall || objectB->object_name == Boss_Wall)
+            {
+                if (objectA->collider_type == collider_mini_golem)
+                {
+                    boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+                }
+                else
+                {
+                    boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+                }
+            }
+        }
+
+    
 
 
         //ボスのセンサーとプレイヤー
@@ -1743,7 +1791,26 @@ public:
 
         }
 
+        // プレーヤーとコンタクトブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理
 
+            if (objectA->collider_type == collider_contact_block)//Aがコンタクトブロックのオブジェクト
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectA->id);
+                contact_block_instance->SetFlag(false);
+            }
+            if (objectB->collider_type == collider_contact_block)
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectB->id);
+                contact_block_instance->SetFlag(false);
+            }
+
+        }
 
 
 
