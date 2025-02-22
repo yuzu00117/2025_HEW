@@ -127,6 +127,9 @@ private:
 	float m_border_alpha = 0;
 	const float m_border_alpha_max = 0.75f;
 	const float m_border_alpha_min = 0.0f;
+
+
+	bool camera_shake_was = false;
 };
 
 
