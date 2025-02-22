@@ -26,15 +26,23 @@ b2Vec2 g_old_player_position;
 // îwåiÉCÉìÉXÉ^ÉìÉX
 Bg bg;
 
-//stage1_1
-#define STAGE_1_1_BACK_GROUND_HEIGHT (50)
-#define STAGE_1_1_BACK_GROUND_SIZE_X (1280*1.7)
-#define STAGE_1_1_BACK_GROUND_SIZE_Y (720*1.7)
-
 //tutorial
 #define TUTORIAL_BACK_GROUND_HEIGHT (0)
 #define TUTORIAL_BACK_GROUND_SIZE_X (1280*1.1)
 #define TUTORIAL_BACK_GROUND_SIZE_Y (720*1.1)
+
+//stage1_1êX
+#define STAGE_1_1_FOREST_BACK_GROUND_HEIGHT (50)
+#define STAGE_1_1_FOREST_BACK_GROUND_SIZE_X (1280*1.7)
+#define STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y (720*1.7)
+
+//stage1_1à‚ê’
+#define STAGE_1_1_REMAINS_BACK_GROUND_HEIGHT (50)
+#define STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X (1280*1.6)
+#define STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y (720*1.6)
+
+
+
 
 void Bg::Initialize()
 {
@@ -74,8 +82,8 @@ void Bg::Initialize()
 
 
         g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
-        height= STAGE_1_1_BACK_GROUND_HEIGHT;
-        width = STAGE_1_1_BACK_GROUND_SIZE_X;
+        height= STAGE_1_1_FOREST_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
         break;
 
     case STAGE_ISEKI: // 1-1à‚ê’
@@ -83,8 +91,8 @@ void Bg::Initialize()
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
 
         g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\remains_background01.png");
-        height= STAGE_1_1_BACK_GROUND_HEIGHT;
-        width = STAGE_1_1_BACK_GROUND_SIZE_X;
+        height= STAGE_1_1_REMAINS_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
         break;
 
     default:
@@ -97,8 +105,8 @@ void Bg::Initialize()
 
 
         g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
-        height = STAGE_1_1_BACK_GROUND_HEIGHT;
-        width = STAGE_1_1_BACK_GROUND_SIZE_X;
+        height = STAGE_1_1_FOREST_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
         break;
     }
 
@@ -133,17 +141,17 @@ void Bg::Update()
         break;
 
     case STAGE_1_1:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y= STAGE_1_1_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y= STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
         break;
 
     case STAGE_ISEKI:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y= STAGE_1_1_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y= STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
         break;
     default:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
         break;
     }
     
@@ -189,13 +197,13 @@ void Bg::Draw()
         break;
 
     case STAGE_1_1:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
         break;
 
     case STAGE_ISEKI:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
         break;
         
     default:
