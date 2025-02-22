@@ -18,6 +18,7 @@
 #include"collider_type.h"
 #include"player_position.h"
 #include"create_filter.h"
+#include"camera_shake.h"
 
 
 //テクスチャの入れ物
@@ -458,6 +459,38 @@ void wood::Update()
 		SetState(Wood_Falling);	//落ちている状態にセット
 	}
 
+
+	float angleDeg = Wood_body->GetAngle() * 180.0f / M_PI;
+	if (angleDeg < 0) {
+		angleDeg += 360.0f; // 負の値を補正
+	}
+	if (angleDeg >= 80.0f && angleDeg <= 280.0f) {
+		// 条件を満たす処理
+		if (camera_shake_was == false)
+		{
+			camera_shake_was = true;
+
+			switch (m_need_level)
+			{
+
+			case 1:
+				CameraShake::StartCameraShake(60, 5, 25);
+
+				break;
+			case 2:
+				CameraShake::StartCameraShake(90, 5, 25);
+
+				break;
+			case 3:
+				CameraShake::StartCameraShake(120, 5, 25);
+
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
 }
 
 void wood::Pulling_wood()
