@@ -26,14 +26,24 @@ b2Vec2 g_old_player_position;
 // 背景インスタンス
 Bg bg;
 
-//stage1_1
-#define STAGE_1_1_BACK_GROUND_HEIGHT (50)
-#define STAGE_1_1_BACK_GROUND_SIZE_X (1280*1.7)
-#define STAGE_1_1_BACK_GROUND_SIZE_Y (720*1.7)
-
+//tutorial
 #define TUTORIAL_BACK_GROUND_HEIGHT (0)
 #define TUTORIAL_BACK_GROUND_SIZE_X (1280*1.1)
 #define TUTORIAL_BACK_GROUND_SIZE_Y (720*1.1)
+
+//stage1_1森
+#define STAGE_1_1_FOREST_BACK_GROUND_HEIGHT (50)
+#define STAGE_1_1_FOREST_BACK_GROUND_SIZE_X (1280*1.7)
+#define STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y (720*1.7)
+
+//stage1_1遺跡
+#define STAGE_1_1_REMAINS_BACK_GROUND_HEIGHT (50)
+#define STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X (1280*1.6)
+#define STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y (720*1.6)
+
+
+
+
 void Bg::Initialize()
 {
 
@@ -49,20 +59,7 @@ void Bg::Initialize()
 
     switch (sceneManager.GetStageName())
     {
-    case STAGE_1_1:
-        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
-        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
-        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
-        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background_5.png");
-
-        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
-
-
-        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
-        height= STAGE_1_1_BACK_GROUND_HEIGHT;
-        width = STAGE_1_1_BACK_GROUND_SIZE_X;
-        break;
-    case STAGE_TUTORIAL:
+    case STAGE_TUTORIAL: // チュートリアル
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\tutorial\\background_1.png");
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
         g_Bg_Texture[2] = InitTexture(L"asset\\texture\\tutorial\\background_2.png");
@@ -75,6 +72,29 @@ void Bg::Initialize()
         width = TUTORIAL_BACK_GROUND_SIZE_X;
         break;
 
+    case STAGE_1_1: // 1-1森
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
+        g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
+        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\background_5.png");
+
+        g_Bg_Texture_light = InitTexture(L"asset\\texture\\stage1_1\\background_light.png");
+
+
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
+        height= STAGE_1_1_FOREST_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        break;
+
+    case STAGE_ISEKI: // 1-1遺跡
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
+
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\remains_background01.png");
+        height= STAGE_1_1_REMAINS_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        break;
+
     default:
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
@@ -85,8 +105,8 @@ void Bg::Initialize()
 
 
         g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\background_1.png");
-        height = STAGE_1_1_BACK_GROUND_HEIGHT;
-        width = STAGE_1_1_BACK_GROUND_SIZE_X;
+        height = STAGE_1_1_FOREST_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
         break;
     }
 
@@ -115,17 +135,23 @@ void Bg::Update()
     SceneManager & sceneManager = SceneManager::GetInstance();
     switch (sceneManager.GetStageName())
     {
-    case STAGE_1_1:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y= STAGE_1_1_BACK_GROUND_SIZE_Y;
-        break;
     case STAGE_TUTORIAL:
         BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
         break;
+
+    case STAGE_1_1:
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y= STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
+        break;
+
+    case STAGE_ISEKI:
+        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y= STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
+        break;
     default:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
         break;
     }
     
@@ -165,14 +191,21 @@ void Bg::Draw()
     SceneManager& sceneManager = SceneManager::GetInstance();
     switch (sceneManager.GetStageName())
     {
-    case STAGE_1_1:
-        BACK_GROUND_SIZE_X = STAGE_1_1_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_BACK_GROUND_SIZE_Y;
-        break;
     case STAGE_TUTORIAL:
         BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
         break;
+
+    case STAGE_1_1:
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
+        break;
+
+    case STAGE_ISEKI:
+        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
+        break;
+        
     default:
         BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
