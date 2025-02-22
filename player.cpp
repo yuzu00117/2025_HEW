@@ -526,7 +526,7 @@ void Player::Update()
         // m_body->ApplyLinearImpulseToCenter(m_jump_force, true);
         m_is_jumping = true;
 
-        VibrationController::StartVibration(0.5, 0.5, 6);
+        
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 
@@ -613,6 +613,8 @@ void Player::Update()
         is_tamachan_disappearing = true;
         tamachan_disappear_effect_cnt = 0.0f;
 
+      
+
         break;
     case Create_wait_state:
 
@@ -628,6 +630,9 @@ void Player::Update()
 
         app_atomex_start(Anchor_Thorw_Sound);
         Anchor::SetAnchorState(Throwing_state);
+        
+
+       
 
         if (AnchorPoint::GetTargetAnchorPointBody()->GetPosition().x < m_body->GetPosition().x)
         {
@@ -639,6 +644,8 @@ void Player::Update()
         }
 
         StartAnchorEffect();
+        //振動
+        VibrationController::StartVibration(0.05, 0.05, 6);
         break;
 
     case Throwing_state:                                   // 錨が飛んでいる状態
@@ -658,6 +665,9 @@ void Player::Update()
         Anchor::CreateRotateJoint();              // 回転ジョイントを作成
         AnchorSpirit::EditAnchorSpiritValue(-25); // アンカーを使ったらゲージを払う
         Anchor::SetAnchorState(Pulling_state);    // 引っ張り状態に移行
+
+        //振動
+        VibrationController::StartVibration(0.2, 0.2, 15);
 
         app_atomex_start(Anchor_Pulling_Sound);
         g_anchor_frame_management_number = 0;

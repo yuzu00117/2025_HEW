@@ -23,6 +23,7 @@
 #include "camera_shake.h"
 #include "hit_stop.h"
 #include "Item_Spirit.h"
+#include"Xinput_controller.h"
 
 // 使用するテクスチャファイルの定義
 static ID3D11ShaderResourceView *g_mini_boss_Texture = NULL;				 // ミニゴーレムのテクスチャ
@@ -308,7 +309,7 @@ void Boss_1_1::Update()
 		{
 			debug_flag = 60;
 			boss_field_level++;
-			BossDamaged();
+			
 		}
 		if (debug_flag != 0)
 		{
@@ -815,7 +816,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		boss_field_level++;
 
 		// カメラシェイクスタート
-		CameraShake::StartCameraShake(40, 0, 60);
+		CameraShake::StartCameraShake(100, 20, 40);
 		HitStop::SetHitStopFlag(15);
 	}
 }
@@ -899,6 +900,9 @@ void Boss_1_1::ShockWaveUpdate(void)
 			}
 
 			GetAttackBody()->SetLinearVelocity(b2Vec2(minus_flag * Shock_Wave_Speed, 0.0f));
+
+			//振動の呼び出し
+			CameraShake::StartCameraShake(20,30,20);
 		}
 		Now_Shock_Wave_time_Frame++;
 

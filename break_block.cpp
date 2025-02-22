@@ -17,6 +17,7 @@
 #include"create_filter.h"
 #include"tool.h"
 #include"break_effect.h"
+#include"camera_shake.h"
 
 
 //オブジェクトに触れたら壊れるオブジェクト
@@ -119,6 +120,8 @@ void Break_Block::Update()
 			PillarFragmentsManager::GetInstance().Destroy_Splitting(m_body, Texture, GetSize());
 
 			SetBody(nullptr);
+
+			CameraShake::StartCameraShake(20, 20, 20);
 
 			m_flag = false;
 		}
