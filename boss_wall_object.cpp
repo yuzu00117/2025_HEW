@@ -390,8 +390,8 @@ void Boss_Wall_Objcet::WallPullling()
 			minus = -1;
 		}
 	
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(50.0f * minus, -2.0f), true);
-		m_body->ApplyTorque(1000 * minus, true);
+		m_body->SetLinearVelocity(b2Vec2(50.0f * minus, 0.0f));
+		
 	}
 }
 
