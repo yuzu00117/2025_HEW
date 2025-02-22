@@ -75,6 +75,8 @@ static ID3D11ShaderResourceView* g_Iseki_Right_Texture = NULL;	//遺跡の中右
 
 static ID3D11ShaderResourceView* g_Big_Wood_Texture = NULL;	//大きい木のテクスチャ
 
+static ID3D11ShaderResourceView* g_Iseki_boss_wall_object_Texture = NULL;	//ボスの壁のテクスチャ
+
 
 
 
@@ -96,36 +98,43 @@ void Field::Initialize(bool respawning)
 	
 	//テクスチャの初期化
 	
-	g_AnchorPoint_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
+	if (g_AnchorPoint_Texture == NULL)
+	{
+		g_AnchorPoint_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//アンカーポイントのテクスチャ
 
-	g_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_grass_02.png");//グラウンドのテクスチャ
-	g_under_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_soil_02.png");//グラウンドのテクスチャ
-	g_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_right_02.png");//草のテクスチャ　右側
-	g_left_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_left_02.png");//草のテクスチャ　左側
+		g_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_grass_02.png");//グラウンドのテクスチャ
+		g_under_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_soil_02.png");//グラウンドのテクスチャ
+		g_right_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_right_02.png");//草のテクスチャ　右側
+		g_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_left_02.png");//草のテクスチャ　左側
 
-	
 
-	g_invisibility_wall_Texture=InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
 
-	g_under_right_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
-	g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
+		g_invisibility_wall_Texture = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//透明な壁のテクスチャ
 
-	g_under_right_ground_down_Texture=InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
-	g_under_left_ground_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
+		g_under_right_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
+		g_under_left_ground_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
 
-	g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
-	g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
-	
-	//----------------------------------------------------------------------------------------
-	//遺跡のテクスチャ
-	
-	g_Iseki_Top_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_top.png");				//遺跡の上のテクスチャ
-	g_Iseki_Top_Left_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_left.png");		//遺跡の上のテクスチャ  左
-	g_Iseki_Top_Right_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_right.png");		//遺跡の上のテクスチャ  右
+		g_under_right_ground_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_right.png");//右側のテクスチャ
+		g_under_left_ground_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_tuti_Left.png");//右側のテクスチャ
 
-	g_Iseki_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block.png");						//遺跡の中のテクスチャ
-	g_Iseki_Left_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_naka_left.png");		//遺跡の中のテクスチャ  左
-	g_Iseki_Right_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_naka_right.png");	//遺跡の中のテクスチャ  右
+		g_sloop_left_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_Down_02.png");//右側のテクスチャ
+		g_sloop_right_side_texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_connection_slope02.png");//右側のテクスチャ
+
+		//----------------------------------------------------------------------------------------
+		//遺跡のテクスチャ
+
+		g_Iseki_Top_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_top.png");				//遺跡の上のテクスチャ
+		g_Iseki_Top_Left_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_left.png");		//遺跡の上のテクスチャ  左
+		g_Iseki_Top_Right_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_right.png");		//遺跡の上のテクスチャ  右
+
+		g_Iseki_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block.png");						//遺跡の中のテクスチャ
+		g_Iseki_Left_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_naka_left.png");		//遺跡の中のテクスチャ  左
+		g_Iseki_Right_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_block_naka_right.png");	//遺跡の中のテクスチャ  右
+
+
+		g_Iseki_boss_wall_object_Texture = InitTexture(L"asset\\texture\\stage_block\\boss_wall_texture.png");	//ボスを倒すための壁
+	}
+
 
 	//----------------------------------------------------------------------------------------
 	// 
@@ -836,65 +845,65 @@ void Field::Initialize(bool respawning)
 
 				//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 				if (field_map[y][x] == 15) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_1);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_1,1);
 				}
 				if (field_map[y][x] == 16) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_2,1);
 				}
 				if (field_map[y][x] == 17) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_3, 1);
 				}
 				if (field_map[y][x] == 18) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_4);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_4, 1);
 				}
 				if (field_map[y][x] == 19) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_5);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_5, 1);
 				}
 				if (field_map[y][x] == 20) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_6);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_6, 1);
 				}
 				if (field_map[y][x] == 21) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_7);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_7, 1);
 				}
 				if (field_map[y][x] == 22) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_8);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_8, 1);
 				}
 				if (field_map[y][x] == 23) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_9);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_9, 1);
 				}
 				if (field_map[y][x] == 24) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_10);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_10, 1);
 				}
 				if (field_map[y][x] == 25) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_11);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_11, 1);
 				}
 				if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_12);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_12, 1);
 				}
 				if (field_map[y][x] == 27) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_13);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_13, 1);
 				}
 				if (field_map[y][x] == 25) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_14);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_14, 1);
 				}
 				if (field_map[y][x] == 26) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_15);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_15, 1);
 				}
 				if (field_map[y][x] == 27) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_16);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_16, 1);
 				}
 				if (field_map[y][x] == 28) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_17);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_17, 1);
 				}
 
 				if (field_map[y][x] == 29) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_18);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_18, 1);
 				}
 				if (field_map[y][x] == 30) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_19);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_19, 1);
 				}
 				if (field_map[y][x] == 31) {//ボスの地面ブロック破壊できる
-					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_20);
+					objectManager.AddBossFieldBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 3, boss_room_level_20, 1);
 				}
 				
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -978,7 +987,7 @@ void Field::Initialize(bool respawning)
 				}
 				//----------------------------------------------------------------------------------------------------------------------------------------------
 				//ボス部屋のジャンプ台
-				b2Vec2 jump_power = b2Vec2(0.0f, -1.0f);
+				b2Vec2 jump_power = b2Vec2(0.0f, -0.8f);
 				int jump_texture_type = 1;
 
 				if (field_map[y][x] == 51) {
@@ -1042,11 +1051,11 @@ void Field::Initialize(bool respawning)
 
 				b2Vec2 boss_wall_size = { 17.f,25.f };
 				if (field_map[y][x] == 70) {
-					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6, g_Ground_Texture, false);
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6, g_Iseki_boss_wall_object_Texture, false);
 				}
 				//ボスのオブジェクトに使う壁
 				if (field_map[y][x] == 71) {
-					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6,g_Ground_Texture,true);
+					objectManager.AddBossWall(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), boss_wall_size, 6, 6, g_Iseki_boss_wall_object_Texture,true);
 				}
 
 
@@ -1479,9 +1488,11 @@ void Field::Finalize(bool respawning)
 		UnInitTexture(g_Iseki_Right_Texture);
 		g_Iseki_Right_Texture = NULL;
 
-
 		UnInitTexture(g_Big_Wood_Texture);
 		g_Big_Wood_Texture = NULL;
+		
+		UnInitTexture(g_Iseki_boss_wall_object_Texture);
+		g_Iseki_boss_wall_object_Texture = NULL;
 	}
 
 }
