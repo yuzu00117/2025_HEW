@@ -132,11 +132,19 @@ void Gauge_UI::Draw()
 
 	if (true) //ここはアンカーゲージの　数値によって変更が必要
 	{
-
 		int count_layer = 0;	//今何層目描いているのか
+		//	今のアンカーレベルを取得
+		int anchor_level = AnchorSpirit::GetAnchorLevel();
+		//　もしソウルゲージがさっきダメージ入っていたのなら、ゲージの半透明のダメージを顧慮するために、半透明のやつの今のアンカーレベルを計算
+		int prev_anchor_level = (AnchorSpirit::GetAnchorSpiritValue() + AnchorSpirit::GetAnchorSpiritDamage()) / 100.0f + 1;
+		//半透明のやつの計算されたアンカーレベルが3を超えないための制御
+		if (prev_anchor_level > 3) { prev_anchor_level = 3; }	
+		//もし今実際のアンカーレベルが　1　レベルダウンしたけど、半透明のやつがまだ上のレベルにいる場合は、描画は半透明のやつのレベルに合わせる（まだレベルダウンしてない状態にしておく）
+		// （実際ダメージはもうゲージに入ったけど、半透明は1フレームづつ減っていくから、こんな回りくどいしないといけない）
+		if (anchor_level < prev_anchor_level) { anchor_level++; }
 
 		//青色ゲージ
-		if (AnchorSpirit::GetAnchorLevel() < 3)
+		if (anchor_level < 3)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue();
@@ -162,7 +170,7 @@ void Gauge_UI::Draw()
 
 		}
 		//黄色ゲージ
-		if (AnchorSpirit::GetAnchorLevel() > 1)
+		if (anchor_level > 1)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 100;
@@ -188,7 +196,7 @@ void Gauge_UI::Draw()
 
 		}
 		//赤色ゲージ
-		if (AnchorSpirit::GetAnchorLevel() == 3)
+		if (anchor_level == 3)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 200;
@@ -449,7 +457,7 @@ void Gauge_UI::DrawGaugeDamaged()
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_blue_Texture);
 	}
 
-	DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)prev_virtual_spirit, 0.5f);
+	DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)prev_virtual_spirit, 0.55f);
 
 
 }
