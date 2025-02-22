@@ -1126,21 +1126,22 @@ void Boss_1_1::Draw()
 			{
 			case 1:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
+			
 				break;
 			case 2:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Lv2_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 17, 16, sheet_cnt, boss_alpha, left_flag);
+			
 				break;
 			case 3:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Lv3_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 17, 16, sheet_cnt, boss_alpha, left_flag);
+	
 				break;
 			default:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
+			
 				break;
 			}
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
 			
 
 			break;
