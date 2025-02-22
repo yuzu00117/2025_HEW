@@ -147,7 +147,7 @@ void Bg::Update()
     float BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y;
     SceneManager& sceneManager = SceneManager::GetInstance();
     bool isBossStage = false;
-    float bossScrollCorrection = 1.0f;  // 🔴 ボスステージ用の補正値（デフォルトは1.0）
+    float bossScrollCorrection = 1.0f;  //ボスステージ用の補正値（デフォルトは1.0）
 
     switch (sceneManager.GetStageName())
     {
@@ -170,7 +170,7 @@ void Bg::Update()
         BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
         isBossStage = true;
-        bossScrollCorrection = 3.5f;  // 🔴 ボスステージ用のY軸スクロール補正（例: 1.5倍）
+        bossScrollCorrection = 3.5f;  //ボスステージ用のY軸スクロール補正（例: 1.5倍）
         break;
 
     default:
