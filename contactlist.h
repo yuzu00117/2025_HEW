@@ -361,8 +361,7 @@ public:
             if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar) { return; }
 
 
-            //カメラシェイクとヒットストップを追加しました
-            CameraShake::StartCameraShake(0, 5, 10);
+           
 
            /* HitStop::StartHitStop(5);*/
 
@@ -650,7 +649,7 @@ public:
         {
 
             //カメラシェイクとヒットストップを追加しました
-            CameraShake::StartCameraShake(0, 5, 10);
+            CameraShake::StartCameraShake(20, 20, 10);
             HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_dynamic)
             {
@@ -670,7 +669,7 @@ public:
         {
 
             //カメラシェイクとヒットストップを追加しました
-            CameraShake::StartCameraShake(0, 5, 10);
+            CameraShake::StartCameraShake(20, 20, 10);
             HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_static)
             {
@@ -691,8 +690,11 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_floating))
         {
             app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(20, 20, 10);
             CameraShake::StartCameraShake(5, 3, 15);
+            HitStop::StartHitStop(15);
+          
             if (objectA->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
