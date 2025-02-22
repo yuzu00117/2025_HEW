@@ -70,6 +70,8 @@ public:
 	void JumpUpdate(void);
 
 	void DeleteAttackBody();//攻撃の判定を削除する処理　現在のところ　衝撃波攻撃とため攻撃の攻撃判定の削除
+
+	void DrawObjectFront();//オブジェクトよりも前に描画する
 	
 
 
