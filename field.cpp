@@ -963,7 +963,7 @@ void Field::Initialize(bool respawning)
 				}
 				//----------------------------------------------------------------------------------------------------------------------------------------------
 				//ボス部屋のジャンプ台
-				b2Vec2 jump_power = b2Vec2(0.0f, -1.0f);
+				b2Vec2 jump_power = b2Vec2(0.0f, -0.8f);
 				int jump_texture_type = 1;
 
 				if (field_map[y][x] == 51) {

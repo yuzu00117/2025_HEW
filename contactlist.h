@@ -1743,7 +1743,26 @@ public:
 
         }
 
+        // プレーヤーとコンタクトブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理
 
+            if (objectA->collider_type == collider_contact_block)//Aがコンタクトブロックのオブジェクト
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectA->id);
+                contact_block_instance->SetFlag(false);
+            }
+            if (objectB->collider_type == collider_contact_block)
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectB->id);
+                contact_block_instance->SetFlag(false);
+            }
+
+        }
 
 
 
