@@ -308,7 +308,7 @@ void Boss_1_1::Update()
 		{
 			debug_flag = 60;
 			boss_field_level++;
-			BossDamaged();
+			
 		}
 		if (debug_flag != 0)
 		{
