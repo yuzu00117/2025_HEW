@@ -115,8 +115,12 @@ void PillarFragmentsManager::UpdateFragments() {
     // まず削除対象のボディを全て削除する
     for (auto& fragment : fragments) {
         if (fragment.ShouldDestroy() && fragment.body) {
-            world->DestroyBody(fragment.body);
-            fragment.body = nullptr;
+
+            if (fragment.body != nullptr)
+            {
+                world->DestroyBody(fragment.body);
+                fragment.body = nullptr;
+            }
         }
     }
 
