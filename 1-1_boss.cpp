@@ -816,7 +816,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		boss_field_level++;
 
 		// カメラシェイクスタート
-		CameraShake::StartCameraShake(40, 0, 60);
+		CameraShake::StartCameraShake(100, 20, 40);
 		HitStop::SetHitStopFlag(15);
 	}
 }
