@@ -64,6 +64,9 @@ ID3D11ShaderResourceView* g_stage_select_fade_black_Texture = NULL;
 //決定してステージにとぶまでにテクスチャなくなる問題を潰すためのくろ
 ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
 
+//説明
+ID3D11ShaderResourceView* g_Explanation_Texture = NULL;
+
 
 
 // メンバ変数として保持
@@ -101,6 +104,9 @@ void StageSelectScene::Initialize()
 
 	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
+	g_Explanation_Texture= InitTexture(L"asset\\texture\\sample_texture\\sample_coconut.png");
+
+	
 
 	//ワールドをつくる
 	 // Box2Dワールドの作成
@@ -203,29 +209,37 @@ void StageSelectScene::Update()
 		{
 			SceneManager& sceneManager = SceneManager::GetInstance();
 		
-			switch (m_player.GetTouchStageSelectNum())
+			if (1 <= disply_Explanation)
 			{
-			case 0:
-				break;
-			case 1:
-				sceneManager.SetStageName(STAGE_TUTORIAL);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
-			case 2:
-				sceneManager.SetStageName(STAGE_1_1);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
+				disply_Explanation = 0;
 
-			case 3:
-				sceneManager.SetStageName(STAGE_TEST);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
+				switch (m_player.GetTouchStageSelectNum())
+				{
+				case 0:
+					break;
+				case 1:
+					sceneManager.SetStageName(STAGE_TUTORIAL);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
+				case 2:
+					sceneManager.SetStageName(STAGE_1_1);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
 
-			case 4:
-				sceneManager.SetStageName(STAGE_TEST);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
+				case 3:
+					sceneManager.SetStageName(STAGE_TEST);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
+
+				case 4:
+					sceneManager.SetStageName(STAGE_TEST);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
+				}
 			}
+
+
+			disply_Explanation += 0.5;
 		}
 
 
@@ -899,7 +913,20 @@ void StageSelectScene::Draw()
 			}
 		}
 
+
 		//----------------------------------------------------------------------------------------------
+
+
+		if (disply_Explanation != 0)
+		{
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+			DrawSpriteOld(
+				XMFLOAT2(SCREEN_WIDTH/2, SCREEN_HEIGHT / 2),
+				0.0f,
+				XMFLOAT2(2000, 2000)
+			);
+		}
 
 		//バックバッファ、フロントバッファ入れ替え
 		Present();
@@ -913,6 +940,7 @@ void StageSelectScene::Finalize()
 	m_stagePointFactory.Finalize();
 
 
+	// 各テクスチャの解放
 	UnInitTexture(g_stage_select_background_Texture);
 	UnInitTexture(g_stage_select_coin_effect_Texture);
 	UnInitTexture(g_stage_select_coin_effect_Texture1);
@@ -926,6 +954,29 @@ void StageSelectScene::Finalize()
 	UnInitTexture(g_stage_select_number_Texture);
 	UnInitTexture(g_stage_select_fade_black_Texture);
 	UnInitTexture(g_stage_select_black_Texture);
+	UnInitTexture(g_Explanation_Texture);
+
+	// ポインタをNULLにする
+	g_stage_select_background_Texture = NULL;
+	g_stage_select_coin_effect_Texture = NULL;
+	g_stage_select_coin_effect_Texture1 = NULL;
+	g_stage_select_coin_effect_Texture2 = NULL;
+	g_stage_select_coin_effect_Texture3 = NULL;
+	g_stage_select_coin_effect_Texture4 = NULL;
+	g_stage_select_tap_effect_Texture = NULL;
+	g_stage_select_hopup_tutorial_Texture = NULL;
+	g_stage_select_hopup_1_1_Texture = NULL;
+	g_stage_select_hopup_unknow_Texture = NULL;
+	g_stage_select_number_Texture = NULL;
+	g_stage_select_fade_black_Texture = NULL;
+	g_stage_select_black_Texture = NULL;
+	g_Explanation_Texture = NULL;
+
+
+	
+	
+
+	
 	
 	// ワールド解放
 	if (m_world) {

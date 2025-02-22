@@ -73,6 +73,9 @@ private:
     //フェードの時に使う 進行度
     double fade_rate = 0.0f;
 
+
+    double disply_Explanation = 0.0f;
+
     
 
     bool Stage_select_flag = false;
