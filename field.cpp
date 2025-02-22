@@ -73,6 +73,8 @@ static ID3D11ShaderResourceView* g_Iseki_Texture = NULL;		//遺跡の中
 static ID3D11ShaderResourceView* g_Iseki_Left_Texture = NULL;	//遺跡の中左側
 static ID3D11ShaderResourceView* g_Iseki_Right_Texture = NULL;	//遺跡の中右側
 
+static ID3D11ShaderResourceView* g_Big_Wood_Texture = NULL;	//大きい木のテクスチャ
+
 
 
 
@@ -127,6 +129,12 @@ void Field::Initialize(bool respawning)
 
 	//----------------------------------------------------------------------------------------
 	// 
+	// 
+	// 
+	// 
+	// 
+	// 
+	g_Big_Wood_Texture= InitTexture(L"asset\\texture\\wood_texture\\BigWood.png");
 	//APのイニシャライズ
 	AnchorPoint::Initialize();
 
@@ -493,14 +501,14 @@ void Field::Initialize(bool respawning)
 				//-----------------------------------------------------------------------------------------------------------------------------------------------------
 				//動かす地面
 				if (field_map[y][x] == 60) {//動かす地面
-					objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(30.f, 10.f), b2Vec2(1.f, 1.f),3);
+					objectManager.AddMovable_Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(30.f, 9.f), b2Vec2(1.f, 1.f),3);
 				}
 
 
 				//----------------------------------------------------------------------------------------
 				//触れたら死ぬ
 				if (field_map[y][x] == 65) {
-					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(30.0f, 2.0f), DEAD_BLOCK_TYPE, b2Vec2_zero);
+					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(50.0f, 2.0f), DEAD_BLOCK_TYPE, b2Vec2_zero);
 				}
 
 			//------------------------------------------------------------------------------------------
@@ -550,6 +558,13 @@ void Field::Initialize(bool respawning)
 				//足場ブロック
 				if (field_map[y][x] == 95) {
 					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.2f) ,false);
+				}
+
+
+				//--------------------------------------------------------------------------------------
+				//でかい木
+				if (field_map[y][x] == 96) {
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(20.0f,20.f), 0.0,g_Big_Wood_Texture);
 				}
 			}
 		}
@@ -1463,6 +1478,10 @@ void Field::Finalize(bool respawning)
 
 		UnInitTexture(g_Iseki_Right_Texture);
 		g_Iseki_Right_Texture = NULL;
+
+
+		UnInitTexture(g_Big_Wood_Texture);
+		g_Big_Wood_Texture = NULL;
 	}
 
 }
