@@ -644,6 +644,8 @@ void Player::Update()
         }
 
         StartAnchorEffect();
+        //振動
+        VibrationController::StartVibration(0.05, 0.05, 6);
         break;
 
     case Throwing_state:                                   // 錨が飛んでいる状態
