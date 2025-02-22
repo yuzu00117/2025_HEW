@@ -20,6 +20,7 @@
 #include"player.h"
 #include"easing.h"
 #include"sound.h"
+#include"Xinput_controller.h"
 
 
 
@@ -298,6 +299,9 @@ void geyser::JumpPlayer()
 
 
 			Player::GetOutSidePlayerBody()->SetLinearVelocity(b2Vec2(vec.x / 2, vec.y));
+
+
+			VibrationController::StartVibration(0.5f, 0.5f, 30);
 		}
 	}
 	else

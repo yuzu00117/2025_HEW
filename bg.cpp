@@ -1,10 +1,10 @@
-//-----------------------------------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------------------------------
 // #name bg.cpp
-// #description ”wŒiˆ—
-// #make 2025/02/03@@‰i–ì‹`–ç
+// #description èƒŒæ™¯å‡¦ç†
+// #make 2025/02/03ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2025/02/03
 // #comment  
-//			@”wŒi‚Ì‘å‚«‚³1280*720‚¾‚Æ‘½•ªŒ„ŠÔ‚ ‚©‚È‚¢i‘½•ªj
+//			ã€€èƒŒæ™¯ã®å¤§ãã•1280*720ã ã¨å¤šåˆ†éš™é–“ã‚ã‹ãªã„ï¼ˆå¤šåˆ†ï¼‰
 //          
 //----------------------------------------------------------------------------------------------------
 
@@ -16,14 +16,14 @@
 #include"scene.h"
 
 
-static ID3D11ShaderResourceView* g_Bg_Texture[4] = { NULL };  // ”wŒiƒeƒNƒXƒ`ƒƒi”z—ñ‰»j
-static ID3D11ShaderResourceView* g_Bg_Texture_light = NULL;  // ƒ‰ƒCƒg—p
-static ID3D11ShaderResourceView* g_Bg_Texture_Most = NULL;  // ƒ‰ƒCƒg—pƒeƒNƒXƒ`ƒƒ
+static ID3D11ShaderResourceView* g_Bg_Texture[4] = { NULL };  // èƒŒæ™¯ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼ˆé…åˆ—åŒ–ï¼‰
+static ID3D11ShaderResourceView* g_Bg_Texture_light = NULL;  // ãƒ©ã‚¤ãƒˆç”¨
+static ID3D11ShaderResourceView* g_Bg_Texture_Most = NULL;  // ãƒ©ã‚¤ãƒˆç”¨ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
-// ƒvƒŒƒCƒ„[‚Ì‰ß‹‚ÌÀ•W
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®éå»ã®åº§æ¨™
 b2Vec2 g_old_player_position;
 
-// ”wŒiƒCƒ“ƒXƒ^ƒ“ƒX
+// èƒŒæ™¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
 Bg bg;
 
 //tutorial
@@ -31,16 +31,21 @@ Bg bg;
 #define TUTORIAL_BACK_GROUND_SIZE_X (1280*1.1)
 #define TUTORIAL_BACK_GROUND_SIZE_Y (720*1.1)
 
-//stage1_1X
+//stage1_1æ£®
 #define STAGE_1_1_FOREST_BACK_GROUND_HEIGHT (50)
 #define STAGE_1_1_FOREST_BACK_GROUND_SIZE_X (1280*1.7)
 #define STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y (720*1.7)
 
-//stage1_1ˆâÕ
+//stage1_1éºè·¡
 #define STAGE_1_1_REMAINS_BACK_GROUND_HEIGHT (50)
 #define STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X (1280*1.6)
 #define STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y (720*1.6)
 
+
+//stage1_1éºè·¡
+#define STAGE_1_1_BOSS_BACK_GROUND_HEIGHT (50)
+#define STAGE_1_1_BOSS_BACK_GROUND_SIZE_X (1280*1.0)
+#define STAGE_1_1_BOSS_BACK_GROUND_SIZE_Y (720*1.0)
 
 
 
@@ -48,9 +53,9 @@ void Bg::Initialize()
 {
 
 
-    //ƒXƒNƒ[ƒ‹‚Ì‚‚³‚È‚Ç‚ğƒŠƒZƒbƒg
+    //ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã®é«˜ã•ãªã©ã‚’ãƒªã‚»ãƒƒãƒˆ
     g_old_player_position = b2Vec2_zero;
-    // Še”wŒiƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İi”z—ñ‚É“ˆêj
+    // å„èƒŒæ™¯ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿ï¼ˆé…åˆ—ã«çµ±ä¸€ï¼‰
     
     SceneManager& sceneManager = SceneManager::GetInstance();
 
@@ -59,9 +64,9 @@ void Bg::Initialize()
 
     switch (sceneManager.GetStageName())
     {
-    case STAGE_TUTORIAL: // ƒ`ƒ…[ƒgƒŠƒAƒ‹
+    case STAGE_TUTORIAL: // ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\tutorial\\background_1.png");
-        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//“§–¾‚È•Ç‚ÌƒeƒNƒXƒ`ƒƒ
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\sample_texture\\invisibility_wall.png");//é€æ˜ãªå£ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
         g_Bg_Texture[2] = InitTexture(L"asset\\texture\\tutorial\\background_2.png");
         g_Bg_Texture[3] = InitTexture(L"asset\\texture\\tutorial\\background_3.png");
 
@@ -72,7 +77,7 @@ void Bg::Initialize()
         width = TUTORIAL_BACK_GROUND_SIZE_X;
         break;
 
-    case STAGE_1_1: // 1-1X
+    case STAGE_1_1: // 1-1æ£®
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
         g_Bg_Texture[2] = InitTexture(L"asset\\texture\\stage1_1\\background_4.png");
@@ -86,7 +91,7 @@ void Bg::Initialize()
         width = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
         break;
 
-    case STAGE_ISEKI: // 1-1ˆâÕ
+    case STAGE_ISEKI: // 1-1éºè·¡
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
 
@@ -95,6 +100,15 @@ void Bg::Initialize()
         width = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
         break;
 
+
+    case STAGE_BOSS: // ãƒœã‚¹æˆ¦
+        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
+
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\remains_background01.png");
+        height = STAGE_1_1_BOSS_BACK_GROUND_HEIGHT;
+        width = STAGE_1_1_BOSS_BACK_GROUND_SIZE_X;
+        break;
     default:
         g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\background_2.png");
         g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\background_3.png");
@@ -111,7 +125,7 @@ void Bg::Initialize()
     }
 
    
-    // ”wŒi‰æ‘œ‚Ì‰Šú”z’ui”z—ñ‰»j
+    // èƒŒæ™¯ç”»åƒã®åˆæœŸé…ç½®ï¼ˆé…åˆ—åŒ–ï¼‰
     for (int layer = 0; layer < 4; layer++)
     {
         float sizeMultiplier = (layer == 0) ? 1.5f : 1.0f;
@@ -121,74 +135,20 @@ void Bg::Initialize()
         }
     }
 }
-
 void Bg::Update()
 {
-    // ƒvƒŒƒCƒ„[‚ÌŒ»İˆÊ’u‚ğæ“¾
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ä½ç½®ã‚’å–å¾—
     b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
 
-    // ƒeƒNƒXƒ`ƒƒ‚²‚Æ‚ÌƒXƒNƒ[ƒ‹‘¬“x
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã”ã¨ã®ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«é€Ÿåº¦
     float textureScrollSpeedsX[] = { 0.1f, 0.3f, 0.7f, 1.0f };
-    float textureScrollSpeedY[] = { 0.01f, 0.1f, 0.2f, 0.3f }; // cƒXƒNƒ[ƒ‹‚Ì‘¬“xi’²®‰Âj
+    float textureScrollSpeedsY[] = { 0.01f, 0.1f, 0.2f, 0.3f };
 
-    float BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y;
-    SceneManager & sceneManager = SceneManager::GetInstance();
-    switch (sceneManager.GetStageName())
-    {
-    case STAGE_TUTORIAL:
-        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
-        break;
-
-    case STAGE_1_1:
-        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y= STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
-        break;
-
-    case STAGE_ISEKI:
-        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y= STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
-        break;
-    default:
-        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
-        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
-        break;
-    }
-    
-
-
-    // ”wŒi‚ÌƒXƒNƒ[ƒ‹ˆ—iX ² & Y ²j
-    for (int layer = 0; layer < 4; layer++)
-    {
-        float sizeMultiplier = (layer == 0) ? 1.5f : 1.0f;
-        for (int i = 0; i < 4; i++)
-        {
-            // X ²ƒXƒNƒ[ƒ‹
-            bg.texture_pos[layer][i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeedsX[layer] * 100.0f;
-
-            // ¶‚Éƒ‹[ƒvˆ—
-            if (bg.texture_pos[layer][i].x < -BACK_GROUND_SIZE_X * sizeMultiplier)
-                bg.texture_pos[layer][i].x += BACK_GROUND_SIZE_X * sizeMultiplier * 4.0f;
-
-            // ‰E‚Éƒ‹[ƒvˆ—
-            if (bg.texture_pos[layer][i].x > BACK_GROUND_SIZE_X * sizeMultiplier * 3.0f)
-                bg.texture_pos[layer][i].x -= BACK_GROUND_SIZE_X * sizeMultiplier * 4.0f;
-
-            // Y ²ƒXƒNƒ[ƒ‹i’²®’Ç‰Áj
-            bg.texture_pos[layer][i].y -= (player_position.y - g_old_player_position.y) * textureScrollSpeedY[layer] * 100.0f;
-
-          
-        }
-    }
-
-    // ƒvƒŒƒCƒ„[À•W‚ÌXV
-    g_old_player_position = player_position;
-}
-
-void Bg::Draw()
-{
     float BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y;
     SceneManager& sceneManager = SceneManager::GetInstance();
+    bool isBossStage = false;
+    float bossScrollCorrection = 1.0f;  //ãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ç”¨ã®è£œæ­£å€¤ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯1.0ï¼‰
+
     switch (sceneManager.GetStageName())
     {
     case STAGE_TUTORIAL:
@@ -205,37 +165,140 @@ void Bg::Draw()
         BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
         break;
-        
+
+    case STAGE_BOSS:
+        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
+        isBossStage = true;
+        bossScrollCorrection = 3.5f;  //ãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ç”¨ã®Yè»¸ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ï¼ˆä¾‹: 1.5å€ï¼‰
+        break;
+
+    default:
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
+        break;
+    }
+
+    // èƒŒæ™¯ã®ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«å‡¦ç†ï¼ˆX è»¸ & Y è»¸ï¼‰
+    for (int layer = 0; layer < 4; layer++)
+    {
+        float sizeMultiplier = (layer == 0) ? 1.5f : 1.0f;
+        for (int i = 0; i < 4; i++)
+        {
+            // X è»¸ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ï¼ˆå…¨ã‚¹ãƒ†ãƒ¼ã‚¸é©ç”¨ï¼‰
+            bg.texture_pos[layer][i].x -= (player_position.x - g_old_player_position.x) * textureScrollSpeedsX[layer] * 100.0f;
+
+            // å·¦ã«ãƒ«ãƒ¼ãƒ—å‡¦ç†
+            if (bg.texture_pos[layer][i].x < -BACK_GROUND_SIZE_X * sizeMultiplier)
+                bg.texture_pos[layer][i].x += BACK_GROUND_SIZE_X * sizeMultiplier * 4.0f;
+
+            // å³ã«ãƒ«ãƒ¼ãƒ—å‡¦ç†
+            if (bg.texture_pos[layer][i].x > BACK_GROUND_SIZE_X * sizeMultiplier * 3.0f)
+                bg.texture_pos[layer][i].x -= BACK_GROUND_SIZE_X * sizeMultiplier * 4.0f;
+
+            // Y è»¸ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ï¼ˆãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã¿è£œæ­£ã‚’ã‹ã‘ã‚‹ï¼‰
+            if (isBossStage)
+            {
+                bg.texture_pos[layer][i].y -= (player_position.y - g_old_player_position.y) * textureScrollSpeedsY[layer] * 100.0f * bossScrollCorrection;
+
+                // ç¸¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã®ãƒ«ãƒ¼ãƒ—å‡¦ç†ï¼ˆãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã¿ï¼‰
+                if (bg.texture_pos[layer][i].y < -BACK_GROUND_SIZE_Y * sizeMultiplier)
+                    bg.texture_pos[layer][i].y += BACK_GROUND_SIZE_Y * sizeMultiplier * 4.0f;
+
+                if (bg.texture_pos[layer][i].y > BACK_GROUND_SIZE_Y * sizeMultiplier * 3.0f)
+                    bg.texture_pos[layer][i].y -= BACK_GROUND_SIZE_Y * sizeMultiplier * 4.0f;
+            }
+            else
+            {
+                bg.texture_pos[layer][i].y -= (player_position.y - g_old_player_position.y) * textureScrollSpeedsY[layer] * 100.0f;
+            }
+        }
+    }
+
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™ã®æ›´æ–°
+    g_old_player_position = player_position;
+}
+
+
+
+void Bg::Draw()
+{
+    float BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y;
+    SceneManager& sceneManager = SceneManager::GetInstance();
+    bool isBossStage = false;
+
+    switch (sceneManager.GetStageName())
+    {
+    case STAGE_TUTORIAL:
+        BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
+        break;
+
+    case STAGE_1_1:
+        BACK_GROUND_SIZE_X = STAGE_1_1_FOREST_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_FOREST_BACK_GROUND_SIZE_Y;
+        break;
+
+    case STAGE_ISEKI:
+        BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
+        break;
+
+    case STAGE_BOSS:  // ãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã¿ç¸¦ã®å±¤ã‚’è¿½åŠ 
+        BACK_GROUND_SIZE_X = STAGE_1_1_BOSS_BACK_GROUND_SIZE_X;
+        BACK_GROUND_SIZE_Y = STAGE_1_1_BOSS_BACK_GROUND_SIZE_Y;
+        isBossStage = true;
+        break;
+
     default:
         BACK_GROUND_SIZE_X = TUTORIAL_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = TUTORIAL_BACK_GROUND_SIZE_Y;
         break;
     }
-    // ƒ‰ƒCƒgƒeƒNƒXƒ`ƒƒ‚Ì•`‰æi”wŒi‚Ì‰e‹¿‚ğó‚¯‚éj
+
+    // ãƒ©ã‚¤ãƒˆãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æç”»ï¼ˆèƒŒæ™¯ã®å½±éŸ¿ã‚’å—ã‘ã‚‹ï¼‰
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture_Most);
     DrawSpriteOld({ BACK_GROUND_SIZE_X / 2, BACK_GROUND_SIZE_Y / 2 }, 0.0f, { BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y }, 1.0f);
-    // ”wŒiƒeƒNƒXƒ`ƒƒ‚Ì•`‰æ
-    for (int layer = 0; layer < 4; layer++)  // 4‘w•ª‚ğ•`‰æ
+
+    // èƒŒæ™¯ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æç”»
+    for (int layer = 0; layer < 4; layer++)  // 4å±¤åˆ†ã‚’æç”»
     {
         float sizeMultiplier = (layer == 0) ? 1.5f : 1.0f;
         for (int i = 0; i < 4; i++)
         {
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture[layer]);
-            DrawBgSprite(bg.texture_pos[layer][i], 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X * sizeMultiplier, BACK_GROUND_SIZE_Y * sizeMultiplier));
+
+            // ğŸ”´ ãƒœã‚¹ã‚¹ãƒ†ãƒ¼ã‚¸ã®ã¿ç¸¦æ–¹å‘ã«ã‚‚å±¤ã‚’è¿½åŠ ã—ã¦æç”»
+            if (isBossStage)
+            {
+                for (int j = 0; j < 4; j++)  // ç¸¦ã«4æšæç”»
+                {
+                    XMFLOAT2 position = XMFLOAT2(bg.texture_pos[layer][i].x, bg.texture_pos[layer][i].y + BACK_GROUND_SIZE_Y * sizeMultiplier * j);
+
+                    DrawBgSprite(position, 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X * sizeMultiplier, BACK_GROUND_SIZE_Y * sizeMultiplier));
+                }
+            }
+            else
+            {
+                // é€šå¸¸ã®1å›ã®ã¿æç”»
+                DrawBgSprite(bg.texture_pos[layer][i], 0.0f, XMFLOAT2(BACK_GROUND_SIZE_X * sizeMultiplier, BACK_GROUND_SIZE_Y * sizeMultiplier));
+            }
         }
     }
 
-    // ƒ‰ƒCƒgƒeƒNƒXƒ`ƒƒ‚Ì•`‰æi”wŒi‚Ì‰e‹¿‚ğó‚¯‚éj
+    // ãƒ©ã‚¤ãƒˆãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æç”»ï¼ˆèƒŒæ™¯ã®å½±éŸ¿ã‚’å—ã‘ã‚‹ï¼‰
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_Bg_Texture_light);
     DrawSpriteOld({ BACK_GROUND_SIZE_X / 2, BACK_GROUND_SIZE_Y / 2 }, 0.0f, { BACK_GROUND_SIZE_X, BACK_GROUND_SIZE_Y }, 1.0f);
 }
 
+
 void Bg::Finalize()
 {
-    // Še”wŒiƒeƒNƒXƒ`ƒƒ‚Ì‰ğ•ú
+    // å„èƒŒæ™¯ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è§£æ”¾
     for (int i = 0; i < 4; i++)
     {
         UnInitTexture(g_Bg_Texture[i]);
+        g_Bg_Texture[i] = NULL;
     }
     
 }

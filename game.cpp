@@ -286,7 +286,11 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
             }
 
-
+            if (Keyboard_IsKeyDown(KK_I))//遺跡ステージにいく
+            {
+                sceneManager.SetStageName(STAGE_ISEKI);
+                sceneManager.ChangeScene(SCENE_GAME);
+            }
       
 
 
@@ -439,6 +443,8 @@ void Game::Draw(void)
     objectManager.DrawAll();
     //フィールドの描画処理
     Field::Draw();
+
+    boss.DrawObjectFront();
 
  
 
