@@ -402,25 +402,14 @@ void static_to_dynamic_block::Finalize()
 	}
 
 	
+	if (g_BoxRock_Texture) UnInitTexture(g_BoxRock_Texture);
+	if (g_Dameged_BoxRock_Texture) UnInitTexture(g_Dameged_BoxRock_Texture);
+	if (g_coconut_Texture) UnInitTexture(g_coconut_Texture);
 
-	//テクスチャの解放
-	if (g_BoxRock_Texture != NULL)
-	{
-		UnInitTexture(g_BoxRock_Texture);
-		UnInitTexture(g_coconut_Texture);
-		UnInitTexture(g_Dameged_BoxRock_Texture);
-		UnInitTexture(g_Rock_Border_Texture_Lv1);
-		UnInitTexture(g_Rock_Border_Texture_Lv2);
-		UnInitTexture(g_Rock_Border_Texture_Lv3);
+	if (g_Rock_Border_Texture_Lv1) UnInitTexture(g_Rock_Border_Texture_Lv1);
+	if (g_Rock_Border_Texture_Lv2) UnInitTexture(g_Rock_Border_Texture_Lv2);
+	if (g_Rock_Border_Texture_Lv3) UnInitTexture(g_Rock_Border_Texture_Lv3);
 
-
-		g_BoxRock_Texture = NULL;
-		g_coconut_Texture = NULL;
-		g_Dameged_BoxRock_Texture = NULL;	
-		g_Rock_Border_Texture_Lv1 = NULL;
-		g_Rock_Border_Texture_Lv2 = NULL;
-		g_Rock_Border_Texture_Lv3 = NULL;
-	}
 
 }
 

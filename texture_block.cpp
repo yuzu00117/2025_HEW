@@ -166,7 +166,6 @@ void Texture_block::Finalize()
 	if (m_texture != NULL)
 	{
 		UnInitTexture(m_texture);
-		m_texture = NULL;
 
 	}
 

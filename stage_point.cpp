@@ -175,21 +175,10 @@ void StagePoint::Finalize() {
         m_body = nullptr;
     }
     
+    if (g_stage_select_stage_point_tutorial_Texture) UnInitTexture(g_stage_select_stage_point_tutorial_Texture);
+    if (g_stage_select_stage_point_1_1_Texture) UnInitTexture(g_stage_select_stage_point_1_1_Texture);
+    if (g_stage_select_stage_point_unknow_Texture) UnInitTexture(g_stage_select_stage_point_unknow_Texture);
+    if (g_stage_select_stage_point_effect_Texture) UnInitTexture(g_stage_select_stage_point_effect_Texture);
 
-    if (g_stage_select_stage_point_1_1_Texture != NULL)
-    {
-        UnInitTexture(g_stage_select_stage_point_tutorial_Texture);
-        g_stage_select_stage_point_tutorial_Texture = NULL;
-
-        UnInitTexture(g_stage_select_stage_point_1_1_Texture);
-        g_stage_select_stage_point_1_1_Texture = NULL;
-
-
-        UnInitTexture(g_stage_select_stage_point_unknow_Texture);
-        g_stage_select_stage_point_unknow_Texture = NULL;
-
-        UnInitTexture(g_stage_select_stage_point_effect_Texture);
-        g_stage_select_stage_point_effect_Texture = NULL;
-    }
     
 }

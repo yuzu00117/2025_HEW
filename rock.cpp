@@ -278,31 +278,15 @@ void rock::Finalize()
 		world->DestroyBody(AnchorPoint_body);
 	}
 
-	if (g_Rock_Texture != NULL)
-	{
-		//‰æ‘œ‚Ì‰ð•ú
-		UnInitTexture(g_Rock_Texture);
-		UnInitTexture(g_Rock_Texture1);
-		UnInitTexture(g_Rock_Texture2);
+	if (g_Rock_Texture) UnInitTexture(g_Rock_Texture);
+	if (g_Rock_Texture1) UnInitTexture(g_Rock_Texture1);
+	if (g_Rock_Texture2) UnInitTexture(g_Rock_Texture2);
 
-		UnInitTexture(g_Rock_Texture_Lv1);
-		UnInitTexture(g_Rock_Border_Texture_Lv1);
-		UnInitTexture(g_Rock_Texture_Lv2);
-		UnInitTexture(g_Rock_Border_Texture_Lv2);
-		UnInitTexture(g_Rock_Texture_Lv3);
-		UnInitTexture(g_Rock_Border_Texture_Lv3);
+	if (g_Rock_Texture_Lv1) UnInitTexture(g_Rock_Texture_Lv1);
+	if (g_Rock_Border_Texture_Lv1) UnInitTexture(g_Rock_Border_Texture_Lv1);
+	if (g_Rock_Texture_Lv2) UnInitTexture(g_Rock_Texture_Lv2);
+	if (g_Rock_Border_Texture_Lv2) UnInitTexture(g_Rock_Border_Texture_Lv2);
+	if (g_Rock_Texture_Lv3) UnInitTexture(g_Rock_Texture_Lv3);
+	if (g_Rock_Border_Texture_Lv3) UnInitTexture(g_Rock_Border_Texture_Lv3);
 
-
-		//‚È‚ñ‚©‚¢‚é‚Ý‚½‚¢
-		g_Rock_Texture = NULL;
-		g_Rock_Texture1 = NULL;
-		g_Rock_Texture2 = NULL;
-
-		g_Rock_Texture_Lv1 = NULL;
-		g_Rock_Border_Texture_Lv1 = NULL;
-		g_Rock_Texture_Lv2 = NULL;
-		g_Rock_Border_Texture_Lv2 = NULL;
-		g_Rock_Texture_Lv3 = NULL;
-		g_Rock_Border_Texture_Lv3 = NULL;
-	}
 }

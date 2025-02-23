@@ -50,9 +50,6 @@ void Gokai_UI::Draw()
 
 void Gokai_UI::Finalize()
 {
-	if (g_number_Texture != NULL)
-	{
-		UnInitTexture(g_number_Texture);
-		g_number_Texture = NULL;
-	}
+	if (g_number_Texture) UnInitTexture(g_number_Texture);
+
 }

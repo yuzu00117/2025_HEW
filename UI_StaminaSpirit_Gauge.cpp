@@ -44,10 +44,11 @@ void	StaminaSpiritGauge::Initialize()
 void	StaminaSpiritGauge::Finalize()
 {
 	//体力ゲージとソウルゲージの画像が一つにまとめてる場合の処理
-	if (g_gauge_Texture != nullptr)
-	{
-		UnInitTexture(g_gauge_Texture);
-	}	
+	if (g_gauge_Texture) UnInitTexture(g_gauge_Texture);
+	if (g_gauge_lev1_Texture) UnInitTexture(g_gauge_lev1_Texture);
+	if (g_gauge_lev2_Texture) UnInitTexture(g_gauge_lev2_Texture);
+	if (g_gauge_lev3_Texture) UnInitTexture(g_gauge_lev3_Texture);
+
 
 	//体力ゲージとソウルゲージの画像が分かれている場合の処理
 	//if (g_spirit_gauge_Texture != nullptr)
