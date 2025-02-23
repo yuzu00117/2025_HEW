@@ -15,6 +15,7 @@ public:
     static void Draw();
     static void Finalize();
 
+
     static DirectX::XMFLOAT2 GetRingPosition() { return m_ring_position; }
 
     static  void    SetJewelCollected(Jewel_Type type, bool flag) {
@@ -37,6 +38,9 @@ public:
 
 
 private:
+    //半透明ダメージのあれを描画
+    static void    DrawGaugeDamaged();
+
     // 静的メンバー変数の型を正しく指定
     static DirectX::XMFLOAT2 player_ui_position;
     static DirectX::XMFLOAT2 player_ui_size;

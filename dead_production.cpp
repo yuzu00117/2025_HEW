@@ -210,19 +210,12 @@ void dead_production::Draw()
 
 void dead_production::Finalize()
 {
-	if (g_Black_texture != NULL)
-	{
-		UnInitTexture(g_Black_texture);
-		g_Black_texture = NULL;
+	if (g_Black_texture) UnInitTexture(g_Black_texture);
+	if (g_Black_hole_texture) UnInitTexture(g_Black_hole_texture);
 
-		UnInitTexture(g_Black_hole_texture);
-		g_Black_hole_texture = NULL;
+	if (g_player_icon_texture) UnInitTexture(g_player_icon_texture);
 
-		UnInitTexture(g_player_icon_texture);
-		g_player_icon_texture = NULL;
+	if (g_batten_texture) UnInitTexture(g_batten_texture);
 
-		UnInitTexture(g_number_texture);
-		g_number_texture = NULL;
-		
-	}
+	if (g_number_texture) UnInitTexture(g_number_texture);
 }

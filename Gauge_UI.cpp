@@ -91,8 +91,6 @@ void Gauge_UI::Update()
 
 void Gauge_UI::Draw()
 {	
-	float temp_stamina_position_y;	//体力ゲージが移動した後の座標
-	float temp_stamina_scale_y;		//体力ゲージの今の大きさ
 	float temp_spirit_position_y;  //ソウルゲージが移動した後の座標　
 	float temp_spirit_scale_y;	   //ソウルゲージの今の大きさ
 	XMFLOAT2	scale;
@@ -134,8 +132,19 @@ void Gauge_UI::Draw()
 
 	if (true) //ここはアンカーゲージの　数値によって変更が必要
 	{
+		int count_layer = 0;	//今何層目描いているのか
+		//	今のアンカーレベルを取得
+		int anchor_level = AnchorSpirit::GetAnchorLevel();
+		//　もしソウルゲージがさっきダメージ入っていたのなら、ゲージの半透明のダメージを顧慮するために、半透明のやつの今のアンカーレベルを計算
+		int prev_anchor_level = (AnchorSpirit::GetAnchorSpiritValue() + AnchorSpirit::GetAnchorSpiritDamage()) / 100.0f + 1;
+		//半透明のやつの計算されたアンカーレベルが3を超えないための制御
+		if (prev_anchor_level > 3) { prev_anchor_level = 3; }	
+		//もし今実際のアンカーレベルが　1　レベルダウンしたけど、半透明のやつがまだ上のレベルにいる場合は、描画は半透明のやつのレベルに合わせる（まだレベルダウンしてない状態にしておく）
+		// （実際ダメージはもうゲージに入ったけど、半透明は1フレームづつ減っていくから、こんな回りくどいしないといけない）
+		if (anchor_level < prev_anchor_level) { anchor_level++; }
+
 		//青色ゲージ
-		if (AnchorSpirit::GetAnchorLevel() < 3)
+		if (anchor_level < 3)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue();
@@ -155,9 +164,13 @@ void Gauge_UI::Draw()
 
 			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
 
+			//もしこれが１層目なら次はダメージ層を描く
+			count_layer++;
+			if (count_layer == 1) { DrawGaugeDamaged(); }
+
 		}
 		//黄色ゲージ
-		if (AnchorSpirit::GetAnchorLevel() > 1)
+		if (anchor_level > 1)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 100;
@@ -177,9 +190,13 @@ void Gauge_UI::Draw()
 
 			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
 
+			//もしこれが１層目なら次はダメージ層を描く
+			count_layer++;
+			if (count_layer == 1) { DrawGaugeDamaged(); }
+
 		}
 		//赤色ゲージ
-		if (AnchorSpirit::GetAnchorLevel() == 3)
+		if (anchor_level == 3)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 200;
@@ -197,6 +214,10 @@ void Gauge_UI::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_red_Texture);
 
 			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+
+			//もしこれが１層目なら次はダメージ層を描く
+			count_layer++;
+			if (count_layer == 1) { DrawGaugeDamaged(); }
 
 		}
 	}
@@ -349,50 +370,68 @@ void Gauge_UI::Draw()
 void Gauge_UI::Finalize()
 {
 
-	if (g_ring_Texture != NULL)
+	if (g_ring_Texture) UnInitTexture(g_ring_Texture);
+
+	if (g_red_jewel_Texture) UnInitTexture(g_red_jewel_Texture);
+	if (g_blue_jewel_Texture) UnInitTexture(g_blue_jewel_Texture);
+	if (g_yellow_jewel_Texture) UnInitTexture(g_yellow_jewel_Texture);
+
+	if (g_red_jewel_fit_effect) UnInitTexture(g_red_jewel_fit_effect);
+	if (g_blue_jewel_fit_effect) UnInitTexture(g_blue_jewel_fit_effect);
+	if (g_yellow_jewel_fit_effect) UnInitTexture(g_yellow_jewel_fit_effect);
+
+	if (g_soul_gage_blue_Texture) UnInitTexture(g_soul_gage_blue_Texture);
+	if (g_soul_gage_yellow_Texture) UnInitTexture(g_soul_gage_yellow_Texture);
+	if (g_soul_gage_red_Texture) UnInitTexture(g_soul_gage_red_Texture);
+	if (g_soul_gage_border_Texture) UnInitTexture(g_soul_gage_border_Texture);
+
+	if (g_anchor_level_division_Texture) UnInitTexture(g_anchor_level_division_Texture);
+	if (g_anchor_level_outline_Texture) UnInitTexture(g_anchor_level_outline_Texture);
+
+}
+
+void Gauge_UI::DrawGaugeDamaged()
+{
+	//ダメージ受けてないなら描画を省く
+	if (AnchorSpirit::GetAnchorSpiritDamage() <= 0)
 	{
-		// リングのテクスチャ解放
-		UnInitTexture(g_ring_Texture);
-
-		// 宝石のテクスチャ解放
-		UnInitTexture(g_red_jewel_Texture);
-		UnInitTexture(g_blue_jewel_Texture);
-		UnInitTexture(g_yellow_jewel_Texture);
-
-		// 宝石のフィットエフェクトの解放
-		UnInitTexture(g_red_jewel_fit_effect);
-		UnInitTexture(g_blue_jewel_fit_effect);
-		UnInitTexture(g_yellow_jewel_fit_effect);
-
-		// ソウルゲージのテクスチャ解放
-		UnInitTexture(g_soul_gage_blue_Texture);
-		UnInitTexture(g_soul_gage_yellow_Texture);
-		UnInitTexture(g_soul_gage_red_Texture);
-		UnInitTexture(g_soul_gage_border_Texture);
-
-		// アンカーレベルのテクスチャ解放
-		UnInitTexture(g_anchor_level_division_Texture);
-		UnInitTexture(g_anchor_level_outline_Texture);
-
-		// NULLにリセット
-		g_ring_Texture = NULL;
-
-		g_red_jewel_Texture = NULL;
-		g_blue_jewel_Texture = NULL;
-		g_yellow_jewel_Texture = NULL;
-
-		g_red_jewel_fit_effect = NULL;
-		g_blue_jewel_fit_effect = NULL;
-		g_yellow_jewel_fit_effect = NULL;
-
-		g_soul_gage_blue_Texture = NULL;
-		g_soul_gage_yellow_Texture = NULL;
-		g_soul_gage_red_Texture = NULL;
-		g_soul_gage_border_Texture = NULL;
-
-		g_anchor_level_division_Texture = NULL;
-		g_anchor_level_outline_Texture = NULL;
-		
+		return;
 	}
+
+	float temp_spirit_position_y;  //ソウルゲージが移動した後の座標　
+	float temp_spirit_scale_y;	   //ソウルゲージの今の大きさ
+	XMFLOAT2	scale;
+
+	//ゲージ枠に相当する前フレームのアンカーのソウル値を計算
+	float prev_virtual_spirit = (int)AnchorSpirit::GetAnchorSpiritValue() % 100 + AnchorSpirit::GetAnchorSpiritDamage();
+
+	//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
+	//Max状態の時の長さに比例して、今のソウル値の長さを調整
+	temp_spirit_scale_y = (prev_virtual_spirit / 100) * gauge_only_size.y;
+	scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
+	//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
+//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
+	temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
+
+
+	float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() + AnchorSpirit::GetAnchorSpiritDamage();
+	if (virtual_spirit > 200.0f) {
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_red_Texture);
+	}
+	else if (virtual_spirit > 100.0f)
+	{
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_yellow_Texture);
+	}
+	else
+	{
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_blue_Texture);
+	}
+
+	DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)prev_virtual_spirit, 0.55f);
+
+
 }
 
