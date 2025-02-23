@@ -425,7 +425,7 @@ void Boss_Wall_Objcet::Draw()
 				{ draw_x,
 				  draw_y },
 				0.0f,
-				{ GetSize().x * scale ,GetSize().y * scale*1.2f }
+				{ (GetSize().x+6.f) * scale ,GetSize().y * scale*1.2f }
 			);
 		}
 
