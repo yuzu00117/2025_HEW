@@ -14,6 +14,6 @@
 #include "renderer.h"
 
 ID3D11ShaderResourceView* InitTexture(const wchar_t* textureName);
-void UnInitTexture(ID3D11ShaderResourceView*);
+void UnInitTexture(ID3D11ShaderResourceView*&);
 
 #endif//_TEXTURE_H

@@ -192,17 +192,20 @@ void    ItemJewel::Function()
         player.SetSpeed(speed_change_value);
         //プレイヤーのジャンプ力が1.5倍
         jump_force = player.GetJumpForce();
-        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 1.2f - jump_force.y };
+        jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 2.0f - jump_force.y };
         player.SetJumpForce(jump_force_change_value);
+        app_atomex_start(Player_Buff_SpeedUp_Sound);
         break;
     case RED:
         //オブジェを引っ張る時の力を倍数で掛ける
         object_manager.SetPullingPower_With_Multiple(b2Vec2{ 1.5f,1.5f });
         //アンカー投げる速度UP
         player.SetAnchorThrowing_SpeedUp(1.5f);
+        app_atomex_start(Player_Buff_AnchorSpeedUp_Sound);
         break;
     case YELLOW:
         PlayerStamina::SetAvoidDamageOnce(true);
+        app_atomex_start(Player_Buff_Invincible_Sound);
         break;
     }
 
@@ -322,10 +325,8 @@ void ItemJewel::Finalize()
     {
         UnInitTexture(g_Texture);
     }
-    if (g_Effect_Texture)
-    {
-        UnInitTexture(g_Effect_Texture);
-    }
+    if (g_Effect_Texture) UnInitTexture(g_Effect_Texture);
+
 }
 
 ItemJewel::~ItemJewel()

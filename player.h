@@ -123,6 +123,8 @@ public:
 
 	int GetAnchorFrameManagement();
 
+	void DrawSoulGetEffect(void);
+
 
 	//描画用にサイズを持たせておく
 	b2Vec2 GetSize() const 
@@ -232,7 +234,11 @@ public:
 		draw_cnt = cnt;
 	}
 
-
+	void SetSoulGetEffectType(int effect_type)
+	{
+		soul_get_effect_type = effect_type;
+		soul_get_effect_sheet_cnt = 1;
+	}
 
 private:
 
@@ -331,10 +337,29 @@ private:
 	float TamaChanSheetCnt = 0.0f;
 	// たまちゃんの向き管理用
 	bool is_left = true;
+	// アンカーを投げたときのたまちゃん削除フラグ
+	bool is_throw_anchor = false;
+	// たまちゃんが消えるエフェクトのフラグ
+	bool is_tamachan_disappearing = false;
+	// たまちゃんが消えるエフェクトのカウント
+	float tamachan_disappear_effect_cnt = 0.0f;
+	// たまちゃん描画用ポジション
+	float tamachan_pos_x = 0.0f;
+	float tamachan_pos_y = 0.0f;
 
 	//-----------------------------------------
 	//プレイヤーのサウンドの管理
 	int walk_state_sound_cnt;
+
+
+	//------------------------------------------
+	//ソウルのゲットした時の関数
+
+	int soul_get_effect_type;
+
+	float soul_get_effect_sheet_cnt;
+
+	
 
 };
 

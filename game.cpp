@@ -39,6 +39,7 @@
 #include"change_scene_end_production.h"
 #include"change_scene_start_production.h"
 #include"UI_StaminaSpirit_Gauge.h"
+#include"Xinput_controller.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -285,7 +286,11 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
             }
 
-
+            if (Keyboard_IsKeyDown(KK_I))//遺跡ステージにいく
+            {
+                sceneManager.SetStageName(STAGE_ISEKI);
+                sceneManager.ChangeScene(SCENE_GAME);
+            }
       
 
 
@@ -304,6 +309,8 @@ void Game::Update(void)
 #endif // _DEBUG
     }
 
+
+    VibrationController::UpdateVibration(); // 毎フレーム振動を管理
 	//カメラシェイクの更新処理
     CameraShake::Update();
 
@@ -363,10 +370,12 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_ISEKI:
+                m_respawn = true;
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
+                m_respawn = true;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
@@ -434,6 +443,8 @@ void Game::Draw(void)
     objectManager.DrawAll();
     //フィールドの描画処理
     Field::Draw();
+
+    boss.DrawObjectFront();
 
  
 

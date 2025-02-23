@@ -65,7 +65,7 @@ void DrawImpactEffects(float Draw_size) {
             DrawSplittingSprite(
                 { effect_draw_x, effect_draw_y },
                 effect.angle, // **エフェクトの回転角度**
-                { 400 * effect.scale, 400 * effect.scale }, // **スケール適用**
+                { 800 * effect.scale, 800 * effect.scale }, // **スケール適用**
                 5, 4, effect.lifeTime / 4, 1.f
             );
         }
@@ -77,7 +77,7 @@ void DrawImpactEffects(float Draw_size) {
             DrawSplittingSprite(
                 { effect_draw_x, effect_draw_y },
                 effect.angle, // **エフェクトの回転角度**
-                { 800 * effect.scale, 800 * effect.scale }, // **スケール適用**
+                { 1200 * effect.scale, 1200 * effect.scale }, // **スケール適用**
                 5, 4, effect.lifeTime / 4, 1.f
             );
         }
@@ -86,13 +86,7 @@ void DrawImpactEffects(float Draw_size) {
 }
 void FinalizeImpactEffects()
 {
-    if (g_Imapct_effect_texture1 != NULL)
-    {
-        UnInitTexture(g_Imapct_effect_texture1);
-        UnInitTexture(g_Imapct_effect_texture2);
+    if (g_Imapct_effect_texture1) UnInitTexture(g_Imapct_effect_texture1);
+    if (g_Imapct_effect_texture2) UnInitTexture(g_Imapct_effect_texture2);
 
-        g_Imapct_effect_texture1 = NULL;
-        g_Imapct_effect_texture2 = NULL;
-
-    }
 }

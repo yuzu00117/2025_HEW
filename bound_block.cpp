@@ -17,6 +17,8 @@
 #include"create_filter.h"
 #include"tool.h"
 #include"player.h"
+#include"keyboard.h"
+#include"Xinput_controller.h"
 
 static ID3D11ShaderResourceView* g_bound_block_texture1_open = NULL;//バウンドブロックのテクスチャ茶色
 static ID3D11ShaderResourceView* g_bound_block_texture1_close = NULL;//バウンドブロックのテクスチャ茶色
@@ -255,19 +257,25 @@ void boss_bound_block::Player_jump()
 {
 	if (jump_flag == true)
 	{
-		Player &player = Player::GetInstance();//シングルトン
+		// コントローラーの入力の受け取り
+		ControllerState state = GetControllerInput();
+		if ((Keyboard_IsKeyDown(KK_UP) || (state.buttonA)))
+		{
+			Player& player = Player::GetInstance();//シングルトン
 
-		b2Body *player_body=player.GetOutSidePlayerBody();
+			b2Body* player_body = player.GetOutSidePlayerBody();
 
-		player_body->ApplyLinearImpulseToCenter(vectol, true);
-
-
-		//フラグをリセット
-		jump_flag = false;
+			player_body->ApplyLinearImpulseToCenter(vectol, true);
 
 
-		//チェンジテクスチャ
-		Change_Texture_Size_Frame = 1;
+
+
+			//チェンジテクスチャ
+			Change_Texture_Size_Frame = 1;
+
+			jump_flag = false;
+
+		}
 	}
 }
 
@@ -275,16 +283,9 @@ void boss_bound_block::Player_jump()
 
 void boss_bound_block::Finalize()
 {
-	if (g_bound_block_texture1_open != NULL)
-	{
-		UnInitTexture(g_bound_block_texture1_open);
-		g_bound_block_texture1_open = NULL;
-		UnInitTexture(g_bound_block_texture2_open);
-		g_bound_block_texture2_open = NULL;
+	if (g_bound_block_texture1_open) UnInitTexture(g_bound_block_texture1_open);
+	if (g_bound_block_texture1_close) UnInitTexture(g_bound_block_texture1_close);
 
-		UnInitTexture(g_bound_block_texture1_close);
-		g_bound_block_texture1_close = NULL;
-		UnInitTexture(g_bound_block_texture2_close);
-		g_bound_block_texture2_close = NULL;
-	}
+	if (g_bound_block_texture2_open) UnInitTexture(g_bound_block_texture2_open);
+	if (g_bound_block_texture2_close) UnInitTexture(g_bound_block_texture2_close);
 }

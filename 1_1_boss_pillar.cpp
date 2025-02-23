@@ -60,7 +60,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	fixture.friction = 0.01f;
 	fixture.restitution = 0.0f;
 	fixture.isSensor = false;
-	fixture.filter = createFilterExclude("object_filter", {"Player_filter"});
+	fixture.filter = createFilterExclude("object_filter", {"Player_filter","MiniGolem_filter","Shockwave_filter"});
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 
@@ -80,7 +80,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	//サイズの補正をいれる
 	b2Vec2 anchorpoint_size;
 	anchorpoint_size.x = body_size.x;
-	anchorpoint_size.y =0.5/ BOX2D_SCALE_MANAGEMENT;
+	anchorpoint_size.y = 0.5 / BOX2D_SCALE_MANAGEMENT;
 
 
 
@@ -106,8 +106,8 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	anchorpoint_fixture.density = 1.0f;
 	anchorpoint_fixture.friction = 0.05f;//摩擦
 	anchorpoint_fixture.restitution = 0.0f;//反発係数
-	anchorpoint_fixture.isSensor = false;//センサーかどうか、trueならあたり判定は消える
-	anchorpoint_fixture.filter = createFilterExclude("object_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter","Player_filter" });
+	anchorpoint_fixture.isSensor = true;//センサーかどうか、trueならあたり判定は消える
+	anchorpoint_fixture.filter = createFilterExclude("object_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter", "object_filter" });
 
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
@@ -115,10 +115,10 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	// カスタムデータを作成して設定
 	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
 	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
-	
-	
+
+
 	object_anchorpoint_data->id = ID;
-	
+
 
 	object_anchorpoint_data->object_name = Boss_pillar;
 	object_anchorpoint_data->need_anchor_level = 1;
@@ -149,11 +149,11 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	boss_room_level = level;
 
 	//ボディの領域を事前に確保しておく
-	boss_pillar_body_Splitting.reserve(Splitting_x* Splitting_y);
+	boss_pillar_body_Splitting.reserve(Splitting_x * Splitting_y);
 
 
 
-	
+
 	isUse = true;
 }
 
@@ -208,7 +208,7 @@ void boss_pillar::Update()
 				Splitting_Destroy_Flag = true;
 			}
 		}
-
+		Pulling_pillar();
 
 
 
@@ -294,7 +294,7 @@ void boss_pillar::Destroy_Splitting()
 					fragmentFixture.density = 1.0f; // ボディの密度を設定。密度が大きいほどボディの質量が重くなる。
 					fragmentFixture.friction = 0.5f; // 摩擦係数を設定。接触面の滑りやすさを制御し、小さい値ほど滑りやすい。
 					fragmentFixture.restitution = 0.0f; // 反発係数を設定。0は反発しない（衝突時にエネルギーを失う）、1は完全に弾む。
-					fragmentFixture.filter = createFilterExclude("ground_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter" });
+					fragmentFixture.filter = createFilterExclude("ground_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter","Shockwave_filter" });
 
 					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
 
@@ -340,16 +340,34 @@ void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 
 void boss_pillar::Pulling_pillar()
 {
-	b2Body* body = GetObjectAnchorPointBody();
-	b2Vec2 pulling_power = m_pulling_power;
-
-	//プレイヤー側に倒す
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	if (pulling_flag == true)
 	{
-		pulling_power.x = pulling_power.x * -1;
-	}
 
-	body->SetLinearVelocity(pulling_power);
+		// 本体のフィクスチャのフィルターを更新する
+		if (GetBody() != nullptr) {
+			for (b2Fixture* f = GetBody()->GetFixtureList(); f; f = f->GetNext()) {
+				// 新しいフィルターデータを作成（createFilterExclude は既存の関数と仮定）
+				b2Filter newFilter = createFilterExclude("object_filter", {"Player_filter"});
+				f->SetFilterData(newFilter);
+				f->Refilter();  // 設定変更をワールドに反映
+			}
+		}
+
+		b2Body* body = GetObjectAnchorPointBody();
+		b2Vec2 pulling_power = m_pulling_power;
+
+
+
+		//プレイヤー側に倒す
+		if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+		{
+			pulling_power.x = pulling_power.x * -1;
+		}
+
+		body->SetLinearVelocity(pulling_power);
+
+		pulling_flag = false;
+	}
 
 }
 
@@ -425,9 +443,7 @@ void boss_pillar::Draw()
 
 void boss_pillar::Finalize()
 {
-	if (g_Texture != NULL)
-	{
+	if (g_Texture) {
 		UnInitTexture(g_Texture);
-		g_Texture = NULL;
 	}
 }

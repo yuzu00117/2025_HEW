@@ -17,6 +17,7 @@
 #include"world_box2d.h"
 #include"player.h"
 #include"player_life.h"
+#include"sound.h"
 
 static ID3D11ShaderResourceView* g_Black_texture = NULL;//黒のテクスチャ
 static ID3D11ShaderResourceView* g_Black_hole_texture = NULL;//真ん中が空いてる黒のテクスチャ
@@ -68,6 +69,12 @@ void dead_production::Update()
 	Black_fade_rate += 0.01;
 	HitStop::StartHitStop(10);
 	
+	//残機表示が切り替わる時にSE再生
+	if (Dead_Cnt == 210)
+	{
+		//攻撃のサウンド
+		app_atomex_start(Player_Stock_Decrease_Sound);
+	}
 
 }
 
@@ -203,19 +210,12 @@ void dead_production::Draw()
 
 void dead_production::Finalize()
 {
-	if (g_Black_texture != NULL)
-	{
-		UnInitTexture(g_Black_texture);
-		g_Black_texture = NULL;
+	if (g_Black_texture) UnInitTexture(g_Black_texture);
+	if (g_Black_hole_texture) UnInitTexture(g_Black_hole_texture);
 
-		UnInitTexture(g_Black_hole_texture);
-		g_Black_hole_texture = NULL;
+	if (g_player_icon_texture) UnInitTexture(g_player_icon_texture);
 
-		UnInitTexture(g_player_icon_texture);
-		g_player_icon_texture = NULL;
+	if (g_batten_texture) UnInitTexture(g_batten_texture);
 
-		UnInitTexture(g_number_texture);
-		g_number_texture = NULL;
-		
-	}
+	if (g_number_texture) UnInitTexture(g_number_texture);
 }

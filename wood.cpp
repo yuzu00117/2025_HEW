@@ -18,6 +18,7 @@
 #include"collider_type.h"
 #include"player_position.h"
 #include"create_filter.h"
+#include"camera_shake.h"
 
 
 //テクスチャの入れ物
@@ -458,6 +459,38 @@ void wood::Update()
 		SetState(Wood_Falling);	//落ちている状態にセット
 	}
 
+
+	float angleDeg = Wood_body->GetAngle() * 180.0f / M_PI;
+	if (angleDeg < 0) {
+		angleDeg += 360.0f; // 負の値を補正
+	}
+	if (angleDeg >= 80.0f && angleDeg <= 280.0f) {
+		// 条件を満たす処理
+		if (camera_shake_was == false)
+		{
+			camera_shake_was = true;
+
+			switch (m_need_level)
+			{
+
+			case 1:
+				CameraShake::StartCameraShake(60, 5, 25);
+
+				break;
+			case 2:
+				CameraShake::StartCameraShake(90, 5, 25);
+
+				break;
+			case 3:
+				CameraShake::StartCameraShake(120, 5, 25);
+
+				break;
+			default:
+				break;
+			}
+		}
+
+	}
 }
 
 void wood::Pulling_wood()
@@ -705,57 +738,30 @@ void wood::Finalize()
 	}
 
 
-	if (g_Wood_Texture != NULL)
-	{
-		//テクスチャの解放
-		UnInitTexture(g_Wood_Texture);
-		UnInitTexture(g_Wood_Texture1);
-		UnInitTexture(g_Wood_Texture2);
-		UnInitTexture(g_Stump_Texture);
+	if (g_Wood_Texture) UnInitTexture(g_Wood_Texture);
+	if (g_Wood_Texture1) UnInitTexture(g_Wood_Texture1);
+	if (g_Wood_Texture2) UnInitTexture(g_Wood_Texture2);
+	if (g_Stump_Texture) UnInitTexture(g_Stump_Texture);
 
-		UnInitTexture(g_Wood_Texture_Lv1);
-		UnInitTexture(g_Stump_Texture_Lv1);
-		UnInitTexture(g_Wood_Texture_Lv2);
-		UnInitTexture(g_Stump_Texture_Lv2);
-		UnInitTexture(g_Wood_Texture_Lv3);
-		UnInitTexture(g_Stump_Texture_Lv3);
+	if (g_Wood_Texture_Lv1) UnInitTexture(g_Wood_Texture_Lv1);
+	if (g_Stump_Texture_Lv1) UnInitTexture(g_Stump_Texture_Lv1);
+	if (g_Wood_Texture_Lv2) UnInitTexture(g_Wood_Texture_Lv2);
+	if (g_Stump_Texture_Lv2) UnInitTexture(g_Stump_Texture_Lv2);
+	if (g_Wood_Texture_Lv3) UnInitTexture(g_Wood_Texture_Lv3);
+	if (g_Stump_Texture_Lv3) UnInitTexture(g_Stump_Texture_Lv3);
 
-		UnInitTexture(g_leaf_Texture1);
-		UnInitTexture(g_leaf_Texture2);
-		UnInitTexture(g_leaf_Texture3);
-		UnInitTexture(g_leaf_Texture4);
-		UnInitTexture(g_leaf_Texture5);
-		UnInitTexture(g_leaf_Texture6);
-		UnInitTexture(g_leaf_Texture7);
-		UnInitTexture(g_leaf_Texture8);
-		UnInitTexture(g_leaf_Texture9);
-		UnInitTexture(g_leaf_Texture10);
-		UnInitTexture(g_leaf_Texture11);
+	if (g_leaf_Texture1) UnInitTexture(g_leaf_Texture1);
+	if (g_leaf_Texture2) UnInitTexture(g_leaf_Texture2);
+	if (g_leaf_Texture3) UnInitTexture(g_leaf_Texture3);
+	if (g_leaf_Texture4) UnInitTexture(g_leaf_Texture4);
+	if (g_leaf_Texture5) UnInitTexture(g_leaf_Texture5);
+	if (g_leaf_Texture6) UnInitTexture(g_leaf_Texture6);
+	if (g_leaf_Texture7) UnInitTexture(g_leaf_Texture7);
+	if (g_leaf_Texture8) UnInitTexture(g_leaf_Texture8);
+	if (g_leaf_Texture9) UnInitTexture(g_leaf_Texture9);
+	if (g_leaf_Texture10) UnInitTexture(g_leaf_Texture10);
+	if (g_leaf_Texture11) UnInitTexture(g_leaf_Texture11);
 
-		g_Wood_Texture = NULL;
-		g_Wood_Texture1 = NULL;
-		g_Wood_Texture2 = NULL;
-		g_Stump_Texture = NULL;
-
-		g_Wood_Texture_Lv1 =NULL;
-		g_Stump_Texture_Lv1=NULL;
-		g_Wood_Texture_Lv2 =NULL;
-		g_Stump_Texture_Lv2=NULL;
-		g_Wood_Texture_Lv3 =NULL;
-		g_Stump_Texture_Lv3=NULL;
-
-		g_leaf_Texture1 = NULL;
-		g_leaf_Texture2 = NULL;
-		g_leaf_Texture3 = NULL;
-		g_leaf_Texture4 = NULL;
-		g_leaf_Texture5 = NULL;
-		g_leaf_Texture6 = NULL;
-		g_leaf_Texture7 = NULL;
-		g_leaf_Texture8 = NULL;
-		g_leaf_Texture9 = NULL;
-		g_leaf_Texture10 = NULL;
-		g_leaf_Texture11 = NULL;
-	}
 	
 
 

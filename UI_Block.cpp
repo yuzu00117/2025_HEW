@@ -271,15 +271,9 @@ void UI_block::Finalize()
 
 	//‰æ‘œ‚Ì‰ð•ú
 
-	if (g_Texture != NULL)
-	{
-		UnInitTexture(g_Texture);
-		g_Texture = NULL;
-		UnInitTexture(g_UI_texture);
-		g_UI_texture = NULL;
-		UnInitTexture(g_arrow_Texture);
-		g_arrow_Texture = NULL;
-	}
+	if (g_Texture) UnInitTexture(g_Texture);
+	if (g_UI_texture) UnInitTexture(g_UI_texture);
+	if (g_arrow_Texture) UnInitTexture(g_arrow_Texture);
 
 	m_video.Finalize();
 

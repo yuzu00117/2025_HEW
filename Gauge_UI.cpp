@@ -370,51 +370,24 @@ void Gauge_UI::Draw()
 void Gauge_UI::Finalize()
 {
 
-	if (g_ring_Texture != NULL)
-	{
-		// リングのテクスチャ解放
-		UnInitTexture(g_ring_Texture);
+	if (g_ring_Texture) UnInitTexture(g_ring_Texture);
 
-		// 宝石のテクスチャ解放
-		UnInitTexture(g_red_jewel_Texture);
-		UnInitTexture(g_blue_jewel_Texture);
-		UnInitTexture(g_yellow_jewel_Texture);
+	if (g_red_jewel_Texture) UnInitTexture(g_red_jewel_Texture);
+	if (g_blue_jewel_Texture) UnInitTexture(g_blue_jewel_Texture);
+	if (g_yellow_jewel_Texture) UnInitTexture(g_yellow_jewel_Texture);
 
-		// 宝石のフィットエフェクトの解放
-		UnInitTexture(g_red_jewel_fit_effect);
-		UnInitTexture(g_blue_jewel_fit_effect);
-		UnInitTexture(g_yellow_jewel_fit_effect);
+	if (g_red_jewel_fit_effect) UnInitTexture(g_red_jewel_fit_effect);
+	if (g_blue_jewel_fit_effect) UnInitTexture(g_blue_jewel_fit_effect);
+	if (g_yellow_jewel_fit_effect) UnInitTexture(g_yellow_jewel_fit_effect);
 
-		// ソウルゲージのテクスチャ解放
-		UnInitTexture(g_soul_gage_blue_Texture);
-		UnInitTexture(g_soul_gage_yellow_Texture);
-		UnInitTexture(g_soul_gage_red_Texture);
-		UnInitTexture(g_soul_gage_border_Texture);
+	if (g_soul_gage_blue_Texture) UnInitTexture(g_soul_gage_blue_Texture);
+	if (g_soul_gage_yellow_Texture) UnInitTexture(g_soul_gage_yellow_Texture);
+	if (g_soul_gage_red_Texture) UnInitTexture(g_soul_gage_red_Texture);
+	if (g_soul_gage_border_Texture) UnInitTexture(g_soul_gage_border_Texture);
 
-		// アンカーレベルのテクスチャ解放
-		UnInitTexture(g_anchor_level_division_Texture);
-		UnInitTexture(g_anchor_level_outline_Texture);
+	if (g_anchor_level_division_Texture) UnInitTexture(g_anchor_level_division_Texture);
+	if (g_anchor_level_outline_Texture) UnInitTexture(g_anchor_level_outline_Texture);
 
-		// NULLにリセット
-		g_ring_Texture = NULL;
-
-		g_red_jewel_Texture = NULL;
-		g_blue_jewel_Texture = NULL;
-		g_yellow_jewel_Texture = NULL;
-
-		g_red_jewel_fit_effect = NULL;
-		g_blue_jewel_fit_effect = NULL;
-		g_yellow_jewel_fit_effect = NULL;
-
-		g_soul_gage_blue_Texture = NULL;
-		g_soul_gage_yellow_Texture = NULL;
-		g_soul_gage_red_Texture = NULL;
-		g_soul_gage_border_Texture = NULL;
-
-		g_anchor_level_division_Texture = NULL;
-		g_anchor_level_outline_Texture = NULL;
-		
-	}
 }
 
 void Gauge_UI::DrawGaugeDamaged()

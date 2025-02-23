@@ -23,6 +23,7 @@
 #include "camera_shake.h"
 #include "hit_stop.h"
 #include "Item_Spirit.h"
+#include"Xinput_controller.h"
 
 // 使用するテクスチャファイルの定義
 static ID3D11ShaderResourceView *g_mini_boss_Texture = NULL;				 // ミニゴーレムのテクスチャ
@@ -308,7 +309,7 @@ void Boss_1_1::Update()
 		{
 			debug_flag = 60;
 			boss_field_level++;
-			BossDamaged();
+			
 		}
 		if (debug_flag != 0)
 		{
@@ -815,7 +816,7 @@ void Boss_1_1::CreateChargeAttack(b2Vec2 attack_size, bool left)
 		boss_field_level++;
 
 		// カメラシェイクスタート
-		CameraShake::StartCameraShake(40, 0, 60);
+		CameraShake::StartCameraShake(100, 20, 40);
 		HitStop::SetHitStopFlag(15);
 	}
 }
@@ -873,6 +874,7 @@ void Boss_1_1::CreateShockWave(b2Vec2 attack_size, bool left)
 		fixture.friction = 0.0f;	// 摩擦
 		fixture.restitution = 0.0f; // 反発係数
 		fixture.isSensor = true;	// センサーかどうか
+		fixture.filter = createFilterExclude("Shockwave_filter",{});
 
 		b2Fixture *m_fixture = m_attack_body->CreateFixture(&fixture);
 
@@ -898,6 +900,9 @@ void Boss_1_1::ShockWaveUpdate(void)
 			}
 
 			GetAttackBody()->SetLinearVelocity(b2Vec2(minus_flag * Shock_Wave_Speed, 0.0f));
+
+			//振動の呼び出し
+			CameraShake::StartCameraShake(20,30,20);
 		}
 		Now_Shock_Wave_time_Frame++;
 
@@ -1126,21 +1131,22 @@ void Boss_1_1::Draw()
 			{
 			case 1:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
+			
 				break;
 			case 2:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Lv2_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 17, 16, sheet_cnt, boss_alpha, left_flag);
+			
 				break;
 			case 3:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Lv3_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 17, 16, sheet_cnt, boss_alpha, left_flag);
+	
 				break;
 			default:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_panic_sheet_Texture);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
+			
 				break;
 			}
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 16, 17, sheet_cnt, boss_alpha, left_flag);
 			
 
 			break;
@@ -1411,26 +1417,58 @@ void Boss_1_1::Draw()
 		}
 
 		//----------------------------------------------------------------------------------------
-		// ミニゴーレムの描画
-		for (int i = 0; i < 2; i++)
+	
+	}
+	
+}
+
+void Boss_1_1::DrawObjectFront()
+{
+
+	float scale = SCREEN_SCALE;
+
+	// スクリーンの中心 (16m x 9m の仮想座標で、中心は x = 8, y = 4.5 と仮定)
+	b2Vec2 screen_center;
+	screen_center.x = SCREEN_CENTER_X;
+	screen_center.y = SCREEN_CENTER_Y;
+
+	// ミニゴーレムの描画
+	for (int i = 0; i < 2; i++)
+	{
+		if (GetMiniGolemBody(i) != nullptr)
 		{
-			if (GetMiniGolemBody(i) != nullptr)
-			{
-				// シェーダーリソースを設定
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_Texture);
+			// シェーダーリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_boss_Texture);
 
-				// コライダーの位置を取得（プレイヤーの位置）
-				b2Vec2 mini_golem_pos = GetMiniGolemBody(i)->GetPosition();
+			// コライダーの位置を取得（プレイヤーの位置）
+			b2Vec2 mini_golem_pos = GetMiniGolemBody(i)->GetPosition();
 
-				// プレイヤー位置を基準にスクリーン座標に変換する
-				// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
-				float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-				float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			// プレイヤー位置を基準にスクリーン座標に変換する
+			// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
+			float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-				DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale, GetMiniGolemDrawSize().y * scale));
-			}
+			DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale, GetMiniGolemDrawSize().y * scale));
 		}
 	}
+
+	// ミニゴーレムの破壊
+	if (mini_golem_break_effect_cnt != 0)
+	{
+		// シェーダーリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_golem_break_effect);
+
+		// コライダーの位置を取得（プレイヤーの位置）
+		b2Vec2 break_pos = mini_golem_delete_effect_position;
+
+		// プレイヤー位置を基準にスクリーン座標に変換する
+		// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
+		float break_draw_x = ((break_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float break_draw_y = ((break_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		DrawDividedSpriteBoss(XMFLOAT2(break_draw_x, break_draw_y), 0.0f, XMFLOAT2(GetMiniGolemDrawSize().x * scale * 1.3 * 1.5, GetMiniGolemDrawSize().y * scale * 1.7 * 1.5), 4, 2, mini_golem_break_effect_cnt / 4, effect_alpha, 1);
+	}
+
 	EffectDraw();
 }
 
@@ -1605,22 +1643,7 @@ void Boss_1_1::EffectDraw()
 		}
 	}
 
-	// ミニゴーレムの破壊
-	if (mini_golem_break_effect_cnt != 0)
-	{
-		// シェーダーリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_mini_golem_break_effect);
 
-		// コライダーの位置を取得（プレイヤーの位置）
-		b2Vec2 break_pos = mini_golem_delete_effect_position;
-
-		// プレイヤー位置を基準にスクリーン座標に変換する
-		// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
-		float break_draw_x = ((break_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float break_draw_y = ((break_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-		DrawDividedSpriteBoss(XMFLOAT2(break_draw_x, break_draw_y), 0.0f, XMFLOAT2(GetMiniGolemDrawSize().x * scale * 1.3 * 1.5, GetMiniGolemDrawSize().y * scale * 1.7 * 1.5), 4, 2, mini_golem_break_effect_cnt / 4, effect_alpha, 1);
-	}
 }
 
 void Boss_1_1::Finalize()
@@ -1640,153 +1663,61 @@ void Boss_1_1::Finalize()
 		SetAttackBody(nullptr);
 	}
 
-	if (g_mini_boss_Texture != NULL)
-	{
-		// ミニゴーレムのテクスチャ
-		UnInitTexture(g_mini_boss_Texture);
-		g_mini_boss_Texture = NULL;
+	if (g_mini_boss_Texture) UnInitTexture(g_mini_boss_Texture);
 
-		// 衝撃波のテクスチャ
-		UnInitTexture(g_boss_shock_wave_sheet1_Texture);
-		g_boss_shock_wave_sheet1_Texture = NULL;
+	if (g_boss_shock_wave_sheet1_Texture) UnInitTexture(g_boss_shock_wave_sheet1_Texture);
+	if (g_boss_shock_wave_sheet2_Texture) UnInitTexture(g_boss_shock_wave_sheet2_Texture);
+	if (g_boss_shock_wave_sheet1_Lv2_Texture) UnInitTexture(g_boss_shock_wave_sheet1_Lv2_Texture);
+	if (g_boss_shock_wave_sheet2_Lv2_Texture) UnInitTexture(g_boss_shock_wave_sheet2_Lv2_Texture);
+	if (g_boss_shock_wave_sheet1_Lv3_Texture) UnInitTexture(g_boss_shock_wave_sheet1_Lv3_Texture);
+	if (g_boss_shock_wave_sheet2_Lv3_Texture) UnInitTexture(g_boss_shock_wave_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet2_Texture);
-		g_boss_shock_wave_sheet2_Texture = NULL;
+	if (g_boss_charge_attack_sheet1_Texture) UnInitTexture(g_boss_charge_attack_sheet1_Texture);
+	if (g_boss_charge_attack_sheet2_Texture) UnInitTexture(g_boss_charge_attack_sheet2_Texture);
+	if (g_boss_charge_attack_sheet1_Lv2_Texture) UnInitTexture(g_boss_charge_attack_sheet1_Lv2_Texture);
+	if (g_boss_charge_attack_sheet2_Lv2_Texture) UnInitTexture(g_boss_charge_attack_sheet2_Lv2_Texture);
+	if (g_boss_charge_attack_sheet1_Lv3_Texture) UnInitTexture(g_boss_charge_attack_sheet1_Lv3_Texture);
+	if (g_boss_charge_attack_sheet2_Lv3_Texture) UnInitTexture(g_boss_charge_attack_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet1_Lv2_Texture);
-		g_boss_shock_wave_sheet1_Lv2_Texture = NULL;
+	if (g_boss_walk_sheet1_Texture) UnInitTexture(g_boss_walk_sheet1_Texture);
+	if (g_boss_walk_sheet2_Texture) UnInitTexture(g_boss_walk_sheet2_Texture);
+	if (g_boss_walk_sheet1_Lv2_Texture) UnInitTexture(g_boss_walk_sheet1_Lv2_Texture);
+	if (g_boss_walk_sheet2_Lv2_Texture) UnInitTexture(g_boss_walk_sheet2_Lv2_Texture);
+	if (g_boss_walk_sheet1_Lv3_Texture) UnInitTexture(g_boss_walk_sheet1_Lv3_Texture);
+	if (g_boss_walk_sheet2_Lv3_Texture) UnInitTexture(g_boss_walk_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet2_Lv2_Texture);
-		g_boss_shock_wave_sheet2_Lv2_Texture = NULL;
+	if (g_boss_jump_sheet1_Texture) UnInitTexture(g_boss_jump_sheet1_Texture);
+	if (g_boss_jump_sheet2_Texture) UnInitTexture(g_boss_jump_sheet2_Texture);
+	if (g_boss_jump_sheet1_Lv2_Texture) UnInitTexture(g_boss_jump_sheet1_Lv2_Texture);
+	if (g_boss_jump_sheet2_Lv2_Texture) UnInitTexture(g_boss_jump_sheet2_Lv2_Texture);
+	if (g_boss_jump_sheet1_Lv3_Texture) UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
+	if (g_boss_jump_sheet2_Lv3_Texture) UnInitTexture(g_boss_jump_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet1_Lv3_Texture);
-		g_boss_shock_wave_sheet1_Lv3_Texture = NULL;
+	if (g_boss_panic_sheet_Texture) UnInitTexture(g_boss_panic_sheet_Texture);
+	if (g_boss_panic_sheet_Lv2_Texture) UnInitTexture(g_boss_panic_sheet_Lv2_Texture);
+	if (g_boss_panic_sheet_Lv3_Texture) UnInitTexture(g_boss_panic_sheet_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet2_Lv3_Texture);
-		g_boss_shock_wave_sheet2_Lv3_Texture = NULL;
+	if (g_mini_boss_create_sheet1_Texture) UnInitTexture(g_mini_boss_create_sheet1_Texture);
+	if (g_mini_boss_create_sheet2_Texture) UnInitTexture(g_mini_boss_create_sheet2_Texture);
+	if (g_mini_boss_create_sheet1_Lv2_Texture) UnInitTexture(g_mini_boss_create_sheet1_Lv2_Texture);
+	if (g_mini_boss_create_sheet2_Lv2_Texture) UnInitTexture(g_mini_boss_create_sheet2_Lv2_Texture);
+	if (g_mini_boss_create_sheet1_Lv3_Texture) UnInitTexture(g_mini_boss_create_sheet1_Lv3_Texture);
+	if (g_mini_boss_create_sheet2_Lv3_Texture) UnInitTexture(g_mini_boss_create_sheet2_Lv3_Texture);
 
-		// チャージ攻撃のテクスチャ
-		UnInitTexture(g_boss_charge_attack_sheet1_Texture);
-		g_boss_charge_attack_sheet1_Texture = NULL;
+	if (g_boss_down_sheet) UnInitTexture(g_boss_down_sheet);
+	if (g_boss_down_Lv2_sheet) UnInitTexture(g_boss_down_Lv2_sheet);
 
-		UnInitTexture(g_boss_charge_attack_sheet2_Texture);
-		g_boss_charge_attack_sheet2_Texture = NULL;
+	if (g_boss_charge_effect) UnInitTexture(g_boss_charge_effect);
+	if (g_boss_charge_attack_effect) UnInitTexture(g_boss_charge_attack_effect);
+	if (g_mini_golem_break_effect) UnInitTexture(g_mini_golem_break_effect);
+	if (g_boss_panic_effect) UnInitTexture(g_boss_panic_effect);
+	if (g_boss_shock_wave_effect) UnInitTexture(g_boss_shock_wave_effect);
 
-		UnInitTexture(g_boss_charge_attack_sheet1_Lv2_Texture);
-		g_boss_charge_attack_sheet1_Lv2_Texture = NULL;
+	if (g_debug_color) UnInitTexture(g_debug_color);
+	if (g_debug_boss_body_color) UnInitTexture(g_debug_boss_body_color);
+	if (g_debug_attack_color) UnInitTexture(g_debug_attack_color);
+	if (g_debug_core) UnInitTexture(g_debug_core);
 
-		UnInitTexture(g_boss_charge_attack_sheet2_Lv2_Texture);
-		g_boss_charge_attack_sheet2_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_charge_attack_sheet1_Lv3_Texture);
-		g_boss_charge_attack_sheet1_Lv3_Texture = NULL;
-
-		UnInitTexture(g_boss_charge_attack_sheet2_Lv3_Texture);
-		g_boss_charge_attack_sheet2_Lv3_Texture = NULL;
-
-		// ゴーレムの歩行アニメーション
-		UnInitTexture(g_boss_walk_sheet1_Texture);
-		g_boss_walk_sheet1_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet2_Texture);
-		g_boss_walk_sheet2_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet1_Lv2_Texture);
-		g_boss_walk_sheet1_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet2_Lv2_Texture);
-		g_boss_walk_sheet2_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet1_Lv3_Texture);
-		g_boss_walk_sheet1_Lv3_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet2_Lv3_Texture);
-		g_boss_walk_sheet2_Lv3_Texture = NULL;
-
-		// ゴーレムのジャンプアニメーション
-		UnInitTexture(g_boss_jump_sheet1_Texture);
-		g_boss_jump_sheet1_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet2_Texture);
-		g_boss_jump_sheet2_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet1_Lv2_Texture);
-		g_boss_jump_sheet1_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet2_Lv2_Texture);
-		g_boss_jump_sheet2_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
-		g_boss_jump_sheet1_Lv3_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet2_Lv3_Texture);
-		g_boss_jump_sheet2_Lv3_Texture = NULL;
-
-		// ゴーレムのパニックアニメーション
-		UnInitTexture(g_boss_panic_sheet_Texture);
-		g_boss_panic_sheet_Texture = NULL;
-
-		UnInitTexture(g_boss_panic_sheet_Lv2_Texture);
-		g_boss_panic_sheet_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_panic_sheet_Lv3_Texture);
-		g_boss_panic_sheet_Lv3_Texture = NULL;
-
-		// ミニゴーレム生成時のボスアニメーション
-		UnInitTexture(g_mini_boss_create_sheet1_Texture);
-		g_mini_boss_create_sheet1_Texture = NULL;
-
-		UnInitTexture(g_mini_boss_create_sheet2_Texture);
-		g_mini_boss_create_sheet2_Texture = NULL;
-
-		UnInitTexture(g_mini_boss_create_sheet1_Lv2_Texture);
-		g_mini_boss_create_sheet1_Lv2_Texture = NULL;
-
-		UnInitTexture(g_mini_boss_create_sheet2_Lv2_Texture);
-		g_mini_boss_create_sheet2_Lv2_Texture = NULL;
-
-		UnInitTexture(g_mini_boss_create_sheet1_Lv3_Texture);
-		g_mini_boss_create_sheet1_Lv3_Texture = NULL;
-
-		UnInitTexture(g_mini_boss_create_sheet2_Lv3_Texture);
-		g_mini_boss_create_sheet2_Lv3_Texture = NULL;
-
-		// ボスのダウン状態
-		UnInitTexture(g_boss_down_sheet);
-		g_boss_down_sheet = NULL;
-
-		UnInitTexture(g_boss_down_Lv2_sheet);
-		g_boss_down_Lv2_sheet = NULL;
-
-		// ボス周辺のエフェクト
-		UnInitTexture(g_boss_charge_effect);
-		g_boss_charge_effect = NULL;
-
-		UnInitTexture(g_boss_charge_attack_effect);
-		g_boss_charge_attack_effect = NULL;
-
-		UnInitTexture(g_mini_golem_break_effect);
-		g_mini_golem_break_effect = NULL;
-
-		UnInitTexture(g_boss_panic_effect);
-		g_boss_panic_effect = NULL;
-
-		UnInitTexture(g_boss_shock_wave_effect);
-		g_boss_shock_wave_effect = NULL;
-
-		// デバッグ用のテクスチャ
-		UnInitTexture(g_debug_color);
-		g_debug_color = NULL;
-
-		UnInitTexture(g_debug_boss_body_color);
-		g_debug_boss_body_color = NULL;
-
-		UnInitTexture(g_debug_attack_color);
-		g_debug_attack_color = NULL;
-
-		UnInitTexture(g_debug_core);
-		g_debug_core = NULL;
-	}
 	
 }
 

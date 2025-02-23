@@ -94,13 +94,9 @@ void Item_Coin_UI::Draw()
 
 void Item_Coin_UI::Finalize()
 {
-	if (g_number_Texture != NULL)
-	{
-		UnInitTexture(g_number_Texture);
-		g_number_Texture = NULL;
-		UnInitTexture(g_coin_effect_Texture);
-		g_coin_effect_Texture = NULL;
-		UnInitTexture(g_coin_Texture);
-		g_coin_Texture = NULL;
-	}
+	if (g_number_Texture) UnInitTexture(g_number_Texture);
+
+	if (g_coin_Texture) UnInitTexture(g_coin_Texture);
+	if (g_coin_effect_Texture) UnInitTexture(g_coin_effect_Texture);
+
 }

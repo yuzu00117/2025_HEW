@@ -106,6 +106,12 @@ public:
 	}
 
 
+	void SetPullingFlag(bool flag)
+	{
+		pulling_flag = flag;
+
+	}
+
 private:
 
 	bool isUse;
@@ -131,6 +137,8 @@ private:
 	int Destroy_Cnt=0;
 
 	int touch_ground_cnt = 0;
+
+	bool pulling_flag=false;
 
 
 	b2Vec2 old_vec;
