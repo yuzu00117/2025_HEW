@@ -1841,7 +1841,6 @@ void Boss_1_1::Finalize()
 
 		UnInitTexture(g_debug_core);
 		g_debug_core = NULL;
-	}
 
 	//ダメージの処理
 	if (g_boss_damage_sheet_Texture) UnInitTexture(g_boss_damage_sheet_Texture);
