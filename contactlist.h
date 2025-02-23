@@ -1509,16 +1509,24 @@ public:
 
             if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
-                boss.SetNowBossState(panic_state);
+                
                 boss.SetBossSheetCnt(0);
                 if (objectA->object_name == Boss_pillar)
                 {
+                    if (boss.GetNowBossState() != panic_state)
+                    {
+                        boss.SetNowBossState(damage_state);
+                    }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
                   
                 }
                 if (objectB->object_name == Boss_pillar)
                 {
+                    if (boss.GetNowBossState() != panic_state)
+                    {
+                        boss.SetNowBossState(damage_state);
+                    }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
                 }
@@ -1526,11 +1534,13 @@ public:
 
                 if (objectA->object_name == Boss_Wall)
                 {
+                    boss.SetNowBossState(panic_state);
                     Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     wall_instance->SetSplitting_Destroy_Flag(true);
                 }
                 if (objectB->object_name == Boss_Wall)
                 {
+                    boss.SetNowBossState(panic_state);
                     Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     wall_instance->SetSplitting_Destroy_Flag(true);
                 }
@@ -1576,8 +1586,11 @@ public:
 
                     if (objectB->collider_type == collider_boss)
                     {
-                        boss.SetBossSheetCnt(0);
-                        boss.SetNowBossState(panic_state);
+                        if (boss.GetNowBossState() != panic_state)
+                        {
+                            boss.SetBossSheetCnt(0);
+                            boss.SetNowBossState(damage_state);
+                        }
                     }
                 }
 
@@ -1595,8 +1608,11 @@ public:
                     enemy_instance->SetSplittingDestroyFlag(true);
                     if (objectA->collider_type == collider_boss)
                     {
-                        boss.SetBossSheetCnt(0);
-                        boss.SetNowBossState(panic_state);
+                        if (boss.GetNowBossState() != panic_state)
+                        {
+                            boss.SetBossSheetCnt(0);
+                            boss.SetNowBossState(damage_state);
+                        }
                     }
                 }
 

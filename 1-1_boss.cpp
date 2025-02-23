@@ -62,12 +62,19 @@ static ID3D11ShaderResourceView *g_boss_panic_sheet_Texture = NULL; // ゴーレ
 static ID3D11ShaderResourceView* g_boss_panic_sheet_Lv2_Texture = NULL; // ゴーレムのパニックアニメーション Lv2
 static ID3D11ShaderResourceView* g_boss_panic_sheet_Lv3_Texture = NULL; // ゴーレムのパニックアニメーション Lv3
 
+
+static ID3D11ShaderResourceView* g_boss_damage_sheet_Texture = NULL; // ゴーレムの被弾アニメーション
+static ID3D11ShaderResourceView* g_boss_damage_sheet_Lv2_Texture = NULL; // ゴーレムの被弾アニメーション Lv2
+static ID3D11ShaderResourceView* g_boss_damage_sheet_Lv3_Texture = NULL; // ゴーレムの被弾アニメーション Lv3
+
 static ID3D11ShaderResourceView *g_mini_boss_create_sheet1_Texture = NULL;     // ミニゴーレム生成時のボスアニメーション1
 static ID3D11ShaderResourceView *g_mini_boss_create_sheet2_Texture = NULL;	   // ミニゴーレム生成時のボスアニメーション2
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet1_Lv2_Texture = NULL; // ミニゴーレム生成時のボスアニメーション1 Lv2
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Lv2_Texture = NULL; // ミニゴーレム生成時のボスアニメーション2 Lv2
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet1_Lv3_Texture = NULL; // ミニゴーレム生成時のボスアニメーション1 Lv3
 static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Lv3_Texture = NULL; // ミニゴーレム生成時のボスアニメーション2 Lv3
+
+
 
 static ID3D11ShaderResourceView* g_boss_down_sheet = NULL;				 // ボスのダウン状態 lv2
 static ID3D11ShaderResourceView* g_boss_down_Lv2_sheet = NULL;			 // ボスのダウン状態 lv3
@@ -149,6 +156,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 		g_boss_panic_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1.png");						  // ゴーレムのパニックアニメーション
 		g_boss_panic_sheet_Lv2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1_Lv2.png");				  // ゴーレムのパニックアニメーション
 		g_boss_panic_sheet_Lv3_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_sheet1_Lv3.png");				  // ゴーレムのパニックアニメーション
+
+		g_boss_damage_sheet_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_damage_sheet1.png");						  // ゴーレムのパニックアニメーション
+		g_boss_damage_sheet_Lv2_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_damage_sheet1_Lv2.png");				  // ゴーレムのパニックアニメーション
+		g_boss_damage_sheet_Lv3_Texture = InitTexture(L"asset\\texture\\boss_1_1\\boss_damage_sheet1_Lv3.png");				  // ゴーレムのパニックアニメーション
 
 		g_boss_down_sheet			=InitTexture(L"asset\\texture\\boss_1_1\\boss_down_sheet.png");					  // ゴーレムのダウンアニメーション
 		g_boss_down_Lv2_sheet 		=InitTexture(L"asset\\texture\\boss_1_1\\boss_down_sheet_Lv2.png");				  // ゴーレムのダウンアニメーション Lv2
@@ -325,6 +336,26 @@ void Boss_1_1::Update()
 			sheet_cnt = 0;
 
 			break;
+
+		case damage_state:
+
+			if (sheet_cnt == 0)
+			{
+				//ソウルを落とす
+				ItemManager& item_manager = ItemManager::GetInstance();
+				item_manager.AddSpirit(GetBossBody()->GetPosition(), { 2.0f,3.0f }, 0, Spirit_L, false);
+				item_manager.AddSpirit(GetBossBody()->GetPosition()+b2Vec2(0.2f,0.2), {2.0f,3.0f}, 0, Spirit_M, false);
+				item_manager.AddSpirit(GetBossBody()->GetPosition()-b2Vec2(0.2f, 0.2), { 2.0f,3.0f }, 0, Spirit_S, false);
+			}
+
+			if (Max_dameged_Sheet <= sheet_cnt)
+			{
+				sheet_cnt = 0;
+				now_boss_state = wait_state;
+			}
+			sheet_cnt += 0.3;
+			break;
+
 		case panic_state:
 
 			if (50 < sheet_cnt)
@@ -1123,6 +1154,28 @@ void Boss_1_1::Draw()
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, 1, boss_alpha, left_flag);
 
 			break;
+		case damage_state:
+			switch (boss_level)
+			{
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_damage_sheet_Texture);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_damage_sheet_Lv2_Texture);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_damage_sheet_Lv3_Texture);
+				break;
+			default:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_damage_sheet_Texture);
+				break;
+			}
+
+
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 5, 5, sheet_cnt, boss_alpha, left_flag);
+
+			break;
+
 
 		case panic_state:
 
@@ -1810,6 +1863,12 @@ void Boss_1_1::Finalize()
 		UnInitTexture(g_debug_core);
 		g_debug_core = NULL;
 	}
+
+	//ダメージの処理
+	if (g_boss_damage_sheet_Texture) UnInitTexture(g_boss_damage_sheet_Texture);
+	if (g_boss_damage_sheet_Lv2_Texture) UnInitTexture(g_boss_damage_sheet_Lv2_Texture);
+	if (g_boss_damage_sheet_Lv3_Texture) UnInitTexture(g_boss_damage_sheet_Lv3_Texture);
+
 	
 }
 
