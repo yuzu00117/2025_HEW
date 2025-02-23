@@ -474,7 +474,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
-				CreateMiniGolem(b2Vec2(3.0f * BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE), left_flag); // 画像の都合で大きさを変えるため　生成時の位置はそのまま　実際の大きさは参照用
+				CreateMiniGolem(b2Vec2(2.0f * BOSS_SIZE_SCALE, 1.3f * BOSS_SIZE_SCALE), left_flag); // 画像の都合で大きさを変えるため　生成時の位置はそのまま　実際の大きさは参照用
 			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
@@ -1008,6 +1008,20 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 
 			Mini_golem_Create_flag = false;
 
+
+			// プレイヤーの位置を取得
+			b2Vec2 player_pos = PlayerPosition::GetPlayerPosition();
+
+			if (m_body->GetPosition().x > player_pos.x)
+			{
+				m_mini_golem_left_flag[i]=true;
+			}
+			else
+			{
+				m_mini_golem_left_flag[i]=false;
+			}
+
+
 			return;
 		}
 	}
@@ -1026,19 +1040,13 @@ void Boss_1_1::MiniGolemUpdate(void)
 			b2Vec2 player_pos = PlayerPosition::GetPlayerPosition();
 
 			// プレイヤーと左か右かに移動する
-			if (player_pos.x < mini_golem_body->GetPosition().x) // プレイヤーの左
+			if (m_mini_golem_left_flag[i]) // プレイヤーの左
 			{
-				if (mini_golem_body->GetAngularVelocity() > -3) // 最大回転速度を超えない
-				{
-					mini_golem_body->ApplyTorque(-0.1, true);
-				}
+				mini_golem_body->ApplyTorque(-0.03, true);
 			}
 			else
 			{
-				if (mini_golem_body->GetAngularVelocity() < 3) // 最大回転速度を超えない
-				{
-					mini_golem_body->ApplyTorque(0.1, true);
-				}
+				mini_golem_body->ApplyTorque(0.03, true);
 			}
 		}
 	}
@@ -1071,6 +1079,7 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 			{
 				SetMiniGolemBody(nullptr, i);
 				destroy_mini_golem_flag = false;
+
 
 				// カメラシェイクスタート
 				CameraShake::StartCameraShake(0, 20, 10);

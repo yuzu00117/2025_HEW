@@ -319,6 +319,7 @@ private:
 
 
 	b2Body* m_mini_golem_body[2];//ボディ
+	bool m_mini_golem_left_flag[2];//ミニゴーレムの向き
 	b2Vec2 mini_golem_size;
 	b2Body* destroy_mini_golem_body;
 	bool destroy_mini_golem_flag=false;
