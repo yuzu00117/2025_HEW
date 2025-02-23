@@ -17,7 +17,7 @@
 #include "player_stamina.h"
 #include "player.h"
 #include "sound.h"
-
+#include "gokai.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_get_save_point_effect = NULL;//セーブポイントを取得した時のエフェクト
@@ -111,11 +111,15 @@ void    ItemSavePoint::Function()
         float stamina = PlayerStamina::GetPlayerStaminaValue();
         //体力がまだマックスじゃない
         AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
-
-        //プレイヤーのリスポン位置を更新する
-        Player& player = Player::GetInstance();
-        player.SetRespawnPosition(m_body_position);
     }
+    //プレイヤーのリスポン位置を更新する
+    Player& player = Player::GetInstance();
+    player.RegisterSavePoint(this);
+    
+    //今の豪快値を豪快UIに記録
+    int value = Gokai_UI::GetNowGokaiCount();
+    Gokai_UI::SetGokai_WhenRespawn(value);
+
     //初回通過時の効果音
     app_atomex_start(Player_Coin_Colect_Sound);
 

@@ -35,6 +35,22 @@ public:
         }
     }
 
+    static bool GetIfJewelCollected(Jewel_Type type)
+    {
+        switch (type)
+        {
+        case BLUE:
+            return m_blue_jewel_collected;
+            break;
+        case RED:
+            return m_red_jewel_collected;
+            break;
+        case YELLOW:
+            return m_yellow_jewel_collected;
+            break;
+        }
+    }
+
 
 private:
     // 静的メンバー変数の型を正しく指定

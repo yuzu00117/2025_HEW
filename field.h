@@ -90,10 +90,10 @@ public:
 	Field();
 	virtual ~Field();
 
-	static void Initialize(bool respawning = false);
+	static void Initialize();
 	static void Update();
 	static void Draw();
-	static void Finalize(bool respawning = false);
+	static void Finalize();
 
 	//csvファイルを読み込み、二次元配列として格納
 	static bool LoadCSV(const std::string& filename);

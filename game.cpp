@@ -46,21 +46,15 @@ bool  HitStop::hit_stop_flag = false;
 int HitStop::delay_hit_stop_time = 0;
 int HitStop::delay_time = 0;
 
-
+GAME_STATE  next_state = GAME_STATE_RESPAWN_INITIAL;
 
 void Game::Initialize()
 {
-    //ゲームシーンに入って初回はInitialize要らない（BeforeGameScene.cppで事前にInitializeした）（目的：リスポンする時Initializeしたくない物があるから）
-    if (!m_respawn)
-    {
-        PlayerLife::Initialize();
-    }
-
 
     //全ての音を止める
     app_atomex_stop_player();
 
-    SceneManager &scene= SceneManager::GetInstance();
+    SceneManager& scene = SceneManager::GetInstance();
 
     //ステージに合わせてBGMを切り替える
     switch (scene.GetStageName())
@@ -74,6 +68,77 @@ void Game::Initialize()
     default:
         break;
     }
+
+
+    //フィールドの初期化
+    Field::Initialize();
+
+    objectManager.InitializeAll();
+
+
+    switch (m_state)
+    {
+    case GAME_STATE_START:
+        //アイテムの初期化
+        itemManager.InitializeAll();
+        //残機の初期化
+        PlayerLife::Initialize();
+        //プレイヤーの体力の初期化
+        PlayerStamina::Initialize();
+        //ソウルゲージの初期化
+        AnchorSpirit::Initialize();
+        //ソウルゲージUIの初期化
+        Gauge_UI::Initialize();
+        //豪快度UIの初期化
+        Gokai_UI::Initialize();
+        break;
+    case GAME_STATE_RESPAWN_INITIAL:
+        //リスポン用のアイテムの初期化
+        itemManager.Initialize_WhenRespawn();
+        if (scene.GetStageName() == STAGE_BOSS)
+        {
+            itemManager.UseAllJewel();
+        }
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
+        //豪快度を記録した値に戻す
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+        break;
+    case GAME_STATE_RESPAWN_SAVE_POINT:
+        //リスポン用のアイテムの初期化
+        itemManager.Initialize_WhenRespawn();
+        if (scene.GetStageName() == STAGE_BOSS) 
+        {
+            itemManager.UseAllJewel();
+        }
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーをlevel２にセット
+        AnchorSpirit::SetAnchorSpiritValueDirectly(100);
+        //豪快度を記録した値に戻す
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+        break;
+    case GAME_STATE_NEXT_STAGE:
+        //リスポン用のアイテムの初期化
+        itemManager.Initialize_WhenNextStage();
+
+        //今の豪快値を豪快UIに記録
+        Gokai_UI::SetGokai_WhenRespawn(Gokai_UI::GetNowGokaiCount());
+
+        if (scene.GetStageName() == STAGE_BOSS)
+        {
+            itemManager.UseAllJewel();
+        }
+        break;
+    case GAME_STATE_GAMEOVER:
+        break;
+    default:
+        break;
+    }
+
+
 
 
 
@@ -90,25 +155,9 @@ void Game::Initialize()
 
 
 
-    //マップによって初期リスを変える　　　これアンカーのレベル引き継いでないわ
-    SceneManager& sceneManager = SceneManager::GetInstance();
-   
-
-
-
-	//プレイヤーUIの初期化
-    Gauge_UI::Initialize();
-    //プレイヤーの体力の初期化
-    PlayerStamina::Initialize();
-
-    //ソウルゲージの初期化
-    AnchorSpirit::Initialize();
-
     //アンカーの初期化
     Anchor::Initialize();
 
-    //フィールドの初期化
-    Field::Initialize(m_respawn);
 
     //背景の初期化
     Bg::Initialize();
@@ -117,7 +166,6 @@ void Game::Initialize()
     //撃墜演出エフェクト
     InitBlownAwayEffect();
 
-    Gokai_UI::Initialize();
 
     //死亡処理の演出のイニシャライズを行う
     dead_production::Initialize();
@@ -143,19 +191,60 @@ void Game::Initialize()
     InitializeDebug();
 #endif // !_DEBUG
 
-    Respawn();
 }
 
 //残機はゲームシーンではFinalizeはやらない、Resultシーンでやる
 void Game::Finalize(void)
 {
-    if (!m_respawn)
+
+    //フィールドの終了処理
+    Field::Finalize();
+
+    //アンカーポイントの終了処理
+    AnchorPoint::Finalize();
+    //オブジェクトの終了処理
+    objectManager.FinalizeAll();
+
+
+    switch (next_state)
     {
+    case GAME_STATE_START:
+        break;
+    case GAME_STATE_RESPAWN_INITIAL:
+        //リスポン用のアイテムの終了処理
+        itemManager.Finalize_WhenRespawn();
+        break;
+    case GAME_STATE_RESPAWN_SAVE_POINT:
+        //リスポン用のアイテムの終了処理
+        itemManager.Finalize_WhenRespawn();
+        break;
+    case GAME_STATE_NEXT_STAGE:
+        //アイテムの終了処理
+        itemManager.Finalize_WhenNextStage();
+        //プレイヤーが登録した中間地点を解除
+        player.RegisterSavePoint(nullptr);
+        break;
+    case GAME_STATE_GAMEOVER:
+        //アイテムの終了処理
+        itemManager.FinalizeAll();
+        //残機終了処理
         PlayerLife::Finalize();
+        //ソウルゲージUIの終了処理
+        Gauge_UI::Finalize();
+        //豪快度UIの終了処理
+        Gokai_UI::Finalize();
+        //プレイヤーが登録した中間地点を解除
+        player.RegisterSavePoint(nullptr);
+        break;
+    default:
+        break;
     }
-	//プレイヤーUIの終了処理
-    Gauge_UI::Finalize();
+    m_state = next_state;
+    if (m_state == GAME_STATE_GAMEOVER) { m_state = GAME_STATE_START; }
+    next_state = GAME_STATE_RESPAWN_INITIAL;
+
 	//プレイヤーの終了処理
+    player.ResetPlayerParameter();
     player.Finalize();
 
 	
@@ -163,8 +252,6 @@ void Game::Finalize(void)
     //アンカー終了処理
     Anchor::Finalize();
 
-    //フィールドの終了処理
-    Field::Finalize(m_respawn);
 
     //背景の終了処理
     Bg::Finalize();
@@ -178,7 +265,6 @@ void Game::Finalize(void)
     //文字（絵）
     FinalizeWord();
 
-    Gokai_UI::Finalize();
 
     dead_production::Finalize();
 
@@ -187,10 +273,6 @@ void Game::Finalize(void)
 
     change_scene_start_production::Finalize();
 
-    //体力ソウルゲージUIの終了処理
-    //stamina_spirit_gauge.Finalize()がなかったのでそれらしいものを探してみた
-    StaminaSpiritGauge staminaSpiritGauge;
-    staminaSpiritGauge.Finalize();
 
 
     //衝突時のエフェクトを
@@ -239,7 +321,7 @@ void Game::Update(void)
 
             //プレイヤーライフの更新処理
             PlayerLife::Update();
-            //プレイヤーUIの更新処理
+            //ソウルゲージUIの更新処理
             Gauge_UI::Update();
 
             AnchorSpirit::Update();
@@ -276,13 +358,13 @@ void Game::Update(void)
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_respawn = false;
+                next_state = GAME_STATE_GAMEOVER;
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
             {
-               
+                next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
             }
@@ -327,7 +409,9 @@ void Game::Update(void)
         //プレイヤーの残機が残っていたら最初からスタート
         if (PlayerLife::GetLife() > 0)
         {
-            m_respawn = true;
+            if (player.GetRegisteredSavePoint() != nullptr) { next_state = GAME_STATE_RESPAWN_SAVE_POINT; }
+            else { next_state = GAME_STATE_RESPAWN_INITIAL; }
+
             PlayerLife::SetLife(PlayerLife::GetLife() - 1);
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
@@ -335,7 +419,7 @@ void Game::Update(void)
         }
         else
         {
-            m_respawn = false;
+            next_state = GAME_STATE_GAMEOVER;
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.ChangeScene(SCENE_RESULT);
@@ -344,7 +428,7 @@ void Game::Update(void)
 
     }
 
-    //シーン移行の管理
+    //シーン移行の管理（死亡した時以外のシーン移動）
     if (sceneManager.Get_Chenge_Scene_flag() == true)
     {
         //シーン移行したらfalseにする
@@ -367,12 +451,12 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_ISEKI:
-                m_respawn = true;
+                next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
-                m_respawn = true;
+                next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
@@ -386,16 +470,6 @@ void Game::Update(void)
 
 }
 
-
-void Game::Respawn()
-{
-    //リスポン時の座標決め
-    //==========================================================================
-    PlayerStamina::SetPlayerStaminaValueDirectly(MAX_STAMINA);  //体力をマックスに戻す
-    AnchorSpirit::SetAnchorSpiritValueDirectly(100);    //アンカーをlevel２にセット
-    //リスポンした時の効果音
-    app_atomex_start(Player_Jewelry_Colect_Sound);
-}
 
 
 
@@ -463,7 +537,6 @@ void Game::Draw(void)
 
 
 
-	Gauge_UI::Draw();
 
     PillarFragmentsManager::GetInstance().DrawFragments();
 

@@ -21,6 +21,7 @@
 #include"display.h"
 #include"world_box2d.h"
 #include<vector>
+#include"Item_SavePoint.h"
 
 
 enum player_draw_state
@@ -71,10 +72,13 @@ public:
 	}
 
 	 // プレイヤーの初期化
-	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, bool respawning = false);
+	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size);
 	void Update();
 	void Draw();
 	void Finalize();
+
+	//リスポンやステージ移行の時リセット必要なメンバー変数をリセット
+	void	ResetPlayerParameter();
 
 	void Player_sensor_size_change(int anchor_level);
 
@@ -192,10 +196,10 @@ public:
 	}
 
 
-	//プレイヤーのリスポン位置を取得（座標ｘとｙがゼロの時はCSVの初期位置になる）
-	b2Vec2	GetRespawnPosition() { return m_respawn_position; }
-	//プレイヤーのリスポン位置をセット（座標ｘとｙがゼロの時はCSVの初期位置になる）
-	void	SetRespawnPosition(b2Vec2 position) { m_respawn_position = position; }
+	//プレイヤーが登録した中間地点を取得（nullptrの場合は登録してない）
+	const ItemSavePoint*	GetRegisteredSavePoint() { return m_registered_SavePoint; }
+	//プレイヤーが中間地点を登録（nullptrの場合は登録解除）
+	void	RegisterSavePoint(ItemSavePoint* SavePoint) { m_registered_SavePoint = SavePoint; }
 
 
 
@@ -266,8 +270,8 @@ private:
 	b2Vec2 m_sensor_size;
 
 
-	//リスポンする時プレイヤーの位置指定
-	b2Vec2  m_respawn_position;
+	//登録した中間地点
+	const ItemSavePoint* m_registered_SavePoint = nullptr;
 
 
 	//アンカー投げる時の速度の倍率

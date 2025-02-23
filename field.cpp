@@ -27,6 +27,7 @@
 #include"1_1_boss_carry_object_enemy.h"
 #include"scene.h"
 #include"1-1_boss.h"
+#include"anchor_spirit.h"
 
 // 2次元配列の静的メンバの初期化
 Field*** Field::m_p_field_array = nullptr;
@@ -89,7 +90,7 @@ Field::~Field()
 
 
 //初期化
-void Field::Initialize(bool respawning)
+void Field::Initialize()
 {
 	
 	//テクスチャの初期化
@@ -181,6 +182,17 @@ void Field::Initialize(bool respawning)
 		}
 	}
 
+	//宝石やコインを今回も生成するどうかを決める
+	// （生成するなら：respawning -> false）
+	//	(生成しないなら：respawning -> true)
+	//	respawningは生成処理してる時、引数としてItemManagerに渡せば、本当に生成するかどうかを制御できる
+	bool respawning = false;
+	Game& game_scene = Game::GetInstance();
+	if (game_scene.GetGameState() == GAME_STATE_RESPAWN_INITIAL ||
+		game_scene.GetGameState() == GAME_STATE_RESPAWN_SAVE_POINT)
+	{
+		respawning = true;
+	}
 
 	switch (sceneManager.GetStageName())
 	{
@@ -235,7 +247,17 @@ void Field::Initialize(bool respawning)
 
 					player.Finalize();
 
-					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					const ItemSavePoint* SavePoint = player.GetRegisteredSavePoint();
+					if (SavePoint != nullptr)
+					{
+						player.Initialize(SavePoint->GetRespawnPosition(), b2Vec2(1, 2), size);
+						//リスポンした時の効果音
+						app_atomex_start(Player_Jewelry_Colect_Sound);
+					}
+					else
+					{
+						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					}
 				}
 				//-------------------------------------------------------------------------------------------
 
@@ -283,8 +305,6 @@ void Field::Initialize(bool respawning)
 				//-----------------------------------------------------------------------------------------------
 			}
 		}
-		objectManager.InitializeAll();
-		itemManager.InitializeAll(respawning);
 		break;
 	case STAGE_1_1:
 		// csvからマップチップを読み込む
@@ -349,7 +369,17 @@ void Field::Initialize(bool respawning)
 
 					player.Finalize();
 
-					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					const ItemSavePoint* SavePoint = player.GetRegisteredSavePoint();
+					if (SavePoint != nullptr)
+					{
+						player.Initialize(SavePoint->GetRespawnPosition(), b2Vec2(1, 2), size);
+						//リスポンした時の効果音
+						app_atomex_start(Player_Jewelry_Colect_Sound);
+					}
+					else
+					{
+						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					}
 				}
 
 				//------------------------------------------------------------------------------------------------------------------------------------------
@@ -552,11 +582,7 @@ void Field::Initialize(bool respawning)
 					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.2f) ,false);
 				}
 			}
-		}
-
-		objectManager.InitializeAll();
-		itemManager.InitializeAll(respawning);
-	
+		}	
 		break;
 
 		case STAGE_ISEKI:
@@ -619,7 +645,17 @@ void Field::Initialize(bool respawning)
 
 						player.Finalize();
 
-						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+						const ItemSavePoint* SavePoint = player.GetRegisteredSavePoint();
+						if (SavePoint != nullptr)
+						{
+							player.Initialize(SavePoint->GetBody()->GetPosition(), b2Vec2(1, 2), size);
+							//リスポンした時の効果音
+							app_atomex_start(Player_Jewelry_Colect_Sound);
+						}
+						else
+						{
+							player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+						}
 					}
 					//-------------------------------------------------------------------------------------------
 
@@ -731,8 +767,6 @@ void Field::Initialize(bool respawning)
 
 				}
 			}
-			objectManager.InitializeAll();
-			itemManager.InitializeAll(respawning);
 			break;
 	case STAGE_BOSS:
 		// csvからマップチップを読み込む
@@ -807,7 +841,16 @@ void Field::Initialize(bool respawning)
 
 					player.Finalize();
 
-					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					const ItemSavePoint* SavePoint = player.GetRegisteredSavePoint();
+					if (SavePoint != nullptr)
+					{
+						player.Initialize(SavePoint->GetRespawnPosition(), b2Vec2(1, 2), size);
+						//リスポンした時の効果音
+						app_atomex_start(Player_Jewelry_Colect_Sound);
+					}
+					{
+						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					}
 				}
 
 				
@@ -1071,13 +1114,6 @@ void Field::Initialize(bool respawning)
 
 			}
 		}
-
-
-
-		objectManager.InitializeAll();
-		itemManager.InitializeAll(respawning);
-		itemManager.UseAllJewel();
-
 		break;
 	case STAGE_TEST:
 
@@ -1129,7 +1165,17 @@ void Field::Initialize(bool respawning)
 
 					player.Finalize();
 
-					player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					const ItemSavePoint* SavePoint = player.GetRegisteredSavePoint();
+					if (SavePoint != nullptr)
+					{
+						player.Initialize(SavePoint->GetRespawnPosition(), b2Vec2(1, 2), size);
+						//リスポンした時の効果音
+						app_atomex_start(Player_Jewelry_Colect_Sound);
+					}
+					else
+					{
+						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
+					}
 				}
 				//-------------------------------------------------------------------------------------------
 
@@ -1235,13 +1281,13 @@ void Field::Initialize(bool respawning)
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
 				}
 
-
+				if (field_map[y][x] == 49) {//黄色宝石
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f,respawning);
+				}
 
 
 			}
 		}
-		objectManager.InitializeAll();
-		itemManager.InitializeAll(respawning);
 		
 		break;
 	default:
@@ -1384,7 +1430,7 @@ void Field::Draw()
 
 
 
-void Field::Finalize(bool respawning)
+void Field::Finalize()
 {
 	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
@@ -1407,10 +1453,6 @@ void Field::Finalize(bool respawning)
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
 
-	//終了処理
-	AnchorPoint::Finalize();
-	objectManager.FinalizeAll();
-	itemManager.FinalizeAll(respawning);
 
 	if (g_Ground_Texture != NULL)
 	{

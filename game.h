@@ -19,6 +19,15 @@
 #include"Item_Manager.h"
 
 
+enum GAME_STATE
+{
+	GAME_STATE_START,
+	GAME_STATE_RESPAWN_INITIAL,
+	GAME_STATE_RESPAWN_SAVE_POINT,
+	GAME_STATE_NEXT_STAGE,
+	GAME_STATE_GAMEOVER,
+};
+
 class Game
 {
 public:
@@ -41,7 +50,9 @@ public:
 	void Draw();
 	void Finalize();
 
-	void	Respawn();
+	//今ゲームシーンの状態を取得
+	GAME_STATE GetGameState() { return m_state; }
+
 
 	void Teleport_player(b2Vec2 position);
 
@@ -56,7 +67,7 @@ private:
 	ItemManager& itemManager = ItemManager::GetInstance();
 
 	//このあとリスポンする予定なのか（変化するのは初回リスポンする時オンにするのと、残機がなくなって、或いはクリアしてリザルトに遷移する時オフにする、この２回だけ）
-	bool	m_respawn;
+	GAME_STATE	m_state = GAME_STATE_START;
 };
 
 

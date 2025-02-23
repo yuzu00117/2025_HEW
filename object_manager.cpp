@@ -587,7 +587,6 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
-    Item_Coin_UI::Initialize();
 }
 
 
@@ -823,7 +822,6 @@ void ObjectManager::DrawAll() {
     }
 
   
-    Item_Coin_UI::Draw();
 }
 
 
@@ -946,7 +944,6 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
-    Item_Coin_UI::Finalize();
 
 
 
