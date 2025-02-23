@@ -1716,81 +1716,60 @@ void Boss_1_1::Finalize()
 		SetAttackBody(nullptr);
 	}
 
-	if (g_mini_boss_Texture != NULL)
-	{
-		// ミニゴーレムのテクスチャ
-		UnInitTexture(g_mini_boss_Texture);
-		g_mini_boss_Texture = NULL;
+	if (g_mini_boss_Texture) UnInitTexture(g_mini_boss_Texture);
 
-		// 衝撃波のテクスチャ
-		UnInitTexture(g_boss_shock_wave_sheet1_Texture);
-		g_boss_shock_wave_sheet1_Texture = NULL;
+	if (g_boss_shock_wave_sheet1_Texture) UnInitTexture(g_boss_shock_wave_sheet1_Texture);
+	if (g_boss_shock_wave_sheet2_Texture) UnInitTexture(g_boss_shock_wave_sheet2_Texture);
+	if (g_boss_shock_wave_sheet1_Lv2_Texture) UnInitTexture(g_boss_shock_wave_sheet1_Lv2_Texture);
+	if (g_boss_shock_wave_sheet2_Lv2_Texture) UnInitTexture(g_boss_shock_wave_sheet2_Lv2_Texture);
+	if (g_boss_shock_wave_sheet1_Lv3_Texture) UnInitTexture(g_boss_shock_wave_sheet1_Lv3_Texture);
+	if (g_boss_shock_wave_sheet2_Lv3_Texture) UnInitTexture(g_boss_shock_wave_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet2_Texture);
-		g_boss_shock_wave_sheet2_Texture = NULL;
+	if (g_boss_charge_attack_sheet1_Texture) UnInitTexture(g_boss_charge_attack_sheet1_Texture);
+	if (g_boss_charge_attack_sheet2_Texture) UnInitTexture(g_boss_charge_attack_sheet2_Texture);
+	if (g_boss_charge_attack_sheet1_Lv2_Texture) UnInitTexture(g_boss_charge_attack_sheet1_Lv2_Texture);
+	if (g_boss_charge_attack_sheet2_Lv2_Texture) UnInitTexture(g_boss_charge_attack_sheet2_Lv2_Texture);
+	if (g_boss_charge_attack_sheet1_Lv3_Texture) UnInitTexture(g_boss_charge_attack_sheet1_Lv3_Texture);
+	if (g_boss_charge_attack_sheet2_Lv3_Texture) UnInitTexture(g_boss_charge_attack_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet1_Lv2_Texture);
-		g_boss_shock_wave_sheet1_Lv2_Texture = NULL;
+	if (g_boss_walk_sheet1_Texture) UnInitTexture(g_boss_walk_sheet1_Texture);
+	if (g_boss_walk_sheet2_Texture) UnInitTexture(g_boss_walk_sheet2_Texture);
+	if (g_boss_walk_sheet1_Lv2_Texture) UnInitTexture(g_boss_walk_sheet1_Lv2_Texture);
+	if (g_boss_walk_sheet2_Lv2_Texture) UnInitTexture(g_boss_walk_sheet2_Lv2_Texture);
+	if (g_boss_walk_sheet1_Lv3_Texture) UnInitTexture(g_boss_walk_sheet1_Lv3_Texture);
+	if (g_boss_walk_sheet2_Lv3_Texture) UnInitTexture(g_boss_walk_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet2_Lv2_Texture);
-		g_boss_shock_wave_sheet2_Lv2_Texture = NULL;
+	if (g_boss_jump_sheet1_Texture) UnInitTexture(g_boss_jump_sheet1_Texture);
+	if (g_boss_jump_sheet2_Texture) UnInitTexture(g_boss_jump_sheet2_Texture);
+	if (g_boss_jump_sheet1_Lv2_Texture) UnInitTexture(g_boss_jump_sheet1_Lv2_Texture);
+	if (g_boss_jump_sheet2_Lv2_Texture) UnInitTexture(g_boss_jump_sheet2_Lv2_Texture);
+	if (g_boss_jump_sheet1_Lv3_Texture) UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
+	if (g_boss_jump_sheet2_Lv3_Texture) UnInitTexture(g_boss_jump_sheet2_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet1_Lv3_Texture);
-		g_boss_shock_wave_sheet1_Lv3_Texture = NULL;
+	if (g_boss_panic_sheet_Texture) UnInitTexture(g_boss_panic_sheet_Texture);
+	if (g_boss_panic_sheet_Lv2_Texture) UnInitTexture(g_boss_panic_sheet_Lv2_Texture);
+	if (g_boss_panic_sheet_Lv3_Texture) UnInitTexture(g_boss_panic_sheet_Lv3_Texture);
 
-		UnInitTexture(g_boss_shock_wave_sheet2_Lv3_Texture);
-		g_boss_shock_wave_sheet2_Lv3_Texture = NULL;
+	if (g_mini_boss_create_sheet1_Texture) UnInitTexture(g_mini_boss_create_sheet1_Texture);
+	if (g_mini_boss_create_sheet2_Texture) UnInitTexture(g_mini_boss_create_sheet2_Texture);
+	if (g_mini_boss_create_sheet1_Lv2_Texture) UnInitTexture(g_mini_boss_create_sheet1_Lv2_Texture);
+	if (g_mini_boss_create_sheet2_Lv2_Texture) UnInitTexture(g_mini_boss_create_sheet2_Lv2_Texture);
+	if (g_mini_boss_create_sheet1_Lv3_Texture) UnInitTexture(g_mini_boss_create_sheet1_Lv3_Texture);
+	if (g_mini_boss_create_sheet2_Lv3_Texture) UnInitTexture(g_mini_boss_create_sheet2_Lv3_Texture);
 
-		// チャージ攻撃のテクスチャ
-		UnInitTexture(g_boss_charge_attack_sheet1_Texture);
-		g_boss_charge_attack_sheet1_Texture = NULL;
+	if (g_boss_down_sheet) UnInitTexture(g_boss_down_sheet);
+	if (g_boss_down_Lv2_sheet) UnInitTexture(g_boss_down_Lv2_sheet);
 
-		UnInitTexture(g_boss_charge_attack_sheet2_Texture);
-		g_boss_charge_attack_sheet2_Texture = NULL;
+	if (g_boss_charge_effect) UnInitTexture(g_boss_charge_effect);
+	if (g_boss_charge_attack_effect) UnInitTexture(g_boss_charge_attack_effect);
+	if (g_mini_golem_break_effect) UnInitTexture(g_mini_golem_break_effect);
+	if (g_boss_panic_effect) UnInitTexture(g_boss_panic_effect);
+	if (g_boss_shock_wave_effect) UnInitTexture(g_boss_shock_wave_effect);
 
-		UnInitTexture(g_boss_charge_attack_sheet1_Lv2_Texture);
-		g_boss_charge_attack_sheet1_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_charge_attack_sheet2_Lv2_Texture);
-		g_boss_charge_attack_sheet2_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_charge_attack_sheet1_Lv3_Texture);
-		g_boss_charge_attack_sheet1_Lv3_Texture = NULL;
-
-		UnInitTexture(g_boss_charge_attack_sheet2_Lv3_Texture);
-		g_boss_charge_attack_sheet2_Lv3_Texture = NULL;
-
-		// ゴーレムの歩行アニメーション
-		UnInitTexture(g_boss_walk_sheet1_Texture);
-		g_boss_walk_sheet1_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet2_Texture);
-		g_boss_walk_sheet2_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet1_Lv2_Texture);
-		g_boss_walk_sheet1_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet2_Lv2_Texture);
-		g_boss_walk_sheet2_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet1_Lv3_Texture);
-		g_boss_walk_sheet1_Lv3_Texture = NULL;
-
-		UnInitTexture(g_boss_walk_sheet2_Lv3_Texture);
-		g_boss_walk_sheet2_Lv3_Texture = NULL;
-
-		// ゴーレムのジャンプアニメーション
-		UnInitTexture(g_boss_jump_sheet1_Texture);
-		g_boss_jump_sheet1_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet2_Texture);
-		g_boss_jump_sheet2_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet1_Lv2_Texture);
-		g_boss_jump_sheet1_Lv2_Texture = NULL;
-
-		UnInitTexture(g_boss_jump_sheet2_Lv2_Texture);
-		g_boss_jump_sheet2_Lv2_Texture = NULL;
+	if (g_debug_color) UnInitTexture(g_debug_color);
+	if (g_debug_boss_body_color) UnInitTexture(g_debug_boss_body_color);
+	if (g_debug_attack_color) UnInitTexture(g_debug_attack_color);
+	if (g_debug_core) UnInitTexture(g_debug_core);
 
 		UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
 		g_boss_jump_sheet1_Lv3_Texture = NULL;
@@ -1868,7 +1847,6 @@ void Boss_1_1::Finalize()
 	if (g_boss_damage_sheet_Texture) UnInitTexture(g_boss_damage_sheet_Texture);
 	if (g_boss_damage_sheet_Lv2_Texture) UnInitTexture(g_boss_damage_sheet_Lv2_Texture);
 	if (g_boss_damage_sheet_Lv3_Texture) UnInitTexture(g_boss_damage_sheet_Lv3_Texture);
-
 	
 }
 

@@ -60,14 +60,20 @@ public:
 		return anchor_level;
 	}
 
+
+	//ソウルこれからどれぐらい減るかを取得
+	static float	GetAnchorSpiritDamage() { return m_damage; }
+
 private:
 	AnchorSpirit(){}
 	~AnchorSpirit(){}
 
 	//ソールゲージ（後でアンカーに移動するかも）
 	static float	m_spirit;
-	//ソールこれから減る値
+	//ソールこれから減る値（正数）
 	static float	m_damage;
+	//ソールこれから増える値（正数）
+	static float	m_increase;
 
 	//自動回復のフラグ
 	static bool		m_auto_heal;
