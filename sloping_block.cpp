@@ -315,15 +315,12 @@ void sloping_block::Finalize()
 		world->DestroyBody(SlopingBlock_body);
 	}
 
-	if (g_sloping_block_left_down_Texture != NULL)
-	{
-		//テクスチャの解放
-		UnInitTexture(g_sloping_block_left_down_Texture);
-		UnInitTexture(g_sloping_block_right_down_Texture);
+	
+	if (g_sloping_block_right_down_Texture) UnInitTexture(g_sloping_block_right_down_Texture);
+	if (g_sloping_block_left_down_Texture) UnInitTexture(g_sloping_block_left_down_Texture);
 
-		g_sloping_block_left_down_Texture = NULL;
-		g_sloping_block_right_down_Texture = NULL;
-	}
+
+
 }
 
 void sloping_block::SetPlayerCollided(bool flag)

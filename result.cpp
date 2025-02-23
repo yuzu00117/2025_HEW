@@ -238,5 +238,21 @@ void ResulttScene::Draw()
 
 void ResulttScene::Finalize()
 {
-	UnInitTexture(g_result_Texture);
+    if (g_result_Texture) UnInitTexture(g_result_Texture);
+
+    if (total_score_texture) UnInitTexture(total_score_texture);
+    if (coin_score_texture) UnInitTexture(coin_score_texture);
+    if (clear_time_score_texture) UnInitTexture(clear_time_score_texture);
+    if (gokai_score_texture) UnInitTexture(gokai_score_texture);
+
+    if (g_score_rank_C_stamp_Texture) UnInitTexture(g_score_rank_C_stamp_Texture);
+    if (g_score_rank_B_stamp_Texture) UnInitTexture(g_score_rank_B_stamp_Texture);
+    if (g_score_rank_A_stamp_Texture) UnInitTexture(g_score_rank_A_stamp_Texture);
+    if (g_score_rank_S_stamp_Texture) UnInitTexture(g_score_rank_S_stamp_Texture);
+
+    if (g_score_rank_C_Texture) UnInitTexture(g_score_rank_C_Texture);
+    if (g_score_rank_B_Texture) UnInitTexture(g_score_rank_B_Texture);
+    if (g_score_rank_A_Texture) UnInitTexture(g_score_rank_A_Texture);
+    if (g_score_rank_S_Texture) UnInitTexture(g_score_rank_S_Texture);
+
 }

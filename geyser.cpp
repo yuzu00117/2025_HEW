@@ -646,23 +646,14 @@ void geyser::Finalize()
 	}
 	//‰æ‘œ‚Ì‰ð•ú
 
-	if (g_Geyser_Close_Texture != NULL)
-	{
-		UnInitTexture(g_Geyser_Close_Texture);
-		UnInitTexture(g_Geyser_Border_Texture_Lv1);
-		UnInitTexture(g_Geyser_Border_Texture_Lv2);
-		UnInitTexture(g_Geyser_Border_Texture_Lv3);
-		UnInitTexture(g_Geyser_Open_Texture);
-		UnInitTexture(g_Geyser_Water_Texture);
-		UnInitTexture(g_Geyser_Start_Water_Texture);
+	if (g_Geyser_Water_Texture) UnInitTexture(g_Geyser_Water_Texture);
+	if (g_Geyser_Start_Water_Texture) UnInitTexture(g_Geyser_Start_Water_Texture);
 
-		g_Geyser_Close_Texture = NULL;
-		g_Geyser_Border_Texture_Lv1 = NULL;
-		g_Geyser_Border_Texture_Lv2 = NULL;
-		g_Geyser_Border_Texture_Lv3 = NULL;
-		g_Geyser_Open_Texture = NULL;
-		g_Geyser_Water_Texture = NULL;
-		g_Geyser_Start_Water_Texture = NULL;
+	if (g_Geyser_Close_Texture) UnInitTexture(g_Geyser_Close_Texture);
+	if (g_Geyser_Border_Texture_Lv1) UnInitTexture(g_Geyser_Border_Texture_Lv1);
+	if (g_Geyser_Border_Texture_Lv2) UnInitTexture(g_Geyser_Border_Texture_Lv2);
+	if (g_Geyser_Border_Texture_Lv3) UnInitTexture(g_Geyser_Border_Texture_Lv3);
 
-	}
+	if (g_Geyser_Open_Texture) UnInitTexture(g_Geyser_Open_Texture);
+
 }

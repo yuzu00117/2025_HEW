@@ -912,20 +912,25 @@ void StageSelectScene::Finalize()
 	m_player.Finalize();
 	m_stagePointFactory.Finalize();
 
+	if (g_stage_select_background_Texture) UnInitTexture(g_stage_select_background_Texture);
 
-	UnInitTexture(g_stage_select_background_Texture);
-	UnInitTexture(g_stage_select_coin_effect_Texture);
-	UnInitTexture(g_stage_select_coin_effect_Texture1);
-	UnInitTexture(g_stage_select_coin_effect_Texture2);
-	UnInitTexture(g_stage_select_coin_effect_Texture3);
-	UnInitTexture(g_stage_select_coin_effect_Texture4);
-	UnInitTexture(g_stage_select_tap_effect_Texture);
-	UnInitTexture(g_stage_select_hopup_tutorial_Texture);
-	UnInitTexture(g_stage_select_hopup_1_1_Texture);
-	UnInitTexture(g_stage_select_hopup_unknow_Texture);
-	UnInitTexture(g_stage_select_number_Texture);
-	UnInitTexture(g_stage_select_fade_black_Texture);
-	UnInitTexture(g_stage_select_black_Texture);
+	if (g_stage_select_tap_effect_Texture) UnInitTexture(g_stage_select_tap_effect_Texture);
+
+	if (g_stage_select_coin_effect_Texture) UnInitTexture(g_stage_select_coin_effect_Texture);
+	if (g_stage_select_coin_effect_Texture1) UnInitTexture(g_stage_select_coin_effect_Texture1);
+	if (g_stage_select_coin_effect_Texture2) UnInitTexture(g_stage_select_coin_effect_Texture2);
+	if (g_stage_select_coin_effect_Texture3) UnInitTexture(g_stage_select_coin_effect_Texture3);
+	if (g_stage_select_coin_effect_Texture4) UnInitTexture(g_stage_select_coin_effect_Texture4);
+
+	if (g_stage_select_hopup_tutorial_Texture) UnInitTexture(g_stage_select_hopup_tutorial_Texture);
+	if (g_stage_select_hopup_1_1_Texture) UnInitTexture(g_stage_select_hopup_1_1_Texture);
+	if (g_stage_select_hopup_unknow_Texture) UnInitTexture(g_stage_select_hopup_unknow_Texture);
+
+	if (g_stage_select_number_Texture) UnInitTexture(g_stage_select_number_Texture);
+
+	if (g_stage_select_fade_black_Texture) UnInitTexture(g_stage_select_fade_black_Texture);
+	if (g_stage_select_black_Texture) UnInitTexture(g_stage_select_black_Texture);
+
 	
 	// ÉèÅ[ÉãÉhâï˙
 	if (m_world) {

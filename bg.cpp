@@ -294,11 +294,18 @@ void Bg::Draw()
 
 void Bg::Finalize()
 {
-    // 各背景テクスチャの解放
-    for (int i = 0; i < 4; i++)
-    {
-        UnInitTexture(g_Bg_Texture[i]);
-        g_Bg_Texture[i] = NULL;
+    for (int i = 0; i < 4; i++) {
+        if (g_Bg_Texture[i]) {
+            UnInitTexture(g_Bg_Texture[i]);
+        }
+    }
+
+    if (g_Bg_Texture_light) {
+        UnInitTexture(g_Bg_Texture_light);
+    }
+
+    if (g_Bg_Texture_Most) {
+        UnInitTexture(g_Bg_Texture_Most);
     }
     
 }

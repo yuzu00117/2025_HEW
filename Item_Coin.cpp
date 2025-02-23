@@ -250,17 +250,9 @@ void ItemCoin::Finalize()
         SetBody(nullptr);
     }
 
-    if (g_Texture!=NULL)
-    {
-        UnInitTexture(g_Texture);
-        UnInitTexture(g_coin_effect);
-        g_Texture = NULL;
-        g_coin_effect = NULL;
-    }
+    if (g_Texture) UnInitTexture(g_Texture);
+    if (g_coin_effect) UnInitTexture(g_coin_effect);
 
- 
-       
-    
 }
 
 ItemCoin::~ItemCoin()
