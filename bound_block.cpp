@@ -283,16 +283,9 @@ void boss_bound_block::Player_jump()
 
 void boss_bound_block::Finalize()
 {
-	if (g_bound_block_texture1_open != NULL)
-	{
-		UnInitTexture(g_bound_block_texture1_open);
-		g_bound_block_texture1_open = NULL;
-		UnInitTexture(g_bound_block_texture2_open);
-		g_bound_block_texture2_open = NULL;
+	if (g_bound_block_texture1_open) UnInitTexture(g_bound_block_texture1_open);
+	if (g_bound_block_texture1_close) UnInitTexture(g_bound_block_texture1_close);
 
-		UnInitTexture(g_bound_block_texture1_close);
-		g_bound_block_texture1_close = NULL;
-		UnInitTexture(g_bound_block_texture2_close);
-		g_bound_block_texture2_close = NULL;
-	}
+	if (g_bound_block_texture2_open) UnInitTexture(g_bound_block_texture2_open);
+	if (g_bound_block_texture2_close) UnInitTexture(g_bound_block_texture2_close);
 }

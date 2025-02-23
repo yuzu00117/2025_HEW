@@ -116,21 +116,12 @@ void EnemyStatic::Initialize()
 
 void EnemyStatic::Finalize()
 {
-	if (g_EnemyStatic_Texture != NULL)
-	{
-		UnInitTexture(g_EnemyStatic_Texture);
-		UnInitTexture(g_EnemyStatic_Texture_Move);
-		UnInitTexture(g_EnemyStatic_Texture_Attack);
-		UnInitTexture(g_EnemyStatic_Texture_Destroyed);
-		UnInitTexture(g_EnemySensor_Texture);
+	if (g_EnemyStatic_Texture) UnInitTexture(g_EnemyStatic_Texture);
+	if (g_EnemyStatic_Texture_Move) UnInitTexture(g_EnemyStatic_Texture_Move);
+	if (g_EnemyStatic_Texture_Attack) UnInitTexture(g_EnemyStatic_Texture_Attack);
+	if (g_EnemyStatic_Texture_Destroyed) UnInitTexture(g_EnemyStatic_Texture_Destroyed);
+	if (g_EnemySensor_Texture) UnInitTexture(g_EnemySensor_Texture);
 
-		g_EnemyStatic_Texture = NULL;
-		g_EnemyStatic_Texture_Move = NULL;
-		g_EnemyStatic_Texture_Attack = NULL;
-		g_EnemyStatic_Texture_Destroyed = NULL;
-		g_EnemySensor_Texture = NULL;
-
-	}
 
 	//ÉèÅ[ÉãÉhÇ…ìoò^ÇµÇΩbodyÇÃçÌèú
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();

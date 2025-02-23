@@ -207,10 +207,10 @@ void ItemSavePoint::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
-    if (g_Texture != nullptr)
-    {
-        UnInitTexture(g_Texture);
-    }
+
+    if (g_Texture) UnInitTexture(g_Texture);
+    if (g_get_save_point_effect) UnInitTexture(g_get_save_point_effect);
+
 }
 
 ItemSavePoint::~ItemSavePoint()

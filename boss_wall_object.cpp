@@ -467,9 +467,7 @@ void Boss_Wall_Objcet::Draw()
 
 void Boss_Wall_Objcet::Finalize()
 {
-	if (Texture != NULL)
-	{
+	if (Texture) {
 		UnInitTexture(Texture);
-		Texture = NULL;
 	}
 }

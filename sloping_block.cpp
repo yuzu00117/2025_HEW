@@ -316,9 +316,9 @@ void sloping_block::Finalize()
 	}
 
 	
-	//テクスチャの解放
-	UnInitTexture(g_sloping_block_left_down_Texture);
-	UnInitTexture(g_sloping_block_right_down_Texture);
+	if (g_sloping_block_right_down_Texture) UnInitTexture(g_sloping_block_right_down_Texture);
+	if (g_sloping_block_left_down_Texture) UnInitTexture(g_sloping_block_left_down_Texture);
+
 
 
 }

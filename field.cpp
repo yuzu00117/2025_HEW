@@ -1436,64 +1436,37 @@ void Field::Finalize(bool respawning)
 	objectManager.FinalizeAll();
 	itemManager.FinalizeAll(respawning);
 
-	if (g_Ground_Texture != NULL)
-	{
-		// **地形・環境オブジェクトのテクスチャ**
-		UnInitTexture(g_Ground_Texture);
-		g_Ground_Texture = NULL;
+	if (g_Ground_Texture) UnInitTexture(g_Ground_Texture);
+	if (g_under_Ground_Texture) UnInitTexture(g_under_Ground_Texture);
 
-		UnInitTexture(g_under_Ground_Texture);
-		g_under_Ground_Texture = NULL;
+	if (g_AnchorPoint_Texture) UnInitTexture(g_AnchorPoint_Texture);
+	if (g_right_ground_Texture) UnInitTexture(g_right_ground_Texture);
+	if (g_left_ground_Texture) UnInitTexture(g_left_ground_Texture);
 
-		UnInitTexture(g_AnchorPoint_Texture);
-		g_AnchorPoint_Texture = NULL;
+	if (g_under_right_ground_Texture) UnInitTexture(g_under_right_ground_Texture);
+	if (g_under_left_ground_Texture) UnInitTexture(g_under_left_ground_Texture);
 
-		UnInitTexture(g_right_ground_Texture);
-		g_right_ground_Texture = NULL;
+	if (g_under_right_ground_down_Texture) UnInitTexture(g_under_right_ground_down_Texture);
+	if (g_under_left_ground_down_Texture) UnInitTexture(g_under_left_ground_down_Texture);
 
-		UnInitTexture(g_left_ground_Texture);
-		g_left_ground_Texture = NULL;
+	if (g_sloop_left_side_texture) UnInitTexture(g_sloop_left_side_texture);
+	if (g_sloop_right_side_texture) UnInitTexture(g_sloop_right_side_texture);
 
-		UnInitTexture(g_under_right_ground_Texture);
-		g_under_right_ground_Texture = NULL;
+	if (g_invisibility_wall_Texture) UnInitTexture(g_invisibility_wall_Texture);
 
-		UnInitTexture(g_under_left_ground_Texture);
-		g_under_left_ground_Texture = NULL;
+	// 遺跡のステージブロック
+	if (g_Iseki_Top_Texture) UnInitTexture(g_Iseki_Top_Texture);
+	if (g_Iseki_Top_Left_Texture) UnInitTexture(g_Iseki_Top_Left_Texture);
+	if (g_Iseki_Top_Right_Texture) UnInitTexture(g_Iseki_Top_Right_Texture);
 
-		UnInitTexture(g_sloop_left_side_texture);
-		g_sloop_left_side_texture = NULL;
+	if (g_Iseki_Texture) UnInitTexture(g_Iseki_Texture);
+	if (g_Iseki_Left_Texture) UnInitTexture(g_Iseki_Left_Texture);
+	if (g_Iseki_Right_Texture) UnInitTexture(g_Iseki_Right_Texture);
 
-		UnInitTexture(g_sloop_right_side_texture);
-		g_sloop_right_side_texture = NULL;
+	if (g_Big_Wood_Texture) UnInitTexture(g_Big_Wood_Texture);
 
-		UnInitTexture(g_invisibility_wall_Texture);
-		g_invisibility_wall_Texture = NULL;
-	
-		// **遺跡のステージブロックのテクスチャ**
-		UnInitTexture(g_Iseki_Top_Texture);
-		g_Iseki_Top_Texture = NULL;
+	if (g_Iseki_boss_wall_object_Texture) UnInitTexture(g_Iseki_boss_wall_object_Texture);
 
-		UnInitTexture(g_Iseki_Top_Left_Texture);
-		g_Iseki_Top_Left_Texture = NULL;
-
-		UnInitTexture(g_Iseki_Top_Right_Texture);
-		g_Iseki_Top_Right_Texture = NULL;
-
-		UnInitTexture(g_Iseki_Texture);
-		g_Iseki_Texture = NULL;
-
-		UnInitTexture(g_Iseki_Left_Texture);
-		g_Iseki_Left_Texture = NULL;
-
-		UnInitTexture(g_Iseki_Right_Texture);
-		g_Iseki_Right_Texture = NULL;
-
-		UnInitTexture(g_Big_Wood_Texture);
-		g_Big_Wood_Texture = NULL;
-		
-		UnInitTexture(g_Iseki_boss_wall_object_Texture);
-		g_Iseki_boss_wall_object_Texture = NULL;
-	}
 
 }
 

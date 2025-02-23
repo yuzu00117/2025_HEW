@@ -165,11 +165,9 @@ void NoEntryBlock::Finalize()
 
 	//‰æ‘œ‚Ì‰ð•ú
 
-	if (Texture != NULL)
+	if (Texture)
 	{
 		UnInitTexture(Texture);
-		Texture = NULL;
-	
 	}
 
 }
