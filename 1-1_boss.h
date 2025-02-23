@@ -20,6 +20,7 @@ enum boss_state
 {
 	wait_state,//待ち状態
 	panic_state,//怯み状態
+	damage_state,//被弾状態
 	down_state,	//ダウン状態
 	walk_state,//歩き状態
 	jump_state,//ジャンプ状態
@@ -427,6 +428,10 @@ private:
 	bool Jump_flag = false;
 	//-------------------------------------------------------------------------------------------
 
+	//被弾のモーションの最大フレーム
+	static constexpr int Max_dameged_Sheet = 25;
+
+	
 	//-------------------------------------------------------------------------------------------
 	//怯みのモーションの最大フレーム
 	static constexpr int Max_Panic_Sheet = 255;
