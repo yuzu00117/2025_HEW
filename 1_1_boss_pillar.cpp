@@ -18,6 +18,7 @@
 #include"create_filter.h"
 #include"tool.h"
 #include"sound.h"
+#include"camera_shake.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
@@ -223,6 +224,9 @@ void boss_pillar::Destroy_Splitting()
 	{
 		if (m_body != nullptr && Splitting_end == false)
 		{
+			CameraShake::StartCameraShake(50, 30, 30);
+
+
 			//ワールドのインスタンスを持ってくる
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
