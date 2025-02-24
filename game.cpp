@@ -93,7 +93,7 @@ void Game::Initialize()
         //豪快度UIの初期化
         Gokai_UI::Initialize();
         //体力UIの初期化
-    　　Stamina_UI::Initialize();
+        Stamina_UI::Initialize();
         break;
     case GAME_STATE_RESPAWN_INITIAL:
         //リスポン用のアイテムの初期化
