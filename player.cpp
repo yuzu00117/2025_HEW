@@ -100,18 +100,8 @@ Player::~Player()
 {
 }
 
-void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, bool respawning)
+void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 {
-    if (respawning)
-    {
-        m_AnchorThrowing_SpeedUp = 1.0f;
-        m_is_jumping = false;
-        m_jump_pressed = false;
-        m_direction = 1;
-        m_jump_force = b2Vec2(0.0f, -0.40f);
-        m_speed = 0.04f;
-        invincible_time = 0;
-    }
 
     if (m_body)
     {
@@ -968,6 +958,18 @@ void Player::updateFixtureFilter(const std::string &category, const std::vector<
     }
 }
 
+
+void Player::ResetPlayerParameter()
+{
+    m_AnchorThrowing_SpeedUp = 1.0f;
+    m_is_jumping = false;
+    m_jump_pressed = false;
+    m_direction = 1;
+    m_jump_force = b2Vec2(0.0f, -0.40f);
+    m_speed = 0.04f;
+    invincible_time = 0;
+}
+
 void Player::Player_sensor_size_change(int anchor_level)
 {
     if (anchor_level < 3) // アンカーレベルの１、２の時
@@ -1695,6 +1697,47 @@ void Player::DrawTamaChan()
         );
 
         tamachan_disappear_effect_cnt += 0.5;
+        if (tamachan_disappear_effect_cnt >= 25) // エフェクトが終了したら
+        {
+            is_tamachan_disappearing = false;
+        }
+    }
+    else if (!is_tamachan_disappearing)
+    { // たまちゃんが出現するエフェクトを描画
+        // アンカーレベルに応じてたまちゃんのエフェクトを変更
+        switch (AnchorSpirit::GetAnchorLevel())
+        {
+        case 1:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_tamachan_effect_lv1);
+            tamachan_effect_size = {100.f, 100.0f}; // たまちゃんのエフェクトサイズ
+            break;
+        case 2:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_tamachan_effect_lv2);
+            tamachan_effect_size = {150.f, 150.0f}; // たまちゃんのエフェクトサイズ
+            break;
+        case 3:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_tamachan_effect_lv3);
+            tamachan_effect_size = {200.f, 200.0f}; // たまちゃんのエフェクトサイズ
+            break;
+        default:
+            break;
+        }
+        
+        // たまちゃんが出現するエフェクトを描画
+        DrawDividedSpritePlayer(
+            {tamachan_pos_x, tamachan_pos_y},                 // 描画位置
+            0,                                                // 回転角度
+            {tamachan_effect_size.x, tamachan_effect_size.y}, // サイズ
+            10, 5,                                            // 分割数
+            tamachan_disappear_effect_cnt,                    // シートカウント
+            3.0f,                                             // スケール
+            is_left                                           // 左向きかどうか
+        );
+
+        tamachan_disappear_effect_cnt -= 0.5;
         if (tamachan_disappear_effect_cnt >= 25) // エフェクトが終了したら
         {
             is_tamachan_disappearing = false;

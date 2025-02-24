@@ -27,13 +27,13 @@ public:
 	static void	Finalize();
 	static void	Draw();
 
-	// 現在のコイン数を取得
+	// 現在の豪快値を取得
 	static int GetNowGokaiCount(void)
 	{
 		return now_get_gokai_count;
 	}
 
-	// 現在のコイン数を設定
+	// 現在の豪快値を設定
 	static void SetNowGokaiCount(int setCount)
 	{
 		now_get_gokai_count = setCount;
@@ -45,11 +45,24 @@ public:
 		now_get_gokai_count =now_get_gokai_count +setCount ;
 	}
 
+	// リスポン時の豪快値を取得
+	static int GetGokai_WhenRespawn(void)
+	{
+		return gokai_when_respawn;
+	}
+
+	// リスポン時の豪快値を設定
+	static void SetGokai_WhenRespawn(int setCount)
+	{
+		gokai_when_respawn = setCount;
+	}
+
 
 private:
 
 	static int max_gokai_count;
 	static int now_get_gokai_count;
+	static int gokai_when_respawn;
 
 
 

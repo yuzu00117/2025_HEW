@@ -346,6 +346,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
             else
             {
@@ -353,6 +354,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
 
         }
@@ -1242,9 +1244,17 @@ public:
             break;
             case ITEM_SAVEPOINT:
             {
-                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint();//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 if (savepoint_instance != nullptr) {
-                    savepoint_instance->SetPlayerPassed();
+                    const ItemSavePoint* player_registered_SavePoint = player.GetRegisteredSavePoint();
+                    if (player_registered_SavePoint == nullptr)
+                    {
+                        savepoint_instance->SetPlayerPassed();
+                    }
+                    else if (savepoint_instance->GetBody()->GetPosition().x > player_registered_SavePoint->GetBody()->GetPosition().x)
+                    {
+                        savepoint_instance->SetPlayerPassed();
+                    }
                 }
             }
             break;
@@ -1476,6 +1486,7 @@ public:
             }
         }
 
+
     
 
 
@@ -1642,6 +1653,24 @@ public:
                 wall_instance->SetSplitting_Destroy_Flag(true);
             }
         }
+
+
+
+
+        //進入禁止エリアとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_no_entry_block) ||
+            (objectA->collider_type == collider_no_entry_block && objectB->collider_type == collider_mini_golem))
+        {
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
+        }
+
 
         
 

@@ -102,7 +102,9 @@ void boss_field_block::Initialize()
 
 void boss_field_block::Update()
 {
-	Boss_1_1& boss = Boss_1_1::GetInstance();
+	if (isUse)
+	{
+		Boss_1_1& boss = Boss_1_1::GetInstance();
 
 		if (boss.GetBossFieldLevel() > BossRoomLevel && break_flag == false)
 		{
@@ -151,12 +153,16 @@ void boss_field_block::Update()
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 
-			if (m_body == nullptr)
+			if (m_body != nullptr)
 			{
 				world->DestroyBody(m_body);
+				SetBody(nullptr);
+				isUse = false;
+
 			}
 
 		}
+	}
 	
 
 

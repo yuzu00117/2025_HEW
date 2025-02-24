@@ -497,7 +497,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
-				CreateMiniGolem(b2Vec2(2.0f * BOSS_SIZE_SCALE, 1.3f * BOSS_SIZE_SCALE), left_flag); // 画像の都合で大きさを変えるため　生成時の位置はそのまま　実際の大きさは参照用
+				CreateMiniGolem(b2Vec2(3.0f * BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE), left_flag); // 画像の都合で大きさを変えるため　生成時の位置はそのまま　実際の大きさは参照用
 			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
@@ -1059,24 +1059,33 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 
 void Boss_1_1::MiniGolemUpdate(void)
 {
+	const float max_angular_velocity = 2.0f; // 最大角速度
+	const float torque_amount = 0.03f; // 加えるトルク
+
 	for (int i = 0; i < 2; i++)
 	{
 		if (GetMiniGolemBody(i) != nullptr)
 		{
 			// ボディが存在している
-			b2Body *mini_golem_body = GetMiniGolemBody(i);
+			b2Body* mini_golem_body = GetMiniGolemBody(i);
 
-			// プレイヤーの位置を取得
-			b2Vec2 player_pos = PlayerPosition::GetPlayerPosition();
+			// 現在の角速度を取得
+			float current_angular_velocity = mini_golem_body->GetAngularVelocity();
 
-			// プレイヤーと左か右かに移動する
+			// 角速度の制限をかける
 			if (m_mini_golem_left_flag[i]) // プレイヤーの左
 			{
-				mini_golem_body->ApplyTorque(-0.03, true);
+				if (current_angular_velocity > -max_angular_velocity)
+				{
+					mini_golem_body->ApplyTorque(-torque_amount, true);
+				}
 			}
-			else
+			else // プレイヤーの右
 			{
-				mini_golem_body->ApplyTorque(0.03, true);
+				if (current_angular_velocity < max_angular_velocity)
+				{
+					mini_golem_body->ApplyTorque(torque_amount, true);
+				}
 			}
 		}
 	}
@@ -1547,7 +1556,7 @@ void Boss_1_1::DrawObjectFront()
 			float mini_golem_draw_x = ((mini_golem_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float mini_golem_draw_y = ((mini_golem_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-			DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale, GetMiniGolemDrawSize().y * scale));
+			DrawSprite(XMFLOAT2(mini_golem_draw_x, mini_golem_draw_y), GetMiniGolemBody(i)->GetAngle(), XMFLOAT2(GetMiniGolemDrawSize().x * scale*1.2, GetMiniGolemDrawSize().y * scale*1.2));
 		}
 	}
 

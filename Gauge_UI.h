@@ -36,6 +36,22 @@ public:
         }
     }
 
+    static bool GetIfJewelCollected(Jewel_Type type)
+    {
+        switch (type)
+        {
+        case BLUE:
+            return m_blue_jewel_collected;
+            break;
+        case RED:
+            return m_red_jewel_collected;
+            break;
+        case YELLOW:
+            return m_yellow_jewel_collected;
+            break;
+        }
+    }
+
 
 private:
     //îºìßñæÉ_ÉÅÅ[ÉWÇÃÇ†ÇÍÇï`âÊ

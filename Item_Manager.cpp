@@ -86,11 +86,14 @@ ItemJewel* ItemManager::FindItem_Jewel_ByID(int ID)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
-ItemSavePoint* ItemManager::FindItem_SavePoint()
+ItemSavePoint* ItemManager::FindItem_SavePoint(int ID)
 {
     for (const auto& w : m_SavePoint_List) {
+        if (w->GetID() == ID)
+        {
             return w.get();
         }
+    }
     return nullptr;
 }
 
@@ -107,17 +110,8 @@ ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
 
 
 // 全てのアイテムを初期化
-void ItemManager::InitializeAll(bool respawning) {
-    //リスポン時の初期化処理
-//=========================================
-    if (respawning)
-    {
-        InitializeWhenSpawning();
-        return;
-    }
-
-    //リスポンじゃない時の初期化処理
-    //=========================================
+void ItemManager::InitializeAll() 
+{
     for (auto& w : m_Spirit_List) {
         w->Initialize();
     }
@@ -182,20 +176,8 @@ void ItemManager::DrawFront() {
 
 
 // 全てのアイテムを破棄
-void ItemManager::FinalizeAll(bool respawning) {
-    //リスポン時の終了処理
-//=========================================
-    if (respawning) {
-        for (auto& w : m_Spirit_List) {
-            w->Finalize();
-        }
-        m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
-        return;
-    }
-
-
-    //リスポンじゃない時の終了処理
-    //=========================================
+void ItemManager::FinalizeAll() 
+{
 	for (auto& w : m_Coin_List) {
 		w->Finalize();
 	}
@@ -216,12 +198,44 @@ void ItemManager::FinalizeAll(bool respawning) {
     m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
 }
 
+//リスポン時の終了処理
+void ItemManager::Finalize_WhenRespawn()
+{
+   for (auto& w : m_Spirit_List) {
+       w->Finalize();
+   }
+   for (auto& w : m_Jewel_List) {
+       w->Finalize();
+   }
+   m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+  
+}
+
+void ItemManager::Finalize_WhenNextStage()
+{
+    for (auto& w : m_Coin_List) {
+        w->Finalize();
+    }
+
+    for (auto& w : m_Spirit_List) {
+        w->Finalize();
+    }
+    for (auto& w : m_SavePoint_List) {
+        w->Finalize();
+    }
+    for (auto& w : m_Jewel_List) {
+        w->Finalize();
+    }
+    m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
+}
+
 
 void ItemManager::UseAllJewel()
 {
     int count = 0;
     for (auto& w : m_Jewel_List) {
-        if (w->GetIfFunctioned() == false && w->GetBody() == nullptr)
+        if (w->SearchIfJewelHaveGotByPlayer() == true && w->GetIfFunctioned() == false)
         {
             w->Function();
             count++;
@@ -238,7 +252,7 @@ void ItemManager::UseAllJewel()
 
 }
 
-void ItemManager::InitializeWhenSpawning()
+void ItemManager::Initialize_WhenRespawn()
 {
     for (auto& w : m_Spirit_List) {
         w->Initialize();
@@ -249,6 +263,7 @@ void ItemManager::InitializeWhenSpawning()
     }
 
     for (auto& w : m_Jewel_List) {
+        w->Initialize();
         w->CreateBody();
     }
 
@@ -257,6 +272,23 @@ void ItemManager::InitializeWhenSpawning()
     }
 
 }
+
+void ItemManager::Initialize_WhenNextStage()
+{
+    for (auto& w : m_Spirit_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_Coin_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_SavePoint_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_Jewel_List) {
+        w->Initialize();
+    }
+}
+
 
 
 

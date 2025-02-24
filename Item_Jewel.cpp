@@ -99,6 +99,26 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     SetID(ID);
 
 
+
+
+    switch (m_type)
+    {
+    case BLUE:
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
+        break;
+    case RED:
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
+        break;
+    case YELLOW:
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
+        break;
+    }
+
+    if (!g_Effect_Texture)
+    {
+        g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
+    }
+
 }
 
 void	ItemJewel::Update()
@@ -115,7 +135,7 @@ void	ItemJewel::Update()
         return;
     }
 
-    if (m_collecting)
+    if (m_collecting && m_body != nullptr)
     {
         auto ring_position = Gauge_UI::GetRingPosition();
         ring_position.y += 170.0f;
@@ -151,6 +171,9 @@ void ItemJewel::SetIfCollecting(bool flag)
 
     if (m_collecting)
     {
+        //  もうプレイヤーにゲットされた
+        m_get_by_player = true;
+
         float scale = SCREEN_SCALE;
 
         b2Vec2 screen_center;
@@ -217,22 +240,9 @@ void    ItemJewel::Function()
 
 void ItemJewel::Initialize()
 {
-    switch (m_type)
+    if (m_destory)
     {
-    case BLUE:
-        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
-        break;
-    case RED:
-        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
-        break;
-    case YELLOW:
-        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
-        break;
-    }
-
-    if (!g_Effect_Texture)
-    {
-        g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
+        return;
     }
 }
 
@@ -312,7 +322,12 @@ void ItemJewel::Draw()
 
 void ItemJewel::Finalize()
 {
-
+    m_functioned = false;
+    if (m_collecting)
+    {
+        Gauge_UI::SetJewelCollected(m_type, true);
+        m_destory = true;
+    }
     if (GetBody() != nullptr)
     {
         //ワールドのインスタンスを持ってくる
@@ -321,16 +336,16 @@ void ItemJewel::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
+}
+
+ItemJewel::~ItemJewel()
+{
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
     }
     if (g_Effect_Texture) UnInitTexture(g_Effect_Texture);
 
-}
-
-ItemJewel::~ItemJewel()
-{
 }
 
 void ItemJewel::CreateBody()
