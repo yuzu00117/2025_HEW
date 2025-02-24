@@ -26,11 +26,11 @@ ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベ
 
 
 // 静的メンバー変数の初期化
-DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 390.f);
-DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(350.f, 700.f);
+DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 440.f);
+DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(310.f, 630.f);
 
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(98.f, 355.f);	//枠を除いたゲージ色の部分のみの位置
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(74.f, 478.f);		//枠を除いたゲージ色の部分のみのサイズ
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(105.f, 405.f);	//枠を除いたゲージ色の部分のみの位置
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(68.f, 420.f);		//枠を除いたゲージ色の部分のみのサイズ
 
 float Gauge_UI::player_ui_alpha = 1.0f;
 
