@@ -88,6 +88,7 @@ static ID3D11ShaderResourceView *g_boss_charge_attack_effect = NULL; // ボス�
 static ID3D11ShaderResourceView *g_mini_golem_break_effect = NULL;	 // ミニゴーレムが破壊された時のエフェクト
 static ID3D11ShaderResourceView *g_boss_panic_effect = NULL;		 // ボスがパニックになった時のエフェクト
 static ID3D11ShaderResourceView *g_boss_shock_wave_effect = NULL;	 // ボスの衝撃波エフェクト
+static ID3D11ShaderResourceView* g_boss_dameged_effect = NULL;		 //ダメージ食らった時のエフェクト
 
 //-------------------------------------------------------------------------------------------
 // デバッグ用の画像
@@ -177,6 +178,7 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 		g_boss_panic_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_panic_effect.png");				   // ボスのパニックエフェクト
 		g_boss_shock_wave_effect = InitTexture(L"asset\\texture\\boss_1_1\\boss_shock_wave_effect.png");	   // ボスのショックウェーブエフェクト
 		g_mini_golem_break_effect = InitTexture(L"asset\\texture\\boss_1_1\\mini_golem_break_effect.png");	   // ボスのミニゴーレムブレイクエフェクト
+		g_boss_dameged_effect=	 InitTexture(L"asset\\texture\\boss_1_1\\boss_dameged_effect.png");			   //ボスのダメージを貰った後のエフェクト
 
 		// デバッグ用
 		g_debug_color = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png"); // sensorのテクスチャ
@@ -352,6 +354,8 @@ void Boss_1_1::Update()
 				item_manager.AddSpirit(GetBossBody()->GetPosition(), { 2.0f,3.0f }, 0, Spirit_L, false);
 				item_manager.AddSpirit(GetBossBody()->GetPosition()+b2Vec2(0.2f,0.2), {2.0f,3.0f}, 0, Spirit_M, false);
 				item_manager.AddSpirit(GetBossBody()->GetPosition()-b2Vec2(0.2f, 0.2), { 2.0f,3.0f }, 0, Spirit_S, false);
+
+				dameged_effect_cnt = 1;
 			}
 
 			if (Max_dameged_Sheet <= sheet_cnt)
@@ -1710,6 +1714,18 @@ void Boss_1_1::UpdateEffectSheetCnt()
 			mini_golem_break_effect_cnt = 0;
 		}
 	}
+
+	//ボスの被弾時エフェクト
+	if (dameged_effect_cnt != 0)
+	{
+		dameged_effect_cnt++;
+
+		if (Max_damaged_effect < dameged_effect_cnt)
+		{
+			dameged_effect_cnt = 0;
+		}
+
+	}
 }
 
 void Boss_1_1::EffectDraw()
@@ -1770,6 +1786,31 @@ void Boss_1_1::EffectDraw()
 				DrawDividedSpriteBoss(XMFLOAT2(attack_draw_x, attack_draw_y), 0.0f, XMFLOAT2(GetAttackDrawSize().x * scale * 1.3, GetAttackDrawSize().y * scale * 1.3), 6, 4, shock_wave_effect_sheet_cnt, effect_alpha, left);
 			}
 		}
+	}
+
+
+	//ダメージ食らった時の
+	if (dameged_effect_cnt!=0)
+	{
+		// シェーダーリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_dameged_effect);
+
+		// コライダーの位置を取得（プレイヤーの位置）
+		b2Vec2 pos = GetBossBody()->GetPosition();
+
+		// プレイヤー位置を基準にスクリーン座標に変換する
+		// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
+		float pos_draw_x = ((pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float pos_draw_y = ((pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		// 左か右かを判定してスプライトを反転させる
+		int left = 1;
+		if (left_flag)
+		{
+			left = -1;
+		}
+
+		DrawDividedSpriteBoss(XMFLOAT2(pos_draw_x-(125*left), pos_draw_y+150), 0.0f, XMFLOAT2(20.f * scale , 20.f * scale ), 15, 6, dameged_effect_cnt, effect_alpha, left);
 	}
 
 
@@ -1844,6 +1885,7 @@ void Boss_1_1::Finalize()
 	if (g_mini_golem_break_effect) UnInitTexture(g_mini_golem_break_effect);
 	if (g_boss_panic_effect) UnInitTexture(g_boss_panic_effect);
 	if (g_boss_shock_wave_effect) UnInitTexture(g_boss_shock_wave_effect);
+	if (g_boss_dameged_effect) UnInitTexture(g_boss_dameged_effect);
 
 	if (g_debug_color) UnInitTexture(g_debug_color);
 	if (g_debug_boss_body_color) UnInitTexture(g_debug_boss_body_color);
