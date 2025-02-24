@@ -144,7 +144,9 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)){
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block)){
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -227,11 +229,13 @@ public:
             {
                 boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
                 bound_block_instance->SetJumpFlag(true);
+            
             }
             else
             {
                 boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
                 bound_block_instance->SetJumpFlag(true);
+            
             }
         }
 
@@ -342,6 +346,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
             else
             {
@@ -349,6 +354,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
 
         }
@@ -1472,6 +1478,7 @@ public:
             }
         }
 
+
     
 
 
@@ -1638,6 +1645,24 @@ public:
                 wall_instance->SetSplitting_Destroy_Flag(true);
             }
         }
+
+
+
+
+        //進入禁止エリアとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_no_entry_block) ||
+            (objectA->collider_type == collider_no_entry_block && objectB->collider_type == collider_mini_golem))
+        {
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
+        }
+
 
         
 
@@ -2093,6 +2118,26 @@ public:
                 sloping_block_instance->SetPlayerCollided(false);
             }
 
+        }
+
+        //プレイヤーとバウンドブロックが触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block) ||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_bound_block)
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
+                bound_block_instance->SetJumpFlag(false);
+              
+            }
+            else
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
+                bound_block_instance->SetJumpFlag(false);
+             
+            }
         }
 
     }

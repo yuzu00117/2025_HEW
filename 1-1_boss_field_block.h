@@ -92,6 +92,8 @@ private:
 
 	int id;
 
+	bool isUse = true;
+
 	b2Body* m_body;
 
 	b2Vec2 m_size;

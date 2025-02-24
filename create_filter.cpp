@@ -13,15 +13,13 @@ std::unordered_map<std::string, uint16_t> filter_type = {
     {"item_filter",             0x0020}, // 1 << 5
     {"Boss_filter",             0x0040}, // 1 << 6
     {"MiniGolem_filter",        0x0080}, // 1 << 7
-    {"Shockwave_filter",        0x0100},  // 1 << 8
-    {"Boss_field_filter",       0x0120 },  // 1 << 8
-    {"blown_away_enemy_filter", 0x0140},
-    {"player_sensor_filter",    0x0160 },
-    {"texture_body_filter",     0x0180 },  // 1 << 9　　描画の際にボディを使いたいが落下させたいから、
-    {"break_block_body_filter", 0x0200 },
-    {"No_Entry_block_body_filter", 0x0220 }
-
-
+    {"Shockwave_filter",        0x0100}, // 1 << 8
+    {"Boss_field_filter",       0x0200}, // 1 << 9 に修正
+    {"blown_away_enemy_filter", 0x0400}, // 1 << 10
+    {"player_sensor_filter",    0x0800}, // 1 << 11
+    {"texture_body_filter",     0x1000}, // 1 << 12
+    {"break_block_body_filter", 0x2000}, // 1 << 13
+    {"No_Entry_block_body_filter", 0x4000} // 1 << 14 に修正
 };
 
 
