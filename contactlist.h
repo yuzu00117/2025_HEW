@@ -342,6 +342,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
             else
             {
@@ -349,6 +350,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
 
         }
