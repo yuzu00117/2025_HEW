@@ -21,11 +21,11 @@
 
 enum GAME_STATE
 {
-	GAME_STATE_START,
-	GAME_STATE_RESPAWN_INITIAL,
-	GAME_STATE_RESPAWN_SAVE_POINT,
-	GAME_STATE_NEXT_STAGE,
-	GAME_STATE_GAMEOVER,
+	GAME_STATE_START,				//ゲームシーンに入ったばかリ（ステージ選択から来た初回のみ）
+	GAME_STATE_RESPAWN_INITIAL,		//ステージの初期位置にリスポン
+	GAME_STATE_RESPAWN_SAVE_POINT,	//ステージの中間地にリスポン
+	GAME_STATE_NEXT_STAGE,			//次のステージに移行
+	GAME_STATE_GAMEOVER,			//リザルト画面に移行
 };
 
 class Game
@@ -66,7 +66,7 @@ private:
 	ObjectManager& objectManager = ObjectManager::GetInstance();
 	ItemManager& itemManager = ItemManager::GetInstance();
 
-	//このあとリスポンする予定なのか（変化するのは初回リスポンする時オンにするのと、残機がなくなって、或いはクリアしてリザルトに遷移する時オフにする、この２回だけ）
+	//今のゲームシーンの状態リスポンしてたのか、開始したばかりなのかなどなど
 	GAME_STATE	m_state = GAME_STATE_START;
 };
 
