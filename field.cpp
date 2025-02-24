@@ -819,7 +819,7 @@ void Field::Initialize(bool respawning)
 				//}
 
 				if (field_map[y][x] == 12) {//壊れるブロック
-					objectManager.AddNoEntryBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), g_AnchorPoint_Texture);
+					objectManager.AddNoEntryBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.f, 25.f), g_AnchorPoint_Texture);
 				}
 
 
