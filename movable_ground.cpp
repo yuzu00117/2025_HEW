@@ -266,7 +266,11 @@ void movable_ground::Update()
 		if (Ground_body->GetLinearVelocity().x > 0)
 		{
 			Ground_body->SetLinearVelocity({ 0.0f,0.0f });
-			g_pulled = true;
+			g_pulled = false;
+
+			CameraShake::StartCameraShake(20, 160, 50);
+
+			
 		}
 	}
 }
