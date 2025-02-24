@@ -79,6 +79,9 @@ static ID3D11ShaderResourceView* g_mini_boss_create_sheet2_Lv3_Texture = NULL; /
 static ID3D11ShaderResourceView* g_boss_down_sheet = NULL;				 // ボスのダウン状態 lv2
 static ID3D11ShaderResourceView* g_boss_down_Lv2_sheet = NULL;			 // ボスのダウン状態 lv3
 
+static ID3D11ShaderResourceView* g_boss_die_sheet = NULL;				 // ボスの死亡の演出
+static ID3D11ShaderResourceView* g_boss_die_sheet2 = NULL;				 // ボスの死亡の演出2
+
 // ボス周辺のエフェクトのテクスチャ
 static ID3D11ShaderResourceView *g_boss_charge_effect = NULL;		 // ボスの突進エフェクト
 static ID3D11ShaderResourceView *g_boss_charge_attack_effect = NULL; // ボスの突進攻撃エフェクト
@@ -163,6 +166,9 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 
 		g_boss_down_sheet			=InitTexture(L"asset\\texture\\boss_1_1\\boss_down_sheet.png");					  // ゴーレムのダウンアニメーション
 		g_boss_down_Lv2_sheet 		=InitTexture(L"asset\\texture\\boss_1_1\\boss_down_sheet_Lv2.png");				  // ゴーレムのダウンアニメーション Lv2
+
+		g_boss_die_sheet = InitTexture(L"asset\\texture\\boss_1_1\\boss_die_sheet1.png");					  // ゴーレムの死亡時のアニメーション
+		g_boss_die_sheet2 = InitTexture(L"asset\\texture\\boss_1_1\\boss_die_sheet2.png");					  // ゴーレムの死亡時のアニメーション 2
 		
 		
 		// エフェクト
@@ -319,7 +325,7 @@ void Boss_1_1::Update()
 		if (Keyboard_IsKeyDown(KK_Y) && debug_flag == 0)
 		{
 			debug_flag = 60;
-			boss_field_level++;
+			BossDamaged();
 			
 		}
 		if (debug_flag != 0)
@@ -387,6 +393,19 @@ void Boss_1_1::Update()
 			{
 				sheet_cnt = 0;
 				now_boss_state = wait_state;
+			}
+			break;
+
+
+		case die_state:
+
+		
+			sheet_cnt += 0.5;
+
+			//既定値を超えても最後のシートで止まる
+			if (Max_die_Sheet <= sheet_cnt)
+			{
+				sheet_cnt = Max_die_Sheet-2;
 			}
 			break;
 		case walk_state:
@@ -592,6 +611,7 @@ void Boss_1_1::BossDamaged(void)
 {
 	// ボスのHPを減らす処理
 	SetBossHP(GetBossHP() - 1);
+	sheet_cnt = 0;
 }
 
 void Boss_1_1::BossDead(void)
@@ -599,8 +619,14 @@ void Boss_1_1::BossDead(void)
 	// ボスのHPが0以下になったらシーンを変更
 	if (boss_hp <= 0)
 	{
-		SceneManager &sceneManager = SceneManager::GetInstance();
-		sceneManager.ChangeScene(SCENE_RESULT);
+		dead_cnt++;
+		now_boss_state = die_state;
+
+		if (720 < dead_cnt)
+		{
+			SceneManager& sceneManager = SceneManager::GetInstance();
+			sceneManager.ChangeScene(SCENE_RESULT);
+		}
 	}
 }
 
@@ -1186,6 +1212,7 @@ void Boss_1_1::Draw()
 			break;
 
 
+
 		case panic_state:
 
 
@@ -1234,6 +1261,22 @@ void Boss_1_1::Draw()
 			
 
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 8, 8, sheet_cnt, boss_alpha, left_flag);
+
+			break;
+		case die_state:
+			// シェーダーリソースを設定
+			if (sheet_cnt < Max_die_Sheet / 2)
+			{
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_die_sheet);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt, boss_alpha, left_flag);
+			}
+			else
+			{
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_die_sheet2);
+				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x* scale, GetBossDrawSize().y* scale), 6, 6, sheet_cnt - Max_die_Sheet / 2, boss_alpha, left_flag);
+			}
+
+	
 
 			break;
 		case jump_state:
@@ -1769,6 +1812,9 @@ void Boss_1_1::Finalize()
 	if (g_boss_down_sheet) UnInitTexture(g_boss_down_sheet);
 	if (g_boss_down_Lv2_sheet) UnInitTexture(g_boss_down_Lv2_sheet);
 
+	if (g_boss_die_sheet) UnInitTexture(g_boss_die_sheet);
+	if (g_boss_die_sheet2) UnInitTexture(g_boss_die_sheet2);
+
 	if (g_boss_charge_effect) UnInitTexture(g_boss_charge_effect);
 	if (g_boss_charge_attack_effect) UnInitTexture(g_boss_charge_attack_effect);
 	if (g_mini_golem_break_effect) UnInitTexture(g_mini_golem_break_effect);
@@ -1779,6 +1825,8 @@ void Boss_1_1::Finalize()
 	if (g_debug_boss_body_color) UnInitTexture(g_debug_boss_body_color);
 	if (g_debug_attack_color) UnInitTexture(g_debug_attack_color);
 	if (g_debug_core) UnInitTexture(g_debug_core);
+
+
 
 		UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
 		g_boss_jump_sheet1_Lv3_Texture = NULL;
