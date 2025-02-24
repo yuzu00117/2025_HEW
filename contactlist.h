@@ -144,7 +144,9 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)){
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block)){
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -227,11 +229,13 @@ public:
             {
                 boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
                 bound_block_instance->SetJumpFlag(true);
+            
             }
             else
             {
                 boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
                 bound_block_instance->SetJumpFlag(true);
+            
             }
         }
 
@@ -2093,6 +2097,26 @@ public:
                 sloping_block_instance->SetPlayerCollided(false);
             }
 
+        }
+
+        //プレイヤーとバウンドブロックが触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block) ||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_bound_block)
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
+                bound_block_instance->SetJumpFlag(false);
+              
+            }
+            else
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
+                bound_block_instance->SetJumpFlag(false);
+             
+            }
         }
 
     }
