@@ -53,6 +53,8 @@ public:
 	void Draw();
 	void debugDraw();//攻撃範囲を表示したりする
 	void EffectDraw();
+	void BossIconDraw();
+
 	void Finalize();
 
 	void CreateBossCore(b2Vec2 size);//ボスの弱点を露出させた時
@@ -289,6 +291,12 @@ public:
 	{
 		Wait_time = i;
 	}
+
+
+	void SetDisplyInBossFlag(bool flag)
+	{
+		display_in_boss = flag;
+	}
 private:
 
 	b2Vec2 Boss_size = b2Vec2(18, 24);
@@ -320,6 +328,8 @@ private:
 
 
 
+	//ボスが範囲内にいる
+	bool display_in_boss = false;
 
 	b2Body* m_mini_golem_body[2];//ボディ
 	bool m_mini_golem_left_flag[2];//ミニゴーレムの向き

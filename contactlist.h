@@ -1643,6 +1643,15 @@ public:
             }
         }
 
+        //プレイヤーのセンサーとボスが触れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_sensor))
+        {
+
+            boss.SetDisplyInBossFlag(true);
+
+        }
+
         
 
     }
@@ -2118,6 +2127,19 @@ public:
              
             }
         }
+
+
+        //プレイヤーのセンサーとボスが触れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_sensor))
+        {
+
+            boss.SetDisplyInBossFlag(false);
+
+        }
+
+
+
 
     }
 
