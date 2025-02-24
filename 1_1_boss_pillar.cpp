@@ -18,6 +18,7 @@
 #include"create_filter.h"
 #include"tool.h"
 #include"sound.h"
+#include"camera_shake.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
@@ -60,7 +61,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	fixture.friction = 0.01f;
 	fixture.restitution = 0.0f;
 	fixture.isSensor = false;
-	fixture.filter = createFilterExclude("object_filter", {"Player_filter"});
+	fixture.filter = createFilterExclude("object_filter", {"Player_filter","MiniGolem_filter","Shockwave_filter"});
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 
@@ -208,7 +209,7 @@ void boss_pillar::Update()
 				Splitting_Destroy_Flag = true;
 			}
 		}
-
+		Pulling_pillar();
 
 
 
@@ -223,6 +224,9 @@ void boss_pillar::Destroy_Splitting()
 	{
 		if (m_body != nullptr && Splitting_end == false)
 		{
+			CameraShake::StartCameraShake(50, 30, 30);
+
+
 			//ワールドのインスタンスを持ってくる
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -294,7 +298,7 @@ void boss_pillar::Destroy_Splitting()
 					fragmentFixture.density = 1.0f; // ボディの密度を設定。密度が大きいほどボディの質量が重くなる。
 					fragmentFixture.friction = 0.5f; // 摩擦係数を設定。接触面の滑りやすさを制御し、小さい値ほど滑りやすい。
 					fragmentFixture.restitution = 0.0f; // 反発係数を設定。0は反発しない（衝突時にエネルギーを失う）、1は完全に弾む。
-					fragmentFixture.filter = createFilterExclude("ground_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter" });
+					fragmentFixture.filter = createFilterExclude("ground_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter","Shockwave_filter" });
 
 					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
 
@@ -340,16 +344,34 @@ void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 
 void boss_pillar::Pulling_pillar()
 {
-	b2Body* body = GetObjectAnchorPointBody();
-	b2Vec2 pulling_power = m_pulling_power;
-
-	//プレイヤー側に倒す
-	if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+	if (pulling_flag == true)
 	{
-		pulling_power.x = pulling_power.x * -1;
-	}
 
-	body->SetLinearVelocity(pulling_power);
+		// 本体のフィクスチャのフィルターを更新する
+		if (GetBody() != nullptr) {
+			for (b2Fixture* f = GetBody()->GetFixtureList(); f; f = f->GetNext()) {
+				// 新しいフィルターデータを作成（createFilterExclude は既存の関数と仮定）
+				b2Filter newFilter = createFilterExclude("object_filter", {"Player_filter"});
+				f->SetFilterData(newFilter);
+				f->Refilter();  // 設定変更をワールドに反映
+			}
+		}
+
+		b2Body* body = GetObjectAnchorPointBody();
+		b2Vec2 pulling_power = m_pulling_power;
+
+
+
+		//プレイヤー側に倒す
+		if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+		{
+			pulling_power.x = pulling_power.x * -1;
+		}
+
+		body->SetLinearVelocity(pulling_power);
+
+		pulling_flag = false;
+	}
 
 }
 
@@ -425,9 +447,7 @@ void boss_pillar::Draw()
 
 void boss_pillar::Finalize()
 {
-	if (g_Texture != NULL)
-	{
+	if (g_Texture) {
 		UnInitTexture(g_Texture);
-		g_Texture = NULL;
 	}
 }

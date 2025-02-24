@@ -7,13 +7,14 @@
 //          
 // 
 //----------------------------------------------------------------------------------------------------
-
+#define NOMINMAX  // Windowsヘッダーが max/min マクロを定義しないようにする
 #include"display.h"
 #include"camera_shake.h"
 #include"tool.h"
 #include"player_position.h"
 #include"player.h"
 #include"include/box2d/box2d.h"
+#include"Xinput_controller.h"
 #include <algorithm> // 追加
 
 template<typename T>

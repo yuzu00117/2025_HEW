@@ -160,16 +160,14 @@ void NoEntryBlock::Finalize()
 	if (GetBody() != nullptr)
 	{
 		//ƒ{ƒfƒB‚Ìíœ
-		world->DestroyBody(m_body);
+		world->DestroyBody(GetBody());
 	}
 
 	//‰æ‘œ‚Ì‰ð•ú
 
-	if (Texture != NULL)
+	if (Texture)
 	{
 		UnInitTexture(Texture);
-		Texture = NULL;
-	
 	}
 
 }

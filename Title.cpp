@@ -71,5 +71,6 @@ void TitleScene::Draw()
 
 void TitleScene::Finalize()
 {
-	UnInitTexture(g_title_Texture);
+	if (g_title_Texture) UnInitTexture(g_title_Texture);
+
 }

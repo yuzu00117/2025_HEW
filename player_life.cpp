@@ -31,11 +31,8 @@ void PlayerLife::Initialize()
 
 void PlayerLife::Finalize()
 {
-	if (g_life_Texture != NULL)
-	{
-		UnInitTexture(g_life_Texture);
-		g_life_Texture = NULL;
-	}
+	if (g_life_Texture) UnInitTexture(g_life_Texture);
+
 }
 
 void PlayerLife::Update()

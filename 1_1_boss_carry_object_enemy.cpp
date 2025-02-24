@@ -493,11 +493,15 @@ void boss_carry_object_enemy::Finalize()
 {
 	if (g_Enemy_Texture != NULL)
 	{
-		UnInitTexture(g_Enemy_Texture);
-		UnInitTexture(g_Object_Texture);
+		if (g_Enemy_Texture) {
+			UnInitTexture(g_Enemy_Texture);
+		}
 
-		g_Enemy_Texture = NULL;
-		g_Object_Texture = NULL;
+		if (g_Object_Texture) {
+			UnInitTexture(g_Object_Texture);
+		}
+
+		
 	}
 }
 

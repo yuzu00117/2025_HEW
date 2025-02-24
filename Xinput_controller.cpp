@@ -92,11 +92,15 @@ void VibrationController::ApplyVibration() {
 
 // 振動を開始（フレーム数指定）
 void VibrationController::StartVibration(float leftMotor, float rightMotor, int frames) {
-    leftMotorSpeed = leftMotor;
-    rightMotorSpeed = rightMotor;
-    remainingFrames = frames;
-    isActive = true;
-    ApplyVibration();
+
+    if (leftMotorSpeed + rightMotorSpeed < leftMotor + rightMotor)
+    {
+        leftMotorSpeed = leftMotor;
+        rightMotorSpeed = rightMotor;
+        remainingFrames = frames;
+        isActive = true;
+        ApplyVibration();
+    }
 }
 
 // 振動を即停止

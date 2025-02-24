@@ -18,6 +18,7 @@
 #include"collider_type.h"
 #include"sound.h"
 #include"break_effect.h"
+#include"camera_shake.h"
 
 
 //テクスチャの入れ物
@@ -208,9 +209,51 @@ void static_to_dynamic_block::Update()
 	}
 
 
+	if (GetObjectBody() != nullptr)
+	{
+		if (camera_shake_was == false)
+		{
+
+			
+
+
+			const float BREAK_ACCELERATION_THRESHOLD = 3.0f;
+			b2Body* body = GetObjectBody();
+
+			// 現在の速度を取得
+			b2Vec2 currentVelocity = body->GetLinearVelocity();
+
+			// 速度変化（加速度）を計算
+			b2Vec2 velocityDiff = currentVelocity - prevVelocity;
+			float acceleration = velocityDiff.Length();
+
+			// 閾値を超えたら壊れる
+			if (acceleration > BREAK_ACCELERATION_THRESHOLD) {
+				
+
+				switch (m_need_level)
+				{
+				case 1:
+					CameraShake::StartCameraShake(60, 0, 25);
+						break;
+				case 2:
+					CameraShake::StartCameraShake(80, 0, 25);
+					break;
+				case 3:
+					CameraShake::StartCameraShake(100, 0, 25);
+					break;
+				default:
+					break;
+				}
+
+				camera_shake_was = true;
+			}
+		}
+	}
+
 	if (Break_Flag == true)
 	{
-		const float BREAK_ACCELERATION_THRESHOLD = 5.0f; 
+		const float BREAK_ACCELERATION_THRESHOLD = 3.0f; 
 		b2Body* body = GetObjectBody();
 
 		// 現在の速度を取得
@@ -231,6 +274,10 @@ void static_to_dynamic_block::Update()
 		// 次のフレーム用に現在の速度を保存
 		prevVelocity = currentVelocity;
 	}
+
+
+
+
 
 
 	if (Now_Break_Flag == true)
@@ -355,25 +402,14 @@ void static_to_dynamic_block::Finalize()
 	}
 
 	
+	if (g_BoxRock_Texture) UnInitTexture(g_BoxRock_Texture);
+	if (g_Dameged_BoxRock_Texture) UnInitTexture(g_Dameged_BoxRock_Texture);
+	if (g_coconut_Texture) UnInitTexture(g_coconut_Texture);
 
-	//テクスチャの解放
-	if (g_BoxRock_Texture != NULL)
-	{
-		UnInitTexture(g_BoxRock_Texture);
-		UnInitTexture(g_coconut_Texture);
-		UnInitTexture(g_Dameged_BoxRock_Texture);
-		UnInitTexture(g_Rock_Border_Texture_Lv1);
-		UnInitTexture(g_Rock_Border_Texture_Lv2);
-		UnInitTexture(g_Rock_Border_Texture_Lv3);
+	if (g_Rock_Border_Texture_Lv1) UnInitTexture(g_Rock_Border_Texture_Lv1);
+	if (g_Rock_Border_Texture_Lv2) UnInitTexture(g_Rock_Border_Texture_Lv2);
+	if (g_Rock_Border_Texture_Lv3) UnInitTexture(g_Rock_Border_Texture_Lv3);
 
-
-		g_BoxRock_Texture = NULL;
-		g_coconut_Texture = NULL;
-		g_Dameged_BoxRock_Texture = NULL;	
-		g_Rock_Border_Texture_Lv1 = NULL;
-		g_Rock_Border_Texture_Lv2 = NULL;
-		g_Rock_Border_Texture_Lv3 = NULL;
-	}
 
 }
 

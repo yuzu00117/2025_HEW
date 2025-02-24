@@ -17,6 +17,7 @@
 #include"create_filter.h"
 #include"tool.h"
 #include"break_effect.h"
+#include"camera_shake.h"
 
 
 //オブジェクトに触れたら壊れるオブジェクト
@@ -120,6 +121,8 @@ void Break_Block::Update()
 
 			SetBody(nullptr);
 
+			CameraShake::StartCameraShake(20, 20, 20);
+
 			m_flag = false;
 		}
 
@@ -184,11 +187,8 @@ void Break_Block::Finalize()
 
 	//画像の解放
 
-	if (Texture != NULL)
-	{
+	if (Texture) {
 		UnInitTexture(Texture);
-		Texture = NULL;
-	
 	}
 
 }

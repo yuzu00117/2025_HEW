@@ -222,5 +222,8 @@ private:
 	std::vector<b2Body*> leaf_bodies; // b2Body* のベクター
 
 	const int NUM_BODIES = 11;
+
+
+	bool camera_shake_was;//カメラシェイクを既にしたかどうか
 };
 #endif // !WOOD_H

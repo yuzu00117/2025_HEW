@@ -11,6 +11,7 @@
 #ifndef CAMERA_SHAKE_H
 #define CAMERA_SHAKE_H
 
+#include"Xinput_controller.h"
 #include"include/box2d/box2d.h"
 
 class CameraShake
@@ -35,6 +36,8 @@ public:
 		camera_shake_height = shake_height;
 		camera_shake_width=shake_width;
 		camera_shake_frame = shake_frame;
+
+		VibrationController::StartVibration(static_cast<float>(camera_shake_height + camera_shake_width) / 50.f, static_cast<float>(camera_shake_height + camera_shake_width) / 50.f, camera_shake_frame);
 	}
 
 

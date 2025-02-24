@@ -40,6 +40,7 @@
 #include"change_scene_start_production.h"
 #include"UI_StaminaSpirit_Gauge.h"
 #include"Xinput_controller.h"
+#include"Stamina_UI.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -91,6 +92,8 @@ void Game::Initialize()
         Gauge_UI::Initialize();
         //豪快度UIの初期化
         Gokai_UI::Initialize();
+        //体力UIの初期化
+    　　Stamina_UI::Initialize();
         break;
     case GAME_STATE_RESPAWN_INITIAL:
         //リスポン用のアイテムの初期化
@@ -233,6 +236,8 @@ void Game::Finalize(void)
         Gauge_UI::Finalize();
         //豪快度UIの終了処理
         Gokai_UI::Finalize();
+        //体力UIの終了処理
+        Stamina_UI::Finalize();
         //プレイヤーが登録した中間地点を解除
         player.RegisterSavePoint(nullptr);
         break;
@@ -246,8 +251,6 @@ void Game::Finalize(void)
 	//プレイヤーの終了処理
     player.ResetPlayerParameter();
     player.Finalize();
-
-	
 
     //アンカー終了処理
     Anchor::Finalize();
@@ -323,6 +326,8 @@ void Game::Update(void)
             PlayerLife::Update();
             //ソウルゲージUIの更新処理
             Gauge_UI::Update();
+            //体力UIの更新処理
+            Stamina_UI::Update();
 
             AnchorSpirit::Update();
 
@@ -369,7 +374,12 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
             }
 
-
+            if (Keyboard_IsKeyDown(KK_I))//遺跡ステージにいく
+            {
+                next_state = GAME_STATE_NEXT_STAGE;
+                sceneManager.SetStageName(STAGE_ISEKI);
+                sceneManager.ChangeScene(SCENE_GAME);
+            }
       
 
 
@@ -499,6 +509,8 @@ void Game::Draw(void)
     //フィールドの描画処理
     Field::Draw();
 
+    boss.DrawObjectFront();
+
  
 
     //プレイヤーの描画処理
@@ -530,7 +542,7 @@ void Game::Draw(void)
 	PlayerLife::Draw();
 
 
-
+    Stamina_UI::Draw();
 	Gauge_UI::Draw();
 
     Gokai_UI::Draw();
