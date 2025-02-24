@@ -1476,6 +1476,7 @@ public:
             }
         }
 
+
     
 
 
@@ -1642,6 +1643,24 @@ public:
                 wall_instance->SetSplitting_Destroy_Flag(true);
             }
         }
+
+
+
+
+        //進入禁止エリアとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_no_entry_block) ||
+            (objectA->collider_type == collider_no_entry_block && objectB->collider_type == collider_mini_golem))
+        {
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
+        }
+
 
         
 
