@@ -40,6 +40,7 @@
 #include"change_scene_start_production.h"
 #include"UI_StaminaSpirit_Gauge.h"
 #include"Xinput_controller.h"
+#include"Stamina_UI.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -74,7 +75,8 @@ void Game::Initialize()
         break;
     }
 
-
+    //体力UI
+    Stamina_UI::Initialize();
 
     //文字（絵）
     InitializeWord();
@@ -157,7 +159,7 @@ void Game::Finalize(void)
 	//プレイヤーの終了処理
     player.Finalize();
 
-	
+    Stamina_UI::Finalize();
 
     //アンカー終了処理
     Anchor::Finalize();
@@ -270,7 +272,7 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
 
-         
+            Stamina_UI::Update();
 
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
@@ -477,7 +479,7 @@ void Game::Draw(void)
 	PlayerLife::Draw();
 
 
-
+    Stamina_UI::Draw();
 	Gauge_UI::Draw();
 
     Gokai_UI::Draw();
