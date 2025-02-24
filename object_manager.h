@@ -38,6 +38,8 @@
 #include"boss_wall_object.h"
 #include"no_entry_block.h"
 #include"texture_block.h"
+#include"spawner_enemy.h"
+#include"spawner_block_damage.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -68,6 +70,9 @@ enum ObjectType {
     Boss_pillar,//ボスの柱
     Boss_Wall,//ボスの柱の
     Boss_Carry_Object_Enemy,//ボス部屋のエネミーがオブジェクトを運ぶやつ
+
+    Object_Spawner_Enemy, //エネミースポナー
+    Object_Spawner_Block_Damage, //壊れる岩のスポナー
 
     Boss_field_block,
 };
@@ -135,6 +140,13 @@ public:
 
     void AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture);
 
+    //エネミースポナーの生成
+    void AddSpawnerEnemy(b2Vec2 position, b2Vec2 body_size, float angle);
+    //落下して壊れる岩のスポナーの生成
+    void AddSpawnerBlockDamage(b2Vec2 position, b2Vec2 body_size, float angle, int need_level);
+    //スポナーから生成される静的→動的のブロックの追加
+    void AddStatic_to_Dynamic_block_BySpawner(const b2Vec2& position, const b2Vec2& size, const int& need_level, int id);
+
 
     // ID を使って木を検索
     wood* FindWoodByID(int id);
@@ -188,6 +200,11 @@ public:
 
     Texture_block* FindTextureBlock(int id);
 
+    //IDを使ってエネミースポナーを検索
+    SpawnerEnemy* FindSpawnerEnemy(int id);
+    //IDを使って落下して壊れる岩のスポナーを検索
+    SpawnerBlockDamage* FindSpawnerBlockDamage(int id);
+
 
     
 
@@ -199,6 +216,8 @@ public:
     void DestroyEnemyAttack(int id);
     //指定の浮遊エネミーを削除
     void DestroyEnemyFloating(int id);
+    //指定の壊れるブロックを削除
+    void DestroyBlockDamage(int id);
 
 
     // 全てのオブジェクトを初期化
@@ -267,6 +286,10 @@ private:
     std::vector<std::unique_ptr<Texture_block>>texture_block_list;//背景ブロック
 
     std::vector<std::unique_ptr<NoEntryBlock>>no_enetry_block_list;//立ち入り禁止ブロック
+
+
+    std::vector<std::unique_ptr<SpawnerEnemy>> spawner_enemyList;//エネミースポナーのリスト
+    std::vector<std::unique_ptr<SpawnerBlockDamage>> spawner_block_damageList;//落下して壊れる岩のスポナーのリスト
    
     //ここにオブジェクトごとにリストを追加していく感じ
 

@@ -389,7 +389,6 @@ void Field::Initialize(bool respawning)
 					objectManager.AddEnemyFloating(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), 0.0f);
 				}
 
-
 				//------------------------------------------------------------------------------------------------------------------------------------------
 				//木のオブジェクト
 
@@ -574,6 +573,16 @@ void Field::Initialize(bool respawning)
 				//でかい木
 				if (field_map[y][x] == 96) {
 					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(20.0f,20.f), 0.0,g_Big_Wood_Texture);
+				}
+
+				//----------------------------------------------------------
+				//スポナー
+				//----------------------------------------------------------
+				if (field_map[y][x] == 97) {//エネミーのスポナー
+					objectManager.AddSpawnerEnemy(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f);
+				}
+				if (field_map[y][x] == 98) {//壊れるブロックのスポナー
+					objectManager.AddSpawnerBlockDamage(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, 1);
 				}
 			}
 		}
