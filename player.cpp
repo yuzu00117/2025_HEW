@@ -1702,6 +1702,47 @@ void Player::DrawTamaChan()
             is_tamachan_disappearing = false;
         }
     }
+    else if (!is_tamachan_disappearing)
+    { // たまちゃんが出現するエフェクトを描画
+        // アンカーレベルに応じてたまちゃんのエフェクトを変更
+        switch (AnchorSpirit::GetAnchorLevel())
+        {
+        case 1:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_tamachan_effect_lv1);
+            tamachan_effect_size = {100.f, 100.0f}; // たまちゃんのエフェクトサイズ
+            break;
+        case 2:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_tamachan_effect_lv2);
+            tamachan_effect_size = {150.f, 150.0f}; // たまちゃんのエフェクトサイズ
+            break;
+        case 3:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_tamachan_effect_lv3);
+            tamachan_effect_size = {200.f, 200.0f}; // たまちゃんのエフェクトサイズ
+            break;
+        default:
+            break;
+        }
+        
+        // たまちゃんが出現するエフェクトを描画
+        DrawDividedSpritePlayer(
+            {tamachan_pos_x, tamachan_pos_y},                 // 描画位置
+            0,                                                // 回転角度
+            {tamachan_effect_size.x, tamachan_effect_size.y}, // サイズ
+            10, 5,                                            // 分割数
+            tamachan_disappear_effect_cnt,                    // シートカウント
+            3.0f,                                             // スケール
+            is_left                                           // 左向きかどうか
+        );
+
+        tamachan_disappear_effect_cnt -= 0.5;
+        if (tamachan_disappear_effect_cnt >= 25) // エフェクトが終了したら
+        {
+            is_tamachan_disappearing = false;
+        }
+    }
 }
 
 int Player::GetAnchorFrameManagement()
