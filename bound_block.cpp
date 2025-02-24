@@ -110,61 +110,67 @@ void boss_bound_block::Initialize()
 
 void boss_bound_block::Update()
 {
-	Boss_1_1& boss = Boss_1_1::GetInstance();
-	if (boss.GetBossFieldLevel() > BossRoomLevel && break_flag == false)
+	if (isUse)
 	{
-		m_body->SetType(b2_dynamicBody);
-
-		// フィルターを変更
-		b2Fixture* fixture = m_body->GetFixtureList();
-
-		// フィクスチャが存在しない場合は早期リターン
-		if (!fixture) {
-			return;
-		}
-
-		// 新しいフィルターを作成
-		b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter" });
-		fixture->SetFilterData(newFilter);
-
-		break_flag = true;
-
-		int x = GetRandomInt(1, 10);
-
-
-		int minus = GetRandomInt(0, 1);
-
-		if (minus == 1)
+		Boss_1_1& boss = Boss_1_1::GetInstance();
+		if (boss.GetBossFieldLevel() > BossRoomLevel && break_flag == false)
 		{
-			minus = -1;
+			m_body->SetType(b2_dynamicBody);
+
+			// フィルターを変更
+			b2Fixture* fixture = m_body->GetFixtureList();
+
+			// フィクスチャが存在しない場合は早期リターン
+			if (!fixture) {
+				return;
+			}
+
+			// 新しいフィルターを作成
+			b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter","No_Entry_block_body_filter" });
+			fixture->SetFilterData(newFilter);
+
+			break_flag = true;
+
+			int x = GetRandomInt(1, 10);
+
+
+			int minus = GetRandomInt(0, 1);
+
+			if (minus == 1)
+			{
+				minus = -1;
+			}
+			else
+			{
+				minus = 1;
+			}
+
+			m_body->ApplyLinearImpulseToCenter(b2Vec2(x / 5 * minus, 0.0f), true);
+
 		}
-		else
+
+		if (break_flag == true)
 		{
-			minus = 1;
+			body_delete_cnt++;
 		}
 
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(x / 5 * minus, 0.0f), true);
-
-	}
-
-	if (break_flag == true)
-	{
-		body_delete_cnt++;
-	}
-
-	//３秒間たったらボディをけす
-	if (body_delete_cnt > 180)
-	{
-		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-		b2World* world = box2d_world.GetBox2dWorldPointer();
-
-		if (m_body == nullptr)
+		//３秒間たったらボディをけす
+		if (body_delete_cnt > 180)
 		{
-			world->DestroyBody(m_body);
-		}
+			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+			b2World* world = box2d_world.GetBox2dWorldPointer();
 
+			if (m_body != nullptr)
+			{
+				world->DestroyBody(m_body);
+				break_flag = false;
+				isUse = false;
+				SetBody(nullptr);
+			}
+
+		}
+		Player_jump();
 	}
-	Player_jump();
 
 
 
@@ -283,16 +289,9 @@ void boss_bound_block::Player_jump()
 
 void boss_bound_block::Finalize()
 {
-	if (g_bound_block_texture1_open != NULL)
-	{
-		UnInitTexture(g_bound_block_texture1_open);
-		g_bound_block_texture1_open = NULL;
-		UnInitTexture(g_bound_block_texture2_open);
-		g_bound_block_texture2_open = NULL;
+	if (g_bound_block_texture1_open) UnInitTexture(g_bound_block_texture1_open);
+	if (g_bound_block_texture1_close) UnInitTexture(g_bound_block_texture1_close);
 
-		UnInitTexture(g_bound_block_texture1_close);
-		g_bound_block_texture1_close = NULL;
-		UnInitTexture(g_bound_block_texture2_close);
-		g_bound_block_texture2_close = NULL;
-	}
+	if (g_bound_block_texture2_open) UnInitTexture(g_bound_block_texture2_open);
+	if (g_bound_block_texture2_close) UnInitTexture(g_bound_block_texture2_close);
 }

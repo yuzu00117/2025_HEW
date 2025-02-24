@@ -86,13 +86,7 @@ void DrawImpactEffects(float Draw_size) {
 }
 void FinalizeImpactEffects()
 {
-    if (g_Imapct_effect_texture1 != NULL)
-    {
-        UnInitTexture(g_Imapct_effect_texture1);
-        UnInitTexture(g_Imapct_effect_texture2);
+    if (g_Imapct_effect_texture1) UnInitTexture(g_Imapct_effect_texture1);
+    if (g_Imapct_effect_texture2) UnInitTexture(g_Imapct_effect_texture2);
 
-        g_Imapct_effect_texture1 = NULL;
-        g_Imapct_effect_texture2 = NULL;
-
-    }
 }

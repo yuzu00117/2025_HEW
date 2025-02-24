@@ -20,6 +20,8 @@ enum boss_state
 {
 	wait_state,//待ち状態
 	panic_state,//怯み状態
+	damage_state,//被弾状態
+	die_state,//死亡状態
 	down_state,	//ダウン状態
 	walk_state,//歩き状態
 	jump_state,//ジャンプ状態
@@ -293,6 +295,8 @@ private:
 
 	int boss_hp=3;		   //bossのHP
 
+	int dead_cnt;
+
 	int boss_field_level=0;//ボスの床の崩壊を管理する関数
 
 
@@ -318,6 +322,7 @@ private:
 
 
 	b2Body* m_mini_golem_body[2];//ボディ
+	bool m_mini_golem_left_flag[2];//ミニゴーレムの向き
 	b2Vec2 mini_golem_size;
 	b2Body* destroy_mini_golem_body;
 	bool destroy_mini_golem_flag=false;
@@ -427,6 +432,13 @@ private:
 	bool Jump_flag = false;
 	//-------------------------------------------------------------------------------------------
 
+	//被弾のモーションの最大フレーム
+	static constexpr int Max_dameged_Sheet = 25;
+
+
+	//死亡時のモーションの最大フレーム
+	static constexpr int Max_die_Sheet = 72;
+	
 	//-------------------------------------------------------------------------------------------
 	//怯みのモーションの最大フレーム
 	static constexpr int Max_Panic_Sheet = 255;

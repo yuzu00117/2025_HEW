@@ -43,9 +43,9 @@ Bg bg;
 
 
 //stage1_1遺跡
-#define STAGE_1_1_BOSS_BACK_GROUND_HEIGHT (50)
-#define STAGE_1_1_BOSS_BACK_GROUND_SIZE_X (1280*1.0)
-#define STAGE_1_1_BOSS_BACK_GROUND_SIZE_Y (720*1.0)
+#define STAGE_1_1_BOSS_BACK_GROUND_HEIGHT (-1000)
+#define STAGE_1_1_BOSS_BACK_GROUND_SIZE_X (1280*1.5)
+#define STAGE_1_1_BOSS_BACK_GROUND_SIZE_Y (720*1.5)
 
 
 
@@ -102,11 +102,12 @@ void Bg::Initialize()
 
 
     case STAGE_BOSS: // ボス戦
-        g_Bg_Texture[0] = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
-        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
+        g_Bg_Texture[1] = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
+        g_Bg_Texture[3] = InitTexture(L"asset\\texture\\stage1_1\\remains_background03.png");
 
-        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\remains_background01.png");
-        height = STAGE_1_1_BOSS_BACK_GROUND_HEIGHT;
+
+        g_Bg_Texture_Most = InitTexture(L"asset\\texture\\stage1_1\\remains_background02.png");
+        height = STAGE_1_1_FOREST_BACK_GROUND_HEIGHT;
         width = STAGE_1_1_BOSS_BACK_GROUND_SIZE_X;
         break;
     default:
@@ -170,7 +171,7 @@ void Bg::Update()
         BACK_GROUND_SIZE_X = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_X;
         BACK_GROUND_SIZE_Y = STAGE_1_1_REMAINS_BACK_GROUND_SIZE_Y;
         isBossStage = true;
-        bossScrollCorrection = 3.5f;  //ボスステージ用のY軸スクロール補正（例: 1.5倍）
+        bossScrollCorrection = 1.0f;  //ボスステージ用のY軸スクロール補正（例: 1.5倍）
         break;
 
     default:
@@ -294,11 +295,18 @@ void Bg::Draw()
 
 void Bg::Finalize()
 {
-    // 各背景テクスチャの解放
-    for (int i = 0; i < 4; i++)
-    {
-        UnInitTexture(g_Bg_Texture[i]);
-        g_Bg_Texture[i] = NULL;
+    for (int i = 0; i < 4; i++) {
+        if (g_Bg_Texture[i]) {
+            UnInitTexture(g_Bg_Texture[i]);
+        }
+    }
+
+    if (g_Bg_Texture_light) {
+        UnInitTexture(g_Bg_Texture_light);
+    }
+
+    if (g_Bg_Texture_Most) {
+        UnInitTexture(g_Bg_Texture_Most);
     }
     
 }

@@ -1410,56 +1410,39 @@ void Player::Finalize()
         m_body = nullptr;
     }
 
-    if (g_player_Texture != nullptr)
-    {
-        UnInitTexture(g_player_dead_Texture);
-        UnInitTexture(g_player_Texture);
-        UnInitTexture(g_player_jump_sheet);
-        UnInitTexture(g_player_throw_anchor_sheet);
-        UnInitTexture(g_player_walk_sheet);
-        UnInitTexture(g_player_normal_attack_sheet);
-        UnInitTexture(g_player_normal_attack_anchor_sheet);
-        UnInitTexture(g_player_damaged_sheet);
-        UnInitTexture(g_player_walk_effect);
-        UnInitTexture(g_player_sensor_Texture);
-        UnInitTexture(g_anachor_level_3_Frame1_Texture);
-        UnInitTexture(g_anachor_level_3_Frame2_Texture);
+    if (g_player_Texture) UnInitTexture(g_player_Texture);
 
-        UnInitTexture(g_Anchor_LevelUp_1to2_Effect);
-        UnInitTexture(g_Anchor_LevelUp_2to3_Effect);
-        UnInitTexture(g_Anchor_LevelDown_Effect);
-        UnInitTexture(g_TamaChan_Lv1);
-        UnInitTexture(g_TamaChan_Lv2);
-        UnInitTexture(g_TamaChan_Lv3);
+    if (g_player_jump_sheet) UnInitTexture(g_player_jump_sheet);
+    if (g_player_throw_anchor_sheet) UnInitTexture(g_player_throw_anchor_sheet);
+    if (g_player_walk_sheet) UnInitTexture(g_player_walk_sheet);
 
-        // ソウルゲット時のエフェクト解放
-        UnInitTexture(g_SoulGet_Lv1_Effect);
-        UnInitTexture(g_SoulGet_Lv2_Effect);
-        UnInitTexture(g_SoulGet_Lv3_Effect);
+    if (g_player_normal_attack_sheet) UnInitTexture(g_player_normal_attack_sheet);
+    if (g_player_normal_attack_anchor_sheet) UnInitTexture(g_player_normal_attack_anchor_sheet);
 
-        g_player_dead_Texture = NULL;
-        g_player_Texture = NULL;
-        g_player_jump_sheet = NULL;
-        g_player_throw_anchor_sheet = NULL;
-        g_player_walk_sheet = NULL;
-        g_player_normal_attack_sheet = NULL;
-        g_player_normal_attack_anchor_sheet = NULL;
-        g_player_damaged_sheet = NULL;
-        g_player_sensor_Texture = NULL;
-        g_anachor_level_3_Frame1_Texture = NULL;
-        g_anachor_level_3_Frame2_Texture = NULL;
+    if (g_player_damaged_sheet) UnInitTexture(g_player_damaged_sheet);
+    if (g_player_walk_effect) UnInitTexture(g_player_walk_effect);
+    if (g_player_dead_Texture) UnInitTexture(g_player_dead_Texture);
+    if (g_player_sensor_Texture) UnInitTexture(g_player_sensor_Texture);
 
-        g_Anchor_LevelUp_1to2_Effect = NULL;
-        g_Anchor_LevelUp_2to3_Effect = NULL;
-        g_Anchor_LevelDown_Effect = NULL;
-        g_TamaChan_Lv1 = NULL;
-        g_TamaChan_Lv2 = NULL;
-        g_TamaChan_Lv3 = NULL;
+    if (g_anachor_level_3_Frame1_Texture) UnInitTexture(g_anachor_level_3_Frame1_Texture);
+    if (g_anachor_level_3_Frame2_Texture) UnInitTexture(g_anachor_level_3_Frame2_Texture);
 
-        g_SoulGet_Lv1_Effect = NULL;
-        g_SoulGet_Lv2_Effect = NULL;
-        g_SoulGet_Lv3_Effect = NULL;
-    }
+    if (g_Anchor_LevelUp_1to2_Effect) UnInitTexture(g_Anchor_LevelUp_1to2_Effect);
+    if (g_Anchor_LevelUp_2to3_Effect) UnInitTexture(g_Anchor_LevelUp_2to3_Effect);
+    if (g_Anchor_LevelDown_Effect) UnInitTexture(g_Anchor_LevelDown_Effect);
+
+    if (g_TamaChan_Lv1) UnInitTexture(g_TamaChan_Lv1);
+    if (g_TamaChan_Lv2) UnInitTexture(g_TamaChan_Lv2);
+    if (g_TamaChan_Lv3) UnInitTexture(g_TamaChan_Lv3);
+
+    if (g_tamachan_effect_lv1) UnInitTexture(g_tamachan_effect_lv1);
+    if (g_tamachan_effect_lv2) UnInitTexture(g_tamachan_effect_lv2);
+    if (g_tamachan_effect_lv3) UnInitTexture(g_tamachan_effect_lv3);
+
+    if (g_SoulGet_Lv1_Effect) UnInitTexture(g_SoulGet_Lv1_Effect);
+    if (g_SoulGet_Lv2_Effect) UnInitTexture(g_SoulGet_Lv2_Effect);
+    if (g_SoulGet_Lv3_Effect) UnInitTexture(g_SoulGet_Lv3_Effect);
+
 }
 
 // ボディを外部から取得するために作った関数

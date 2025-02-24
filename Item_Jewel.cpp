@@ -325,10 +325,8 @@ void ItemJewel::Finalize()
     {
         UnInitTexture(g_Texture);
     }
-    if (g_Effect_Texture)
-    {
-        UnInitTexture(g_Effect_Texture);
-    }
+    if (g_Effect_Texture) UnInitTexture(g_Effect_Texture);
+
 }
 
 ItemJewel::~ItemJewel()

@@ -85,7 +85,7 @@ void DrawBlownAwayEffects(float Draw_size) {
 }
 void FinalizeBlownAwayEffects()
 {
-    UnInitTexture(g_blown_away_effect_texture1);
-    UnInitTexture(g_blown_away_effect_texture2);
-    UnInitTexture(g_blown_away_effect_texture3);
+    if (g_blown_away_effect_texture1) UnInitTexture(g_blown_away_effect_texture1);
+    if (g_blown_away_effect_texture2) UnInitTexture(g_blown_away_effect_texture2);
+    if (g_blown_away_effect_texture3) UnInitTexture(g_blown_away_effect_texture3);
 }

@@ -377,63 +377,32 @@ void Anchor::Finalize()
 
 	if(g_anchor_instance!=nullptr)
 	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
+	if (g_Anchor_Texture_Lev1) UnInitTexture(g_Anchor_Texture_Lev1);
+	if (g_Anchor_Texture_Lev2) UnInitTexture(g_Anchor_Texture_Lev2);
+	if (g_Anchor_Texture_Lev3) UnInitTexture(g_Anchor_Texture_Lev3);
 
-	if (g_Anchor_Texture_Lev1 != NULL)
-	{
-		// アンカーのテクスチャの解放
-		UnInitTexture(g_Anchor_Texture_Lev1);
-		UnInitTexture(g_Anchor_Texture_Lev2);
-		UnInitTexture(g_Anchor_Texture_Lev3);
+	if (g_Anchor_Chain_Texture_Lv1) UnInitTexture(g_Anchor_Chain_Texture_Lv1);
+	if (g_Anchor_Chain_Texture_Lv2) UnInitTexture(g_Anchor_Chain_Texture_Lv2);
+	if (g_Anchor_Chain_Texture_Lv3) UnInitTexture(g_Anchor_Chain_Texture_Lv3);
 
-		// アンカーの鎖のテクスチャの解放
-		UnInitTexture(g_Anchor_Chain_Texture_Lv1);
-		UnInitTexture(g_Anchor_Chain_Texture_Lv2);
-		UnInitTexture(g_Anchor_Chain_Texture_Lv3);
+	if (g_Anchor_Hit_Effect_Texture) UnInitTexture(g_Anchor_Hit_Effect_Texture);
 
-		// アンカーのヒットエフェクトの解放
-		UnInitTexture(g_Anchor_Hit_Effect_Texture);
-		UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture);
-		UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture);
-		UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture);
+	if (g_Anchor_Hit_Effect_Level1_Texture) UnInitTexture(g_Anchor_Hit_Effect_Level1_Texture);
+	if (g_Anchor_Hit_Effect_Level2_Texture) UnInitTexture(g_Anchor_Hit_Effect_Level2_Texture);
+	if (g_Anchor_Hit_Effect_Level3_Texture) UnInitTexture(g_Anchor_Hit_Effect_Level3_Texture);
 
-		UnInitTexture(g_Anchor_Effect_S1);
-		UnInitTexture(g_Anchor_Effect_S2);
-		UnInitTexture(g_Anchor_Effect_S3);
-		UnInitTexture(g_Anchor_Effect_M1);
-		UnInitTexture(g_Anchor_Effect_M2);
-		UnInitTexture(g_Anchor_Effect_M3);
-		UnInitTexture(g_Anchor_Effect_L1);
-		UnInitTexture(g_Anchor_Effect_L2);
-		UnInitTexture(g_Anchor_Effect_L3);
+	if (g_Anchor_Effect_S1) UnInitTexture(g_Anchor_Effect_S1);
+	if (g_Anchor_Effect_S2) UnInitTexture(g_Anchor_Effect_S2);
+	if (g_Anchor_Effect_S3) UnInitTexture(g_Anchor_Effect_S3);
 
-		// NULLにリセット
-		g_Anchor_Texture_Lev1 = NULL;
-		g_Anchor_Texture_Lev2 = NULL;
-		g_Anchor_Texture_Lev3 = NULL;
+	if (g_Anchor_Effect_M1) UnInitTexture(g_Anchor_Effect_M1);
+	if (g_Anchor_Effect_M2) UnInitTexture(g_Anchor_Effect_M2);
+	if (g_Anchor_Effect_M3) UnInitTexture(g_Anchor_Effect_M3);
 
-		g_Anchor_Chain_Texture_Lv1 = NULL;
-		g_Anchor_Chain_Texture_Lv2 = NULL;
-		g_Anchor_Chain_Texture_Lv3 = NULL;
+	if (g_Anchor_Effect_L1) UnInitTexture(g_Anchor_Effect_L1);
+	if (g_Anchor_Effect_L2) UnInitTexture(g_Anchor_Effect_L2);
+	if (g_Anchor_Effect_L3) UnInitTexture(g_Anchor_Effect_L3);
 
-		g_Anchor_Hit_Effect_Texture = NULL;
-		g_Anchor_Hit_Effect_Level1_Texture = NULL;
-		g_Anchor_Hit_Effect_Level2_Texture = NULL;
-		g_Anchor_Hit_Effect_Level3_Texture = NULL;
-
-		g_Anchor_Effect_S1 = NULL;
-		g_Anchor_Effect_S2 = NULL;
-		g_Anchor_Effect_S3 = NULL;
-		g_Anchor_Effect_M1 = NULL;
-		g_Anchor_Effect_M2 = NULL;
-		g_Anchor_Effect_M3 = NULL;
-		g_Anchor_Effect_L1 = NULL;
-		g_Anchor_Effect_L2 = NULL;
-		g_Anchor_Effect_L3 = NULL;
-		
-		
-
-		
-	}
 	
 }
 
