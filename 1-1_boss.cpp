@@ -1263,22 +1263,12 @@ void Boss_1_1::Draw()
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 8, 8, sheet_cnt, boss_alpha, left_flag);
 
 			break;
+
 		case die_state:
-			// シェーダーリソースを設定
-			if (sheet_cnt < Max_die_Sheet / 2)
-			{
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_die_sheet);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt, boss_alpha, left_flag);
-			}
-			else
-			{
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_die_sheet2);
-				DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x* scale, GetBossDrawSize().y* scale), 6, 6, sheet_cnt - Max_die_Sheet / 2, boss_alpha, left_flag);
-			}
 
-	
-
+			//DrawFountに移動した
 			break;
+		
 		case jump_state:
 			// シェーダーリソースを設定
 			if (sheet_cnt < Max_Jump_Sheet / 2)
@@ -1574,6 +1564,40 @@ void Boss_1_1::DrawObjectFront()
 		DrawDividedSpriteBoss(XMFLOAT2(break_draw_x, break_draw_y), 0.0f, XMFLOAT2(GetMiniGolemDrawSize().x * scale * 1.3 * 1.5, GetMiniGolemDrawSize().y * scale * 1.7 * 1.5), 4, 2, mini_golem_break_effect_cnt / 4, effect_alpha, 1);
 	}
 
+
+	if (now_boss_state == die_state) {
+		float scale = SCREEN_SCALE;
+
+		// スクリーンの中心 (16m x 9m の仮想座標で、中心は x = 8, y = 4.5 と仮定)
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
+
+		// コライダーの位置を取得（プレイヤーの位置）
+		b2Vec2 boss_pos = GetBossBody()->GetPosition();
+		b2Vec2 real_boss_size;
+		real_boss_size.x = GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT;
+		real_boss_size.y = GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT;
+
+		// プレイヤー位置を基準にスクリーン座標に変換する
+		// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
+		float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y - (real_boss_size.y * 0.7)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		// シェーダーリソースを設定
+		if (sheet_cnt < Max_die_Sheet / 2)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_die_sheet);
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt, boss_alpha, left_flag);
+		}
+		else
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_die_sheet2);
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt - Max_die_Sheet / 2, boss_alpha, left_flag);
+		}
+	}
+
+
+		
 	EffectDraw();
 }
 
