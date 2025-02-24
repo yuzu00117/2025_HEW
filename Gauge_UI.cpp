@@ -52,6 +52,14 @@ Gauge_UI::~Gauge_UI()
 
 void Gauge_UI::Initialize()
 {
+	//メンバー変数の初期化
+	m_blue_jewel_collected = false;
+	m_red_jewel_collected = false;
+	m_yellow_jewel_collected = false;
+	m_blue_jewel_collected_effect_cnt = 0;
+	m_red_jewel_collected_effect_cnt = 0;
+	m_yellow_jewel_collected_effect_cnt = 0;
+
 	//テクスチャのロード
 
 	//なんか本体ぽいやつ

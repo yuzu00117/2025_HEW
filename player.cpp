@@ -100,18 +100,8 @@ Player::~Player()
 {
 }
 
-void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, bool respawning)
+void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 {
-    if (respawning)
-    {
-        m_AnchorThrowing_SpeedUp = 1.0f;
-        m_is_jumping = false;
-        m_jump_pressed = false;
-        m_direction = 1;
-        m_jump_force = b2Vec2(0.0f, -0.40f);
-        m_speed = 0.04f;
-        invincible_time = 0;
-    }
 
     if (m_body)
     {
@@ -966,6 +956,18 @@ void Player::updateFixtureFilter(const std::string &category, const std::vector<
         }
         fixture = fixture->GetNext(); // 次のフィクスチャに移動
     }
+}
+
+
+void Player::ResetPlayerParameter()
+{
+    m_AnchorThrowing_SpeedUp = 1.0f;
+    m_is_jumping = false;
+    m_jump_pressed = false;
+    m_direction = 1;
+    m_jump_force = b2Vec2(0.0f, -0.40f);
+    m_speed = 0.04f;
+    invincible_time = 0;
 }
 
 void Player::Player_sensor_size_change(int anchor_level)
