@@ -28,6 +28,11 @@ enum Ui_Block_Type
 	VIDEO_BUTTON_RIGHT_STICK,
 	VIDEO_BUTTON_ZR,
 
+
+	MOVE_SIGNBOARD,
+	JUMP_SIGNBOARD,
+	ANCHOR_SIGNBOARD
+
 };
 
 
@@ -133,6 +138,8 @@ private:
 
 	Video m_video;	//動画インスタンス
 	bool	m_is_video;	//このUIは動画かどうか
+
+	float sheet_cnt;
 
 };
 

@@ -320,6 +320,12 @@ void Field::Initialize()
 					objectManager.AddEnemyDynamic(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0);
 				}
 				//-----------------------------------------------------------------------------------------------
+
+				//看板のテクスチャ 動く
+				if (field_map[y][x] == 20) {//動くエネミーの追加
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 4.0f), b2Vec2(10.0f, 5.0f),b2Vec2_zero,MOVE_SIGNBOARD,0.0f);
+				}
+
 			}
 		}
 		break;
