@@ -322,8 +322,18 @@ void Field::Initialize()
 				//-----------------------------------------------------------------------------------------------
 
 				//看板のテクスチャ 動く
-				if (field_map[y][x] == 20) {//動くエネミーの追加
-					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 4.0f), b2Vec2(10.0f, 5.0f),b2Vec2_zero,MOVE_SIGNBOARD,0.0f);
+				if (field_map[y][x] == 20) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(20.0f, 8.0f),b2Vec2_zero,MOVE_SIGNBOARD,0.0f);
+				}
+
+				//看板のテクスチャ ジャンプ
+				if (field_map[y][x] == 21) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, JUMP_SIGNBOARD, 0.0f);
+				}
+
+				//看板のテクスチャ アンカー
+				if (field_map[y][x] == 22) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, ANCHOR_SIGNBOARD, 0.0f);
 				}
 
 			}

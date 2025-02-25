@@ -17,6 +17,7 @@
 #include"create_filter.h"
 #include"collider_type.h"
 #include"game.h"
+#include"anchor_point.h"
 #include"player.h"
 
 
@@ -116,7 +117,7 @@ void UI_block::Initialize()
 
 		g_move_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
 		g_jump_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_jump.png");
-		g_anachor_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
+		g_anachor_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_anchor.png");
 	}
 
 	/*switch (m_ui_type)
@@ -156,7 +157,28 @@ void UI_block::Update()
 	{
 		if (m_flag == true)
 		{
+
+
 			sheet_cnt += 0.3;
+
+			if (m_ui_type == ANCHOR_SIGNBOARD)
+			{
+				if (AnchorPoint::GetTargetAnchorPointBody != nullptr)
+				{
+					if (sheet_cnt < 90)
+					{
+						sheet_cnt = 90;
+					}
+					
+				}
+				else
+				{
+					if (84 < sheet_cnt)
+					{
+						sheet_cnt = 0;
+					}
+				}
+			}
 		}
 
 	}
@@ -191,18 +213,17 @@ void UI_block::Draw()
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ GetSensorSize().x * scale,GetSensorSize().y * scale }
-	);
+	//DrawSprite(
+	//	{ draw_x,
+	//	  draw_y },
+	//	GetBody()->GetAngle(),
+	//	{ GetSensorSize().x * scale,GetSensorSize().y * scale }
+	//);
 
 	
 
 
-	if (m_flag)
-	{
+	
 		Player& player = Player::GetInstance();
 		b2Vec2 player_Pos = player.GetOutSidePlayerBody()->GetPosition();
 
@@ -255,18 +276,44 @@ void UI_block::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_move_signboard);
 
 			DrawSplittingSprite(
-				{ UI_draw_x + 50,
-				  UI_draw_x - 50 },
+				{ draw_x ,
+				  draw_y },
 				GetBody()->GetAngle(),
 				{ GetSize().x * scale,GetSize().y * scale },
 				15, 6, sheet_cnt,1.0f
 				);
 
 			break;
+
+		case JUMP_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_jump_signboard);
+
+			DrawSplittingSprite(
+				{ draw_x ,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale,GetSize().y * scale },
+				15, 6, sheet_cnt, 1.0f
+			);
+
+			break;
+
+		case ANCHOR_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_signboard);
+
+			DrawSplittingSprite(
+				{ draw_x ,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale,GetSize().y * scale },
+				28, 6, sheet_cnt, 1.0f
+			);
+
+			break;
 		}
 
 	
-	}
+	
 
 
 

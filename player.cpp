@@ -1239,11 +1239,11 @@ void Player::Draw()
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        DrawSprite(
-            {draw_x,
-             draw_y},
-            m_body->GetAngle(),
-            {GetSensorSize().x * scale, GetSensorSize().y * scale});
+        //DrawSprite(
+        //    {draw_x,
+        //     draw_y},
+        //    m_body->GetAngle(),
+        //    {GetSensorSize().x * scale, GetSensorSize().y * scale});
 
         // エフェクトレベル３になった時のフレーム
         DrawAnchorLevel3Frame();
