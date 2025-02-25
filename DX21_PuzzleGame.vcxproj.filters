@@ -160,9 +160,6 @@
     <ClCompile Include="movable_ground.cpp">
       <Filter>ソースファイル\object</Filter>
     </ClCompile>
-    <ClCompile Include="player_UI.cpp">
-      <Filter>ソースファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="stage_point.cpp">
       <Filter>ソースファイル\scene\stage_select</Filter>
     </ClCompile>
@@ -222,9 +219,6 @@
     </ClCompile>
     <ClCompile Include="movable_ground.cpp">
       <Filter>ソースファイル\object</Filter>
-    </ClCompile>
-    <ClCompile Include="player_UI.cpp">
-      <Filter>ソースファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="stage_point.cpp">
       <Filter>ソースファイル\scene\stage_select</Filter>
@@ -309,6 +303,13 @@
     </ClCompile>
     <ClCompile Include="impact_effect.cpp">
       <Filter>ソースファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Gauge_UI.cpp" />
+    <ClCompile Include="spawner_enemy.cpp">
+      <Filter>ソースファイル\spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="spawner_block_damage.cpp">
+      <Filter>ソースファイル\spawner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -480,9 +481,6 @@
     <ClInclude Include="movable_ground.h">
       <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="player_UI.h">
-      <Filter>ヘッダーファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="stage_point.h">
       <Filter>ヘッダーファイル\scene\stage_select</Filter>
     </ClInclude>
@@ -567,9 +565,6 @@
     <ClInclude Include="movable_ground.h">
       <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="player_UI.h">
-      <Filter>ヘッダーファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="teleport_block.h">
       <Filter>ヘッダーファイル\object</Filter>
     </ClInclude>
@@ -647,6 +642,13 @@
     </ClInclude>
     <ClInclude Include="UI_Block.h">
       <Filter>ヘッダーファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gauge_UI.h" />
+    <ClInclude Include="spawner_enemy.h">
+      <Filter>ヘッダーファイル\spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="spawner_block_damage.h">
+      <Filter>ヘッダーファイル\spawner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -775,6 +777,12 @@
     </Filter>
     <Filter Include="ヘッダーファイル\video">
       <UniqueIdentifier>{b0ca579a-cbef-4448-9bb5-9daf4d822a6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル\spawner">
+      <UniqueIdentifier>{99ba4c91-e2df-4de3-8f81-70812737ea6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダーファイル\spawner">
+      <UniqueIdentifier>{ff08c143-f7ad-43a7-8f63-c358313860c1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
