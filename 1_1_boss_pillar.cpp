@@ -167,7 +167,7 @@ boss_pillar::~boss_pillar()
 void boss_pillar::Initialize()
 {
 	if (g_Texture == NULL) {
-		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_gyaser.png");//柱のテクスチャ
+		g_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\pillar.png");//柱のテクスチャ
 	}
 }
 
