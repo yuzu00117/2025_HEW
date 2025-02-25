@@ -1636,9 +1636,9 @@ void Boss_1_1::BossIconDraw()
 				// ボスのポジションを取得
 				b2Vec2 boss_pos = GetBossBody()->GetPosition();
 				// ボスのY座標に応じてアイコンのY座標を設定
-				float icon_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT * SCREEN_SCALE)+500;
+				float icon_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT * SCREEN_SCALE) + 500;
 				// アイコンのY座標が画面外に出ないように制限
-				icon_y = max(0.0f, min(icon_y, static_cast<float>(SCREEN_HEIGHT)));
+				icon_y = max(0.0f, min(icon_y, static_cast<float>(SCREEN_HEIGHT + 100)));
 				DrawSpriteOld(XMFLOAT2(1180, icon_y), 0.0f, XMFLOAT2(100, 100), 1.0f);
 			}
 			else
@@ -1648,9 +1648,9 @@ void Boss_1_1::BossIconDraw()
 				// ボスのポジションを取得
 				b2Vec2 boss_pos = GetBossBody()->GetPosition();
 				// ボスのY座標に応じてアイコンのY座標を設定
-				float icon_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT * SCREEN_SCALE)+500;
+				float icon_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT * SCREEN_SCALE) + 500;
 				// アイコンのY座標が画面外に出ないように制限
-				icon_y = max(0.0f, min(icon_y, static_cast<float>(SCREEN_HEIGHT)));
+				icon_y = max(0.0f, min(icon_y, static_cast<float>(SCREEN_HEIGHT + 100)));
 				DrawSpriteOld(XMFLOAT2(300, icon_y), 0.0f, XMFLOAT2(100, 100), 1.0f);
 			}
 		}
