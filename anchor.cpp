@@ -811,6 +811,9 @@ void Anchor::DrawChain()
 
 			bool m_direction=true;
 		
+
+			if (g_anchor_instance == nullptr)return;
+
 			if (i % 2 == 0)
 			{
 
