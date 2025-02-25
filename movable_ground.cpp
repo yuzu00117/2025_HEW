@@ -195,7 +195,7 @@ movable_ground::~movable_ground()
 
 void movable_ground::Initialize()
 {
-	g_Ground_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
+	g_Ground_Texture = InitTexture(L"asset\\texture\\stage_block\\ground_to_pull.png");
 	g_Border_Texture_Lv1 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 	g_Border_Texture_Lv2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_yellow.png");
 	g_Border_Texture_Lv3 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
@@ -279,10 +279,6 @@ void movable_ground::Update()
 void movable_ground::Draw()
 {
 	///ここから調整してね
-
-
-
-
 	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
 	float scale = SCREEN_SCALE;
 
