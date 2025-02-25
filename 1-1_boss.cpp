@@ -106,7 +106,7 @@ static ID3D11ShaderResourceView* g_boss_icon = NULL; //ボスの顔のアイコ�
 
 
 // ボスのCPPファイルの実装
-b2Body *outside_boss_body;
+static b2Body *outside_boss_body=nullptr;
 
 Boss_1_1::Boss_1_1()
 {
