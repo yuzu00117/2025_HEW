@@ -818,6 +818,19 @@ void Player::Player_Damaged(int Change_to_HP, int invincibletime, const b2Body *
     updateFixtureFilter("Player_filter", {"object_filter", "enemy_filter", "MiniGolem_filter", "Boss_filter"});
 }
 
+//プレイヤーが回復した瞬間呼び出す
+void Player::Palyer_Healed(int heal)
+{
+    // HPを回復
+    PlayerStamina::EditPlayerStaminaValue(heal); // HPに加算する
+
+    //体力ノ最大値より多くなったら最大値に変更
+    if (PlayerStamina::GetPlayerStaminaValue() >= MAX_STAMINA)
+    {
+        PlayerStamina::SetPlayerStaminaValueDirectly(PlayerStamina::GetPlayerStaminaValue());
+    }
+}
+
 void Player::Invincible_time_update(void)
 {
     if (invincible_time != 0)
