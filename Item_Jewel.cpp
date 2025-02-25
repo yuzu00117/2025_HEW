@@ -121,6 +121,7 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     {
         g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
     }
+}
 
 void	ItemJewel::Update()
 {
@@ -280,7 +281,7 @@ void ItemJewel::Draw()
                 m_Alpha
             );
 
-            return;
+            
         }
 
         b2Vec2 screen_center;
@@ -412,7 +413,7 @@ ItemJewel::~ItemJewel()
     }
 }
 
-}
+
 
 void ItemJewel::CreateBody()
 {
