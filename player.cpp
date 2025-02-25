@@ -22,32 +22,32 @@
 #include "FixtureSizeCalculate.h"
 
 // テクスチャのダウンロード グローバル変数にしてる
-ID3D11ShaderResourceView *g_player_Texture = NULL;
+static ID3D11ShaderResourceView *g_player_Texture = NULL;
 
 // ジャンプのシート
-ID3D11ShaderResourceView *g_player_jump_sheet = NULL;
+static ID3D11ShaderResourceView *g_player_jump_sheet = NULL;
 // 錨を投げるシート
-ID3D11ShaderResourceView *g_player_throw_anchor_sheet = NULL;
+static ID3D11ShaderResourceView *g_player_throw_anchor_sheet = NULL;
 // 横移動のシート
-ID3D11ShaderResourceView *g_player_walk_sheet = NULL;
+static ID3D11ShaderResourceView *g_player_walk_sheet = NULL;
 // 通常攻撃
-ID3D11ShaderResourceView *g_player_normal_attack_sheet = NULL;
-ID3D11ShaderResourceView *g_player_normal_attack_anchor_sheet = NULL;
+static ID3D11ShaderResourceView *g_player_normal_attack_sheet = NULL;
+static ID3D11ShaderResourceView *g_player_normal_attack_anchor_sheet = NULL;
 // 被弾モーション
-ID3D11ShaderResourceView *g_player_damaged_sheet = NULL;
+static ID3D11ShaderResourceView *g_player_damaged_sheet = NULL;
 
 // 歩く時のエフェクト
-ID3D11ShaderResourceView *g_player_walk_effect = NULL;
+static ID3D11ShaderResourceView *g_player_walk_effect = NULL;
 
 // プレイヤーが死んだ時
-ID3D11ShaderResourceView *g_player_dead_Texture = NULL;
+static ID3D11ShaderResourceView *g_player_dead_Texture = NULL;
 
 // センサーの画像
-ID3D11ShaderResourceView *g_player_sensor_Texture = NULL;
+static ID3D11ShaderResourceView *g_player_sensor_Texture = NULL;
 
 // レベル３で
-ID3D11ShaderResourceView *g_anachor_level_3_Frame1_Texture = NULL;
-ID3D11ShaderResourceView *g_anachor_level_3_Frame2_Texture = NULL;
+static ID3D11ShaderResourceView *g_anachor_level_3_Frame1_Texture = NULL;
+static ID3D11ShaderResourceView *g_anachor_level_3_Frame2_Texture = NULL;
 
 // アンカーレベルが変わった際に表示するエフェクト プレイヤーの背景として表示する
 static ID3D11ShaderResourceView *g_Anchor_LevelUp_1to2_Effect = NULL; // アンカーがレベル１から２になった場合のエフェクト
@@ -79,17 +79,17 @@ float Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;
 
-bool CollectSpirit_pressed = false;
+static bool CollectSpirit_pressed = false;
 
-b2Body *player_body;
+static b2Body *player_body=nullptr;
 
-int g_anchor_frame_management_number = 0;
-float g_KnockBack_total_time = 0.0f;       //  ノックバック（ベジエ2回合計）に使う時間
-float g_KnockBack_elapce_time = 0.0f;      // 　ノックバック（ベジエ2回合計）の経過時間
-bool g_damage_from_right = true;           //  ダメージはプレイヤーの右から来てるのかどうか
-b2Vec2 g_Beziers_parameter_position[2][3]; //  ２回の2次ベジエのパラメータを入れるための変数（[0][0] => 1回目の始点　　　[1][2] => 2回目の終点）
-b2Vec2 g_Beziers_prev_position;            // 前フレームでのposition
-int g_Beziers_id = 0;                      //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
+static int g_anchor_frame_management_number = 0;
+static float g_KnockBack_total_time = 0.0f;       //  ノックバック（ベジエ2回合計）に使う時間
+static float g_KnockBack_elapce_time = 0.0f;      // 　ノックバック（ベジエ2回合計）の経過時間
+static bool g_damage_from_right = true;           //  ダメージはプレイヤーの右から来てるのかどうか
+static b2Vec2 g_Beziers_parameter_position[2][3] = {}; //  ２回の2次ベジエのパラメータを入れるための変数（[0][0] => 1回目の始点　　　[1][2] => 2回目の終点）
+static b2Vec2 g_Beziers_prev_position=nullptr;            // 前フレームでのposition
+static int g_Beziers_id = 0;                      //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
 
 Player::Player()
 {
