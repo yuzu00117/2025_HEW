@@ -1239,6 +1239,7 @@ public:
                 ItemJewel* jewel_instance = item_manager.FindItem_Jewel_ByID(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 if (jewel_instance != nullptr) {
                     jewel_instance->SetIfCollecting(true);//削除を呼び出す
+                    jewel_instance->SetEffectPosition();
                 }
             }
             break;
@@ -1258,8 +1259,18 @@ public:
                 }
             }
             break;
+            case ITEM_HEALING:
+            {
+                ItemHealing* healing_instance = item_manager.FindItem_Healing(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                if (healing_instance != nullptr) {
+                    healing_instance->Function();
+                    healing_instance->SetDestory(true);//削除を呼び出す
+                }
             }
-      
+            break;
+            default:
+                break;
+            }
         }
 
 

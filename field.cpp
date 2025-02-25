@@ -522,7 +522,7 @@ void Field::Initialize()
 
 
 				if (field_map[y][x] == 51) {//中間地点
-					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, respawning);
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 2.5f), 0.0f, respawning);
 				}
 
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -561,7 +561,7 @@ void Field::Initialize()
 
 				//セーブポイント
 				if (field_map[y][x] == 75) {
-					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 2.0f),0.0f, respawning);
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 2.5f),0.0f, respawning);
 				}
 
 
@@ -613,6 +613,11 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 98) {//壊れるブロックのスポナー
 					objectManager.AddSpawnerBlockDamage(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, 1);
+				}
+
+				//回復アイテム
+				if (field_map[y][x] == 99) {
+					itemManager.AddHealing(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
 				}
 			}
 		}	
@@ -892,7 +897,7 @@ void Field::Initialize()
 				if (field_map[y][x] == 14)
 				{//ボスを生成
 					Boss_1_1& boss = Boss_1_1::GetInstance();
-					boss.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(18.f, 24.f), true);
+					boss.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(12.f, 16.f), true);
 				}
 
 				//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1360,8 +1365,8 @@ void Field::Initialize()
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
 				}
 
-				if (field_map[y][x] == 49) {//黄色宝石
-					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f,respawning);
+				if (field_map[y][x] == 49) {//中間地
+					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 2.5f), 0.0f,respawning);
 				}
 
 

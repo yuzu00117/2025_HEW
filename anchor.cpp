@@ -57,15 +57,15 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒ
 
 
 //ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğ‚à‚Á‚Æ‚­
-b2Body* Player_body;
+static b2Body* Player_body=nullptr;
 
 //ƒAƒ“ƒJ[‚Ì–Ú•W‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg
-b2Body* Target_anchor_point_body;
+static b2Body* Target_anchor_point_body=nullptr;
 
 
 
 
-b2Body* anchor_chain[MAX_CHAIN_NUM];
+
 
 
 
@@ -811,6 +811,9 @@ void Anchor::DrawChain()
 
 			bool m_direction=true;
 		
+
+			if (g_anchor_instance == nullptr)return;
+
 			if (i % 2 == 0)
 			{
 
