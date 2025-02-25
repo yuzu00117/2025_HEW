@@ -88,7 +88,7 @@ static float g_KnockBack_total_time = 0.0f;       //  ノックバック（ベ�
 static float g_KnockBack_elapce_time = 0.0f;      // 　ノックバック（ベジエ2回合計）の経過時間
 static bool g_damage_from_right = true;           //  ダメージはプレイヤーの右から来てるのかどうか
 static b2Vec2 g_Beziers_parameter_position[2][3] = {}; //  ２回の2次ベジエのパラメータを入れるための変数（[0][0] => 1回目の始点　　　[1][2] => 2回目の終点）
-static b2Vec2 g_Beziers_prev_position=nullptr;            // 前フレームでのposition
+static b2Vec2 g_Beziers_prev_position = nullptr;            // 前フレームでのposition
 static int g_Beziers_id = 0;                      //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
 
 Player::Player()
