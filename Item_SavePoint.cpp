@@ -189,7 +189,7 @@ void ItemSavePoint::Draw()
                 { draw_x,
                 draw_y },
                 0.0f,
-                {GetSize().x * scale * 1.0f  ,GetSize().y * scale * 1.0f },
+                {GetSize().x * scale * 0.65f  ,GetSize().y * scale * 1.0f },
                 6, 4,
                effect_cnt ,
                 2.0f
