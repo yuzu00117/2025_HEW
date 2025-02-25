@@ -26,6 +26,7 @@ public:
 
 	//ボディーを取得
 	b2Body* GetBody() { return m_body; }
+	b2Body* GetBody() const { return m_body; }
 	//ボディーをセット
 	void SetBody(b2Body* body) { m_body = body; }
 
@@ -47,6 +48,9 @@ public:
 		}
 		m_player_passed = true;
 	}
+
+	//この中間地にリスポンする時の座標を取得
+	b2Vec2	GetRespawnPosition()const { return m_body_position; }
 
 	//セーブポイントに到達した時の処理
 	void	Function();

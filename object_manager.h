@@ -26,7 +26,6 @@
 #include"enemy_floating.h"
 #include"teleport_block.h"
 #include"1-1_boss_field_block.h"
-#include"Item_Coin_UI.h"
 #include"1_1_boss_pillar.h"
 #include"geyser.h"
 #include"1_1_boss_carry_object_enemy_spawner.h"
@@ -106,7 +105,7 @@ public:
 
     void AddTeleportBlock(b2Vec2 position, b2Vec2 size, b2Vec2 to_teleport_position);
 
-    void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level);
+    void AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level, int texture_type);
 
     void AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level);
 

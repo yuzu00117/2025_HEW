@@ -202,6 +202,7 @@
     <ClCompile Include="stage_point_factory.cpp" />
     <ClCompile Include="stage_select.cpp" />
     <ClCompile Include="stage_select_player.cpp" />
+    <ClCompile Include="Stamina_UI.cpp" />
     <ClCompile Include="static_to_dynamic_block.cpp" />
     <ClCompile Include="teleport_block.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -294,6 +295,7 @@
     <ClInclude Include="stage_select.h" />
     <ClInclude Include="stage_select_contact_list.h" />
     <ClInclude Include="stage_select_player.h" />
+    <ClInclude Include="Stamina_UI.h" />
     <ClInclude Include="static_to_dynamic_block.h" />
     <ClInclude Include="teleport_block.h" />
     <ClInclude Include="texture.h" />

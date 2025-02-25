@@ -266,7 +266,11 @@ void movable_ground::Update()
 		if (Ground_body->GetLinearVelocity().x > 0)
 		{
 			Ground_body->SetLinearVelocity({ 0.0f,0.0f });
-			g_pulled = true;
+			g_pulled = false;
+
+			CameraShake::StartCameraShake(20, 160, 50);
+
+			
 		}
 	}
 }
@@ -355,18 +359,11 @@ void movable_ground::Finalize()
 
 	//テクスチャの解放
 
-	if (g_Ground_Texture != NULL)
-	{
-		UnInitTexture(g_Ground_Texture);
-		UnInitTexture(g_Border_Texture_Lv1);
-		UnInitTexture(g_Border_Texture_Lv2);
-		UnInitTexture(g_Border_Texture_Lv3);
+	if (g_Ground_Texture) UnInitTexture(g_Ground_Texture);
+	if (g_Border_Texture_Lv1) UnInitTexture(g_Border_Texture_Lv1);
+	if (g_Border_Texture_Lv2) UnInitTexture(g_Border_Texture_Lv2);
+	if (g_Border_Texture_Lv3) UnInitTexture(g_Border_Texture_Lv3);
 
-		g_Ground_Texture = NULL;
-		g_Border_Texture_Lv1 = NULL;
-		g_Border_Texture_Lv2 = NULL;
-		g_Border_Texture_Lv3 = NULL;
-	}
 
 
 }

@@ -78,9 +78,7 @@ void change_scene_end_production::Draw()
 
 void change_scene_end_production::Finalize()
 {
-	if (g_Black_texture != NULL)
-	{
-		UnInitTexture(g_Black_texture);
-		g_Black_texture = NULL;
-	}
+	if (g_Black_texture) UnInitTexture(g_Black_texture);
+	if (g_Black_hole_texture) UnInitTexture(g_Black_hole_texture);
+
 }

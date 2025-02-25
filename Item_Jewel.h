@@ -55,6 +55,9 @@ public:
 	//　ゲージへ回収されている途中なのかどうかをセット
 	void	SetIfCollecting(bool flag);
 
+	//　もうプレイヤーにゲットされたかをチェック
+	bool	SearchIfJewelHaveGotByPlayer() { return m_get_by_player; }
+
 	//今もう効果発揮下かどうかを取得
 	bool	GetIfFunctioned() { return m_functioned; }
 
@@ -112,6 +115,9 @@ private:
 
 	//回収中かどうか
 	bool	m_collecting = false;
+
+	//プレイヤーにゲットされたかどうか
+	bool	m_get_by_player = false;
 
 	//回収の経過時間
 	float	m_collecting_time = 0.3f;

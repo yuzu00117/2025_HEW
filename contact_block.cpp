@@ -203,10 +203,7 @@ void contact_block::Finalize()
 
 	//‰æ‘œ‚Ì‰ð•ú
 
-	if (g_Texture != NULL)
-	{
-		UnInitTexture(g_Texture);
-		g_Texture = NULL;
-	}
+	if (g_Texture) UnInitTexture(g_Texture);
+
 
 }

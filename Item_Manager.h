@@ -54,10 +54,10 @@ public:
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
 	ItemCoin* FindItem_Coin_ByID(int ID);
 	ItemJewel* FindItem_Jewel_ByID(int ID);
-	ItemSavePoint* FindItem_SavePoint();
+	ItemSavePoint* FindItem_SavePoint(int ID);
 
 	// 全てのアイテムを初期化
-	void InitializeAll(bool respawning = false);
+	void InitializeAll();
 
 	// 全てのアイテムを更新
 	void UpdateAll();
@@ -69,14 +69,20 @@ public:
 	void DrawFront();
 
 	// 全てのアイテムを破棄
-	void FinalizeAll(bool respawning = false);
+	void FinalizeAll();
+	//　リスポン用の終了処理
+	void Finalize_WhenRespawn();
+	//　次のステージに進時の終了処理
+	void	Finalize_WhenNextStage();
 
 
 	//全ての宝石を使う
 	void	UseAllJewel();
 
 	//　リスポン時の初期化処理
-	void	InitializeWhenSpawning();
+	void	Initialize_WhenRespawn();
+	//　次のステージに進時の初期化処理
+	void	Initialize_WhenNextStage();
 
 
 

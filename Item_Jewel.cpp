@@ -99,7 +99,28 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     SetID(ID);
 
 
-}
+
+
+    switch (m_type)
+    {
+    case BLUE:
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
+        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Blue_3x4.png");
+        break;
+    case RED:
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
+        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Red_3x4.png");
+        break;
+    case YELLOW:
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
+        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Yellow_3x4.png");
+        break;
+    }
+
+    if (!g_Effect_Texture)
+    {
+        g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
+    }
 
 void	ItemJewel::Update()
 {
@@ -119,7 +140,7 @@ void	ItemJewel::Update()
         return;
     }
 
-    if (m_collecting)
+    if (m_collecting && m_body != nullptr)
     {
         auto ring_position = Gauge_UI::GetRingPosition();
         ring_position.y += 170.0f;
@@ -160,6 +181,9 @@ void ItemJewel::SetIfCollecting(bool flag)
 
     if (m_collecting)
     {
+        //  もうプレイヤーにゲットされた
+        m_get_by_player = true;
+
         float scale = SCREEN_SCALE;
 
         b2Vec2 screen_center;
@@ -207,15 +231,18 @@ void    ItemJewel::Function()
         jump_force = player.GetJumpForce();
         jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 2.0f - jump_force.y };
         player.SetJumpForce(jump_force_change_value);
+        app_atomex_start(Player_Buff_SpeedUp_Sound);
         break;
     case RED:
         //オブジェを引っ張る時の力を倍数で掛ける
         object_manager.SetPullingPower_With_Multiple(b2Vec2{ 1.5f,1.5f });
         //アンカー投げる速度UP
         player.SetAnchorThrowing_SpeedUp(1.5f);
+        app_atomex_start(Player_Buff_AnchorSpeedUp_Sound);
         break;
     case YELLOW:
         PlayerStamina::SetAvoidDamageOnce(true);
+        app_atomex_start(Player_Buff_Invincible_Sound);
         break;
     }
 
@@ -227,26 +254,8 @@ void    ItemJewel::Function()
 
 void ItemJewel::Initialize()
 {
-    switch (m_type)
-    {
-    case BLUE:
-        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
-        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Blue_3x4.png");
-        break;
-    case RED:
-        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
-        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Red_3x4.png");
-        break;
-    case YELLOW:
-        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
-        g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Yellow_3x4.png");
-        break;
-    }
 
-    if (!g_Effect_Texture)
-    {
-        g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
-    }
+
 }
 
 
@@ -368,7 +377,12 @@ void ItemJewel::Draw()
 
 void ItemJewel::Finalize()
 {
-
+    m_functioned = false;
+    if (m_collecting)
+    {
+        Gauge_UI::SetJewelCollected(m_type, true);
+        m_destory = true;
+    }
     if (GetBody() != nullptr)
     {
         //ワールドのインスタンスを持ってくる
@@ -377,6 +391,10 @@ void ItemJewel::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
+}
+
+ItemJewel::~ItemJewel()
+{
     if (g_Texture != nullptr)
     {
         UnInitTexture(g_Texture);
@@ -394,8 +412,6 @@ void ItemJewel::Finalize()
     }
 }
 
-ItemJewel::~ItemJewel()
-{
 }
 
 void ItemJewel::CreateBody()

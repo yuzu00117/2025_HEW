@@ -144,7 +144,9 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_object)||
             (objectA->collider_type == collider_object && objectB->collider_type == collider_player_leg) ||
             (objectA->collider_type == collider_boss_field && objectB->collider_type == collider_player_leg)||
-            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)){
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss_field)||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg) ||
+            (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block)){
             // 衝突処理（プレーヤーと地面が接触した時）
             
             player.SetIsJumping(false);
@@ -227,11 +229,13 @@ public:
             {
                 boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
                 bound_block_instance->SetJumpFlag(true);
+            
             }
             else
             {
                 boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
                 bound_block_instance->SetJumpFlag(true);
+            
             }
         }
 
@@ -342,6 +346,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
             else
             {
@@ -349,6 +354,7 @@ public:
                 if (ground_instance->GetIfPulled()) { return; }
                 ground_instance->Pulling_ground();
                 ground_instance->SetIfPulling(true);
+                CameraShake::StartCameraShake(20, 80, 50);
             }
 
         }
@@ -361,8 +367,7 @@ public:
             if (objectA->object_name == Boss_pillar || objectB->object_name == Boss_pillar) { return; }
 
 
-            //カメラシェイクとヒットストップを追加しました
-            CameraShake::StartCameraShake(0, 5, 10);
+           
 
            /* HitStop::StartHitStop(5);*/
 
@@ -532,12 +537,12 @@ public:
                     if (objectA->object_name == Boss_pillar)//Aが木のオブジェクト
                     {
                         boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
-                        pillar_instance->Pulling_pillar();//木を引っ張る処理を呼び出す
+                        pillar_instance->SetPullingFlag(true);
                     }
                     else
                     {
                         boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);
-                        pillar_instance->Pulling_pillar();
+                        pillar_instance->SetPullingFlag(true);
                     }
                 }
 
@@ -650,7 +655,7 @@ public:
         {
 
             //カメラシェイクとヒットストップを追加しました
-            CameraShake::StartCameraShake(0, 5, 10);
+            CameraShake::StartCameraShake(20, 20, 10);
             HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_dynamic)
             {
@@ -670,7 +675,7 @@ public:
         {
 
             //カメラシェイクとヒットストップを追加しました
-            CameraShake::StartCameraShake(0, 5, 10);
+            CameraShake::StartCameraShake(20, 20, 10);
             HitStop::StartHitStop(5);
             if (objectA->collider_type == collider_enemy_static)
             {
@@ -691,8 +696,11 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_enemy_floating))
         {
             app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
+            //カメラシェイクとヒットストップを追加しました
+            CameraShake::StartCameraShake(20, 20, 10);
             CameraShake::StartCameraShake(5, 3, 15);
+            HitStop::StartHitStop(15);
+          
             if (objectA->collider_type == collider_enemy_floating)
             {
                 EnemyFloating* enemy_instance = object_manager.FindEnemyFloatingByID(objectA->id);
@@ -1237,9 +1245,17 @@ public:
             break;
             case ITEM_SAVEPOINT:
             {
-                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint();//ItemSpeedUpで同じIDのを探してインスタンスをもらう
+                ItemSavePoint* savepoint_instance = item_manager.FindItem_SavePoint(item->id);//ItemSpeedUpで同じIDのを探してインスタンスをもらう
                 if (savepoint_instance != nullptr) {
-                    savepoint_instance->SetPlayerPassed();
+                    const ItemSavePoint* player_registered_SavePoint = player.GetRegisteredSavePoint();
+                    if (player_registered_SavePoint == nullptr)
+                    {
+                        savepoint_instance->SetPlayerPassed();
+                    }
+                    else if (savepoint_instance->GetBody()->GetPosition().x > player_registered_SavePoint->GetBody()->GetPosition().x)
+                    {
+                        savepoint_instance->SetPlayerPassed();
+                    }
                 }
             }
             break;
@@ -1350,6 +1366,14 @@ public:
             boss.SetShockWaveFrame(300);
         }
 
+        //柱とショックウェーブ
+        if ((objectA->collider_type == collider_shock_wave && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_shock_wave))
+        {
+
+            boss.SetShockWaveFrame(300);
+        }
+
 
 
         //プレイヤーとチャージ攻撃
@@ -1426,6 +1450,47 @@ public:
         }
 
 
+        //ミニゴーレムとオブジェクト
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_mini_golem))
+        {
+          
+           
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+                HitStop::StartHitStop(15);
+                CameraShake::StartCameraShake(5, 3, 15);
+            }
+        }
+
+        //ミニゴーレムとボスの壁
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_object) ||
+            (objectA->collider_type == collider_object && objectB->collider_type == collider_mini_golem))
+        {
+            if (objectA->object_name == Boss_Wall || objectB->object_name == Boss_Wall)
+            {
+                if (objectA->collider_type == collider_mini_golem)
+                {
+                    boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+                }
+                else
+                {
+                    boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+                }
+            }
+        }
+
+
+    
+
+
         //ボスのセンサーとプレイヤー
         if ((objectA->collider_type == collider_boss_senosr && objectB->collider_type == collider_player_body) ||
             (objectA->collider_type == collider_player_body && objectB->collider_type == collider_boss_senosr))
@@ -1460,16 +1525,24 @@ public:
 
             if (1.0 < (ReturnAbsoluteValue(GetObjectVelocity.x) + ReturnAbsoluteValue(GetObjectVelocity.y)))
             {
-                boss.SetNowBossState(panic_state);
+                
                 boss.SetBossSheetCnt(0);
                 if (objectA->object_name == Boss_pillar)
                 {
+                    if (boss.GetNowBossState() != panic_state)
+                    {
+                        boss.SetNowBossState(damage_state);
+                    }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
                   
                 }
                 if (objectB->object_name == Boss_pillar)
                 {
+                    if (boss.GetNowBossState() != panic_state)
+                    {
+                        boss.SetNowBossState(damage_state);
+                    }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
                 }
@@ -1477,11 +1550,13 @@ public:
 
                 if (objectA->object_name == Boss_Wall)
                 {
+                    boss.SetNowBossState(panic_state);
                     Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     wall_instance->SetSplitting_Destroy_Flag(true);
                 }
                 if (objectB->object_name == Boss_Wall)
                 {
+                    boss.SetNowBossState(panic_state);
                     Boss_Wall_Objcet* wall_instance = object_manager.FindBossWallObjcet(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     wall_instance->SetSplitting_Destroy_Flag(true);
                 }
@@ -1527,8 +1602,11 @@ public:
 
                     if (objectB->collider_type == collider_boss)
                     {
-                        boss.SetBossSheetCnt(0);
-                        boss.SetNowBossState(panic_state);
+                        if (boss.GetNowBossState() != panic_state)
+                        {
+                            boss.SetBossSheetCnt(0);
+                            boss.SetNowBossState(damage_state);
+                        }
                     }
                 }
 
@@ -1546,8 +1624,11 @@ public:
                     enemy_instance->SetSplittingDestroyFlag(true);
                     if (objectA->collider_type == collider_boss)
                     {
-                        boss.SetBossSheetCnt(0);
-                        boss.SetNowBossState(panic_state);
+                        if (boss.GetNowBossState() != panic_state)
+                        {
+                            boss.SetBossSheetCnt(0);
+                            boss.SetNowBossState(damage_state);
+                        }
                     }
                 }
 
@@ -1573,6 +1654,24 @@ public:
                 wall_instance->SetSplitting_Destroy_Flag(true);
             }
         }
+
+
+
+
+        //進入禁止エリアとミニゴーレム
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_no_entry_block) ||
+            (objectA->collider_type == collider_no_entry_block && objectB->collider_type == collider_mini_golem))
+        {
+            if (objectA->collider_type == collider_mini_golem)
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());
+            }
+            else
+            {
+                boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
+            }
+        }
+
 
         
 
@@ -1744,7 +1843,26 @@ public:
 
         }
 
+        // プレーヤーとコンタクトブロックが衝突したかを判定
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_player_body && objectB->collider_type == collider_contact_block) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_body) ||
+            (objectA->collider_type == collider_contact_block && objectB->collider_type == collider_player_leg))
+        {
+            // 衝突処理
 
+            if (objectA->collider_type == collider_contact_block)//Aがコンタクトブロックのオブジェクト
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectA->id);
+                contact_block_instance->SetFlag(false);
+            }
+            if (objectB->collider_type == collider_contact_block)
+            {
+                contact_block* contact_block_instance = object_manager.FindContactBlock(objectB->id);
+                contact_block_instance->SetFlag(false);
+            }
+
+        }
 
 
 
@@ -2009,6 +2127,26 @@ public:
                 sloping_block_instance->SetPlayerCollided(false);
             }
 
+        }
+
+        //プレイヤーとバウンドブロックが触れた場合
+        if ((objectA->collider_type == collider_player_leg && objectB->collider_type == collider_bound_block) ||
+            (objectA->collider_type == collider_bound_block && objectB->collider_type == collider_player_leg))
+        {
+
+
+            if (objectA->collider_type == collider_bound_block)
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectA->id);
+                bound_block_instance->SetJumpFlag(false);
+              
+            }
+            else
+            {
+                boss_bound_block* bound_block_instance = object_manager.FindBossBoundBlock(objectB->id);
+                bound_block_instance->SetJumpFlag(false);
+             
+            }
         }
 
     }

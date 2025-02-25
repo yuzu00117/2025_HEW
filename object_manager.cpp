@@ -89,9 +89,9 @@ void ObjectManager::AddTeleportBlock(b2Vec2 position, b2Vec2 body_size, b2Vec2 t
 
 }
 //ボスの部屋の床を追加
-void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level)
+void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int block_hp, Boss_Room_Level level, int texture_type)
 {
-    boss_field_blockList.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp, level));
+    boss_field_blockList.emplace_back(std::make_unique<boss_field_block>(position, body_size, block_hp, level,texture_type));
 }
 
 //ボスの部屋の柱を追加
@@ -587,7 +587,6 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
-    Item_Coin_UI::Initialize();
 }
 
 
@@ -823,7 +822,6 @@ void ObjectManager::DrawAll() {
     }
 
   
-    Item_Coin_UI::Draw();
 }
 
 
@@ -946,7 +944,6 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
-    Item_Coin_UI::Finalize();
 
 
 

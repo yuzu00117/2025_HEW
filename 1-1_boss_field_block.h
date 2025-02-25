@@ -41,7 +41,7 @@ enum Boss_Room_Level
 class boss_field_block
 {
 public:
-	boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, Boss_Room_Level level);
+	boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, Boss_Room_Level level,int texture_type);
 	~boss_field_block();
 
 
@@ -92,6 +92,8 @@ private:
 
 	int id;
 
+	bool isUse = true;
+
 	b2Body* m_body;
 
 	b2Vec2 m_size;
@@ -104,7 +106,7 @@ private:
 
 	bool break_flag=false;
 
-
+	int Texture_type;
 };
 
 

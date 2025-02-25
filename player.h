@@ -21,6 +21,7 @@
 #include"display.h"
 #include"world_box2d.h"
 #include<vector>
+#include"Item_SavePoint.h"
 
 
 enum player_draw_state
@@ -71,10 +72,13 @@ public:
 	}
 
 	 // プレイヤーの初期化
-	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size, bool respawning = false);
+	void Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size);
 	void Update();
 	void Draw();
 	void Finalize();
+
+	//リスポンやステージ移行の時リセット必要なメンバー変数をリセット
+	void	ResetPlayerParameter();
 
 	void Player_sensor_size_change(int anchor_level);
 
@@ -194,6 +198,13 @@ public:
 	}
 
 
+	//プレイヤーが登録した中間地点を取得（nullptrの場合は登録してない）
+	const ItemSavePoint*	GetRegisteredSavePoint() { return m_registered_SavePoint; }
+	//プレイヤーが中間地点を登録（nullptrの場合は登録解除）
+	void	RegisterSavePoint(ItemSavePoint* SavePoint) { m_registered_SavePoint = SavePoint; }
+
+
+
 	//今のプレイヤーの向きを取得
 	// 右向き：1    左向き：0
 	bool GetDirection() {
@@ -263,6 +274,10 @@ private:
 
 	//センサー用のサイズ
 	b2Vec2 m_sensor_size;
+
+
+	//登録した中間地点
+	const ItemSavePoint* m_registered_SavePoint = nullptr;
 
 
 	//アンカー投げる時の速度の倍率
@@ -337,6 +352,15 @@ private:
 	float TamaChanSheetCnt = 0.0f;
 	// たまちゃんの向き管理用
 	bool is_left = true;
+	// アンカーを投げたときのたまちゃん削除フラグ
+	bool is_throw_anchor = false;
+	// たまちゃんが消えるエフェクトのフラグ
+	bool is_tamachan_disappearing = false;
+	// たまちゃんが消えるエフェクトのカウント
+	float tamachan_disappear_effect_cnt = 0.0f;
+	// たまちゃん描画用ポジション
+	float tamachan_pos_x = 0.0f;
+	float tamachan_pos_y = 0.0f;
 
 	//-----------------------------------------
 	//プレイヤーのサウンドの管理

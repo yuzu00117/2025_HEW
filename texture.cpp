@@ -22,13 +22,15 @@ ID3D11ShaderResourceView* InitTexture(const wchar_t* textureName) {
 	return Texture;
 }
 
-void UnInitTexture(ID3D11ShaderResourceView* texture) {
-	if (!texture) {
-		
+void UnInitTexture(ID3D11ShaderResourceView*&texture) {
+	if (!texture) 
+	{	
 		return;
 	}
 
-
-	texture->Release();
-	texture = nullptr;
+	if (texture != nullptr)
+	{
+		texture->Release();
+		texture = nullptr;
+	}
 }

@@ -18,8 +18,9 @@
 #include"tool.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
+static ID3D11ShaderResourceView* g_Top_Texture = NULL;//フィールドのテクスチャ
 
-boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, Boss_Room_Level level)
+boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, Boss_Room_Level level,int texture_type)
 {
 	SetSize(size);//描画用のサイズを保存
 
@@ -80,7 +81,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 	BossRoomLevel = level;
 
-	
+	Texture_type = texture_type;
 
 
 }
@@ -94,13 +95,16 @@ boss_field_block::~boss_field_block()
 void boss_field_block::Initialize()
 {
 	if (g_Texture == NULL) {
-		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");//グラウンドのテクスチャ
+		g_Texture =		InitTexture(L"asset\\texture\\stage_block\\iseki_block.png");						//遺跡の中のテクスチャ
+		g_Top_Texture=  InitTexture(L"asset\\texture\\stage_block\\iseki_block_top.png");				//遺跡の上のテクスチャ
 	}
 }
 
 void boss_field_block::Update()
 {
-	Boss_1_1& boss = Boss_1_1::GetInstance();
+	if (isUse)
+	{
+		Boss_1_1& boss = Boss_1_1::GetInstance();
 
 		if (boss.GetBossFieldLevel() > BossRoomLevel && break_flag == false)
 		{
@@ -149,12 +153,16 @@ void boss_field_block::Update()
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 
-			if (m_body == nullptr)
+			if (m_body != nullptr)
 			{
 				world->DestroyBody(m_body);
+				SetBody(nullptr);
+				isUse = false;
+
 			}
 
 		}
+	}
 	
 
 
@@ -182,7 +190,15 @@ void boss_field_block::Draw()
 		float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 		float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+
+		if (Texture_type != 0)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+		}
+		else
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Top_Texture);
+		}
 
 
 		//draw
@@ -202,5 +218,7 @@ void boss_field_block::Finalize()
 	{
 		UnInitTexture(g_Texture);
 		g_Texture = NULL;
+		UnInitTexture(g_Top_Texture);
+		g_Top_Texture = NULL;
 	}
 }

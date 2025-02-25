@@ -390,8 +390,8 @@ void Boss_Wall_Objcet::WallPullling()
 			minus = -1;
 		}
 	
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(50.0f * minus, -2.0f), true);
-		m_body->ApplyTorque(1000 * minus, true);
+		m_body->SetLinearVelocity(b2Vec2(50.0f * minus, 0.0f));
+		
 	}
 }
 
@@ -425,7 +425,7 @@ void Boss_Wall_Objcet::Draw()
 				{ draw_x,
 				  draw_y },
 				0.0f,
-				{ GetSize().x * scale ,GetSize().y * scale*1.2f }
+				{ (GetSize().x+6.f) * scale ,GetSize().y * scale*1.2f }
 			);
 		}
 
@@ -467,9 +467,7 @@ void Boss_Wall_Objcet::Draw()
 
 void Boss_Wall_Objcet::Finalize()
 {
-	if (Texture != NULL)
-	{
+	if (Texture) {
 		UnInitTexture(Texture);
-		Texture = NULL;
 	}
 }

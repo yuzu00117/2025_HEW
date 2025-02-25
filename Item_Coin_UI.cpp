@@ -24,6 +24,12 @@ float Item_Coin_UI::coin_effect_frame = 0;
 
 void Item_Coin_UI::Initialize()
 {
+	//ƒƒ“ƒo[•Ï”‚Ì‰Šú‰»
+	DrawCount = 0;
+	max_coin_count = 30;
+	now_get_coin_count = 0;
+	coin_effect_frame = 0;
+
 	if (g_number_Texture == NULL)
 	{
 		g_number_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_number.png");
@@ -94,13 +100,9 @@ void Item_Coin_UI::Draw()
 
 void Item_Coin_UI::Finalize()
 {
-	if (g_number_Texture != NULL)
-	{
-		UnInitTexture(g_number_Texture);
-		g_number_Texture = NULL;
-		UnInitTexture(g_coin_effect_Texture);
-		g_coin_effect_Texture = NULL;
-		UnInitTexture(g_coin_Texture);
-		g_coin_Texture = NULL;
-	}
+	if (g_number_Texture) UnInitTexture(g_number_Texture);
+
+	if (g_coin_Texture) UnInitTexture(g_coin_Texture);
+	if (g_coin_effect_Texture) UnInitTexture(g_coin_effect_Texture);
+
 }

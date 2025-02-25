@@ -16,10 +16,15 @@ static ID3D11ShaderResourceView * g_number_Texture = NULL;//数字のテクスチャ
 // 静的メンバ変数の定義（初期化）
 
 
-int Gokai_UI::now_get_gokai_count = 0;  // 現在のコイン数
+int Gokai_UI::now_get_gokai_count = 0;  // 現在の豪快値	
+int Gokai_UI::gokai_when_respawn = 0;  // リスポン時の豪快値	
 
 void Gokai_UI::Initialize()
 {
+	//メンバー変数の初期化
+	now_get_gokai_count = 0;  // 現在の豪快値	
+	gokai_when_respawn = 0;  // リスポン時の豪快値	
+
 	if (g_number_Texture == NULL)
 	{
 		g_number_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_number.png");
@@ -50,9 +55,6 @@ void Gokai_UI::Draw()
 
 void Gokai_UI::Finalize()
 {
-	if (g_number_Texture != NULL)
-	{
-		UnInitTexture(g_number_Texture);
-		g_number_Texture = NULL;
-	}
+	if (g_number_Texture) UnInitTexture(g_number_Texture);
+
 }
