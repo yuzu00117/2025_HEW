@@ -89,6 +89,8 @@ public:
 
 	//プレイヤーがダメージ受けた瞬間呼び出す
 	void Player_Damaged(int Change_to_HP,int invincibletime, const b2Body* attack_body);
+	//プレイヤーが回復した瞬間呼び出す
+	void Palyer_Healed(int heal);
 
 	//無敵時間処理
 	void Invincible_time_update();
