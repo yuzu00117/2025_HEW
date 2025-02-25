@@ -20,6 +20,7 @@
 #include"Item_Spirit.h"
 #include"Item_Jewel.h"
 #include"Item_SavePoint.h"
+#include"Item_Healing.h"
 
 //アイテムの種類
 enum ItemType
@@ -29,6 +30,7 @@ enum ItemType
 	ITEM_COIN,//コイン
 	ITEM_JEWEL,	//宝石
 	ITEM_SAVEPOINT,	//セーブポイント
+	ITEM_HEALING, //回復アイテム
 };
 
 
@@ -49,12 +51,14 @@ public:
 	//Jewel_Type型のtype引数は BLUE, RED, YELLOW のどれかを渡す
 	void	AddJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
 	void	AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
+	void	AddHealing(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning);
 
 	// ID を使ってアイテムを検索
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
 	ItemCoin* FindItem_Coin_ByID(int ID);
 	ItemJewel* FindItem_Jewel_ByID(int ID);
 	ItemSavePoint* FindItem_SavePoint(int ID);
+	ItemHealing* FindItem_Healing(int id);
 
 	// 全てのアイテムを初期化
 	void InitializeAll();
@@ -92,6 +96,7 @@ private:
 	std::vector<std::unique_ptr<ItemCoin>> m_Coin_List; // コインのリスト
 	std::list<std::unique_ptr<ItemJewel>> m_Jewel_List; // 宝石のリスト
 	std::vector<std::unique_ptr<ItemSavePoint>> m_SavePoint_List; // セーブポイントのリスト
+	std::vector<std::unique_ptr<ItemHealing>> m_Healing_List;
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;
