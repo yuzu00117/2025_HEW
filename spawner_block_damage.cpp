@@ -104,6 +104,8 @@ void SpawnerBlockDamage::Update()
 	{
 		b2Vec2 pos = GetBody()->GetPosition();
 		object_manager.AddStatic_to_Dynamic_block_BySpawner(pos, b2Vec2(3.f, 3.f), m_need_level, m_id);
+		static_to_dynamic_block* generated_block = object_manager.FindStatic_to_Dynamic_BlcokID(m_id);
+		AnchorPoint::InsideSensor(generated_block->GetObjectBody());
 	}
 }
 
