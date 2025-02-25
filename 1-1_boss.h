@@ -478,6 +478,8 @@ private:
 	float shock_wave_effect_sheet_cnt = 0;
 
 	float mini_golem_break_effect_cnt = 0;
+
+	float dameged_effect_cnt=0;
 	//ミニゴーレムはボディが消えるので座標をもっとく
 	b2Vec2 mini_golem_delete_effect_position;
 
@@ -489,6 +491,7 @@ private:
 	static constexpr int Max_charge_effect_sheet_cnt = 30;
 	static constexpr int Max_shock_wave_effect_sheet_cnt = Shock_Wave_time_Frame;
 	static constexpr int Max_mini_golem_break_effect = 16;
+	static constexpr int Max_damaged_effect = 90;
 
 
 	static constexpr float boss_alpha = 3.0f;//ボスのアルファ値

@@ -26,7 +26,6 @@
 #include"enemy_floating.h"
 #include"teleport_block.h"
 #include"1-1_boss_field_block.h"
-#include"Item_Coin_UI.h"
 #include"1_1_boss_pillar.h"
 #include"geyser.h"
 #include"1_1_boss_carry_object_enemy_spawner.h"

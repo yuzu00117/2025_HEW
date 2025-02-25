@@ -19,6 +19,15 @@
 #include"Item_Manager.h"
 
 
+enum GAME_STATE
+{
+	GAME_STATE_START,				//ゲームシーンに入ったばかリ（ステージ選択から来た初回のみ）
+	GAME_STATE_RESPAWN_INITIAL,		//ステージの初期位置にリスポン
+	GAME_STATE_RESPAWN_SAVE_POINT,	//ステージの中間地にリスポン
+	GAME_STATE_NEXT_STAGE,			//次のステージに移行
+	GAME_STATE_GAMEOVER,			//リザルト画面に移行
+};
+
 class Game
 {
 public:
@@ -41,7 +50,9 @@ public:
 	void Draw();
 	void Finalize();
 
-	void	Respawn();
+	//今ゲームシーンの状態を取得
+	GAME_STATE GetGameState() { return m_state; }
+
 
 	void Teleport_player(b2Vec2 position);
 
@@ -55,8 +66,8 @@ private:
 	ObjectManager& objectManager = ObjectManager::GetInstance();
 	ItemManager& itemManager = ItemManager::GetInstance();
 
-	//このあとリスポンする予定なのか（変化するのは初回リスポンする時オンにするのと、残機がなくなって、或いはクリアしてリザルトに遷移する時オフにする、この２回だけ）
-	bool	m_respawn;
+	//今のゲームシーンの状態リスポンしてたのか、開始したばかりなのかなどなど
+	GAME_STATE	m_state = GAME_STATE_START;
 };
 
 

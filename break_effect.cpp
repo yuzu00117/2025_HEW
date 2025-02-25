@@ -108,6 +108,72 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
     }
 }
 
+//ここにボディをとテクスチャとサイズをいれると
+//ボディを削除したのち、複数のボディを作成してヴェロシティを加えてぼーん　豪快だね～
+void PillarFragmentsManager::Destroy_Splitting_only(const b2Vec2 position, ID3D11ShaderResourceView* texture, b2Vec2 size) {
+ 
+
+    fragmentSize = size;
+
+    b2Vec2 destroyPosition = position;
+    float angle = 0;
+    b2Vec2 velocity = { 0.2,0.2 };
+    float angularVelocity = 0.0f;
+    
+
+    size.x /= BOX2D_SCALE_MANAGEMENT;
+    size.y /= BOX2D_SCALE_MANAGEMENT;
+
+    // 乱数生成のためのセットアップ
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> velocityDist(-5.0f, 5.0f); // -5.0f ～ 5.0f の範囲でランダム
+
+    int index = 0;
+    for (int y = 0; y < splittingY; y++) {
+        for (int x = 0; x < splittingX; x++) {
+            float localX = ((x - (splittingX - 1) / 2.0f) * size.x / splittingX);
+            float localY = ((y - (splittingY - 1) / 2.0f) * size.y / splittingY);
+
+            float rotatedX = localX * cos(angle) - localY * sin(angle);
+            float rotatedY = localX * sin(angle) + localY * cos(angle);
+
+            b2Vec2 fragmentPosition(destroyPosition.x + rotatedX, destroyPosition.y + rotatedY);
+
+            b2BodyDef fragmentDef;
+            fragmentDef.type = b2_dynamicBody;
+            fragmentDef.position = fragmentPosition;
+            fragmentDef.angle = angle;
+
+            b2Body* fragment = world->CreateBody(&fragmentDef);
+
+            // ランダムな方向の速度を追加
+            float randomX = velocityDist(gen); // -5.0f ～ 5.0f のランダム値
+            float randomY = velocityDist(gen);
+            fragment->SetLinearVelocity(b2Vec2(velocity.x * 4 + randomX, velocity.y * 4 + randomY));
+
+            // ランダムな回転速度を追加
+            float randomAngularVelocity = velocityDist(gen);
+            fragment->SetAngularVelocity(angularVelocity + randomAngularVelocity);
+
+            b2PolygonShape fragmentShape;
+            fragmentShape.SetAsBox(size.x / (2.0f * splittingX), size.y / (2.0f * splittingY));
+
+            b2FixtureDef fragmentFixture;
+            fragmentFixture.shape = &fragmentShape;
+            fragmentFixture.density = 1.0f;
+            fragmentFixture.friction = 0.5f;
+            fragmentFixture.restitution = 0.0f;
+            fragmentFixture.filter = createFilterExclude("texture_body_filter",
+                { "texture_body_filter", "object_filter", "ground_filter", "enemy_filter", "Player_filter" });
+
+            fragment->CreateFixture(&fragmentFixture);
+
+            fragments.emplace_back(fragment, texture, index++);
+        }
+    }
+}
+
 //ボディを削除するまでの時間の管理
 void PillarFragmentsManager::UpdateFragments() {
     if (!world) return;
