@@ -39,6 +39,7 @@
 #include"texture_block.h"
 #include"spawner_enemy.h"
 #include"spawner_block_damage.h"
+#include"Item_Coin_UI.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
