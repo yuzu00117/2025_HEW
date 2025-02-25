@@ -114,9 +114,9 @@ void UI_block::Initialize()
 		g_UI_texture = InitTexture(L"asset\\texture\\sample_texture\\Sample_ui_a_bottom.png");
 
 
-		g_move_signboard = InitTexture(L"asset\\texture\\sample_texture\\signboard_move.png");
-		g_jump_signboard = InitTexture(L"asset\\texture\\sample_texture\\signboard_jump.png");
-		g_anachor_signboard = InitTexture(L"asset\\texture\\sample_texture\\signboard_move.png");
+		g_move_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
+		g_jump_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_jump.png");
+		g_anachor_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
 	}
 
 	/*switch (m_ui_type)
