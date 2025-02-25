@@ -434,12 +434,16 @@ void Boss_1_1::Update()
 
 				// カメラシェイクスタート
 				CameraShake::StartCameraShake(1, 0, 10);
-				app_atomex_start(Boss_Walk_Sound);//歩きの音
+				if (app_atomex_is_playing(Boss_Walk_Sound) == false)
+				{
+					app_atomex_start(Boss_Walk_Sound);//歩きの音
+				}
 			}
 			sheet_cnt += 0.5;
 
 			if (Max_Walk_Sheet <= sheet_cnt)
 			{
+				app_atomex_stop_cue(Boss_Walk_Sound);//歩きの音
 				sheet_cnt = 0;
 				now_boss_state = wait_state;
 			}
@@ -460,9 +464,9 @@ void Boss_1_1::Update()
 
 				// ジャンプの後に止まるかどうかを X軸の速度だけYはそのまま
 				b2Body *body = GetBossBody();
+
 				b2Vec2 velocity = body->GetLinearVelocity();
 				body->SetLinearVelocity(b2Vec2(0.0f, velocity.y));
-
 				// カメラシェイクスタート
 				CameraShake::StartCameraShake(120, 00, 20);
 				HitStop::SetHitStopFlag(5);
@@ -476,7 +480,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Shock_Wave_Start_Frame)
 			{
-				CreateShockWave(b2Vec2(5.0f * BOSS_SIZE_SCALE, 6.0f * BOSS_SIZE_SCALE), left_flag);
+				CreateShockWave(b2Vec2(3.0f * BOSS_SIZE_SCALE, 4.0f * BOSS_SIZE_SCALE), left_flag);
 				Shock_Wave_Fly_flag = true;
 
 				app_atomex_start(Boss_Attack_Wave_Sound);//ショックウェーブ音
@@ -497,7 +501,7 @@ void Boss_1_1::Update()
 
 			if (static_cast<int>(sheet_cnt) == Create_Mini_Golem_Start_Frame)
 			{
-				CreateMiniGolem(b2Vec2(3.0f * BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE), left_flag); // 画像の都合で大きさを変えるため　生成時の位置はそのまま　実際の大きさは参照用
+				CreateMiniGolem(b2Vec2(1.5f * BOSS_SIZE_SCALE, 1.0f * BOSS_SIZE_SCALE), left_flag); // 画像の都合で大きさを変えるため　生成時の位置はそのまま　実際の大きさは参照用
 			}
 			if (Max_Create_Mini_Golem_Sheet <= sheet_cnt)
 			{
@@ -1060,7 +1064,7 @@ void Boss_1_1::CreateMiniGolem(b2Vec2 mini_golem_size, bool left)
 void Boss_1_1::MiniGolemUpdate(void)
 {
 	const float max_angular_velocity = 2.0f; // 最大角速度
-	const float torque_amount = 0.03f; // 加えるトルク
+	const float torque_amount = 0.05f; // 加えるトルク
 
 	for (int i = 0; i < 2; i++)
 	{

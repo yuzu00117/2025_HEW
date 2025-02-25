@@ -883,7 +883,7 @@ void Field::Initialize()
 				if (field_map[y][x] == 14)
 				{//ボスを生成
 					Boss_1_1& boss = Boss_1_1::GetInstance();
-					boss.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(18.f, 24.f), true);
+					boss.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(12.f, 16.f), true);
 				}
 
 				//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
