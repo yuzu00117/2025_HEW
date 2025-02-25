@@ -511,7 +511,8 @@ void Game::Draw(void)
 
     boss.DrawObjectFront();
 
- 
+    itemManager.DrawFront();
+
 
     //プレイヤーの描画処理
     player.Draw();
@@ -521,7 +522,6 @@ void Game::Draw(void)
 
   
 
-    itemManager.DrawFront();
     objectManager.DrawFront();
 
 
