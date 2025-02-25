@@ -100,6 +100,11 @@ static ID3D11ShaderResourceView *g_debug_attack_color = NULL; // デバッグ用
 
 static ID3D11ShaderResourceView *g_debug_core = NULL; // デバッグ用
 
+
+//ボスの顔のアイコン
+static ID3D11ShaderResourceView* g_boss_icon = NULL; //ボスの顔のアイコン
+
+
 // ボスのCPPファイルの実装
 b2Body *outside_boss_body;
 
@@ -185,6 +190,9 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 		g_debug_boss_body_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
 		g_debug_attack_color = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");
 		g_debug_core = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_blue.png");
+
+
+		g_boss_icon= InitTexture(L"asset\\texture\\boss_1_1\\boss_icon.png");
 
 		InitializeBossDebug(); // デバッグ用の初期化
 	}
@@ -1616,6 +1624,41 @@ void Boss_1_1::DrawObjectFront()
 
 		
 	EffectDraw();
+	BossIconDraw();
+}
+
+void Boss_1_1::BossIconDraw()
+{
+	if (m_body != nullptr)
+	{
+		if (display_in_boss == false)
+		{
+			if (PlayerPosition::GetPlayerPosition().x < m_body->GetPosition().x)
+			{
+				// ボスのアイコンを描画
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_icon); // ボスのアイコン
+				// ボスのポジションを取得
+				b2Vec2 boss_pos = GetBossBody()->GetPosition();
+				// ボスのY座標に応じてアイコンのY座標を設定
+				float icon_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT * SCREEN_SCALE) + 500;
+				// アイコンのY座標が画面外に出ないように制限
+				icon_y = max(0.0f, min(icon_y + 50, static_cast<float>(SCREEN_HEIGHT - 50)));
+				DrawSpriteOld(XMFLOAT2(1180, icon_y), 0.0f, XMFLOAT2(100, 100), 1.0f);
+			}
+			else
+			{
+				// ボスのアイコンを描画
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_icon); // ボスのアイコン
+				// ボスのポジションを取得
+				b2Vec2 boss_pos = GetBossBody()->GetPosition();
+				// ボスのY座標に応じてアイコンのY座標を設定
+				float icon_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT * SCREEN_SCALE) + 500;
+				// アイコンのY座標が画面外に出ないように制限
+				icon_y = max(0.0f, min(icon_y + 50, static_cast<float>(SCREEN_HEIGHT - 50)));
+				DrawSpriteOld(XMFLOAT2(250, icon_y), 0.0f, XMFLOAT2(100, 100), 1.0f);
+			}
+		}
+	}
 }
 
 void Boss_1_1::debugDraw()
@@ -1802,6 +1845,7 @@ void Boss_1_1::EffectDraw()
 	}
 
 
+
 	//ダメージ食らった時の
 	if (dameged_effect_cnt!=0)
 	{
@@ -1905,7 +1949,8 @@ void Boss_1_1::Finalize()
 	if (g_debug_attack_color) UnInitTexture(g_debug_attack_color);
 	if (g_debug_core) UnInitTexture(g_debug_core);
 
-
+	UnInitTexture(g_boss_icon);
+	g_boss_icon = NULL;
 
 		UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
 		g_boss_jump_sheet1_Lv3_Texture = NULL;
@@ -1977,6 +2022,8 @@ void Boss_1_1::Finalize()
 
 		UnInitTexture(g_debug_core);
 		g_debug_core = NULL;
+
+
 
 	//ダメージの処理
 	if (g_boss_damage_sheet_Texture) UnInitTexture(g_boss_damage_sheet_Texture);

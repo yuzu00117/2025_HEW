@@ -132,7 +132,7 @@ void ItemSavePoint::Initialize()
 {
     if (g_Texture == NULL)
     {
-        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\SavePoint.png");
+        g_Texture = InitTexture(L"asset\\texture\\Item_texture\\SavePoint.png");
         g_get_save_point_effect = InitTexture(L"asset\\texture\\stage_1_1_object\\get_save_point_effect.png");//取得した時のエフェクト
     }
 
@@ -180,13 +180,16 @@ void ItemSavePoint::Draw()
 
         if (effect_cnt != 0)
         {
+            draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x - (GetSize().x * scale * 1.5f) *0.35f ;
+            draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y + (GetSize().y * scale * 1.5f) * 0.1f;
+
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_get_save_point_effect);
 
             DrawSplittingSprite(
                 { draw_x,
                 draw_y },
                 0.0f,
-                {GetSize().x * scale * 3.0f  ,GetSize().y * scale * 1.5f },
+                {GetSize().x * scale * 0.65f  ,GetSize().y * scale * 1.0f },
                 6, 4,
                effect_cnt ,
                 2.0f
@@ -197,7 +200,7 @@ void ItemSavePoint::Draw()
 
             if (36 < effect_cnt)
             {
-                effect_cnt = 0;
+                effect_cnt = 1;
             }
 
         }
