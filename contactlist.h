@@ -1294,6 +1294,23 @@ public:
                 }
             }
         }
+
+        //エネミースポナーとプレイヤーセンサーが触れた時
+        if ((objectA->collider_type == collider_spawner_enemy && objectB->collider_type == collider_player_sensor) ||
+            (objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_spawner_enemy))
+        {
+            if (objectA->collider_type == collider_spawner_enemy)
+            {
+                SpawnerEnemy* spawner_instance = object_manager.FindSpawnerEnemy(objectA->id);
+                spawner_instance->SetInScreen(true);
+            }
+            else if (objectB->collider_type == collider_spawner_enemy)
+            {
+                SpawnerEnemy* spawner_instance = object_manager.FindSpawnerEnemy(objectB->id);
+                spawner_instance->SetInScreen(true);
+            }
+        }
+
         //-------------------------------------------------------------------------------------------
           // 
           // ここからボス戦のあたり判定を作る
@@ -1654,6 +1671,14 @@ public:
             }
         }
 
+        //プレイヤーのセンサーとボスが触れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_sensor))
+        {
+
+            boss.SetDisplyInBossFlag(true);
+
+        }
 
 
 
@@ -1670,10 +1695,6 @@ public:
                 boss.SetDestroyMiniGolemBody(true, fixtureB->GetBody());
             }
         }
-
-
-        
-
     }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------// 
 //               衝突終了時
@@ -2015,6 +2036,23 @@ public:
 
         }
 
+
+        //エネミースポナーとプレイヤーセンサーが離れた時
+        if ((objectA->collider_type == collider_spawner_enemy && objectB->collider_type == collider_player_sensor) ||
+            (objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_spawner_enemy))
+        {
+            if (objectA->collider_type == collider_spawner_enemy)
+            {
+                SpawnerEnemy* spawner_instance = object_manager.FindSpawnerEnemy(objectA->id);
+                spawner_instance->SetInScreen(false);
+            }
+            else if (objectB->collider_type == collider_spawner_enemy)
+            {
+                SpawnerEnemy* spawner_instance = object_manager.FindSpawnerEnemy(objectB->id);
+                spawner_instance->SetInScreen(false);
+            }
+        }
+
         //-------------------------------------------------------------------------------------------
 
 
@@ -2147,6 +2185,19 @@ public:
              
             }
         }
+
+
+        //プレイヤーのセンサーとボスが触れた場合
+        if ((objectA->collider_type == collider_player_sensor && objectB->collider_type == collider_boss) ||
+            (objectA->collider_type == collider_boss && objectB->collider_type == collider_player_sensor))
+        {
+
+            boss.SetDisplyInBossFlag(false);
+
+        }
+
+
+
 
     }
 

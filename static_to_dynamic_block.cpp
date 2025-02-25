@@ -173,6 +173,127 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 	Break_Flag = break_flag;
 };
 
+//スポナーから生成される壊れるブロック用のコンストラクタ
+static_to_dynamic_block::static_to_dynamic_block(b2Vec2 position, b2Vec2 body_size, int need_level, int id)
+{
+	//サイズをセット
+	SetSize(body_size);
+	//コライダーをセット
+	SetBox_or_Circle(Box_collider);
+	//フラグをセット
+	Set_Change_Dynamic_flag(false);
+
+
+	//ワールドのインスタンスを持ってくる
+	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+	b2World* world = box2d_world.GetBox2dWorldPointer();
+
+	//サイズの補正をする
+	b2Vec2 object_size;
+	object_size.x = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.95;
+	object_size.y = body_size.y / BOX2D_SCALE_MANAGEMENT * 0.95;
+
+	b2BodyDef body;
+
+	body.type = b2_staticBody;
+	body.position.Set(position.x, position.y);
+	body.fixedRotation = true;//回転する
+
+	b2Body* m_body = world->CreateBody(&body);
+	SetObjectBody(m_body);//ボディを登録する
+
+
+	b2FixtureDef fixture;//フィクスチャを作成
+	b2FixtureDef topFixture;
+	b2FixtureDef bottomFixture;
+
+	// クラス内に b2Shape をメンバーとして保持する場合の例
+	b2PolygonShape shape; // クラスのメンバー変数として保持
+	b2CircleShape circleShape;
+
+
+	// 上半分のボックス
+	b2PolygonShape topShape;
+	topShape.SetAsBox(object_size.x * 0.5, object_size.y * 0.25, b2Vec2(0, -object_size.y * 0.25), 0);
+	topFixture.shape = &topShape;
+	topFixture.density = 6.0f;//密度  密度を上げた
+	topFixture.friction = 0.3f;//摩擦
+	topFixture.restitution = 0.0f;//反発係数
+	topFixture.isSensor = false;//センサーかどうか
+	topFixture.filter = createFilterExclude("ground_filter", {}); // ground_filter を適用
+	b2Fixture* m_top_fixture = m_body->CreateFixture(&topFixture);
+
+
+	ObjectData* object_top_data = new ObjectData{ collider_ground };
+	if (m_top_fixture)
+	{
+		m_top_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_top_data);
+		object_top_data->need_anchor_level = need_level;
+		object_top_data->object_name = Object_Static_to_Dynamic;
+	}
+
+	// 下半分のボックス
+	b2PolygonShape bottomShape;
+	bottomShape.SetAsBox(object_size.x * 0.5, object_size.y * 0.25, b2Vec2(0, object_size.y * 0.25), 0);
+	bottomFixture.shape = &bottomShape;
+	bottomFixture.density = 6.0f;//密度  密度を上げた
+	bottomFixture.friction = 0.3f;//摩擦
+	bottomFixture.restitution = 0.0f;//反発係数
+	bottomFixture.isSensor = false;//センサーかどうか
+	bottomFixture.filter = createFilterExclude("object_filter", {}); // object_filter を適用
+	b2Fixture* m_bottom_fixture = m_body->CreateFixture(&bottomFixture);
+
+
+	ObjectData* object_bottom_data = new ObjectData{ collider_object };
+	if (m_bottom_fixture)
+	{
+		m_bottom_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_bottom_data);
+		object_bottom_data->need_anchor_level = need_level;
+		object_bottom_data->object_name = Object_Static_to_Dynamic;
+	}
+
+	////--------------------------------------------------------------------------------------------------
+	//アンカーポイントのフィクスチャ
+	b2FixtureDef fixture_anchorpoint;
+
+	// クラス内に b2Shape をメンバーとして保持する場合の例
+	b2PolygonShape shape_anchorpoint; // クラスのメンバー変数として保持
+
+
+	shape_anchorpoint.SetAsBox(object_size.x * 0.5 * 0.5, object_size.y * 0.5 * 0.5);
+	fixture_anchorpoint.shape = &shape_anchorpoint; // メンバー変数を使用
+
+	fixture_anchorpoint.density = 3.0f;//密度
+	fixture_anchorpoint.friction = 0.5f;//摩擦
+	fixture_anchorpoint.restitution = 0.0f;//反発係数
+	fixture_anchorpoint.isSensor = true;//センサーかどうか
+	fixture_anchorpoint.filter = createFilterExclude("object_filter", {});
+
+	b2Fixture* m_anchorpoint_fixture = m_body->CreateFixture(&fixture_anchorpoint);
+
+	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
+	m_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+
+
+	//------------------------------------------------------------------------
+	//スポナーのidを貰う
+	object_anchorpoint_data->id = id;
+	SetID(id);
+
+	object_anchorpoint_data->object_name = Object_Static_to_Dynamic;
+
+	object_anchorpoint_data->need_anchor_level = need_level;
+	m_need_level = need_level;
+
+
+	object_bottom_data->id = id;
+
+	object_top_data->id = id;
+
+
+	Break_Flag = true;
+}
+
 static_to_dynamic_block::~static_to_dynamic_block()
 {
 
@@ -269,6 +390,9 @@ void static_to_dynamic_block::Update()
 
 			SetObjectBody(nullptr);
 			Break_Flag = false;
+
+			ObjectManager& object_manager = ObjectManager::GetInstance();
+			object_manager.DestroyBlockDamage(GetID());
 		}
 
 		// 次のフレーム用に現在の速度を保存
