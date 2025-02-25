@@ -6,21 +6,21 @@
 
 
 //テクスチャのダウンロード グローバル変数にしてる
-ID3D11ShaderResourceView* g_ring_Texture = NULL;//真ん中の宝石の入れ物的なやつ
+static ID3D11ShaderResourceView* g_ring_Texture = NULL;//真ん中の宝石の入れ物的なやつ
 
-ID3D11ShaderResourceView* g_red_jewel_Texture = NULL;	//宝石　赤
-ID3D11ShaderResourceView* g_blue_jewel_Texture = NULL;	//宝石　青
-ID3D11ShaderResourceView* g_yellow_jewel_Texture = NULL;//宝石　黄
+static ID3D11ShaderResourceView* g_red_jewel_Texture = NULL;	//宝石　赤
+static ID3D11ShaderResourceView* g_blue_jewel_Texture = NULL;	//宝石　青
+static ID3D11ShaderResourceView* g_yellow_jewel_Texture = NULL;//宝石　黄
 
-ID3D11ShaderResourceView* g_red_jewel_fit_effect = NULL;	//宝石　赤
-ID3D11ShaderResourceView* g_blue_jewel_fit_effect = NULL;	//宝石　青
-ID3D11ShaderResourceView* g_yellow_jewel_fit_effect = NULL;//宝石　黄
-ID3D11ShaderResourceView* g_soul_gage_blue_Texture = NULL;          //ソウルゲージのテクスチャ（青）
-ID3D11ShaderResourceView* g_soul_gage_yellow_Texture = NULL;        //ソウルゲージのテクスチャ（黄色）
-ID3D11ShaderResourceView* g_soul_gage_red_Texture = NULL;           //ソウルゲージのテクスチャ（赤）
-ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ソウルゲージの外枠
-ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //アンカーレベルの仕切り
-ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベルの外側の装飾
+static ID3D11ShaderResourceView* g_red_jewel_fit_effect = NULL;	//宝石　赤
+static ID3D11ShaderResourceView* g_blue_jewel_fit_effect = NULL;	//宝石　青
+static ID3D11ShaderResourceView* g_yellow_jewel_fit_effect = NULL;//宝石　黄
+static ID3D11ShaderResourceView* g_soul_gage_blue_Texture = NULL;          //ソウルゲージのテクスチャ（青）
+static ID3D11ShaderResourceView* g_soul_gage_yellow_Texture = NULL;        //ソウルゲージのテクスチャ（黄色）
+static ID3D11ShaderResourceView* g_soul_gage_red_Texture = NULL;           //ソウルゲージのテクスチャ（赤）
+static ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ソウルゲージの外枠
+static ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //アンカーレベルの仕切り
+static ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //アンカーレベルの外側の装飾
 
 
 

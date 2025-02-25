@@ -22,9 +22,9 @@
 #define MAX_ANCHOR_POINT_IN_SENSOR (40)//センサー内に存在できる最大のアンカーポイントの数
 
 
-b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR];//アンカーポイントのボディを設定　グローバル変数
+static b2Body* g_anchor_point_body[MAX_ANCHOR_POINT_IN_SENSOR] = {};//アンカーポイントのボディを設定　グローバル変数
 
-b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
+static b2Body* g_select_anchor_point_body;//ターゲットとなるアンカーポイントのボディ
 
 std::chrono::steady_clock::time_point lastChangeTime = std::chrono::steady_clock::now();
 const std::chrono::duration<float> changeCooldown(0.5f);
@@ -33,10 +33,10 @@ float AnchorPoint::target_sheet_frame = 0;
 
 
 //センサーの画像
-ID3D11ShaderResourceView* g_anchor_point_target_Texture = NULL;
-ID3D11ShaderResourceView* g_anchor_point_target_lev1_Texture = NULL;
-ID3D11ShaderResourceView* g_anchor_point_target_lev2_Texture = NULL;
-ID3D11ShaderResourceView* g_anchor_point_target_lev3_Texture = NULL;
+static ID3D11ShaderResourceView* g_anchor_point_target_Texture = NULL;
+static ID3D11ShaderResourceView* g_anchor_point_target_lev1_Texture = NULL;
+static ID3D11ShaderResourceView* g_anchor_point_target_lev2_Texture = NULL;
+static ID3D11ShaderResourceView* g_anchor_point_target_lev3_Texture = NULL;
 
 
 

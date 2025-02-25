@@ -21,10 +21,10 @@ static ID3D11ShaderResourceView* g_Bg_Texture_light = NULL;  // ライト用
 static ID3D11ShaderResourceView* g_Bg_Texture_Most = NULL;  // ライト用テクスチャ
 
 // プレイヤーの過去の座標
-b2Vec2 g_old_player_position;
+static b2Vec2 g_old_player_position = {};
 
 // 背景インスタンス
-Bg bg;
+static Bg bg = {};
 
 //tutorial
 #define TUTORIAL_BACK_GROUND_HEIGHT (0)
