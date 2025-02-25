@@ -68,6 +68,11 @@ public:
 	//アイテムがゲットされた時の処理
 	void	Function();
 
+	void SetEffectPosition()
+	{
+		get_effect_pos =m_body->GetPosition();
+		jem_get_sheet_cnt = 1;
+	}
 
 	void Initialize();
 	void Update();
@@ -99,7 +104,8 @@ private:
 	float m_Alpha;
 
 	//テクスチャ
-	ID3D11ShaderResourceView* g_Texture;//アンカーのテクスチャ
+	ID3D11ShaderResourceView* g_Texture;		    //宝石のテクスチャ
+	ID3D11ShaderResourceView* g_get_effect_texture; //宝石を取得した時のエフェクト
 
 	//効果発揮したのか
 	bool	m_functioned = false;
@@ -130,6 +136,11 @@ private:
 	//エフェクト再生速度調整(何フレームで一枚絵を進めるか)
 	const int m_anim_speed = 2;
 	int m_anim_count = 0;
+
+	//宝石をゲットしてる
+	float jem_get_sheet_cnt;
+
+	b2Vec2 get_effect_pos;
 };
 
 #endif // !ITEM_JEWELRY_H
