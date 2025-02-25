@@ -159,6 +159,23 @@ void ObjectManager::AddTextureBlock(b2Vec2 Position, b2Vec2 block_size, float te
     texture_block_list.emplace_back(std::make_unique<Texture_block>(Position, block_size, texture_angle, texture));
 }
 
+//エネミースポナーの生成
+void ObjectManager::AddSpawnerEnemy(b2Vec2 position, b2Vec2 body_size, float angle)
+{
+    spawner_enemyList.emplace_back(std::make_unique<SpawnerEnemy>(position, body_size, angle));
+}
+//落下して壊れる岩のスポナーの生成
+void ObjectManager::AddSpawnerBlockDamage(b2Vec2 position, b2Vec2 body_size, float angle, int need_level)
+{
+    spawner_block_damageList.emplace_back(std::make_unique<SpawnerBlockDamage>(position, body_size, angle, need_level));
+}
+//スポナーから生成される落下して壊れる岩(静的→動的のブロック)の追加
+void ObjectManager::AddStatic_to_Dynamic_block_BySpawner(const b2Vec2& position, const b2Vec2& size, const int& need_level, int id)
+{
+    static_to_dynamic_blockList.emplace_back(std::make_unique<static_to_dynamic_block>
+        (position, size, need_level, id));
+}
+
 // ID を使って木を検索インスタンスを取得できる
 wood* ObjectManager::FindWoodByID(int id) {
     for (const auto& w : woodList) {
@@ -410,7 +427,27 @@ Texture_block* ObjectManager::FindTextureBlock(int id)
     return nullptr; // 見つからない場合は nullptr を返す
 }
 
+//IDを使ってエネミースポナーを検索
+SpawnerEnemy* ObjectManager::FindSpawnerEnemy(int id)
+{
+    for (auto& w : spawner_enemyList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
 
+//IDを使って落下して壊れる岩のスポナーを検索
+SpawnerBlockDamage* ObjectManager::FindSpawnerBlockDamage(int id)
+{
+    for (auto& w : spawner_block_damageList) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
 
 NoEntryBlock* ObjectManager::FindNoEntryBlokc(int id)
 {
@@ -471,6 +508,19 @@ void ObjectManager::DestroyEnemyFloating(int id)
     for (auto& w : enemy_floatingList) {
         if (w->GetID() == id) {
             enemy_floatingList.erase(enemy_floatingList.begin() + cnt);
+            break;
+        }
+        ++cnt;
+    }
+}
+
+//指定の壊れるブロックを削除
+void ObjectManager::DestroyBlockDamage(int id)
+{
+    int cnt = 0;
+    for (auto& w : static_to_dynamic_blockList) {
+        if (w->GetID() == id) {
+            static_to_dynamic_blockList.erase(static_to_dynamic_blockList.begin() + cnt);
             break;
         }
         ++cnt;
@@ -587,6 +637,18 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
+    for (auto& w : spawner_enemyList)
+    {
+        w->Initialize();
+    }
+
+    for (auto& w : spawner_block_damageList)
+    {
+        w->Initialize();
+    }
+
+    Item_Coin_UI::Initialize();
+
 }
 
 
@@ -611,7 +673,10 @@ void ObjectManager::UpdateAll() {
     }
 
     for (auto& w : static_to_dynamic_blockList) {
-        w->Update();
+        if(w)
+        {
+            w->Update();
+        }
     }
 
     for (auto& w : movable_groundList) {
@@ -715,6 +780,15 @@ void ObjectManager::UpdateAll() {
         w->Update();
     }
 
+    for (auto& w : spawner_enemyList)
+    {
+        w->Update();
+    }
+
+    for (auto& w : spawner_block_damageList)
+    {
+        w->Update();
+    }
 }
 
 // 全ての木を描画
@@ -821,6 +895,15 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
+    for (auto& w : spawner_enemyList)
+    {
+        w->Draw();
+    }
+
+    for (auto& w : spawner_block_damageList)
+    {
+        w->Draw();
+    }
   
 }
 
@@ -939,6 +1022,16 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
+    for (auto& w : spawner_enemyList)
+    {
+        w->Finalize();
+    }
+
+    for (auto& w : spawner_block_damageList)
+    {
+        w->Finalize();
+    }
+
     for (auto& w : no_enetry_block_list)
     {
         w->Finalize();
@@ -989,6 +1082,8 @@ void ObjectManager::FinalizeAll() {
 
     texture_block_list.clear();
 
+    spawner_enemyList.clear();
+    spawner_block_damageList.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

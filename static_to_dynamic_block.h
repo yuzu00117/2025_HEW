@@ -26,6 +26,8 @@ class static_to_dynamic_block
 public:
 
 	static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, collider_type_Box_or_Circle collider_type, int need_anchor_level,bool break_flag);
+	//スポナーから生成される壊れるブロック用のコンストラクタ
+	static_to_dynamic_block(b2Vec2 position, b2Vec2 body_size, int need_level, int id);
 	~static_to_dynamic_block();
 
 
