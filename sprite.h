@@ -58,4 +58,7 @@ void DrawSerialDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, 
 //TotalRowsがないのは、どんな時でもRowsは1だと想定してるからである
 void DrawGaugeSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int GaugeBottom_Pattern_ID, int Value_Pattern_ID, float Alpha = 1.0f);
 
+//スケール調整されてないアニメーション描画関数
+void DrawSpriteAnimOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int Cols, int Rows, int Pattern, float Alpha);
+
 #endif//_SPRITE_H
