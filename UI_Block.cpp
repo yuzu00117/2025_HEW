@@ -157,28 +157,90 @@ void UI_block::Update()
 	{
 		if (m_flag == true)
 		{
-
-
-			sheet_cnt += 0.3;
-
-			if (m_ui_type == ANCHOR_SIGNBOARD)
+			Player& player = Player::GetInstance();
+			switch (m_ui_type)
 			{
-				if (AnchorPoint::GetTargetAnchorPointBody != nullptr)
+			case NULL_UI_TYPE:
+				break;
+			case ARROW:
+				break;
+			case BUTTON_A:
+				break;
+			case BUTTON_B:
+				break;
+			case VIDEO_BUTTON_A:
+				break;
+			case VIDEO_BUTTON_LEFT_STICK:
+				break;
+			case VIDEO_BUTTON_RIGHT_STICK:
+				break;
+			case VIDEO_BUTTON_ZR:
+				break;
+			case MOVE_SIGNBOARD:
+
+				sheet_cnt += 0.3;
+				if (90 <= sheet_cnt)
 				{
+					sheet_cnt = 0;
+				}
+				break;
+			case JUMP_SIGNBOARD:
+
+				sheet_cnt += 0.3;
+				if (90 <= sheet_cnt)
+				{
+					sheet_cnt = 0;
+				}
+
+				break;
+			case ANCHOR_SIGNBOARD:
+				
+
+				//ターゲット出来ている
+				if (AnchorPoint::GetTargetAnchorPointBody() != player.GetOutSidePlayerBody())
+				{
+					sheet_cnt += 0.5;
 					if (sheet_cnt < 90)
 					{
 						sheet_cnt = 90;
 					}
-					
+					//ループ
+					if (160 < sheet_cnt)
+					{
+						sheet_cnt = 115;
+					}
+					change_flag = true;
+				}
+				else if (change_flag == true)
+				{
+					sheet_cnt += 0.5;
+					if (sheet_cnt < 90)
+					{
+						sheet_cnt = 90;
+					}
+					//ループ
+					if (160 < sheet_cnt)
+					{
+						sheet_cnt = 115;
+					}
 				}
 				else
 				{
+					sheet_cnt += 0.5;
+					//ループ
 					if (84 < sheet_cnt)
 					{
 						sheet_cnt = 0;
 					}
 				}
+
+				break;
+			default:
+				break;
 			}
+
+			
+			
 		}
 
 	}

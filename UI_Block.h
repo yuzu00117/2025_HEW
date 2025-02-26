@@ -141,6 +141,8 @@ private:
 
 	float sheet_cnt;
 
+	bool change_flag = false;
+
 };
 
 

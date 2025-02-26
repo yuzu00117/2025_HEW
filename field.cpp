@@ -294,7 +294,7 @@ void Field::Initialize()
 
 
 				if (field_map[y][x] == 11) {//中くらい木のオブジェクト 必要アンカーレベル2
-					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 12.0f), b2Vec2(2.0f, 1.0f), 2);
+					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 12.0f), b2Vec2(2.0f, 1.0f), 1);
 				}
 
 				//--------------------------------------------------------------------------------------
@@ -334,6 +334,18 @@ void Field::Initialize()
 				//看板のテクスチャ アンカー
 				if (field_map[y][x] == 22) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, ANCHOR_SIGNBOARD, 0.0f);
+				}
+
+
+				//看板の矢印
+				if (field_map[y][x] == 23) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 4.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, ARROW, 135.f);
+				}
+
+
+				//看板の矢印
+				if (field_map[y][x] == 24) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 4.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, ARROW, 90.0f);
 				}
 
 			}
