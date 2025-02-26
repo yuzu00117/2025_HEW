@@ -685,7 +685,62 @@ void DrawSplittingSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int 
 	GetDeviceContext()->Draw(NUM_VERTEX, 0);
 }
 
+//スケール調整されてないアニメーション描画関数
+void DrawSpriteAnimOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int Cols, int Rows, int Pattern, float Alpha)
+{
+	//頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
 
+	//マトリクス設定(今回不要)
+	//SetWorldViewProjection2D();	//座標の2D変換
+
+	//プロジェクションマトリクス設定
+	XMMATRIX projection;
+	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	SetProjectionMatrix(projection);
+
+	//ビューマトリクス設定
+	XMMATRIX view;
+	view = XMMatrixIdentity();
+	SetViewMatrix(view);
+
+	//移動&回転&拡大、縮小マトリクス設定
+	XMMATRIX trans, rot, scale, world;
+	scale = XMMatrixScaling(Scale.x, Scale.y, 1.0f);
+	rot = XMMatrixRotationZ(Rotation);	//回転用関数。()内はラジアン角なので注意
+	trans = XMMatrixTranslation(Position.x, Position.y, 0.0f); //移動用関数
+	world = scale * rot * trans;	//回転の情報と移動の情報をかけ合わせる
+	SetWorldMatrix(world);	//GPU側にマトリクスを設定させる
+
+	//プロミティブトポロジ設定
+	//頂点データをどう結ぶかを設定する
+	//(D3D11_PRIMITIVE_TOPOLOGY_LINELIST) <- ここを変更でいろいろできる
+	GetDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//マテリアル設定(半年後に学習)
+	MATERIAL material;
+	ZeroMemory(&material, sizeof(material));
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	SetMaterial(material);
+
+	//アニメーション
+	int x, y;
+	x = Pattern % Cols;	//剰余算
+	y = Pattern / Rows;
+
+	//テクスチャ座標変更
+	g_Vertex[0].texcoord = XMFLOAT2(1.0f / Cols * x, 1.0f / Rows * y);
+	g_Vertex[1].texcoord = XMFLOAT2(1.0f / Cols * (x + 1), 1.0f / Rows * y);
+	g_Vertex[2].texcoord = XMFLOAT2(1.0f / Cols * x, 1.0f / Rows * (y + 1));
+	g_Vertex[3].texcoord = XMFLOAT2(1.0f / Cols * (x + 1), 1.0f / Rows * (y + 1));
+
+	SetVertexSprite();
+
+	//polygon描画
+	GetDeviceContext()->Draw(NUM_VERTEX, 0);
+}
 
 
 

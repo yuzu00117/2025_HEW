@@ -94,22 +94,6 @@ private:
 
 };
 
-
-class ResulttScene :public Scene {
-
-public:
-    void Initialize() override;
-
-    void Update() override;
-
-    void Draw()override;
-
-    void Finalize() override;
-
-private:
-    int total_score_points = 0;
-};
-
 class VideoScene : public Scene {
 public :
     OP& op = OP::GetInstance();

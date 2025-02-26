@@ -311,6 +311,9 @@
     <ClCompile Include="spawner_block_damage.cpp">
       <Filter>ソースファイル\spawner</Filter>
     </ClCompile>
+    <ClCompile Include="Item_Barrier.cpp" />
+    <ClCompile Include="Item_Healing.cpp" />
+    <ClCompile Include="Stamina_UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -649,6 +652,12 @@
     </ClInclude>
     <ClInclude Include="spawner_block_damage.h">
       <Filter>ヘッダーファイル\spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="Item_Barrier.h" />
+    <ClInclude Include="Item_Healing.h" />
+    <ClInclude Include="Stamina_UI.h" />
+    <ClInclude Include="result.h">
+      <Filter>ヘッダーファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
