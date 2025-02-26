@@ -17,6 +17,7 @@
 #include"create_filter.h"
 #include"collider_type.h"
 #include"game.h"
+#include"anchor_point.h"
 #include"player.h"
 
 
@@ -25,6 +26,10 @@ static ID3D11ShaderResourceView* g_Texture = NULL;//センサーのテクスチャ
 static ID3D11ShaderResourceView* g_UI_texture = NULL;//UIのテクスチャ
 static ID3D11ShaderResourceView* g_arrow_Texture = NULL;//矢印のテクスチャ
 
+
+static ID3D11ShaderResourceView* g_move_signboard = NULL;//看板　動き
+static ID3D11ShaderResourceView* g_jump_signboard = NULL;//看板　ジャンプ
+static ID3D11ShaderResourceView* g_anachor_signboard = NULL;//看板　アンカー
 
 //センサーに触れたらUIを表示する
 UI_block::UI_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle)
@@ -108,9 +113,14 @@ void UI_block::Initialize()
 		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sensor.png");//センサーのテクスチャ
 		g_arrow_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_arrow.png");//ボディのテクスチャ
 		g_UI_texture = InitTexture(L"asset\\texture\\sample_texture\\Sample_ui_a_bottom.png");
+
+
+		g_move_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
+		g_jump_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_jump.png");
+		g_anachor_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_anchor.png");
 	}
 
-	switch (m_ui_type)
+	/*switch (m_ui_type)
 	{
 	case VIDEO_BUTTON_A:
 		m_video.Initialize("asset/movie/A.mp4", true);
@@ -138,8 +148,8 @@ void UI_block::Initialize()
 	}
 
 	m_video.SetState(Video_Pause);
+}*/
 }
-
 void UI_block::Update()
 {
 
@@ -147,13 +157,89 @@ void UI_block::Update()
 	{
 		if (m_flag == true)
 		{
-
-			if (m_is_video)
+			Player& player = Player::GetInstance();
+			switch (m_ui_type)
 			{
-				m_video.Update();
+			case NULL_UI_TYPE:
+				break;
+			case ARROW:
+				break;
+			case BUTTON_A:
+				break;
+			case BUTTON_B:
+				break;
+			case VIDEO_BUTTON_A:
+				break;
+			case VIDEO_BUTTON_LEFT_STICK:
+				break;
+			case VIDEO_BUTTON_RIGHT_STICK:
+				break;
+			case VIDEO_BUTTON_ZR:
+				break;
+			case MOVE_SIGNBOARD:
+
+				sheet_cnt += 0.3;
+				if (90 <= sheet_cnt)
+				{
+					sheet_cnt = 0;
+				}
+				break;
+			case JUMP_SIGNBOARD:
+
+				sheet_cnt += 0.3;
+				if (90 <= sheet_cnt)
+				{
+					sheet_cnt = 0;
+				}
+
+				break;
+			case ANCHOR_SIGNBOARD:
+				
+
+				//ターゲット出来ている
+				if (AnchorPoint::GetTargetAnchorPointBody() != player.GetOutSidePlayerBody())
+				{
+					sheet_cnt += 0.5;
+					if (sheet_cnt < 90)
+					{
+						sheet_cnt = 90;
+					}
+					//ループ
+					if (160 < sheet_cnt)
+					{
+						sheet_cnt = 115;
+					}
+					change_flag = true;
+				}
+				else if (change_flag == true)
+				{
+					sheet_cnt += 0.5;
+					if (sheet_cnt < 90)
+					{
+						sheet_cnt = 90;
+					}
+					//ループ
+					if (160 < sheet_cnt)
+					{
+						sheet_cnt = 115;
+					}
+				}
+				else
+				{
+					sheet_cnt += 0.5;
+					//ループ
+					if (84 < sheet_cnt)
+					{
+						sheet_cnt = 0;
+					}
+				}
+
+				break;
+			default:
+				break;
 			}
 
-
+			
 			
 		}
 
@@ -189,18 +275,17 @@ void UI_block::Draw()
 
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ GetSensorSize().x * scale,GetSensorSize().y * scale }
-	);
+	//DrawSprite(
+	//	{ draw_x,
+	//	  draw_y },
+	//	GetBody()->GetAngle(),
+	//	{ GetSensorSize().x * scale,GetSensorSize().y * scale }
+	//);
 
 	
 
 
-	if (m_flag)
-	{
+	
 		Player& player = Player::GetInstance();
 		b2Vec2 player_Pos = player.GetOutSidePlayerBody()->GetPosition();
 
@@ -244,14 +329,53 @@ void UI_block::Draw()
 		case VIDEO_BUTTON_LEFT_STICK:
 		case VIDEO_BUTTON_RIGHT_STICK:
 		case VIDEO_BUTTON_ZR:
-			m_video.Draw({draw_x,draw_y}, m_size.y);
+		/*	m_video.Draw({draw_x,draw_y}, m_size.y);*/
 			break;
 		default:
+			break;
+
+		case MOVE_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_move_signboard);
+
+			DrawSplittingSprite(
+				{ draw_x ,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale,GetSize().y * scale },
+				15, 6, sheet_cnt,1.0f
+				);
+
+			break;
+
+		case JUMP_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_jump_signboard);
+
+			DrawSplittingSprite(
+				{ draw_x ,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale,GetSize().y * scale },
+				15, 6, sheet_cnt, 1.0f
+			);
+
+			break;
+
+		case ANCHOR_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_anachor_signboard);
+
+			DrawSplittingSprite(
+				{ draw_x ,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale,GetSize().y * scale },
+				28, 6, sheet_cnt, 1.0f
+			);
+
 			break;
 		}
 
 	
-	}
+	
 
 
 
