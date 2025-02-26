@@ -201,7 +201,12 @@ void boss_pillar::Update()
 			// 横倒しを判定（85°以上 or -85°以下で壊れる）
 			if (angleDeg >= 87.0f || angleDeg <= -87.0f)
 			{
-				// 角度が閾値を超えたら壊す
+				// 角度が閾値を超えたらカウント
+				angle_delete_cnt++;
+			}
+			// 角度が閾値を超えたら壊す
+			if (10 < angle_delete_cnt)
+			{
 				Splitting_Destroy_Flag = true;
 			}
 		}
@@ -357,18 +362,20 @@ void boss_pillar::Pulling_pillar()
 			}
 		}
 
-		b2Body* body = GetObjectAnchorPointBody();
+		b2Body* anchor_body = GetObjectAnchorPointBody();
+		b2Body* body = GetBody();
 		b2Vec2 pulling_power = m_pulling_power;
 
 		Boss_1_1& boss = Boss_1_1::GetInstance();
 
 		//プレイヤー側に倒す
-		if (boss.GetOutSideBody()->GetPosition().x < body->GetPosition().x)//プレイヤーが左側
+		if (boss.GetOutSideBody()->GetPosition().x < anchor_body->GetPosition().x)//プレイヤーが左側
 		{
 			pulling_power.x = pulling_power.x * -1;
 		}
 
-		body->SetLinearVelocity(pulling_power);
+		anchor_body->SetLinearVelocity(pulling_power);
+		body->SetLinearVelocity(b2Vec2(pulling_power.x/20, 0.0f));
 
 		pulling_flag = false;
 	}
