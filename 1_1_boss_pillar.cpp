@@ -167,7 +167,7 @@ boss_pillar::~boss_pillar()
 void boss_pillar::Initialize()
 {
 	if (g_Texture == NULL) {
-		g_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_gyaser.png");//柱のテクスチャ
+		g_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\pillar.png");//柱のテクスチャ
 	}
 }
 
@@ -186,11 +186,7 @@ void boss_pillar::Update()
 			Destroy_Cnt++;
 		}
 
-		if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
-		{
-			DestroySplittedBodies(boss_pillar_body_Splitting);
-			isUse = false;
-		}
+		Pulling_pillar();
 
 
 		if (m_body != nullptr)
@@ -203,17 +199,21 @@ void boss_pillar::Update()
 			while (angleDeg < -180.0f) angleDeg += 360.0f;
 
 			// 横倒しを判定（85°以上 or -85°以下で壊れる）
-			if (angleDeg >= 85.0f || angleDeg <= -85.0f)
+			if (angleDeg >= 87.0f || angleDeg <= -87.0f)
 			{
 				// 角度が閾値を超えたら壊す
 				Splitting_Destroy_Flag = true;
 			}
 		}
-		Pulling_pillar();
-
 
 
 		Destroy_Splitting();
+
+		if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
+		{
+			DestroySplittedBodies(boss_pillar_body_Splitting);
+			isUse = false;
+		}
 	}
 }
 
@@ -360,10 +360,10 @@ void boss_pillar::Pulling_pillar()
 		b2Body* body = GetObjectAnchorPointBody();
 		b2Vec2 pulling_power = m_pulling_power;
 
-
+		Boss_1_1& boss = Boss_1_1::GetInstance();
 
 		//プレイヤー側に倒す
-		if (PlayerPosition::GetPlayerPosition().x < body->GetPosition().x)//プレイヤーが左側
+		if (boss.GetOutSideBody()->GetPosition().x < body->GetPosition().x)//プレイヤーが左側
 		{
 			pulling_power.x = pulling_power.x * -1;
 		}
@@ -405,7 +405,7 @@ void boss_pillar::Draw()
 				{ draw_x,
 				  draw_y },
 				GetBody()->GetAngle(),
-				{ GetSize().x * scale ,GetSize().y * scale }
+				{ GetSize().x * scale*2 ,GetSize().y * scale }
 			);
 		}
 
@@ -432,7 +432,7 @@ void boss_pillar::Draw()
 					{ body_draw_x,
 					body_draw_y },
 					boss_pillar_body_Splitting[i]->GetAngle(),
-					{ GetSize().x / Splitting_x * scale,GetSize().y / Splitting_y * scale },
+					{ GetSize().x / Splitting_x * scale*2,GetSize().y / Splitting_y * scale },
 					Splitting_x,
 					Splitting_y,
 					i,
