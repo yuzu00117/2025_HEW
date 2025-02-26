@@ -875,10 +875,6 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
-    for (auto& w : Ui_block_list)
-    {
-        w->Draw();
-    }
 
     for (auto& w : no_enetry_block_list)
     {
@@ -922,6 +918,12 @@ void ObjectManager::DrawBack()
     for (auto& w : texture_block_list) {
         w->Draw();
     }
+
+    for (auto& w : Ui_block_list)
+    {
+        w->Draw();
+    }
+
 }
 
 
