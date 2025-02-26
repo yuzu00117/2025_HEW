@@ -30,45 +30,45 @@ constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
 //テクスチャのダウンロード グローバル変数にしてる
 
 //背景の表示
-ID3D11ShaderResourceView* g_stage_select_background_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_background_Texture = NULL;
 
 
 //Aボタン押した時のエフェクト
-ID3D11ShaderResourceView* g_stage_select_tap_effect_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_tap_effect_Texture = NULL;
 
 //コインのキラキラのエフェクト
-ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture = NULL;
 //コインのキラキラのエフェクト1
-ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture1 = NULL;
+static ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture1 = NULL;
 //コインのキラキラのエフェクト2
-ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture2 = NULL;
+static ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture2 = NULL;
 //コインのキラキラのエフェクト3
-ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture3 = NULL;
+static ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture3 = NULL;
 //コインのキラキラのエフェクト4
-ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture4= NULL;
+static ID3D11ShaderResourceView* g_stage_select_coin_effect_Texture4= NULL;
 
 //チュートリアルステージのやホップアップ
-ID3D11ShaderResourceView* g_stage_select_hopup_tutorial_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_hopup_tutorial_Texture = NULL;
 //１－１のホップアップ
-ID3D11ShaderResourceView* g_stage_select_hopup_1_1_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_hopup_1_1_Texture = NULL;
 //まだ解放してないマップのホップアップ
-ID3D11ShaderResourceView* g_stage_select_hopup_unknow_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_hopup_unknow_Texture = NULL;
 
 //管理用に使う数字
-ID3D11ShaderResourceView* g_stage_select_number_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_number_Texture = NULL;
 
 
 //決定した時に使うズームイン
-ID3D11ShaderResourceView* g_stage_select_fade_black_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_fade_black_Texture = NULL;
 
 //決定してステージにとぶまでにテクスチャなくなる問題を潰すためのくろ
-ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
 
 
 
 // メンバ変数として保持
 
-StagePointFactory m_stagePointFactory;
+static StagePointFactory m_stagePointFactory;
 
 
 
@@ -138,12 +138,7 @@ void StageSelectScene::Update()
 		//コントローラーの入力の受け取り
 		ControllerState state = GetControllerInput();
 
-		if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
-
-		{
-			/*SceneManager& sceneManager = SceneManager::GetInstance();
-			sceneManager.ChangeScene(SCENE_GAME);*/
-		};
+	
 
 
 		// Box2Dワールドの更新処理（必要なら追加可能）
@@ -180,6 +175,8 @@ void StageSelectScene::Update()
 				m_player.SetTapTextureFlag(true);
 			}
 		}
+
+		
 	
 
 		//カーソルをステージポイントにあててる時
@@ -227,6 +224,14 @@ void StageSelectScene::Update()
 				break;
 			}
 		}
+
+
+		//タイトルに戻る
+		if (Keyboard_IsKeyDown(KK_R) || (state.buttonB))
+		{
+			SceneManager& sceneManager = SceneManager::GetInstance();
+			sceneManager.ChangeScene(SCENE_TITLE);
+		};
 
 
 	

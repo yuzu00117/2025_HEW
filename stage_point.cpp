@@ -16,10 +16,10 @@
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
 
 //テクスチャのダウンロード グローバル変数にしてる
-ID3D11ShaderResourceView* g_stage_select_stage_point_tutorial_Texture = NULL;
-ID3D11ShaderResourceView* g_stage_select_stage_point_1_1_Texture = NULL;
-ID3D11ShaderResourceView* g_stage_select_stage_point_unknow_Texture = NULL;
-ID3D11ShaderResourceView* g_stage_select_stage_point_effect_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_stage_point_tutorial_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_stage_point_1_1_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_stage_point_unknow_Texture = NULL;
+static ID3D11ShaderResourceView* g_stage_select_stage_point_effect_Texture = NULL;
 
 
 
