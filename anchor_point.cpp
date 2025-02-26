@@ -31,6 +31,8 @@ const std::chrono::duration<float> changeCooldown(0.5f);
 
 float AnchorPoint::target_sheet_frame = 0;
 
+float AnchorPoint::anchor_point_sheet_cnt = 0;
+
 
 //センサーの画像
 static ID3D11ShaderResourceView* g_anchor_point_target_Texture = NULL;
@@ -38,6 +40,8 @@ static ID3D11ShaderResourceView* g_anchor_point_target_lev1_Texture = NULL;
 static ID3D11ShaderResourceView* g_anchor_point_target_lev2_Texture = NULL;
 static ID3D11ShaderResourceView* g_anchor_point_target_lev3_Texture = NULL;
 
+static ID3D11ShaderResourceView* g_anchor_point_lock_target_lev2_Texture = NULL;
+static ID3D11ShaderResourceView* g_anchor_point_lock_target_lev3_Texture = NULL;
 
 
 
@@ -173,6 +177,9 @@ void AnchorPoint::Initialize()
 		g_anchor_point_target_lev1_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_blue.png");
 		g_anchor_point_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_yellow.png");
 		g_anchor_point_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\point_red.png");
+
+		g_anchor_point_lock_target_lev2_Texture = InitTexture(L"asset\\texture\\anchor_point\\yellow_rock.png");
+		g_anchor_point_lock_target_lev3_Texture = InitTexture(L"asset\\texture\\anchor_point\\red_rock.png");
 	
 
 
@@ -256,13 +263,56 @@ void AnchorPoint::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_Texture);
 				break;
 			case 1:
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+				switch (AnchorSpirit::GetAnchorLevel())
+				{
+				case 1:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					break;
+				case 2:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev2_Texture);
+					break;
+				case 3:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev3_Texture);
+					break;
+				default:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					break;
+				}
+				
 				break;
 			case 2:
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
+				switch (AnchorSpirit::GetAnchorLevel())
+				{
+				case 1:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					break;
+				case 2:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
+					break;
+				case 3:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev3_Texture);
+					break;
+				default:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					break;
+				}
 				break;
 			case 3:
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
+				switch (AnchorSpirit::GetAnchorLevel())
+				{
+				case 1:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					break;
+				case 2:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
+					break;
+				case 3:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
+					break;
+				default:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					break;
+				}
 				break;
 			default:
 				break;
@@ -272,12 +322,15 @@ void AnchorPoint::Draw()
 
 
 			//draw
-			DrawSprite(
+			DrawSplittingSprite(
 				{ draw_x,
 				  draw_y },
 				g_anchor_point_body[i]->GetAngle(),
-				{ 75,75 }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				{ 75,75 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				30,1,anchor_point_sheet_cnt,1.0f
 			);
+
+			anchor_point_sheet_cnt += 0.5;
 		}
 	}
 
@@ -340,6 +393,9 @@ void AnchorPoint::Finalize()
 	if (g_anchor_point_target_lev1_Texture) UnInitTexture(g_anchor_point_target_lev1_Texture);
 	if (g_anchor_point_target_lev2_Texture) UnInitTexture(g_anchor_point_target_lev2_Texture);
 	if (g_anchor_point_target_lev3_Texture) UnInitTexture(g_anchor_point_target_lev3_Texture);
+
+	if (g_anchor_point_lock_target_lev2_Texture) UnInitTexture(g_anchor_point_lock_target_lev2_Texture);
+	if (g_anchor_point_lock_target_lev3_Texture) UnInitTexture(g_anchor_point_lock_target_lev3_Texture);
 
 }
 
