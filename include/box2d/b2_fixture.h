@@ -288,8 +288,15 @@ inline const b2FixtureUserData& b2Fixture::GetUserData() const
 
 inline b2Body* b2Fixture::GetBody()
 {
+	if (this == nullptr || m_body == nullptr)
+	{
+		return nullptr; // ƒGƒ‰[‰ñ”ğ
+	}
 	return m_body;
 }
+
+
+
 
 inline const b2Body* b2Fixture::GetBody() const
 {

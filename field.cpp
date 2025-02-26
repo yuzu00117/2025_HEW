@@ -993,7 +993,7 @@ void Field::Initialize()
 				
 				//----------------------------------------------------------------------------------------------------------------------------------------------------
 				//ボスのオブジェクトに使う柱
-				b2Vec2 pillar_size=b2Vec2(3.0f,13.f);
+				b2Vec2 pillar_size=b2Vec2(1.5f,14.5f);
 
 				if (field_map[y][x] == 32) {
 					objectManager.AddBossPillar(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), pillar_size, 1, 6, boss_room_level_2);
