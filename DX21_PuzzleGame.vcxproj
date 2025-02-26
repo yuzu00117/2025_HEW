@@ -166,6 +166,7 @@
     <ClCompile Include="enemy_attack.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_floating.cpp" />
+    <ClCompile Include="Item_Barrier.cpp" />
     <ClCompile Include="spawner_block_damage.cpp" />
     <ClCompile Include="spawner_enemy.cpp" />
     <ClCompile Include="enemy_static.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="enemy_attack.h" />
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_floating.h" />
+    <ClInclude Include="Item_Barrier.h" />
     <ClInclude Include="spawner_block_damage.h" />
     <ClInclude Include="spawner_enemy.h" />
     <ClInclude Include="enemy_static.h" />

@@ -20,6 +20,8 @@
 // コライダータイプの列挙型
 enum ColliderTypeList
 {
+    collider_none,
+
     collider_player_body,
     collider_player_leg,
     collider_player_sensor,
