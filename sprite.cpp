@@ -408,6 +408,52 @@ void DrawDividedSpritePlayer(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, 
 
 
 
+void DrawGaugeSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols,int GaugeBottom_Pattern_ID, int Value_Pattern_ID, float Alpha)
+{
+	//頂点バッファ設定
+	UINT stride = sizeof(VERTEX_3D);
+	UINT offset = 0;
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &g_VertexBuffer, &stride, &offset);
+
+	//プロジェクションマトリクス設定
+	XMMATRIX projection;
+	projection = XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);
+	SetProjectionMatrix(projection);
+
+	//ビューマトリクス設定
+	XMMATRIX view;
+	view = XMMatrixIdentity();
+	SetViewMatrix(view);
+
+	//移動・回転マトリクス設定
+	XMMATRIX world, rot, trans, scale;
+	scale = XMMatrixScaling(Scale.x, Scale.y, 0.0f);
+	rot = XMMatrixRotationZ(Rotation);
+	trans = XMMatrixTranslation(Position.x, Position.y, 0.0f);
+	world = scale * rot * trans;
+	SetWorldMatrix(world);
+
+	//プリミティブトポロジ設定
+	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	//マテリアル設定（半年後に現れる）
+	MATERIAL material;
+	ZeroMemory(&material, sizeof(material));
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
+	SetMaterial(material);
+
+
+	g_Vertex[0].texcoord = XMFLOAT2(0.0f, 1.f / TotalCols * (Value_Pattern_ID - 1));
+	g_Vertex[1].texcoord = XMFLOAT2(1.0f, 1.f / TotalCols * (Value_Pattern_ID - 1));
+	g_Vertex[2].texcoord = XMFLOAT2(0.0f, 1.f / TotalCols * GaugeBottom_Pattern_ID);
+	g_Vertex[3].texcoord = XMFLOAT2(1.0f, 1.f / TotalCols * GaugeBottom_Pattern_ID);
+
+	SetVertexSprite();
+
+	//ポリゴン描画
+	GetDeviceContext()->Draw(NUM_VERTEX, 0);
+}
+
 void DrawSerialDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int StartPattern_ID, int EndPattern_ID, float Alpha)
 {
 	//EndPatter_IDがMAX、つまりTotalColsと同じ場合、下のend_xが0になっちゃうから、それを防ぐためのインクリメント処理

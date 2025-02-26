@@ -74,7 +74,7 @@ float Player::m_AnchorThrowing_SpeedUp = 1.0f;
 bool Player::m_is_jumping = false;
 bool Player::m_jump_pressed = false;
 bool Player::m_direction = 1;
-b2Vec2 Player::m_jump_force = b2Vec2(0.0f, -0.43f);
+b2Vec2 Player::m_jump_force = b2Vec2(0.0f, -0.45f);
 float Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;
@@ -1252,11 +1252,11 @@ void Player::Draw()
         // シェーダリソースを設定
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_player_sensor_Texture);
 
-        DrawSprite(
-            {draw_x,
-             draw_y},
-            m_body->GetAngle(),
-            {GetSensorSize().x * scale, GetSensorSize().y * scale});
+        //DrawSprite(
+        //    {draw_x,
+        //     draw_y},
+        //    m_body->GetAngle(),
+        //    {GetSensorSize().x * scale, GetSensorSize().y * scale});
 
         // エフェクトレベル３になった時のフレーム
         DrawAnchorLevel3Frame();
