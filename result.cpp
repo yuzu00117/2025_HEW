@@ -20,21 +20,21 @@
 
 
 //テクスチャのダウンロード グローバル変数にしてる
-ID3D11ShaderResourceView* g_result_Texture = NULL;
+static ID3D11ShaderResourceView* g_result_Texture = NULL;
 
 //スコアランクのテクスチャ
-ID3D11ShaderResourceView* total_score_texture = NULL;		//トータルランクのテクスチャ格納用
-ID3D11ShaderResourceView* coin_score_texture = NULL;		//コインランクのテクスチャ格納用
-ID3D11ShaderResourceView* clear_time_score_texture = NULL;	//コインランクのテクスチャ格納用
-ID3D11ShaderResourceView* gokai_score_texture = NULL;       //豪快ランクのテクスチャ格納用
-ID3D11ShaderResourceView* g_score_rank_C_stamp_Texture = NULL;	//Cランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_B_stamp_Texture = NULL;	//Bランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_A_stamp_Texture = NULL;	//Aランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_S_stamp_Texture = NULL;	//Sランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_C_Texture = NULL;	//Cランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_B_Texture = NULL;	//Cランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_A_Texture = NULL;	//Cランク（スタンプ）
-ID3D11ShaderResourceView* g_score_rank_S_Texture = NULL;	//Cランク（スタンプ）
+static ID3D11ShaderResourceView* total_score_texture = NULL;		//トータルランクのテクスチャ格納用
+static ID3D11ShaderResourceView* coin_score_texture = NULL;		//コインランクのテクスチャ格納用
+static ID3D11ShaderResourceView* clear_time_score_texture = NULL;	//コインランクのテクスチャ格納用
+static ID3D11ShaderResourceView* gokai_score_texture = NULL;       //豪快ランクのテクスチャ格納用
+static ID3D11ShaderResourceView* g_score_rank_C_stamp_Texture = NULL;	//Cランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_B_stamp_Texture = NULL;	//Bランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_A_stamp_Texture = NULL;	//Aランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_S_stamp_Texture = NULL;	//Sランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_C_Texture = NULL;	//Cランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_B_Texture = NULL;	//Cランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_A_Texture = NULL;	//Cランク（スタンプ）
+static ID3D11ShaderResourceView* g_score_rank_S_Texture = NULL;	//Cランク（スタンプ）
 
 //スコアランクの描画サイズ
 #define RANK_SIZE (150)

@@ -104,30 +104,10 @@ void Boss_Wall_Objcet::Update()
 		if (m_body != nullptr)
 		{
 
-
-			if (AnchorSpirit::GetAnchorLevel() == 3)
-			{
-				//アンカーポイントを作る
-				CreateAnchorPoint();
-			}
-			else
-			{
-				//アンカーポイントを削除する
-				DeleteAnchorPoint();
-			}
-
 			if (Splitting_end == true)
 			{
 				Destroy_Cnt++;
 			}
-
-			if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
-			{
-				DestroySplittedBodies(boss_pillar_body_Splitting);
-				isUse = false;
-			}
-
-
 
 			if (GetrPullingFlag() == true)
 			{
@@ -142,12 +122,29 @@ void Boss_Wall_Objcet::Update()
 				pulling_cnt++;
 			}
 
+			if (AnchorSpirit::GetAnchorLevel() == 3)
+			{
+				//アンカーポイントを作る
+				CreateAnchorPoint();
+			}
+			else
+			{
+				//アンカーポイントを削除する
+				DeleteAnchorPoint();
+			}
+
 			if (120 < pulling_cnt)
 			{
 				Splitting_Destroy_Flag = true;
 			}
 
 			Destroy_Splitting();
+
+			if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
+			{
+				DestroySplittedBodies(boss_pillar_body_Splitting);
+				isUse = false;
+			}
 		}
 		
 	}
