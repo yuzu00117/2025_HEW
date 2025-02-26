@@ -54,4 +54,8 @@ void DrawSplittingSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int 
 // （よくわからなかったらサムに聞いてちょー）
 void DrawSerialDividedSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int TotalRows, int StartPattern_ID, int EndPattern_ID, float Alpha = 1.0f);
 
+//ソウルゲージ描画用
+//TotalRowsがないのは、どんな時でもRowsは1だと想定してるからである
+void DrawGaugeSprite(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int TotalCols, int GaugeBottom_Pattern_ID, int Value_Pattern_ID, float Alpha = 1.0f);
+
 #endif//_SPRITE_H

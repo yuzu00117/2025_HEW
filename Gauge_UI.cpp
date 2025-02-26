@@ -5,6 +5,8 @@
 #include"player_stamina.h"
 
 
+#define GaugeUI_Cols_MAX	(100)
+
 //テクスチャのダウンロード グローバル変数にしてる
 static ID3D11ShaderResourceView* g_ring_Texture = NULL;//真ん中の宝石の入れ物的なやつ
 
@@ -156,21 +158,26 @@ void Gauge_UI::Draw()
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
 			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue();
-			if (virtual_spirit > 100) { virtual_spirit = 100.0f; }
+			if (virtual_spirit > GaugeUI_Cols_MAX) { virtual_spirit = GaugeUI_Cols_MAX; }
 
 			//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
 			//Max状態の時の長さに比例して、今のソウル値の長さを調整
-			temp_spirit_scale_y = (virtual_spirit / 100) * gauge_only_size.y;
+			temp_spirit_scale_y = (virtual_spirit / GaugeUI_Cols_MAX) * gauge_only_size.y;
 			scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
 			//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
 		//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
 			temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
 
+			int PatternID = GaugeUI_Cols_MAX - virtual_spirit;
+			if (virtual_spirit >= GaugeUI_Cols_MAX)
+			{
+				PatternID ++;
+			}
 
 			// シェーダリソースを設定
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_blue_Texture);
 
-			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+			DrawGaugeSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, GaugeUI_Cols_MAX, GaugeUI_Cols_MAX, PatternID);
 
 			//もしこれが１層目なら次はダメージ層を描く
 			count_layer++;
@@ -181,22 +188,27 @@ void Gauge_UI::Draw()
 		if (anchor_level > 1)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
-			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 100;
-			if (virtual_spirit > 100) { virtual_spirit = 100.0f; }
+			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 100;	//100は下のアンカーレベルのマックス
+			if (virtual_spirit > GaugeUI_Cols_MAX) { virtual_spirit = GaugeUI_Cols_MAX; }
 
 			//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
 			//Max状態の時の長さに比例して、今のソウル値の長さを調整
-			temp_spirit_scale_y = (virtual_spirit / 100) * gauge_only_size.y;
+			temp_spirit_scale_y = (virtual_spirit / GaugeUI_Cols_MAX) * gauge_only_size.y;
 			scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
 			//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
 		//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
 			temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
 
+			int PatternID = GaugeUI_Cols_MAX - virtual_spirit;
+			if (virtual_spirit >= GaugeUI_Cols_MAX)
+			{
+				PatternID++;
+			}
 
 			// シェーダリソースを設定
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_yellow_Texture);
 
-			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+			DrawGaugeSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, GaugeUI_Cols_MAX, GaugeUI_Cols_MAX, PatternID);
 
 			//もしこれが１層目なら次はダメージ層を描く
 			count_layer++;
@@ -207,21 +219,26 @@ void Gauge_UI::Draw()
 		if (anchor_level == 3)
 		{
 			//今のゲージ枠に相当するアンカーのソウル値を計算
-			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 200;
+			float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() - 200;		//200は下のアンカーレベルのマックス
 
 			//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
 			//Max状態の時の長さに比例して、今のソウル値の長さを調整
-			temp_spirit_scale_y = (virtual_spirit / 100) * gauge_only_size.y;
+			temp_spirit_scale_y = (virtual_spirit / GaugeUI_Cols_MAX) * gauge_only_size.y;
 			scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
 			//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
 		//ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
 			temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
 
+			int PatternID = GaugeUI_Cols_MAX - virtual_spirit;
+			if (virtual_spirit >= GaugeUI_Cols_MAX)
+			{
+				PatternID++;
+			}
 
 			// シェーダリソースを設定
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_red_Texture);
 
-			DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)virtual_spirit);
+			DrawGaugeSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, GaugeUI_Cols_MAX, GaugeUI_Cols_MAX, PatternID);
 
 			//もしこれが１層目なら次はダメージ層を描く
 			count_layer++;
@@ -411,11 +428,11 @@ void Gauge_UI::DrawGaugeDamaged()
 	XMFLOAT2	scale;
 
 	//ゲージ枠に相当する前フレームのアンカーのソウル値を計算
-	float prev_virtual_spirit = (int)AnchorSpirit::GetAnchorSpiritValue() % 100 + AnchorSpirit::GetAnchorSpiritDamage();
+	float prev_virtual_spirit = (int)AnchorSpirit::GetAnchorSpiritValue() % GaugeUI_Cols_MAX + AnchorSpirit::GetAnchorSpiritDamage();
 
 	//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
 	//Max状態の時の長さに比例して、今のソウル値の長さを調整
-	temp_spirit_scale_y = (prev_virtual_spirit / 100) * gauge_only_size.y;
+	temp_spirit_scale_y = (prev_virtual_spirit / GaugeUI_Cols_MAX) * gauge_only_size.y;
 	scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
 	//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
 //ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
@@ -438,7 +455,13 @@ void Gauge_UI::DrawGaugeDamaged()
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_gage_blue_Texture);
 	}
 
-	DrawSerialDividedSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, 100, 1, 1, (int)prev_virtual_spirit, 0.55f);
+	int PatternID = GaugeUI_Cols_MAX - prev_virtual_spirit;
+	if (prev_virtual_spirit >= GaugeUI_Cols_MAX)
+	{
+		PatternID++;
+	}
+
+	DrawGaugeSprite(XMFLOAT2(gauge_only_position.x, temp_spirit_position_y), 0.0f, scale, GaugeUI_Cols_MAX, GaugeUI_Cols_MAX, PatternID, 0.55f);
 
 
 }
