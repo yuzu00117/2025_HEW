@@ -273,8 +273,8 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 	ObjectData *boss_sensor_data = new ObjectData{collider_boss_senosr};
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
-	boss_field_level = 1;
-
+	boss_field_level = 2;
+	boss_hp = 3;
 	now_boss_state = charge_attack_state;
 }
 
