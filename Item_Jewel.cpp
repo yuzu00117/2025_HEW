@@ -22,6 +22,7 @@
 #include"sound.h"
 #include"Gauge_UI.h"
 #include"easing.h"
+#include"Item_Manager.h"
 
 //グローバル変数
 static ID3D11ShaderResourceView* g_Effect_Texture;    //エフェクトのテクスチャ
@@ -244,6 +245,8 @@ void    ItemJewel::Function()
     case YELLOW:
         PlayerStamina::SetAvoidDamageOnce(true);
         app_atomex_start(Player_Buff_Invincible_Sound);
+        ItemManager& item_manager = ItemManager::GetInstance();
+        item_manager.AddBarrier(PlayerPosition::GetPlayerPosition(), { player.GetSize().x * 6.0f, player.GetSize().y * 3.0f }, 0.0f, player.GetOutSidePlayerBody());
         break;
     }
 
