@@ -64,6 +64,15 @@ void ItemManager::AddSpirit(b2Vec2 position, b2Vec2 body_size, float angle, Spir
     lastSpirit.Initialize();
 }
 
+void ItemManager::AddHealing(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning)
+{
+    if (respawning)
+    {
+        return;
+    }
+    m_Healing_List.emplace_back(std::make_unique<ItemHealing>(position, body_size, angle));
+}
+
 
 
 ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
@@ -108,6 +117,16 @@ ItemSpirit* ItemManager::FindItem_Spirit_ByID(int ID)
     return nullptr;
 }
 
+ItemHealing* ItemManager::FindItem_Healing(int id)
+{
+    for (const auto& w : m_Healing_List) {
+        if (w->GetID() == id){
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
 
 // 全てのアイテムを初期化
 void ItemManager::InitializeAll() 
@@ -123,6 +142,9 @@ void ItemManager::InitializeAll()
     }
 	Item_Coin_UI::Initialize();
     for (auto& w : m_Jewel_List) {
+        w->Initialize();
+    }
+    for (const auto& w : m_Healing_List) {
         w->Initialize();
     }
 }
@@ -142,6 +164,9 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_SavePoint_List) {
         w->Update();
     }
+    for (const auto& w : m_Healing_List) {
+        w->Update();
+    }
 }
 
 // 全てのアイテムを描画
@@ -149,7 +174,9 @@ void ItemManager::DrawAll() {
 	for (auto& w : m_Coin_List) {
 		w->Draw();
 	}
-	
+    for (const auto& w : m_Healing_List) {
+        w->Draw();
+    }
 }
 
 // 全てのアイテムを描画
@@ -193,9 +220,14 @@ void ItemManager::FinalizeAll()
     for (auto& w : m_SavePoint_List) {
         w->Finalize();
     }
+
+    for (const auto& w : m_Healing_List) {
+        w->Finalize();
+    }
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Jewel_List.clear(); // 動的配列をクリアしてメモリ解放
     m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_Healing_List.clear();
 }
 
 //リスポン時の終了処理
@@ -224,6 +256,9 @@ void ItemManager::Finalize_WhenNextStage()
         w->Finalize();
     }
     for (auto& w : m_Jewel_List) {
+        w->Finalize();
+    }
+    for (const auto& w : m_Healing_List) {
         w->Finalize();
     }
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
@@ -271,6 +306,9 @@ void ItemManager::Initialize_WhenRespawn()
         w->CreateBody();
     }
 
+    for (const auto& w : m_Healing_List) {
+        w->CreateBody();
+    }
 }
 
 void ItemManager::Initialize_WhenNextStage()
@@ -285,6 +323,9 @@ void ItemManager::Initialize_WhenNextStage()
         w->Initialize();
     }
     for (auto& w : m_Jewel_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_Healing_List) {
         w->Initialize();
     }
 }
