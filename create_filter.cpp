@@ -1,5 +1,6 @@
 #include"create_filter.h"
 #include"include/box2d/box2d.h"
+#include<iostream>
 
 //フィルター自体ビットフラグで付けるものなんだけど、文字列で管理したいので　変換ようね
 //フィルターを付けるための
@@ -27,6 +28,13 @@ std::unordered_map<std::string, uint16_t> filter_type = {
 b2Filter createFilterExclude(const std::string& category, const std::vector<std::string>& excludeMasks) {
     b2Filter filter;
 
+
+    // カテゴリが存在するかチェック
+    auto it = filter_type.find(category);
+    if (it == filter_type.end()) {
+        std::cerr << "Error: Category " << category << " not found in filter_type" << std::endl;
+        return filter; // エラー時のデフォルトフィルタを返す
+    }
     // カテゴリを設定
     filter.categoryBits = filter_type[category];
 

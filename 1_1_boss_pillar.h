@@ -140,6 +140,8 @@ private:
 
 	bool pulling_flag=false;
 
+	int angle_delete_cnt=0;
+
 
 	b2Vec2 old_vec;
 

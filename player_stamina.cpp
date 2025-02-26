@@ -60,6 +60,13 @@ void	PlayerStamina::EditPlayerStaminaValue(float value)
 	if (value < 0 && m_avoid_damage_once)
 	{
 		m_avoid_damage_once = false;
+		ItemManager& item_manager = ItemManager::GetInstance();
+		Player& player = Player::GetInstance();
+		ItemBarrier* barrier = item_manager.FindItem_Barrier_ByOwnerBody(player.GetOutSidePlayerBody());
+		if (barrier)
+		{
+			barrier->SetState(Barrier_Break);
+		}
 		return;
 	}
 
