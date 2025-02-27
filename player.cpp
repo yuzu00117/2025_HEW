@@ -124,6 +124,11 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     g_Beziers_prev_position = {0.0f, 0.0f}; // 前フレームでのposition
     g_Beziers_id = 0;                       //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
 
+    is_throw_anchor = false;                // アンカーを投げたときのたまちゃん削除フラグ
+    is_tamachan_disappearing = false;        // たまちゃんが消えるエフェクトのフラグ
+    tamachan_disappear_effect_cnt = 0.0f;    // たまちゃんが消えるエフェクトのカウント
+
+
     if (g_player_Texture == NULL)
     {
         // テクスチャのロード
@@ -791,14 +796,18 @@ void Player::Update()
     PlayerPosition::SetPlayerPosition(m_body->GetPosition());
 }
 
-void Player::Player_Damaged(int Change_to_HP, int invincibletime, const b2Body *attack_body)
+void Player::Player_Damaged(int Change_to_HP, int invincibletime, const b2Body *attack_body, bool knock_back_only)
 {
     // HPを減らす
     PlayerStamina::EditPlayerStaminaValue(Change_to_HP); // HPに加算減算する　今回は減算
 
     // 無敵時間を付与
-    invincible_time = invincibletime;
-    g_KnockBack_total_time = invincible_time * 0.27f; // ノックバックのする時間（無敵時間と比例してる）
+    ItemManager& item_mamager = ItemManager::GetInstance();
+    //　点滅無しのノックバックオンリーやバリアが張っている時は、点滅無し
+    if (knock_back_only || item_mamager.FindItem_Barrier_ByOwnerBody(m_body) != nullptr) { invincible_time = 1; }
+    else { invincible_time = invincibletime; }
+
+    g_KnockBack_total_time = invincibletime * 0.27f; // ノックバックのする時間（無敵時間と比例してる）
     if (attack_body != nullptr)
     {
         if (GetOutSidePlayerBody()->GetPosition().x < attack_body->GetPosition().x)
@@ -893,7 +902,7 @@ void Player::KnockBack_Update()
             g_Beziers_parameter_position[1][2] = {g_Beziers_parameter_position[1][0].x - distance_x_B, g_Beziers_parameter_position[1][0].y};
         }
 
-        // 3次ベジエ計算
+        // 2次ベジエ計算
         float time_elapced_ratio = 0.0f;
         switch (g_Beziers_id)
         {

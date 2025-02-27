@@ -39,21 +39,12 @@ public:
 		m_isdead = flag;
 	}
 
-	//アイテムによるダメージ回避あるかどうかを取得
-	static bool	GetAvoidDamageOnce() { return m_avoid_damage_once; }
-	//アイテムによるダメージ回避あるかどうかをセット
-	static void	SetAvoidDamageOnce(bool flag) { m_avoid_damage_once = flag; }
-
-
 private:
 	PlayerStamina(){}
 	~PlayerStamina(){}
 
 	//プレイヤーの体力
 	static  float	m_stamina;
-
-	//アイテムによるダメージ回避あるかどうか
-	static bool	m_avoid_damage_once;
 
 	//プレイヤーの死亡フラグ
 	static bool m_isdead;

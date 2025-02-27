@@ -96,32 +96,36 @@ void Game::Initialize()
         Stamina_UI::Initialize();
         break;
     case GAME_STATE_RESPAWN_INITIAL:
-        //リスポン用のアイテムの初期化
-        itemManager.Initialize_WhenRespawn();
-        if (scene.GetStageName() == STAGE_BOSS)
-        {
-            itemManager.UseAllJewel();
-        }
         //体力を初期化
         PlayerStamina::Initialize();
         //アンカーを初期化
         AnchorSpirit::Initialize();
         //豪快度を記録した値に戻す
         Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+
+        //リスポン用のアイテムの初期化
+        itemManager.Initialize_WhenRespawn();
+        if (scene.GetStageName() == STAGE_BOSS)
+        {
+            itemManager.UseAllJewel();
+        }
         break;
     case GAME_STATE_RESPAWN_SAVE_POINT:
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
+        //アンカーをlevel２にセット
+        AnchorSpirit::SetAnchorSpiritValueDirectly(100);
+        //豪快度を記録した値に戻す
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
         if (scene.GetStageName() == STAGE_BOSS) 
         {
             itemManager.UseAllJewel();
         }
-        //体力を初期化
-        PlayerStamina::Initialize();
-        //アンカーをlevel２にセット
-        AnchorSpirit::SetAnchorSpiritValueDirectly(100);
-        //豪快度を記録した値に戻す
-        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
         break;
     case GAME_STATE_NEXT_STAGE:
         //リスポン用のアイテムの初期化

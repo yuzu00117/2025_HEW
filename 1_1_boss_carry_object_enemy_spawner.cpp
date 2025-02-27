@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------------------------------
 // #name boss_carry_object_enemy_spawner.cpp
-// #description@ƒ{ƒX‚Ìã‹ó‚ğƒvƒJƒvƒJ‚µ‚Ä‚éƒGƒlƒ~[ƒIƒuƒWƒFƒNƒg‚ğ‚Á‚Ä‚Ä—‚Æ‚¹‚éƒGƒlƒ~[‚ÌƒXƒ|ƒi[
-// #make 2025/02/01@‰i–ì‹`–ç
+// #descriptionã€€ãƒœã‚¹ã®ä¸Šç©ºã‚’ãƒ—ã‚«ãƒ—ã‚«ã—ã¦ã‚‹ã‚¨ãƒãƒŸãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æŒã£ã¦ã¦è½ã¨ã›ã‚‹ã‚¨ãƒãƒŸãƒ¼ã®ã‚¹ãƒãƒŠãƒ¼
+// #make 2025/02/01ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2025/02/01
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 //          
 //----------------------------------------------------------------------------------------------------
 
@@ -21,23 +21,23 @@
 
 
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//’n–Ê‚ÌƒeƒNƒXƒ`ƒƒ
+static ID3D11ShaderResourceView* g_Texture = NULL;//åœ°é¢ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 boss_carry_object_spawner::boss_carry_object_spawner(b2Vec2 position, b2Vec2 Size, Boss_Room_Level level,bool left)
 {
     
     SetSize(Size);
 
-    //‘å‚«‚³‚ğ•â³
+    //å¤§ãã•ã‚’è£œæ­£
 
     b2Vec2 size;
     size.x = Size.x / BOX2D_SCALE_MANAGEMENT;
     size.y = Size.y / BOX2D_SCALE_MANAGEMENT;
 
-    // ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğæ“¾
+    // ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å–å¾—
     Box2dWorld& box2d_world = Box2dWorld::GetInstance();
     b2World* world = box2d_world.GetBox2dWorldPointer();
 
-    // ƒXƒ|ƒi[‚Ìƒ{ƒfƒB‚ğì¬
+    // ã‚¹ãƒãƒŠãƒ¼ã®ãƒœãƒ‡ã‚£ã‚’ä½œæˆ
     b2BodyDef body;
     body.type = b2_staticBody;
     body.position.Set(position.x, position.y);
@@ -45,11 +45,11 @@ boss_carry_object_spawner::boss_carry_object_spawner(b2Vec2 position, b2Vec2 Siz
 
     m_body = world->CreateBody(&body);
 
-    // Œ`ó‚Ì’è‹`
+    // å½¢çŠ¶ã®å®šç¾©
     b2PolygonShape shape;
     shape.SetAsBox(size.x / (2.0f * BOX2D_SCALE_MANAGEMENT), size.y / (2.0f * BOX2D_SCALE_MANAGEMENT));
 
-    // ƒtƒBƒNƒXƒ`ƒƒ‚Ìİ’è
+    // ãƒ•ã‚£ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 1.0f;
@@ -60,7 +60,7 @@ boss_carry_object_spawner::boss_carry_object_spawner(b2Vec2 position, b2Vec2 Siz
 
     m_body->CreateFixture(&fixture);
 
-    // Šeíƒf[ƒ^‚Ì•Û‘¶
+    // å„ç¨®ãƒ‡ãƒ¼ã‚¿ã®ä¿å­˜
     BossRoomLevel = level;
 
     left_flag = left;
@@ -69,23 +69,23 @@ boss_carry_object_spawner::boss_carry_object_spawner(b2Vec2 position, b2Vec2 Siz
 
 boss_carry_object_spawner::~boss_carry_object_spawner()
 {
-    for (auto enemy : enemyList)
-    {
-     /*   delete enemy;*/
-    }
-    enemyList.clear();
+
+    Finalize();
 }
 
 void boss_carry_object_spawner::Initialize()
 {
-    g_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//ƒOƒ‰ƒEƒ“ƒh‚ÌƒeƒNƒXƒ`ƒƒ
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+    }
 }
 
 void boss_carry_object_spawner::Update()
 {
     spawnTimer++;
 
-    // 10•b‚²‚Æ‚ÉƒGƒlƒ~[‚ğ¶¬
+    // 10ç§’ã”ã¨ã«ã‚¨ãƒãƒŸãƒ¼ã‚’ç”Ÿæˆ
     if (spawnTimer >= spawnIntervalFrames)
     {
         SpawnEnemy();
@@ -94,13 +94,18 @@ void boss_carry_object_spawner::Update()
 
  
 
-    // íœ‚³‚ê‚½ƒGƒlƒ~[‚ğƒŠƒXƒg‚©‚çíœ
     enemyList.erase(
         std::remove_if(enemyList.begin(), enemyList.end(), [](boss_carry_object_enemy* enemy) {
-            return enemy->IsDestroyed();
+            if (enemy->IsDestroyed()) {
+                delete enemy;  // ãƒ¡ãƒ¢ãƒªè§£æ”¾
+                return true;
+            }
+            return false;
             }),
         enemyList.end()
     );
+    enemyList.shrink_to_fit();
+
 }
 
 void boss_carry_object_spawner::SpawnEnemy()
@@ -109,24 +114,21 @@ void boss_carry_object_spawner::SpawnEnemy()
     if (BossRoomLevel == boss.GetBossFieldLevel())
     {
         ObjectManager& objectManager = ObjectManager::GetInstance();
-        objectManager.AddBossCarryObjectEnemy(m_body->GetPosition(), b2Vec2(3.0f, 3.0f), left_flag, 1.0, b2Vec2(5.0f, 1.0f), 1, 2);
+        objectManager.AddBossCarryObjectEnemy(m_body->GetPosition(), b2Vec2(3.0f, 3.0f), left_flag, 1.0, b2Vec2(4.0f, 4.0f), 1, 2);
     }
 }
 
 void boss_carry_object_spawner::Draw()
 {
-   /* for (auto& enemy : enemyList)
-    {
-        enemy->Draw();
-    }*/
+ 
 
 
     if (m_body != nullptr)
     {
-        // ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+        // ã‚¹ã‚±ãƒ¼ãƒ«ã‚’ã‹ã‘ãªã„ã¨ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚ºã®è¡¨ç¤ºãŒå°ã•ã„ã‹ã‚‰ä½¿ã†
         float scale = SCREEN_SCALE;
 
-        // ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+        // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¤®ä½ç½® (ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—ã§ã¯ä¹—ç®—ã ã£ãŸã‘ã©ã€€ä»Šå›ã‹ã‚‰åŠ ç®—ã«ã—ã¦ï¼‰
         b2Vec2 screen_center;
         screen_center.x = SCREEN_CENTER_X;
         screen_center.y = SCREEN_CENTER_Y;
@@ -154,11 +156,13 @@ void boss_carry_object_spawner::Draw()
 
 void boss_carry_object_spawner::Finalize()
 {
-    for (auto enemy : enemyList)
+    for (auto& enemy : enemyList)
     {
-        /*delete enemy;*/
+        delete enemy;
+        enemy = nullptr;  // ãƒã‚¤ãƒ³ã‚¿ã‚’nullã«ã™ã‚‹
     }
     enemyList.clear();
+    enemyList.shrink_to_fit();
 
     if (g_Texture) {
         UnInitTexture(g_Texture);
