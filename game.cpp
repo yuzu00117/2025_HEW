@@ -316,7 +316,7 @@ void Game::Update(void)
         HitStop::CountHitStop();
     }
     else {
-        if (world->GetBodyCount() > 0)
+        if (world && world->GetBodyCount() > 0)
         {
             world->Step(1.0f / 60.0f, 6, 2);
         }
@@ -362,8 +362,7 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
 
-         
-
+#ifdef _DEBUG
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
@@ -384,23 +383,11 @@ void Game::Update(void)
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
             }
-      
-
-
-
-
             
-   
-
-
-
-        
-
-#ifdef _DEBUG
-        //デバッグ文字
-        UpdateDebug();
+            //デバッグ文字
+            UpdateDebug();
 #endif // _DEBUG
-    }
+        }
 
 
     VibrationController::UpdateVibration(); // 毎フレーム振動を管理
