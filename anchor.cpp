@@ -140,10 +140,10 @@ void Anchor::DeleteAnchor()
 	if (g_anchor_instance != nullptr) {
 		g_anchor_instance->DestroyAnchorBody();
 	
-		//配列自体もデリート
-		delete g_anchor_instance;
-		//NULLもしとく
-		g_anchor_instance = nullptr;
+		////配列自体もデリート
+		//delete g_anchor_instance;
+		////NULLもしとく
+		//g_anchor_instance = nullptr;
 
 	}
 	

@@ -309,7 +309,7 @@ void Game::Update(void)
     SceneManager& sceneManager = SceneManager::GetInstance();
 
     // Box2D ワールドのステップ更新
-    b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+    b2World * world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 
     if (HitStop::GetHitStopFlag()==true)
     {

@@ -1613,20 +1613,32 @@ void Field::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
+	// m_p_field_array が nullptr の場合は処理をスキップ
+	if (m_p_field_array == nullptr) {
+		return;
+	}
+
 	// 2次元配列のメモリ解放
 	for (int y = 0; y < m_field_height; ++y) {
+		// m_p_field_array[y] が nullptr の場合はスキップ
+		if (m_p_field_array[y] == nullptr) {
+			continue;
+		}
 
 		for (int x = 0; x < m_field_width; ++x) {
-
 			if (m_p_field_array[y][x] != nullptr) {
-				
-				world->DestroyBody(m_p_field_array[y][x]->GetFieldBody());//フィールドを消す
+				world->DestroyBody(m_p_field_array[y][x]->GetFieldBody()); // フィールドを消す
 				delete m_p_field_array[y][x];
 				m_p_field_array[y][x] = nullptr;
 			}
 		}
+
+		// 行のメモリを解放
 		delete[] m_p_field_array[y];
+		m_p_field_array[y] = nullptr;
 	}
+
+	// 配列全体を解放
 	delete[] m_p_field_array;
 	m_p_field_array = nullptr;
 
