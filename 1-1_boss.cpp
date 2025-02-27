@@ -599,13 +599,13 @@ void Boss_1_1::UpdateCoolTime(void)
 				return;
 			}
 
-			// ジャンプ
-			if (Now_Jump_CoolTime > Max_Jump_CoolTime)
-			{
-				now_boss_state = jump_state;
-				Now_Jump_CoolTime = 0;
-				return;
-			}
+			//// ジャンプ
+			//if (Now_Jump_CoolTime > Max_Jump_CoolTime)
+			//{
+			//	now_boss_state = jump_state;
+			//	Now_Jump_CoolTime = 0;
+			//	return;
+			//}
 		}
 		else
 		{
