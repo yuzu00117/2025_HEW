@@ -2,7 +2,7 @@
 // #name enemyDynamic.cpp
 // #description 動的エネミー(プレイヤー追従)のcppファイル
 // #make 2024/11/20
-// #update 2025/02/05
+// #update 2025/02/26
 // #comment 追加・修正予定
 //          ・ステータス調整
 //           
@@ -301,8 +301,9 @@ void EnemyDynamic::Move()
 	}
 
 	
-	//崖で反転
+	//反転
 	if ((m_ground_cnt == m_sensor_move_size && m_old_ground_cnt > m_sensor_move_size && m_is_ground ) ||
+		(liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE && m_is_ground) ||
 		(!m_is_ground && GetBody()->GetLinearVelocity().x == 0 && m_ground_cnt > 0))
 	{
 		SetDirection(!GetDirection());
@@ -311,30 +312,14 @@ void EnemyDynamic::Move()
 	//画面内なら移動
 	if(GetInScreen())
 	{
-		//移動していないかつ、前回移動中だった場合ジャンプ
 		GetBody()->SetLinearVelocity(b2Vec2(0.0, liner_velocity.y));
-		if (((liner_velocity == b2Vec2(0.0, 0.0) && m_old_state == ENEMY_STATE_MOVE) && m_is_ground && !m_is_attack) ||
-			((m_ground_cnt > m_sensor_move_size + 3 && m_old_state == ENEMY_STATE_MOVE) && m_is_ground))
+		if (GetDirection())
 		{
-			if (GetDirection())
-			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, m_jump_force * m_move_force), true);
-			}
-			else if (!GetDirection())
-			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed * m_move_force, m_jump_force * m_move_force), true);
-			}
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, 0.0), true);
 		}
-		else
+		else if (!GetDirection())
 		{
-			if (GetDirection())
-			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(-m_speed * m_move_force, 0.0), true);
-			}
-			else if(!GetDirection())
-			{
-				GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed* m_move_force, 0.0), true);
-			}
+			GetBody()->ApplyLinearImpulseToCenter(b2Vec2(m_speed * m_move_force, 0.0), true);
 		}
 	}
 	else
