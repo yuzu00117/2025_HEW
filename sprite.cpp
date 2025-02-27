@@ -719,10 +719,9 @@ void DrawSpriteAnimOld(XMFLOAT2 Position, float Rotation, XMFLOAT2 Scale, int Co
 	//(D3D11_PRIMITIVE_TOPOLOGY_LINELIST) <- ここを変更でいろいろできる
 	GetDeviceContext()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	//マテリアル設定(半年後に学習)
 	MATERIAL material;
 	ZeroMemory(&material, sizeof(material));
-	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	material.Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, Alpha);
 	SetMaterial(material);
 
 	//アニメーション
