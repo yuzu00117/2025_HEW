@@ -423,7 +423,8 @@ void Game::Update(void)
             next_state = GAME_STATE_GAMEOVER;
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
-            sceneManager.ChangeScene(SCENE_RESULT);
+            sceneManager.SetStageName(STAGE_TUTORIAL);
+            sceneManager.ChangeScene(SCENE_TITLE);
         }
     }
 
