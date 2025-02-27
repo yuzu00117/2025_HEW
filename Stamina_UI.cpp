@@ -66,7 +66,7 @@ void Stamina_UI::Update()
 	}
 	else
 	{
-		heart_sheet_cnt += 0.3;
+		heart_sheet_cnt += 0.2;
 	}
 
 	if (30 < heart_sheet_cnt)
