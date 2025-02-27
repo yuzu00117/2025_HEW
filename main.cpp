@@ -135,8 +135,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	//開発中はゲームシーンからスタート
 	#ifdef _DEBUG
-	sceneManager.SetStageName(STAGE_BOSS);
-	sceneManager.ChangeScene(SCENE_GAME);
+	sceneManager.SetStageName(STAGE_SELECT);
+	sceneManager.ChangeScene(SCE);
 	#else
 	sceneManager.ChangeScene(SCENE_TITLE);
 	#endif

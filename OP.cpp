@@ -27,7 +27,7 @@ OP::~OP()
 
 void OP::Initialize()
 {
-	video.Initialize("asset/movie/op.mp4", false);
+	video.Initialize("asset/movie/hew_movie.mp4", false);
 	g_pause_Texture = InitTexture(L"asset\\texture\\sample_texture\\video_pause.png");
 
 	m_pause = false;
