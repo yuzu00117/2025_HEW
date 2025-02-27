@@ -24,7 +24,7 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 	if (g_Enemy_Texture == NULL)
 	{
 		g_Enemy_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating_moving.png");//動的エネミーの移動のテクスチャ
-		g_Object_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//オブジェクトのテクスチャ
+		g_Object_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\rock_down_damege.png");//オブジェクトのテクスチャ
 	}
 	// ワールドのインスタンス
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();

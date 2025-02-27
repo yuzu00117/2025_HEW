@@ -243,10 +243,23 @@ void AnchorPoint::Draw()
 				}
 			}
 
+			// ボディが nullptr でないか確認
+			if (!g_anchor_point_body[i]) {
+				return;
+			}
+
+			// フィクスチャがあるか確認
 			b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
 			if (!fixtureA) {
 				return;
 			}
+
+			// アドレスが無効でないか確認
+			if (reinterpret_cast<uintptr_t>(fixtureA) < 0x1000) {
+				return;
+			}
+
+		
 
 			void* userData = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
 			if (!userData) {

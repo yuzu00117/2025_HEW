@@ -197,6 +197,8 @@ void ItemManager::UpdateAll() {
     for (auto& w : m_Barrier_List) {
         w->Update();
     }
+    m_Barrier_List.remove_if([](const auto& p) {return p->GetBody() == nullptr; });
+    
 }
 
 // 全てのアイテムを描画

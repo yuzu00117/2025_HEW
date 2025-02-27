@@ -280,7 +280,7 @@ public:
 
             if (0.7f < object_velocity)//ここに入ったらオブジェクトが移動中であり、被弾判定してよい
             {
-                    player.Player_Damaged(0, 120, object_body);//被弾処理
+                    player.Player_Damaged(0, 120, object_body, true);//被弾処理
             }
 
         }
@@ -1333,10 +1333,6 @@ public:
             (objectA->collider_type == collider_player_leg && objectB->collider_type == collider_boss))
         {
 
-            app_atomex_start(Player_Dead_Sound);
-            HitStop::StartHitStop(15);
-            CameraShake::StartCameraShake(5, 3, 15);
-
             const b2Body* boss_body = nullptr;
             if (objectA->collider_type == collider_boss)
             {
@@ -1347,7 +1343,7 @@ public:
                 boss_body = fixtureB->GetBody();
             }
 
-            player.Player_Damaged(0, 120, boss_body);
+            player.Player_Damaged(0, 120, boss_body, true);
             
 
         }
