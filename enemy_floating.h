@@ -13,6 +13,7 @@
 
 #include "enemy.h"
 #include "player_stamina.h"
+#include <vector>
 
 //==========マクロ定義==========//
 #define ENEMY_FLOATING_LIFE (100)
@@ -25,6 +26,7 @@ enum ENEMY_FLOATING_STATE
 	ENEMY_FLOATING_STATE_NULL,
 	ENEMY_FLOATING_STATE_IDLE,
 	ENEMY_FLOATING_STATE_MOVE,
+	ENEMY_FLOATING_STATE_EXPLODE,
 	ENEMY_FLOATING_STATE_DIE,
 };
 
@@ -32,20 +34,21 @@ enum ENEMY_FLOATING_STATE
 class EnemyFloating : public Enemy
 {
 private:
-	b2Body*	m_body = nullptr;
 	float m_speed = 0.2f;
 	bool	m_sensed_player = false;	//プレイヤーを感知したかどうか
-	int m_anim_id = 0;
-
-	int m_attack_cooling_time = 0;	//攻撃クールタイム
+	float m_anim_id = 0;
 
 	//エネミーの状態(動作)
-	ENEMY_FLOATING_STATE m_state = ENEMY_FLOATING_STATE_IDLE;
+	ENEMY_FLOATING_STATE m_state;
 
 public:
 	EnemyFloating() = default;
 	EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle);
 	~EnemyFloating() = default;
+
+	//フィルターを変換できる
+	void updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks);
+
 
 	void Initialize() override;
 	void Finalize() override;
@@ -56,36 +59,26 @@ public:
 	{
 		return m_state;
 	}
-	void SetState(ENEMY_FLOATING_STATE state)
-	{
-		m_state = state;
-		if (m_state == ENEMY_FLOATING_STATE_DIE)
-		{
-			m_anim_id = 0;
-		}
-	}
+	void SetState(ENEMY_FLOATING_STATE state);
+
 	
 	//浮遊敵のセンサーがプレイヤーを検知しているかどうかを取得
 	bool	GetIfSensedPlayer() { return m_sensed_player; }
 	//浮遊敵のセンサーがプレイヤーを検知しているかどうかをセット
 	void	SetIfSensedPlayer(bool flag) { 
 		m_sensed_player = flag; 
-		m_state = ENEMY_FLOATING_STATE_MOVE;
+		SetState(ENEMY_FLOATING_STATE_MOVE);
 		if (m_sensed_player == false)
 		{
-			m_state = ENEMY_FLOATING_STATE_IDLE;
+			SetState(ENEMY_FLOATING_STATE_IDLE);
 			//追尾止めるために残ってる移動量を消す
 			GetBody()->SetLinearVelocity(b2Vec2(0.0f,0.0f));
 		}
 	}
-
-	//攻撃クールタイムを取得
-	int	GetAttactCoolingTime() { return m_attack_cooling_time; }
-	//攻撃クールタイムをセット
-	void	SetAttactCoolingTime(int time) { m_attack_cooling_time = time; }
-
 	//移動
 	void Move();
+
+	
 
 };
 
