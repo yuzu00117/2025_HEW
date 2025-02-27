@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name main.cpp
 // #description main 
-// #make 2024/11/02@@‰i–ì‹`–ç
+// #make 2024/11/02ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/11/02
-// #comment ’Ç‰ÁEC³—\’è
-//          EŠî–{“I‚Éö‹Æ’Ê‚è‚Ìƒeƒ“ƒvƒŒ[ƒgˆø‚Á’£‚Á‚Ä‚«‚½
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»åŸºæœ¬çš„ã«æˆæ¥­é€šã‚Šã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå¼•ã£å¼µã£ã¦ããŸ
 //          
 //----------------------------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@
 
 
 
-//ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
+//ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ãƒªãƒ³ã‚¯
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib, "d3dcompiler.lib")
 #pragma comment (lib, "winmm.lib")
@@ -31,23 +31,23 @@
 #pragma comment(lib, "dxguid.lib")
 
 
-//ƒ}ƒNƒ’è‹`
+//ãƒã‚¯ãƒ­å®šç¾©
 #define CLASS_NAME "GameWindow"
-#define WINDOW_CAPTION "‚±‚ÌƒEƒBƒ“ƒhƒE‚ğÁ‚·‚ÆƒvƒƒOƒ‰ƒ€I—¹"
+#define WINDOW_CAPTION "ã“ã®ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’æ¶ˆã™ã¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†"
 
-//ƒvƒƒgƒ^ƒCƒvéŒ¾
+//ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 
-//ƒOƒ[ƒoƒ‹•Ï”
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
 #ifdef _DEBUG
 int g_CountFPS;
 char g_DebugStr[2048] = WINDOW_CAPTION;
 #endif//_DEBUG
 
 
-//ƒƒCƒ“
+//ãƒ¡ã‚¤ãƒ³
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -58,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	
 
-	//ƒEƒBƒ“ƒhƒEƒNƒ‰ƒX‚Ì“o˜^
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹ã®ç™»éŒ²
 	WNDCLASS wc = {};
 	wc.lpfnWndProc = WndProc;
 	wc.lpszClassName = CLASS_NAME;
@@ -70,18 +70,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	RECT rc = { 0, 0, (LONG)SCREEN_WIDTH, (LONG)SCREEN_HEIGHT };
 	AdjustWindowRect(&rc, WS_EX_OVERLAPPEDWINDOW, FALSE);
 
-	//ƒEƒBƒ“ƒhƒE‚Ìì¬
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
 	HWND hWnd = CreateWindow(
-		CLASS_NAME,         //g—p‚·‚éƒEƒBƒ“ƒhƒEƒNƒ‰ƒX
-		WINDOW_CAPTION,     //ƒEƒBƒ“ƒhƒE‚Ì–¼‘O
+		CLASS_NAME,         //ä½¿ç”¨ã™ã‚‹ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¯ãƒ©ã‚¹
+		WINDOW_CAPTION,     //ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®åå‰
 		WS_OVERLAPPEDWINDOW,//
 		CW_USEDEFAULT,      //x
 		CW_USEDEFAULT,      //y
-		rc.right - rc.left,  //•
-		rc.bottom - rc.top, //‚‚³
-		NULL,               //ƒEƒBƒ“ƒhƒE‚Ìe
-		NULL,               //ƒEƒBƒ“ƒhƒEƒƒjƒ…[‚Ìİ’è
-		hInstance,          //ƒAƒvƒŠƒP[ƒVƒ‡ƒ“–{‘Ì‚Ì•Ï”
+		rc.right - rc.left,  //å¹…
+		rc.bottom - rc.top, //é«˜ã•
+		NULL,               //ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®è¦ª
+		NULL,               //ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã®è¨­å®š
+		hInstance,          //ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³æœ¬ä½“ã®å¤‰æ•°
 		NULL                //
 	);
 
@@ -93,7 +93,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return -1;
 	}
 
-	//DirectX‚Ì‰Šú‰»iƒEƒBƒ“ƒhƒE‚ğì¬‚µ‚½Œã‚És‚¤j
+	//DirectXã®åˆæœŸåŒ–ï¼ˆã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã—ãŸå¾Œã«è¡Œã†ï¼‰
 	
 	if (FAILED(FirstInit(hInstance, hWnd, true)))
 	{
@@ -103,22 +103,22 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//Game& game = Game::GetInstance();
 
 
-	//ŠÔŒv‘ª—p
+	//æ™‚é–“è¨ˆæ¸¬ç”¨
 	DWORD dwExecLastTime;
 	DWORD dwFPSLastTime;
 	DWORD dwCurrentTime;
 	DWORD dwFrameCount;
 
-	//ƒtƒŒ[ƒ€ƒJƒEƒ“ƒg‰Šú‰»
+	//ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ãƒˆåˆæœŸåŒ–
 	timeBeginPeriod(1);
 	dwExecLastTime = dwFPSLastTime = timeGetTime();
 	dwCurrentTime = dwFrameCount = 0;
 
-	//ƒEƒBƒ“ƒhƒE•\¦(Init()‚ÌŒã‚ÉŒÄ‚Î‚È‚¢‚Æƒ_ƒ)
+	//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦è¡¨ç¤º(Init()ã®å¾Œã«å‘¼ã°ãªã„ã¨ãƒ€ãƒ¡)
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
-	//ƒƒbƒZ[ƒWƒ‹[ƒv
+	//ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—
 	MSG    msg;
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
@@ -131,14 +131,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	sceneManager.RegisterScene(SCENE_RESULT, []() { return std::make_unique<ResultScene>(); });
 	
 
-	//‰ŠúƒV[ƒ“‚Ìİ’è
+	//åˆæœŸã‚·ãƒ¼ãƒ³ã®è¨­å®š
 
-	//ŠJ”­’†‚ÍƒQ[ƒ€ƒV[ƒ“‚©‚çƒXƒ^[ƒg
+	//é–‹ç™ºä¸­ã¯ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ã‹ã‚‰ã‚¹ã‚¿ãƒ¼ãƒˆ
 	#ifdef _DEBUG
 	sceneManager.SetStageName(STAGE_SELECT);
-	sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+  
+	sceneManager.ChangeScene(SCENE_TITLE);
+
 	#else
 	sceneManager.ChangeScene(SCENE_TITLE);
+  sceneManager.SetStageName(STAGE_SELECT);
 	#endif
 	
 
@@ -194,12 +197,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	timeEndPeriod(1);
 
-	//I—¹
+	//çµ‚äº†
 	FinalFinalize();
 	return (int)msg.wParam;
 }
 
-//ƒvƒƒV[ƒWƒƒ
+//ãƒ—ãƒ­ã‚·ãƒ¼ã‚¸ãƒ£
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg) {
@@ -215,17 +218,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_CLOSE:
-		if (MessageBox(hWnd, "–{“–‚ÉI—¹‚µ‚Ä‚æ‚ë‚µ‚¢‚Å‚·‚©H", "Šm”F", MB_OKCANCEL | MB_DEFBUTTON2) == IDOK) {
-			DestroyWindow(hWnd);//ƒEƒBƒ“ƒhƒEÁ‹
+		if (MessageBox(hWnd, "æœ¬å½“ã«çµ‚äº†ã—ã¦ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ", "ç¢ºèª", MB_OKCANCEL | MB_DEFBUTTON2) == IDOK) {
+			DestroyWindow(hWnd);//ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ¶ˆå»
 		}
 		return 0;
 
 	case WM_DESTROY:
-		PostQuitMessage(0);//ƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹
+		PostQuitMessage(0);//ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†
 		return 0;
 	};
 
-	//‚»‚Ì‘¼‚ÌƒƒbƒZ[ƒW‚Íwindows‚É”C‚¹‚é
+	//ãã®ä»–ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯windowsã«ä»»ã›ã‚‹
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
@@ -233,15 +236,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
-	//ƒŒƒ“ƒ_ƒŠƒ“ƒOˆ—‚Ì‰Šú‰»
+	//ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å‡¦ç†ã®åˆæœŸåŒ–
 	InitRenderer(hInstance, hWnd, bWindow);
 
 	VideoTexture::createAPI();
 
-	//ƒTƒEƒ“ƒh‚Ì‰Šú‰»
+	//ã‚µã‚¦ãƒ³ãƒ‰ã®åˆæœŸåŒ–
 	CRIInitialize();
 
-	//ƒ|ƒŠƒSƒ“
+	//ãƒãƒªã‚´ãƒ³
 	InitSprite();
 
 	return S_OK;
@@ -249,15 +252,15 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 void FinalFinalize()
 {
-	//ƒ|ƒŠƒSƒ“
+	//ãƒãƒªã‚´ãƒ³
 	UninitSprite();
 
-	//ƒTƒEƒ“ƒh‚ÌI—¹ˆ—
+	//ã‚µã‚¦ãƒ³ãƒ‰ã®çµ‚äº†å‡¦ç†
 	CRIFinalize();
 
 	VideoTexture::destroyAPI();
 
-	//ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ÌI—¹ˆ—
+	//ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã®çµ‚äº†å‡¦ç†
 	UninitRenderer();
 }
 
