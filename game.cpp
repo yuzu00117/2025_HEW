@@ -122,7 +122,7 @@ void Game::Initialize()
 
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
-        if (scene.GetStageName() == STAGE_BOSS) 
+        if (scene.GetStageName() == STAGE_BOSS)
         {
             itemManager.UseAllJewel();
         }
