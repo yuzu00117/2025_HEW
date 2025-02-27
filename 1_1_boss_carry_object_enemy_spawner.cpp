@@ -69,16 +69,15 @@ boss_carry_object_spawner::boss_carry_object_spawner(b2Vec2 position, b2Vec2 Siz
 
 boss_carry_object_spawner::~boss_carry_object_spawner()
 {
-    for (auto enemy : enemyList)
-    {
-        delete enemy;
-    }
-    enemyList.clear();
+    Finalize();
 }
 
 void boss_carry_object_spawner::Initialize()
 {
-    g_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//グラウンドのテクスチャ
+    if (g_Texture == NULL)
+    {
+        g_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_red.png");//グラウンドのテクスチャ
+    }
 }
 
 void boss_carry_object_spawner::Update()
@@ -94,13 +93,18 @@ void boss_carry_object_spawner::Update()
 
  
 
-    // 削除されたエネミーをリストから削除
     enemyList.erase(
         std::remove_if(enemyList.begin(), enemyList.end(), [](boss_carry_object_enemy* enemy) {
-            return enemy->IsDestroyed();
+            if (enemy->IsDestroyed()) {
+                delete enemy;  // メモリ解放
+                return true;
+            }
+            return false;
             }),
         enemyList.end()
     );
+    enemyList.shrink_to_fit();
+
 }
 
 void boss_carry_object_spawner::SpawnEnemy()
@@ -109,16 +113,13 @@ void boss_carry_object_spawner::SpawnEnemy()
     if (BossRoomLevel == boss.GetBossFieldLevel())
     {
         ObjectManager& objectManager = ObjectManager::GetInstance();
-        objectManager.AddBossCarryObjectEnemy(m_body->GetPosition(), b2Vec2(3.0f, 3.0f), left_flag, 1.0, b2Vec2(5.0f, 1.0f), 1, 2);
+        objectManager.AddBossCarryObjectEnemy(m_body->GetPosition(), b2Vec2(3.0f, 3.0f), left_flag, 1.0, b2Vec2(4.0f, 4.0f), 1, 2);
     }
 }
 
 void boss_carry_object_spawner::Draw()
 {
-   /* for (auto& enemy : enemyList)
-    {
-        enemy->Draw();
-    }*/
+ 
 
 
     if (m_body != nullptr)
@@ -154,11 +155,13 @@ void boss_carry_object_spawner::Draw()
 
 void boss_carry_object_spawner::Finalize()
 {
-    for (auto enemy : enemyList)
+    for (auto& enemy : enemyList)
     {
         delete enemy;
+        enemy = nullptr;  // ポインタをnullにする
     }
     enemyList.clear();
+    enemyList.shrink_to_fit();
 
     if (g_Texture) {
         UnInitTexture(g_Texture);
