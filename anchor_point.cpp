@@ -202,6 +202,8 @@ void AnchorPoint::Update()
 		}
 	}
 
+	anchor_point_sheet_cnt += 0.5;
+
 	
 
 }
@@ -282,10 +284,10 @@ void AnchorPoint::Draw()
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
 					break;
 				case 2:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev2_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
 					break;
 				case 3:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev3_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
 					break;
 				default:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
@@ -297,16 +299,16 @@ void AnchorPoint::Draw()
 				switch (AnchorSpirit::GetAnchorLevel())
 				{
 				case 1:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev2_Texture);
 					break;
 				case 2:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
 					break;
 				case 3:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev3_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
 					break;
 				default:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
 					break;
 				}
 				break;
@@ -314,16 +316,16 @@ void AnchorPoint::Draw()
 				switch (AnchorSpirit::GetAnchorLevel())
 				{
 				case 1:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev3_Texture);
 					break;
 				case 2:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev2_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_lock_target_lev3_Texture);
 					break;
 				case 3:
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
 					break;
 				default:
-					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev1_Texture);
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_point_target_lev3_Texture);
 					break;
 				}
 				break;
@@ -339,11 +341,11 @@ void AnchorPoint::Draw()
 				{ draw_x,
 				  draw_y },
 				g_anchor_point_body[i]->GetAngle(),
-				{ 75,75 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+				{ 100,100 },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 				30,1,anchor_point_sheet_cnt,1.0f
 			);
 
-			anchor_point_sheet_cnt += 0.5;
+			
 		}
 	}
 
