@@ -5,15 +5,15 @@
  *  ACB  Ver.        : Ver.1.44.1
  *  File Path        : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound2/Public/WorkUnit_0
  *  File Name        : CueSheet_0.h
- *  File Size        : 40873440 bytes
- *  Date Time        : 2025/02/21 11:43:22
+ *  File Size        : 48681984 bytes
+ *  Date Time        : 2025/02/27 16:10:22
  *  Target           : Public
- *  Cues             : 61
+ *  Cues             : 64
  *  CueSheet Comment : 
  *  Stream Awb Path  : C:/Users/k3821/Documents/CRIWARE/CriAtomCraft/projects/HEW_sound2/Public/WorkUnit_0/CueSheet_0.awb
  *===========================================================================*/
 
-#define CRI_CUESHEET_0_CUENUM (61)
+#define CRI_CUESHEET_0_CUENUM (64)
 
 /* AISAC Control List (AISAC Control ID) */
 
@@ -33,6 +33,7 @@
 #define CRI_CUESHEET_0_キャンセル音   ( 6) /*  */
 #define CRI_CUESHEET_0_一時停止音_メニュー音_ ( 7) /*  */
 #define CRI_CUESHEET_0_リザルト発表   (48) /*  */
+#define CRI_CUESHEET_0_成功音            (66) /*  */
 #define CRI_CUESHEET_0_アンカーヒットポイント ( 8) /*  */
 #define CRI_CUESHEET_0_アンカーポイントミス ( 9) /*  */
 #define CRI_CUESHEET_0_アンカーを引っ張る音 (10) /*  */
@@ -56,6 +57,8 @@
 #define CRI_CUESHEET_0_錨のスピードアップ (62) /*  */
 #define CRI_CUESHEET_0_攻撃無効         (64) /*  */
 #define CRI_CUESHEET_0_移動スピードアップ (65) /*  */
+#define CRI_CUESHEET_0_バリア破壊      (68) /*  */
+#define CRI_CUESHEET_0_中間復活         (69) /*  */
 #define CRI_CUESHEET_0_岩が落ちる音   (16) /*  */
 #define CRI_CUESHEET_0_宝を取る音      (17) /*  */
 #define CRI_CUESHEET_0_木が倒れる音   (18) /*  */
