@@ -361,7 +361,6 @@ void Game::Update(void)
 
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
-
          
 #ifndef _DEBUG
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
@@ -384,11 +383,11 @@ void Game::Update(void)
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
             }
-      
+
             //デバッグ文字
             UpdateDebug();
 #endif // _DEBUG
-    }
+        }
 
 
     VibrationController::UpdateVibration(); // 毎フレーム振動を管理
