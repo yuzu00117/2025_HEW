@@ -124,6 +124,11 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     g_Beziers_prev_position = {0.0f, 0.0f}; // 前フレームでのposition
     g_Beziers_id = 0;                       //  1回のノックバックで2次ベジエ2回やるから、ベジエ何回目かのID
 
+    is_throw_anchor = false;                // アンカーを投げたときのたまちゃん削除フラグ
+    is_tamachan_disappearing = false;        // たまちゃんが消えるエフェクトのフラグ
+    tamachan_disappear_effect_cnt = 0.0f;    // たまちゃんが消えるエフェクトのカウント
+
+
     if (g_player_Texture == NULL)
     {
         // テクスチャのロード
