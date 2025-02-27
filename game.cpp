@@ -122,7 +122,7 @@ void Game::Initialize()
 
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
-        if (scene.GetStageName() == STAGE_BOSS) 
+        if (scene.GetStageName() == STAGE_BOSS)
         {
             itemManager.UseAllJewel();
         }
@@ -294,7 +294,7 @@ void Game::Finalize(void)
     
 
 
-#ifdef _DEBUG
+#ifndef _DEBUG
     //デバッグ文字
     FinalizeDebug();
 #endif // _DEBUG
@@ -309,7 +309,7 @@ void Game::Update(void)
     SceneManager& sceneManager = SceneManager::GetInstance();
 
     // Box2D ワールドのステップ更新
-    b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+    b2World * world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 
     if (HitStop::GetHitStopFlag()==true)
     {
@@ -361,8 +361,8 @@ void Game::Update(void)
 
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
-
-#ifdef _DEBUG
+         
+#ifndef _DEBUG
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
@@ -383,7 +383,7 @@ void Game::Update(void)
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
             }
-            
+
             //デバッグ文字
             UpdateDebug();
 #endif // _DEBUG
@@ -425,8 +425,6 @@ void Game::Update(void)
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.ChangeScene(SCENE_RESULT);
         }
-
-
     }
 
     //シーン移行の管理（死亡した時以外のシーン移動）
@@ -465,10 +463,7 @@ void Game::Update(void)
                 break;
             }
         }
-
-
     }
-
 }
 
 
@@ -485,14 +480,11 @@ void Game::Draw(void)
     //2D描画なので深度無効
     SetDepthEnable(false);
 
- 
     //背景に描画
     objectManager.DrawBack();
 
     //ボスの描画処理
     boss.Draw();
-
-
 
     //描画の順番を調整するためにDrawのみ、外に出す
     itemManager.DrawAll();
@@ -504,59 +496,41 @@ void Game::Draw(void)
 
     itemManager.DrawFront();
 
-
     //プレイヤーの描画処理
     player.Draw();
 
     //アンカーの描画処理
     Anchor::Draw();
 
-  
-
     objectManager.DrawFront();
-
 
     //衝突時のエフェクト
     DrawImpactEffects(1.0f);
     DrawBlownAwayEffects(1.0f);
 
-
-
     Bg::FrontDraw();
-
-
-	
- 
-
-
-	//�c�@�̕`�揈��
+    // プレイヤーの残機を描画
 	PlayerLife::Draw();
-
-
-    Stamina_UI::Draw();
+    // プレイヤーの体力UIの描画
+    Stamina_UI::Draw(); 
+    // ソウルゲージUIの描画
 	Gauge_UI::Draw();
-
+    // 豪快度UIの描画（スコア）
     Gokai_UI::Draw();
-
-
-
 
     PillarFragmentsManager::GetInstance().DrawFragments();
 
     dead_production::Draw();
 
-
-
     //チェンジシーン
     change_scene_end_production::Draw();
-
 
     change_scene_start_production::Draw();
 
 
 
 
-#ifdef _DEBUG
+#ifndef _DEBUG
     //デバッグ文字
     DrawDebug();
 #endif // _DEBUG
