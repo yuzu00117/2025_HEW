@@ -61,6 +61,8 @@ public:
 private:
 	static float target_sheet_frame;
 
+	static float anchor_point_sheet_cnt;
+
 };
 
 
