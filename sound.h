@@ -87,7 +87,7 @@ enum Sound_Manager
 {
 	//BGM　10個
 	GAME_BGM,
-	TITLE_BGM,//Title init
+	TITLE_BGM,//Title init	2/27　タイトルBGM中身変更
 	STAGESELECT_BGM,//StageSelectScene inti
 	RESULT_BGM,//RESULT_init
 	BOSS1_BGM,
@@ -97,12 +97,13 @@ enum Sound_Manager
 	STAGE2_BGM,
 	BOSS2_BGM,
 
-	//UI音 5個
+	//UI音 6個
 	Select_Sound,
 	Decision_Sound,
 	Cancel_Sound,
 	Pose_Sound,
 	Result_Sound,
+	Success_Sound,	//	2/27追加　チュートリアル用成功音
 
 	//アンカー周り 5個
 	Anchor_Hit_Sound,//なんやこれ
@@ -111,7 +112,7 @@ enum Sound_Manager
 	Anchor_Thorw_Sound,//player.cpp crate_state
 	Anchor_Mark_Sound, //anchor_point.cpp
 
-	//プレイヤーSE 17個
+	//プレイヤーSE 20個
 	Player_Soul_Colect1_Sound,//playercpp update
 	Player_Damege_Sound, //player.cpp Player_Damaged
 	Player_Dead_Sound,//player_Stamina.cpp  EditPlayerStaminaValue
@@ -130,6 +131,8 @@ enum Sound_Manager
 	Player_Buff_AnchorSpeedUp_Sound,//	2/21追加　錨のスピードアップ
 	Player_Buff_Invincible_Sound,//		2/21追加　攻撃無効
 	Player_Buff_SpeedUp_Sound,//		2/21追加　プレイヤーのスピードアップ
+	Player_Shield_Break_Sound,//		2/27追加　プレイヤーのバリア破壊時
+	Player_Respawn_Sound,//				2/27追加　中間地点復活音
 
 	//環境SE 8個
 	Object_Rock_Fall_Sound,//static_to_dynamic_block.cpp  Update
@@ -218,6 +221,7 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_キャンセル音,
 	CRI_CUESHEET_0_一時停止音_メニュー音_,
 	CRI_CUESHEET_0_リザルト発表,
+	CRI_CUESHEET_0_成功音,
 	CRI_CUESHEET_0_アンカーヒットポイント,
 	CRI_CUESHEET_0_アンカーポイントミス,
 	CRI_CUESHEET_0_アンカーを引っ張る音,
@@ -241,6 +245,8 @@ static AppCueListItem g_cue_list[] = {
 	CRI_CUESHEET_0_錨のスピードアップ,
 	CRI_CUESHEET_0_攻撃無効,
 	CRI_CUESHEET_0_移動スピードアップ,
+	CRI_CUESHEET_0_バリア破壊,
+	CRI_CUESHEET_0_中間復活,
 	CRI_CUESHEET_0_岩が落ちる音,
 	CRI_CUESHEET_0_宝を取る音,
 	CRI_CUESHEET_0_木が倒れる音,
