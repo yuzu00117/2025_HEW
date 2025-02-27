@@ -525,6 +525,7 @@ void Player::Update()
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 
+#ifndef _DEBUG
     // ジャンプのバフ
     if (Keyboard_IsKeyDownTrigger(KK_Z))
     {
@@ -546,6 +547,7 @@ void Player::Update()
     {
         HitStop::StartHitStop(60);
     }
+#endif
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -554,6 +556,7 @@ void Player::Update()
 
     // 宝石使う処理(テスト用)
     //----------------------------------------------------------------------------------------------------------------------------------------------------
+#ifndef _DEBUG
     if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J)))
     {
         ItemManager &itemManager = ItemManager::GetInstance();
@@ -562,7 +565,7 @@ void Player::Update()
         app_atomex_start(Player_Soul_Colect1_Sound);
     }
     CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_B));
-
+#endif
     // アンカーの処理
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -779,11 +782,14 @@ void Player::Update()
         stick_y = -1.0f;
     }
 
+    // ダメージのテスト
+#ifndef _DEBUG
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;
         Player_Damaged(-50, 120, nullptr);
     }
+#endif
 
     // 絶対値に変更する デットゾーンの審査に使うため　tool.cppに作った
     // デットゾーンをつくる x,yの値を足して一定以上経ったら　呼び出し
