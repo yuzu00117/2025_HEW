@@ -7,7 +7,7 @@
 //          ・2025/02/04 YuzukiYamada リザルトにランク表示を追加
 //          ・2025/02/04 YuzukiYamada 豪快度・コイン・クリアタイムのランクのテクスチャの変更予定
 //----------------------------------------------------------------------------------------------------
-#include"scene.h"
+#include"result.h"
 #include"sprite.h"
 #include"texture.h"
 #include"Xinput_controller.h"
@@ -20,41 +20,50 @@
 
 
 //テクスチャのダウンロード グローバル変数にしてる
-static ID3D11ShaderResourceView* g_result_Texture = NULL;
+ID3D11ShaderResourceView* g_result_Texture = NULL;
+ID3D11ShaderResourceView* g_number_Texture = NULL;
+ID3D11ShaderResourceView* g_colon_Texture = NULL;
+ID3D11ShaderResourceView* g_gage_Texture = NULL;
+ID3D11ShaderResourceView* g_gage_frame_Texture = NULL;
 
 //スコアランクのテクスチャ
-static ID3D11ShaderResourceView* total_score_texture = NULL;		//トータルランクのテクスチャ格納用
-static ID3D11ShaderResourceView* coin_score_texture = NULL;		//コインランクのテクスチャ格納用
-static ID3D11ShaderResourceView* clear_time_score_texture = NULL;	//コインランクのテクスチャ格納用
-static ID3D11ShaderResourceView* gokai_score_texture = NULL;       //豪快ランクのテクスチャ格納用
-static ID3D11ShaderResourceView* g_score_rank_C_stamp_Texture = NULL;	//Cランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_B_stamp_Texture = NULL;	//Bランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_A_stamp_Texture = NULL;	//Aランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_S_stamp_Texture = NULL;	//Sランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_C_Texture = NULL;	//Cランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_B_Texture = NULL;	//Cランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_A_Texture = NULL;	//Cランク（スタンプ）
-static ID3D11ShaderResourceView* g_score_rank_S_Texture = NULL;	//Cランク（スタンプ）
+ID3D11ShaderResourceView* total_score_texture = NULL;		//トータルランクのテクスチャ格納用
+ID3D11ShaderResourceView* coin_score_texture = NULL;		//コインランクのテクスチャ格納用
+ID3D11ShaderResourceView* clear_time_score_texture = NULL;	//コインランクのテクスチャ格納用
+ID3D11ShaderResourceView* gokai_score_texture = NULL;       //豪快ランクのテクスチャ格納用
+ID3D11ShaderResourceView* g_score_rank_C_stamp_Texture = NULL;	//Cランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_B_stamp_Texture = NULL;	//Bランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_A_stamp_Texture = NULL;	//Aランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_S_stamp_Texture = NULL;	//Sランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_C_Texture = NULL;	//Cランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_B_Texture = NULL;	//Cランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_A_Texture = NULL;	//Cランク（スタンプ）
+ID3D11ShaderResourceView* g_score_rank_S_Texture = NULL;	//Cランク（スタンプ）
 
-//スコアランクの描画サイズ
-#define RANK_SIZE (150)
-#define TOTAL_RANK_SIZE (200)
-
-void ResulttScene::Initialize()
+void ResultScene::Initialize()
 {
-	//リザルト画面の背景テクスチャの読み込み
-	g_result_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_result.png");
+    //リザルト画面の背景テクスチャの読み込み
+    g_result_Texture = InitTexture(L"asset\\texture\\result_texture\\result_back_test.png");
+    //数字用テクスチャの読み込み
+    g_number_Texture = InitTexture(L"asset\\texture\\result_texture\\sample_number.png");
+    g_colon_Texture = InitTexture(L"asset\\texture\\result_texture\\sample_colon.png");
+
+    //ゲージ用テクスチャ
+    g_gage_Texture = InitTexture(L"asset\\texture\\result_texture\\score_gage.png");
+    g_gage_frame_Texture = InitTexture(L"asset\\texture\\result_texture\\score_gage_frame.png");
+
 
     //ランクのテクスチャの読み込み
     g_score_rank_C_Texture = InitTexture(L"asset\\texture\\score_texture\\score_c.png");
     g_score_rank_B_Texture = InitTexture(L"asset\\texture\\score_texture\\score_b.png");
     g_score_rank_A_Texture = InitTexture(L"asset\\texture\\score_texture\\score_a.png");
     g_score_rank_S_Texture = InitTexture(L"asset\\texture\\score_texture\\score_s.png");
-	//トータルランクのテクスチャの読み込み（スタンプ）
-	g_score_rank_C_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_c.png");
-	g_score_rank_B_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_b.png");
-	g_score_rank_A_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_a.png");
-	g_score_rank_S_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_s.png");
+
+    //トータルランクのテクスチャの読み込み（スタンプ）
+    g_score_rank_C_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_c.png");
+    g_score_rank_B_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_b.png");
+    g_score_rank_A_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_a.png");
+    g_score_rank_S_stamp_Texture = InitTexture(L"asset\\texture\\score_texture\\stamp03_s.png");
 
 
     //全ての音を止める
@@ -62,97 +71,100 @@ void ResulttScene::Initialize()
 
     //リザルトのBGMをかける
     app_atomex_start(RESULT_BGM);
-}
 
-void ResulttScene::Update()
-{
-    //コントローラーの入力の受け取り
-    ControllerState state = GetControllerInput();
-
-    //スコアポイントの一時格納用変数
-    int total_score_points = 0;
-
-
-
-    //豪快度を取得して、ランクに反映する
-    int gokai_count = Gokai_UI::GetNowGokaiCount(); //豪快度を取得
-    int gokai_score_points = 0; //豪快度のスコアポイント格納用
-
-    //豪快度に応じて豪快ランクのテクスチャとポイントを設定
-    if (gokai_count >= 3000) {
-        gokai_score_texture = g_score_rank_A_Texture;
-        gokai_score_points = 100;
-    }
-    else if (gokai_count >= 2000)
-    {
-        gokai_score_texture = g_score_rank_B_Texture;
-        gokai_score_points = 75;
-    } else {
-        gokai_score_texture = g_score_rank_C_Texture;
-        gokai_score_points = 50;
-    }
-
-
-
-    //コインの枚数を取得して、ランクに反映
-    int coin_count = Item_Coin_UI::GetNowCoinCount(); //コインの枚数を取得
-    int coin_score_points = 0; //コインのスコアポイント格納用
+    //スコアの取得
+    //コインの枚数を取得して、ランクに反映===============================
+    m_coin_count = Item_Coin_UI::GetNowCoinCount(); //コインの枚数を取得
+    int coin_score;
 
     //コインの枚数に応じてスコアランクのテクスチャとポイントを設定
-    if (coin_count >= 30)
+    if (m_coin_count >= 30)
     {
         coin_score_texture = g_score_rank_A_Texture;
-        coin_score_points = 100;
+        coin_score = 100;
     }
-    else if (coin_count >= 20)
+    else if (m_coin_count >= 20)
     {
         coin_score_texture = g_score_rank_B_Texture;
-        coin_score_points = 75;
-    } else {
+        coin_score = 75;
+    }
+    else {
         coin_score_texture = g_score_rank_C_Texture;
-        coin_score_points = 50;
+        coin_score = 50;
+    }
+
+    //豪快度を取得して、ランクに反映する==============================
+    m_gokai_count = Gokai_UI::GetNowGokaiCount(); //豪快度を取得
+    int gokai_score;
+
+    //豪快度に応じて豪快ランクのテクスチャとポイントを設定
+    if (m_gokai_count >= 3000) {
+        gokai_score_texture = g_score_rank_A_Texture;
+        gokai_score = 100;
+    }
+    else if (m_gokai_count >= 2000)
+    {
+        gokai_score_texture = g_score_rank_B_Texture;
+        gokai_score = 75;
+    }
+    else {
+        gokai_score_texture = g_score_rank_C_Texture;
+        gokai_score = 50;
     }
 
 
-
-    //ボスのクリアタイムを取得して、ランクに反映
-	Boss_1_1& boss = Boss_1_1::GetInstance(); //ボスのインスタンスを取得
-    float boss_clear_time = boss.GetBossElapsedTime(); //ボスのクリアタイムを取得
-    int boss_score_points = 0; //ボスのスコアポイント格納用
+    //ボスのクリアタイムを取得して、ランクに反映===============================
+    Boss_1_1& boss = Boss_1_1::GetInstance(); //ボスのインスタンスを取得
+    m_boss_clear_time = boss.GetBossElapsedTime(); //ボスのクリアタイムを取得
+    int boss_score;
 
     //クリアタイムに応じたランクとスコアポイントの設定
-    if (boss_clear_time >= 180.0f)
+    if (m_boss_clear_time == 0)
+    {
+        clear_time_score_texture = g_score_rank_C_Texture;
+        boss_score = 0;
+    }
+    else if (m_boss_clear_time >= 180.0f)
     { //3分以上
         clear_time_score_texture = g_score_rank_C_Texture;
-        boss_score_points = 50;
+        boss_score = 50;
     }
-    else if (boss_clear_time >= 120.0f)
+    else if (m_boss_clear_time >= 120.0f)
     { //2分以上
         clear_time_score_texture = g_score_rank_B_Texture;
-        boss_score_points = 75;
-    } else { //2分未満
+        boss_score = 75;
+    }
+    else { //2分未満
         clear_time_score_texture = g_score_rank_A_Texture;
-        boss_score_points = 100;
+        boss_score = 100;
     }
 
-    //トータルのスコアポイントを計算
-    total_score_points = (gokai_score_points + coin_score_points + boss_score_points);
+
+    //トータルのスコアポイントを計算================================
+    m_total_score_points = (coin_score+ gokai_score + boss_score);
 
     //トータルのスコアポイントに応じてランクを設定
-    if (total_score_points >= 300)
+    if (m_total_score_points >= 300)
     { //300以上ならSランク
         total_score_texture = g_score_rank_S_stamp_Texture;
     }
-    else if (total_score_points >= 250)
+    else if (m_total_score_points >= 250)
     { //250以上ならAランク
         total_score_texture = g_score_rank_A_stamp_Texture;
     }
-    else if (total_score_points >= 200)
+    else if (m_total_score_points >= 200)
     { //200以上ならBランク
         total_score_texture = g_score_rank_B_stamp_Texture;
-    } else { //200以下ならCランク
+    }
+    else { //200以下ならCランク
         total_score_texture = g_score_rank_C_stamp_Texture;
     }
+}
+
+void ResultScene::Update()
+{
+    //コントローラーの入力の受け取り
+    ControllerState state = GetControllerInput();
 
     if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
     {
@@ -161,84 +173,190 @@ void ResulttScene::Update()
     }
 }
 
-void ResulttScene::Draw()
+void ResultScene::Draw()
 {
 
-	//バッファクリア
-	Clear();
+    //バッファクリア
+    Clear();
 
-	//2D描画なので深度無効
-	SetDepthEnable(false);
+    //2D描画なので深度無効
+    SetDepthEnable(false);
 
-	//リザルト画面の背景の描画
-	if (g_result_Texture != nullptr)
-	{
-		// シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_result_Texture);
+    {//リザルト画面の背景の描画
+        // シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_result_Texture);
 
-		DrawSpriteOld(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
-			0.0f,
-			XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT)
-		);
-	}
-
-    //豪快度のランクを描画
-	//シェーダリソースを設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &gokai_score_texture);
-
-    if (gokai_score_texture != NULL) {
         DrawSpriteOld(
-			XMFLOAT2(600, 160), //一旦マジックナンバーで管理。後で変える
-			0.0f,
-			XMFLOAT2(RANK_SIZE, RANK_SIZE)
-		);
+            XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+            0.0f,
+            XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT)
+        );
     }
 
-	//コインのランクを描画
-	//シェーダリソースを設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &coin_score_texture);
 
-    if (coin_score_texture != NULL) {
+    {//コインのランクを描画
+        //コインの獲得枚数を表示
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_number_Texture);
+        int num = m_coin_count;
+        int cnt = 0;
+        while (1)
+        {
+            DrawSpriteAnimOld(
+                XMFLOAT2(m_coin_pos.x - (NUMBER_SIZE * cnt), m_coin_pos.y),
+                0,
+                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
+                10, 1, num % 10, 3.0
+            );
+            num /= 10;
+            cnt++;
+            if (num == 0)
+            {
+                break;
+            }
+        };
+
+        //シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &coin_score_texture);
+
         DrawSpriteOld(
-			XMFLOAT2(600, 240), //一旦マジックナンバーで管理。後で変える
-			0.0f,
-			XMFLOAT2(RANK_SIZE, RANK_SIZE)
-		);
+            XMFLOAT2(600, 160), //一旦マジックナンバーで管理。後で変える
+            0.0f,
+            XMFLOAT2(RANK_SIZE, RANK_SIZE)
+        );
     }
 
-    //ボスのクリアタイムランクを描画
-	//シェーダリソースを設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &clear_time_score_texture);
+    {//豪快度のランクを描画
+        //豪快度の数値を表示
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_number_Texture);
+        int num = m_gokai_count;
+        int cnt = 0;
+        while (1)
+        {
+            DrawSpriteAnimOld(
+                XMFLOAT2(m_gokai_pos.x - (NUMBER_SIZE * cnt), m_gokai_pos.y),
+                0,
+                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
+                10, 1, num % 10, 3.0
+            );
+            num /= 10;
+            cnt++;
+            if (num == 0)
+            {
+                break;
+            }
+        };
 
-    if (clear_time_score_texture != NULL) {
+        //シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &gokai_score_texture);
+
         DrawSpriteOld(
-			XMFLOAT2(600, 330), //一旦マジックナンバーで管理。後で変える
-			0.0f,
-			XMFLOAT2(RANK_SIZE, RANK_SIZE)
-		);
+            XMFLOAT2(600, 240), //一旦マジックナンバーで管理。後で変える
+            0.0f,
+            XMFLOAT2(RANK_SIZE, RANK_SIZE)
+        );
     }
 
-    //トータルのランクを描画
-	//シェーダリソースを設定
-	GetDeviceContext()->PSSetShaderResources(0, 1, &total_score_texture);
+    {//ボスのクリアタイムランクを描画
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_number_Texture);
+        int sec = m_boss_clear_time % 60;
+        int cnt = 0;
+        while (1)
+        {
+            DrawSpriteAnimOld(
+                XMFLOAT2(m_boss_pos.x - (NUMBER_SIZE * cnt), m_boss_pos.y),
+                0,
+                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
+                10, 1, sec % 10, 3.0
+            );
+            sec /= 10;
+            cnt++;
+            if (sec == 0)
+            {
+                break;
+            }
+        };
 
-    if (total_score_texture != NULL) {
+        {//コロンで区切る
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_colon_Texture);
+            DrawSpriteOld(
+                XMFLOAT2(m_boss_pos.x - (NUMBER_SIZE * cnt), m_boss_pos.y),
+                0,
+                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE)
+            );
+            cnt++;
+        }
+
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_number_Texture);
+        int min = m_boss_clear_time / 60;
+        while (1)
+        {
+            DrawSpriteAnimOld(
+                XMFLOAT2(m_boss_pos.x - (NUMBER_SIZE * cnt), m_boss_pos.y),
+                0,
+                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
+                10, 1, min % 10, 3.0
+            );
+            min /= 10;
+            cnt++;
+            if (min == 0)
+            {
+                break;
+            }
+        };
+
+        //シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &clear_time_score_texture);
+
         DrawSpriteOld(
-			XMFLOAT2(185, 620), //一旦マジックナンバーで管理。後で変える
-			0.0f,
-			XMFLOAT2(TOTAL_RANK_SIZE, TOTAL_RANK_SIZE)
-		);
+            XMFLOAT2(600, 330), //一旦マジックナンバーで管理。後で変える
+            0.0f,
+            XMFLOAT2(RANK_SIZE, RANK_SIZE)
+        );
     }
 
-	//バックバッファ、フロントバッファ入れ替え
-	Present();
+    {//トータルスコアのゲージ表示
+        //ゲージ表示
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_gage_Texture);
+        float size = m_total_score_points / 300.0f;
+        DrawSpriteOld(
+            XMFLOAT2(110+(250.0f*size), 440), //一旦マジックナンバーで管理。後で変える
+            0.0f,
+            XMFLOAT2(500.0f * (size), 30.0f)
+        );
+
+        //ゲージのフレーム表示
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_gage_frame_Texture);
+
+        DrawSpriteOld(
+            XMFLOAT2(360, 440), //一旦マジックナンバーで管理。後で変える
+            0.0f,
+            XMFLOAT2(500, 50)
+        );
+    }
+
+    {//トータルのランクを描画
+        //シェーダリソースを設定
+        GetDeviceContext()->PSSetShaderResources(0, 1, &total_score_texture);
+
+        DrawSpriteOld(
+            XMFLOAT2(185, 580), //一旦マジックナンバーで管理。後で変える
+            0.0f,
+            XMFLOAT2(TOTAL_RANK_SIZE, TOTAL_RANK_SIZE)
+        );
+    }
+
+    //バックバッファ、フロントバッファ入れ替え
+    Present();
 
 }
 
-void ResulttScene::Finalize()
+void ResultScene::Finalize()
 {
     if (g_result_Texture) UnInitTexture(g_result_Texture);
+    if (g_number_Texture) UnInitTexture(g_number_Texture);
+    if (g_gage_Texture) UnInitTexture(g_gage_Texture);
+    if (g_gage_frame_Texture) UnInitTexture(g_gage_frame_Texture);
+    if (g_colon_Texture) UnInitTexture(g_colon_Texture);
 
     if (total_score_texture) UnInitTexture(total_score_texture);
     if (coin_score_texture) UnInitTexture(coin_score_texture);
