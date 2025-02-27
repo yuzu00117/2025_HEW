@@ -19,6 +19,9 @@ enum SlopingBlockAspect //Î–Ê‚ÌŒü‚«‚ğŠÇ—‚·‚é
 {
 	right_down,
 	left_down,
+
+	right_up,
+	left_up,
 };
 
 
