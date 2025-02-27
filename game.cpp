@@ -118,6 +118,8 @@ void Game::Initialize()
         }
         //体力を初期化
         PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
         //アンカーをlevel２にセット
         AnchorSpirit::SetAnchorSpiritValueDirectly(100);
         //豪快度を記録した値に戻す
