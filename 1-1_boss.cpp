@@ -1652,41 +1652,44 @@ void Boss_1_1::DrawObjectFront()
 	{
 		//HPの表示
 
-	
-		// コライダーの位置を取得（プレイヤーの位置）
-		b2Vec2 boss_pos = GetBossBody()->GetPosition();
-		b2Vec2 real_boss_size;
-		real_boss_size.x = GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT;
-		real_boss_size.y = GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT;
-
-		// プレイヤー位置を基準にスクリーン座標に変換する
-		// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
-		float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y - (real_boss_size.y * 0.7)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-		// シェーダーリソースを設定
-
-		switch (boss_hp)
+		if (GetBossBody() != nullptr)
 		{
-		case 1:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv3_sheet);
-			break;
-		case 2:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv2_sheet);
-			break;
-		case 3:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv1_sheet);
-			break;
-		}
+			// コライダーの位置を取得（プレイヤーの位置）
+			b2Vec2 boss_pos = GetBossBody()->GetPosition();
+			b2Vec2 real_boss_size;
+			real_boss_size.x = GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT;
+			real_boss_size.y = GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT;
 
-		int hp_x=100;
-		int hp_y=-20;
+			// プレイヤー位置を基準にスクリーン座標に変換する
+			// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
+			float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y - (real_boss_size.y * 0.7)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+			// シェーダーリソースを設定
 
-		if (!left_flag)
-		{
-			hp_x = -100;
+			switch (boss_hp)
+			{
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv3_sheet);
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv2_sheet);
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv1_sheet);
+				break;
+			}
+
+			int hp_x = 100;
+			int hp_y = -20;
+
+			if (!left_flag)
+			{
+				hp_x = -100;
+			}
+
+			DrawDividedSpriteBoss(XMFLOAT2(draw_x + hp_x, draw_y - hp_y), 0.0f, XMFLOAT2(200, 100), 4, 1, 3 - boss_stock, boss_alpha, true);
+
 		}
-	
-		DrawDividedSpriteBoss(XMFLOAT2(draw_x+ hp_x, draw_y- hp_y), 0.0f, XMFLOAT2(200, 100), 4, 1, 3-boss_stock, boss_alpha, true);
 	}
 
 
