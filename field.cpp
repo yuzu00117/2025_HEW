@@ -339,14 +339,11 @@ void Field::Initialize()
 
 				//看板の矢印
 				if (field_map[y][x] == 23) {
-					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 4.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, ARROW, 135.f);
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_SIGNBOARD, 0.f);
 				}
 
 
-				//看板の矢印
-				if (field_map[y][x] == 24) {
-					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 4.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, ARROW, 90.0f);
-				}
+			
 
 			}
 		}
@@ -644,8 +641,44 @@ void Field::Initialize()
 				}
 
 				//回復アイテム
-				if (field_map[y][x] == 99) {
+				if (field_map[y][x] == 100) {
 					itemManager.AddHealing(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
+				}
+
+
+				//右に矢印
+				if (field_map[y][x] == 101) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_SIGNBOARD, 0.f);
+				}
+
+
+				//右下に矢印
+				if (field_map[y][x] == 102) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_DOWN_SIGNBOARD, 0.f);
+				}
+
+				//上に矢印
+				if (field_map[y][x] == 103) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_UP_SIGNBOARD, 0.f);
+				}
+
+				//木
+				if (field_map[y][x] == 104) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, WOOD_SIGNBOARD, 0.f);
+				}
+
+				//岩
+				if (field_map[y][x] == 105) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ROCK_SIGNBOARD, 0.f);
+				}
+
+				//落ちるブロックの
+				if (field_map[y][x] == 106) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, FALL_SIGNBOARD, 0.f);
+				}
+
+				if (field_map[y][x] == 107) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_LEFT_SIGNBOARD, 0.f);
 				}
 			}
 		}	
@@ -831,6 +864,50 @@ void Field::Initialize()
 						objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
 					}
 
+
+
+					if (field_map[y][x] == 79) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_SIGNBOARD, 0.f);
+					}
+
+					//右下に矢印
+					if (field_map[y][x] == 80) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_DOWN_SIGNBOARD, 0.f);
+					}
+
+					//上に矢印
+					if (field_map[y][x] == 81) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_UP_SIGNBOARD, 0.f);
+					}
+
+					//木
+					if (field_map[y][x] == 82) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, WOOD_SIGNBOARD, 0.f);
+					}
+
+					//岩
+					if (field_map[y][x] == 83) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ROCK_SIGNBOARD, 0.f);
+					}
+
+					//落ちるブロックの
+					if (field_map[y][x] == 84) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, FALL_SIGNBOARD, 0.f);
+					}
+
+					if (field_map[y][x] == 85) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_LEFT_SIGNBOARD, 0.f);
+					}
+
+					if (field_map[y][x] == 86) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(30.0f, 8.0f), b2Vec2_zero, JUMP_SIGNBOARD, 0.0f);
+					}
+
+					if (field_map[y][x] == 87) {
+						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, BOSS_SIGNBOARD, 0.f);
+					}
+
+						
 				}
 			}
 			break;

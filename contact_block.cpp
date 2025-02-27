@@ -174,15 +174,15 @@ void contact_block::Draw()
 	float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+	//GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 
-	//draw
-	DrawSprite(
-		{ draw_x,
-		  draw_y },
-		GetBody()->GetAngle(),
-		{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-	);
+	////draw
+	//DrawSprite(
+	//	{ draw_x,
+	//	  draw_y },
+	//	GetBody()->GetAngle(),
+	//	{ GetSize().x * scale,GetSize().y * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+	//);
 
 
 
