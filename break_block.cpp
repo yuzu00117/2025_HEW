@@ -185,10 +185,5 @@ void Break_Block::Finalize()
 		world->DestroyBody(m_body);
 	}
 
-	//‰æ‘œ‚Ì‰ð•ú
-
-	if (Texture) {
-		UnInitTexture(Texture);
-	}
 
 }
