@@ -109,8 +109,15 @@ void dead_production::Update()
 		}
 		else
 		{
+
+
 			Game_over_cnt++;
 			Game_over_tama_cnt += 0.5;
+
+			if (Game_over_Black_fade_rate < 1.5)
+			{
+				Game_over_Black_fade_rate += 0.007;
+			}
 
 			if (Game_over_text_cnt < 23)
 			{
@@ -255,6 +262,10 @@ void dead_production::Draw()
 
 	if (Game_over_cnt != 0)
 	{
+	
+
+
+
 
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_game_over_back_ground_texture);
@@ -303,6 +314,17 @@ void dead_production::Draw()
 
 			
 		}
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Black_texture);
+
+		DrawSpriteOld(
+			XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+			0.0f,
+			XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT),
+			1.5f - Game_over_Black_fade_rate
+
+		);
 	}
 
 	
