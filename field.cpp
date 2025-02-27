@@ -78,6 +78,9 @@ static ID3D11ShaderResourceView* g_Big_Wood_Texture = NULL;	//大きい木のテ
 
 static ID3D11ShaderResourceView* g_Iseki_boss_wall_object_Texture = NULL;	//ボスの壁のテクスチャ
 
+//チュートリアルリアルステージのテクスチャ
+static ID3D11ShaderResourceView* g_sand_Texture = NULL;	//砂のマップ
+static ID3D11ShaderResourceView* g_sand_up_Texture = NULL;	//砂のマップ上
 
 
 
@@ -134,6 +137,13 @@ void Field::Initialize()
 
 
 		g_Iseki_boss_wall_object_Texture = InitTexture(L"asset\\texture\\stage_block\\boss_wall_texture.png");	//ボスを倒すための壁
+
+		//----------------------------------------------------------------------------------------
+		//砂
+
+		g_sand_Texture = InitTexture(L"asset\\texture\\stage_block\\sand_down.png");//砂のした
+		g_sand_up_Texture = InitTexture(L"asset\\texture\\stage_block\\sand_top.png");//砂の上
+		
 	}
 
 
@@ -222,7 +232,7 @@ void Field::Initialize()
 			{
 				if (field_map[y][x] == 1) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_TYPE_1, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, SAND_UP, false);
 				}
 				if (field_map[y][x] == 2) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -234,7 +244,7 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 4) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, SAND_DOWN, false);
 				}
 				if (field_map[y][x] == 5) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -1578,6 +1588,12 @@ void Field::Draw()
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Iseki_Right_Texture);
 					break;
 			
+				case SAND_DOWN:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sand_Texture);
+					break;
+				case SAND_UP:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sand_up_Texture);
+					break;
 
 
 
@@ -1662,7 +1678,8 @@ void Field::Finalize()
 
 	if (g_Iseki_boss_wall_object_Texture) UnInitTexture(g_Iseki_boss_wall_object_Texture);
 
-
+	if (g_sand_Texture) UnInitTexture(g_sand_Texture);
+	if (g_sand_up_Texture) UnInitTexture(g_sand_up_Texture);
 }
 
 
