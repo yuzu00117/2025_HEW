@@ -35,7 +35,6 @@ private:
 	int m_state = ENEMY_STATE_NULL;
 	int m_old_state = ENEMY_STATE_NULL;
 	const float m_speed = 0.006f;
-	const float m_jump_force = -0.1;
 	float m_move_force;
 	//¶Œü‚« true : ‰EŒü‚« false
 	bool m_direction = true;

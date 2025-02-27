@@ -14,11 +14,12 @@
 #include	"anchor_spirit.h"
 #include	"scene.h"
 #include	"sound.h"
+#include	"Item_Manager.h"
+#include	"player.h"
 
 
 // 静的メンバ変数の定義（1回だけ行う）
 float	PlayerStamina::m_stamina = 300.0f;
-bool	PlayerStamina::m_avoid_damage_once = false;	//アイテムによるダメージ回避あるかどうか
 bool PlayerStamina::m_isdead = false; // プレイヤーの死亡フラグ
 
 
@@ -26,7 +27,6 @@ void PlayerStamina::Initialize()
 {
 	m_stamina = 300.0f;
 	m_isdead = false; // プレイヤーの死亡フラグを初期化
-	m_avoid_damage_once = false;
 }
 
 float	PlayerStamina::GetPlayerStaminaValue()
@@ -57,17 +57,17 @@ void PlayerStamina::SetPlayerStaminaValueDirectly(float value)
 void	PlayerStamina::EditPlayerStaminaValue(float value)
 {
 	//アイテムによるダメージ回避
-	if (value < 0 && m_avoid_damage_once)
+	if (value < 0)
 	{
-		m_avoid_damage_once = false;
-		ItemManager& item_manager = ItemManager::GetInstance();
 		Player& player = Player::GetInstance();
+		ItemManager& item_manager = ItemManager::GetInstance();
 		ItemBarrier* barrier = item_manager.FindItem_Barrier_ByOwnerBody(player.GetOutSidePlayerBody());
+
 		if (barrier)
 		{
 			barrier->SetState(Barrier_Break);
+			return;
 		}
-		return;
 	}
 
 	//スタミナを更新

@@ -88,7 +88,7 @@ public:
 	void updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks);
 
 	//プレイヤーがダメージ受けた瞬間呼び出す
-	void Player_Damaged(int Change_to_HP,int invincibletime, const b2Body* attack_body);
+	void Player_Damaged(int Change_to_HP,int invincibletime, const b2Body* attack_body, bool knock_back_only = false);
 	//プレイヤーが回復した瞬間呼び出す
 	void Palyer_Healed(int heal);
 
