@@ -370,9 +370,13 @@ void boss_pillar::Pulling_pillar()
 		Boss_1_1& boss = Boss_1_1::GetInstance();
 
 		//プレイヤー側に倒す
-		if (boss.GetOutSideBody()->GetPosition().x < anchor_body->GetPosition().x)//プレイヤーが左側
+
+		if (boss.GetOutSideBody() != nullptr)
 		{
-			pulling_power.x = pulling_power.x * -1;
+			if (boss.GetOutSideBody()->GetPosition().x < anchor_body->GetPosition().x)//プレイヤーが左側
+			{
+				pulling_power.x = pulling_power.x * -1;
+			}
 		}
 
 		anchor_body->SetLinearVelocity(pulling_power);
