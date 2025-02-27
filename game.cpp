@@ -316,7 +316,7 @@ void Game::Update(void)
         HitStop::CountHitStop();
     }
     else {
-        if (world->GetBodyCount() > 0)
+        if (world && world->GetBodyCount() > 0)
         {
             world->Step(1.0f / 60.0f, 6, 2);
         }

@@ -243,7 +243,6 @@ void    ItemJewel::Function()
         app_atomex_start(Player_Buff_AnchorSpeedUp_Sound);
         break;
     case YELLOW:
-        PlayerStamina::SetAvoidDamageOnce(true);
         app_atomex_start(Player_Buff_Invincible_Sound);
         ItemManager& item_manager = ItemManager::GetInstance();
         item_manager.AddBarrier(PlayerPosition::GetPlayerPosition(), { player.GetSize().x * 6.0f, player.GetSize().y * 3.0f }, 0.0f, player.GetOutSidePlayerBody());

@@ -165,9 +165,6 @@ void NoEntryBlock::Finalize()
 
 	//‰æ‘œ‚Ì‰ğ•ú
 
-	if (Texture)
-	{
-		UnInitTexture(Texture);
-	}
+	//2dŠJ•ú‚Ì‚½‚ßíœ
 
 }

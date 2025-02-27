@@ -19,7 +19,9 @@
 #include"player.h"
 
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//テクスチャ
+static ID3D11ShaderResourceView* g_soul_S_Texture = NULL;//テクスチャ
+static ID3D11ShaderResourceView* g_soul_M_Texture = NULL;//テクスチャ
+static ID3D11ShaderResourceView* g_soul_L_Texture = NULL;//テクスチャ
 
 int count_anim_time = 0;
 
@@ -29,20 +31,17 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritTyp
     :m_size(body_size), m_Alpha(Alpha), m_type(type)
 {
 
-    if (g_Texture == NULL)
+    if (g_soul_S_Texture == NULL)
     {
-        switch (m_type)
-        {
-        case Spirit_L:
-            g_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_L.png");
-            break;
-        case Spirit_M:
-            g_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_M.png");
-            break;
-        case Spirit_S:
-            g_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_S.png");
-            break;
-        }
+     
+        g_soul_L_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_L.png");
+
+
+        g_soul_M_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_M.png");
+
+
+        g_soul_S_Texture = InitTexture(L"asset\\texture\\soul_texture\\EFF_Soul_S.png");
+       
     }
 
     b2BodyDef body;
@@ -187,8 +186,25 @@ void ItemSpirit::Draw()
 {
     if (m_body != nullptr)
     {
-        // シェーダリソースを設定
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+
+        switch (m_type)
+        {
+        case Spirit_L:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_L_Texture);
+            break;
+        case Spirit_M:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_M_Texture);
+            break;
+        case Spirit_S:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_S_Texture);
+            break;
+        default:
+            break;
+        }
+     
 
         // コライダーと位置情報の補正をするため
         float scale = SCREEN_SCALE;
@@ -258,11 +274,12 @@ void ItemSpirit::Finalize()
         world->DestroyBody(GetBody());
         SetBody(nullptr);
     }
-    if (g_Texture != nullptr)
-    {
-        UnInitTexture(g_Texture);
-        g_Texture = NULL;
-    }
+
+    if (g_soul_L_Texture) UnInitTexture(g_soul_L_Texture);
+    if (g_soul_M_Texture) UnInitTexture(g_soul_M_Texture);
+    if (g_soul_S_Texture) UnInitTexture(g_soul_S_Texture);
+        
+    
 
 }
 

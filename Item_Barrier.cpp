@@ -96,7 +96,7 @@ void ItemBarrier::Update()
                 SetState(Barrier_Loop);
                 break;
             }
-             m_effect_cnt += 0.3f;
+             m_effect_cnt += 1.0f;
             break;
         case Barrier_Loop:
             if (m_effect_cnt >= 48)
@@ -151,6 +151,7 @@ void ItemBarrier::Draw()
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
+        float adjust_size = 1.0f;
 
         switch (m_state)
         {
@@ -165,6 +166,7 @@ void ItemBarrier::Draw()
         case Barrier_Break:
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Break_Texture);
+            adjust_size = 2.0f;
             break;
         }
 
@@ -172,7 +174,7 @@ void ItemBarrier::Draw()
             { draw_x,
             draw_y },
             m_body->GetAngle(),
-            { GetSize().x * scale,GetSize().y * scale },
+            { GetSize().x * scale * adjust_size, GetSize().y * scale * adjust_size },
             m_texture_total_cols, m_texture_total_rows,
             m_effect_cnt,
             4.0f

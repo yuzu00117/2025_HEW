@@ -162,12 +162,7 @@ void Texture_block::Finalize()
 		world->DestroyBody(m_body);
 	}
 
-
-	if (m_texture != NULL)
-	{
-		UnInitTexture(m_texture);
-
-	}
+	//2dŠJ•ú‚Ì‚½‚ßíœ
 
 
 

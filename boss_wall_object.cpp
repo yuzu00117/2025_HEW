@@ -140,7 +140,7 @@ void Boss_Wall_Objcet::Update()
 
 			Destroy_Splitting();
 
-			if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
+			if (100 < Destroy_Cnt)//分解したあと破壊されるフラグ
 			{
 				DestroySplittedBodies(boss_pillar_body_Splitting);
 				isUse = false;
@@ -231,7 +231,7 @@ void Boss_Wall_Objcet::Destroy_Splitting()
 					fragmentFixture.density = 1.0f; // ボディの密度を設定。密度が大きいほどボディの質量が重くなる。
 					fragmentFixture.friction = 0.5f; // 摩擦係数を設定。接触面の滑りやすさを制御し、小さい値ほど滑りやすい。
 					fragmentFixture.restitution = 0.0f; // 反発係数を設定。0は反発しない（衝突時にエネルギーを失う）、1は完全に弾む。
-					fragmentFixture.filter = createFilterExclude("ground_filter", { "Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter","ground_filter" });
+					fragmentFixture.isSensor = true;
 
 					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
 
@@ -464,7 +464,5 @@ void Boss_Wall_Objcet::Draw()
 
 void Boss_Wall_Objcet::Finalize()
 {
-	if (Texture) {
-		UnInitTexture(Texture);
-	}
+	//2重開放のため削除
 }

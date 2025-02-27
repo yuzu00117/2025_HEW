@@ -203,7 +203,5 @@ void change_enemy_filter_and_body::DrawFront()
 
 void change_enemy_filter_and_body::Finalize()
 {
-	if (g_Texture) {
-		UnInitTexture(g_Texture);
-	}
+	//2dŠJ•ú‚Ì‚½‚ßíœ
 }
