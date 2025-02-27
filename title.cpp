@@ -62,13 +62,10 @@ void TitleScene::Update()
 	if (150 < scene_change_cnt)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
-		sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+		sceneManager.ChangeScene(SCENE_OP);
 	}
 
-	if (Keyboard_IsKeyDown(KK_R) || (state.buttonA))
-	{
-		text_sheet_cnt = 0;
-	}
+	
 
 
 
