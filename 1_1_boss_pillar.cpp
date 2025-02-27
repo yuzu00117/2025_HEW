@@ -19,6 +19,8 @@
 #include"tool.h"
 #include"sound.h"
 #include"camera_shake.h"
+#include"anchor_point.h"
+#include"anchor.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
@@ -178,6 +180,11 @@ void boss_pillar::Update()
 		Boss_1_1& boss = Boss_1_1::GetInstance();
 		if (boss_room_level < boss.GetBossFieldLevel() && (Splitting_end == false))
 		{
+			if (AnchorPoint::GetTargetAnchorPointBody() != m_body)
+			{
+				if (Anchor::GetAnchorState() != Nonexistent_state)return;
+			}
+
 			Splitting_Destroy_Flag = true;
 		}
 
