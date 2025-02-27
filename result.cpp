@@ -2,10 +2,8 @@
 // #name result.cpp
 // #description     リザルト画面
 // #make 2025/02/02　永野義也
-// #update 2024/02/02
+// #update 2024/02/27 髙橋連
 // #comment 追加・修正予定
-//          ・2025/02/04 YuzukiYamada リザルトにランク表示を追加
-//          ・2025/02/04 YuzukiYamada 豪快度・コイン・クリアタイムのランクのテクスチャの変更予定
 //----------------------------------------------------------------------------------------------------
 #include"result.h"
 #include"sprite.h"
@@ -171,6 +169,67 @@ void ResultScene::Update()
         SceneManager& sceneManager = SceneManager::GetInstance();
         sceneManager.ChangeScene(SCENE_STAGE_SELECT);
     }
+
+    switch (m_state)
+    {
+    case STATE_RESULT_COIN:
+        if (m_coin_pos.x >= m_coin_pos_finish.x)
+        {
+            m_coin_pos.x -= m_ui_move_speed;
+            m_coin_alpha += 0.01 * m_ui_move_speed;
+        }
+        else if (m_coin_score_alpha <= 1)
+        {
+            m_coin_score_alpha += 0.01 * m_score_alpha_move_speed;
+        }
+        else
+        {
+            m_state = STATE_RESULT_DYNAMIC;
+        }
+        break;
+    case STATE_RESULT_DYNAMIC:
+        if (m_gokai_pos.x >= m_gokai_pos_finish.x)
+        {
+            m_gokai_pos.x -= m_ui_move_speed;
+            m_gokai_alpha += 0.01 * m_ui_move_speed;
+        }
+        else if (m_gokai_score_alpha <= 1)
+        {
+            m_gokai_score_alpha += 0.01 * m_score_alpha_move_speed;
+        }
+        else
+        {
+            m_state = STATE_RESULT_BOSS;
+        }
+        break;
+    case STATE_RESULT_BOSS:
+        if (m_boss_pos.x >= m_boss_pos_finish.x)
+        {
+            m_boss_pos.x -= m_ui_move_speed;
+            m_boss_alpha += 0.01 * m_ui_move_speed;
+        }
+        else if (m_boss_score_alpha <= 1)
+        {
+            m_boss_score_alpha += 0.01 * m_score_alpha_move_speed;
+        }
+        else
+        {
+            m_state = STATE_RESULT_TOTAL;
+        }
+        break;
+    case STATE_RESULT_TOTAL:
+        if (m_total_gage_filling <= 1)
+        {
+            m_total_gage_filling += 0.01 * m_gage_move_speed;
+        }
+        else if (m_total_score_alpha <= 1)
+        {
+            m_total_score_alpha += 0.01 * m_score_alpha_move_speed;
+        }
+        break;
+    default: 
+        break;
+    }
 }
 
 void ResultScene::Draw()
@@ -205,7 +264,7 @@ void ResultScene::Draw()
                 XMFLOAT2(m_coin_pos.x - (NUMBER_SIZE * cnt), m_coin_pos.y),
                 0,
                 XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
-                10, 1, num % 10, 3.0
+                10, 1, num % 10, m_coin_alpha
             );
             num /= 10;
             cnt++;
@@ -221,7 +280,7 @@ void ResultScene::Draw()
         DrawSpriteOld(
             XMFLOAT2(600, 160), //一旦マジックナンバーで管理。後で変える
             0.0f,
-            XMFLOAT2(RANK_SIZE, RANK_SIZE)
+            XMFLOAT2(RANK_SIZE, RANK_SIZE), m_coin_score_alpha
         );
     }
 
@@ -236,7 +295,7 @@ void ResultScene::Draw()
                 XMFLOAT2(m_gokai_pos.x - (NUMBER_SIZE * cnt), m_gokai_pos.y),
                 0,
                 XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
-                10, 1, num % 10, 3.0
+                10, 1, num % 10, m_gokai_alpha
             );
             num /= 10;
             cnt++;
@@ -252,7 +311,7 @@ void ResultScene::Draw()
         DrawSpriteOld(
             XMFLOAT2(600, 240), //一旦マジックナンバーで管理。後で変える
             0.0f,
-            XMFLOAT2(RANK_SIZE, RANK_SIZE)
+            XMFLOAT2(RANK_SIZE, RANK_SIZE), m_gokai_score_alpha
         );
     }
 
@@ -266,7 +325,7 @@ void ResultScene::Draw()
                 XMFLOAT2(m_boss_pos.x - (NUMBER_SIZE * cnt), m_boss_pos.y),
                 0,
                 XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
-                10, 1, sec % 10, 3.0
+                10, 1, sec % 10, m_boss_alpha
             );
             sec /= 10;
             cnt++;
@@ -281,7 +340,7 @@ void ResultScene::Draw()
             DrawSpriteOld(
                 XMFLOAT2(m_boss_pos.x - (NUMBER_SIZE * cnt), m_boss_pos.y),
                 0,
-                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE)
+                XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE), m_boss_alpha
             );
             cnt++;
         }
@@ -294,7 +353,7 @@ void ResultScene::Draw()
                 XMFLOAT2(m_boss_pos.x - (NUMBER_SIZE * cnt), m_boss_pos.y),
                 0,
                 XMFLOAT2(NUMBER_SIZE, NUMBER_SIZE),
-                10, 1, min % 10, 3.0
+                10, 1, min % 10, m_boss_alpha
             );
             min /= 10;
             cnt++;
@@ -310,7 +369,7 @@ void ResultScene::Draw()
         DrawSpriteOld(
             XMFLOAT2(600, 330), //一旦マジックナンバーで管理。後で変える
             0.0f,
-            XMFLOAT2(RANK_SIZE, RANK_SIZE)
+            XMFLOAT2(RANK_SIZE, RANK_SIZE), m_boss_score_alpha
         );
     }
 
@@ -319,9 +378,9 @@ void ResultScene::Draw()
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_gage_Texture);
         float size = m_total_score_points / 300.0f;
         DrawSpriteOld(
-            XMFLOAT2(110+(250.0f*size), 440), //一旦マジックナンバーで管理。後で変える
+            XMFLOAT2(110+(250.0f * size * m_total_gage_filling), 440), //一旦マジックナンバーで管理。後で変える
             0.0f,
-            XMFLOAT2(500.0f * (size), 30.0f)
+            XMFLOAT2(500.0f * (size) * m_total_gage_filling, 30.0f)
         );
 
         //ゲージのフレーム表示
@@ -341,7 +400,7 @@ void ResultScene::Draw()
         DrawSpriteOld(
             XMFLOAT2(185, 580), //一旦マジックナンバーで管理。後で変える
             0.0f,
-            XMFLOAT2(TOTAL_RANK_SIZE, TOTAL_RANK_SIZE)
+            XMFLOAT2(TOTAL_RANK_SIZE, TOTAL_RANK_SIZE), m_total_score_alpha
         );
     }
 

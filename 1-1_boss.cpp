@@ -102,6 +102,11 @@ static ID3D11ShaderResourceView *g_debug_attack_color = NULL; // デバッグ用
 
 static ID3D11ShaderResourceView *g_debug_core = NULL; // デバッグ用
 
+static ID3D11ShaderResourceView* g_boss_hp_Ui_Lv1_sheet = NULL;			 //ボスのHPのUI
+static ID3D11ShaderResourceView* g_boss_hp_Ui_Lv2_sheet = NULL;			 //ボスのHPのUI
+static ID3D11ShaderResourceView* g_boss_hp_Ui_Lv3_sheet = NULL;			 //ボスのHPのUI
+
+
 
 // ボスのCPPファイルの実装
 static b2Body *outside_boss_body=nullptr;
@@ -192,6 +197,11 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 		// ボスの画面外に表示するアイコン
 		g_boss_icon= InitTexture(L"asset\\texture\\boss_1_1\\boss_icon.png"); // ボスのアイコン
 		g_boss_pin = InitTexture(L"asset\\texture\\boss_1_1\\boss_pin.png"); // ボスのピン
+
+
+		g_boss_hp_Ui_Lv1_sheet = InitTexture(L"asset\\texture\\boss_1_1\\boss_hp_01.png"); // ボスのHPのレベル１
+		g_boss_hp_Ui_Lv2_sheet = InitTexture(L"asset\\texture\\boss_1_1\\boss_hp_02.png"); // ボスのHPのレベル１
+		g_boss_hp_Ui_Lv3_sheet = InitTexture(L"asset\\texture\\boss_1_1\\boss_hp_03.png"); // ボスのHPのレベル１
 
 		InitializeBossDebug(); // デバッグ用の初期化
 	}
@@ -378,7 +388,7 @@ void Boss_1_1::Update()
 			break;
 
 		case panic_state:
-
+			boss_stock = 0;
 			if (50 < sheet_cnt)
 			{
 				CreateBossCore(b2Vec2(2.0f * BOSS_SIZE_SCALE, 2.0f * BOSS_SIZE_SCALE));
@@ -589,13 +599,13 @@ void Boss_1_1::UpdateCoolTime(void)
 				return;
 			}
 
-			// ジャンプ
-			if (Now_Jump_CoolTime > Max_Jump_CoolTime)
-			{
-				now_boss_state = jump_state;
-				Now_Jump_CoolTime = 0;
-				return;
-			}
+			//// ジャンプ
+			//if (Now_Jump_CoolTime > Max_Jump_CoolTime)
+			//{
+			//	now_boss_state = jump_state;
+			//	Now_Jump_CoolTime = 0;
+			//	return;
+			//}
 		}
 		else
 		{
@@ -624,6 +634,14 @@ void Boss_1_1::UpdateCoolTime(void)
 			}
 		}
 	}
+	//ボスのダウン処理
+
+	if (boss_stock <=0)
+	{
+		now_boss_state = panic_state;
+	}
+
+
 	// ボスの死亡処理
 	BossDead();
 }
@@ -632,8 +650,13 @@ void Boss_1_1::BossDamaged(void)
 {
 	// ボスのHPを減らす処理
 	SetBossHP(GetBossHP() - 1);
+	boss_stock = 3;
 	sheet_cnt = 0;
 }
+
+
+
+
 
 void Boss_1_1::BossDead(void)
 {
@@ -1625,6 +1648,48 @@ void Boss_1_1::DrawObjectFront()
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x, draw_y), 0.0f, XMFLOAT2(GetBossDrawSize().x * scale, GetBossDrawSize().y * scale), 6, 6, sheet_cnt - Max_die_Sheet / 2, boss_alpha, left_flag);
 		}
 	}
+	else
+	{
+		//HPの表示
+
+	
+		// コライダーの位置を取得（プレイヤーの位置）
+		b2Vec2 boss_pos = GetBossBody()->GetPosition();
+		b2Vec2 real_boss_size;
+		real_boss_size.x = GetBossRealSize().x / BOX2D_SCALE_MANAGEMENT;
+		real_boss_size.y = GetBossRealSize().y / BOX2D_SCALE_MANAGEMENT;
+
+		// プレイヤー位置を基準にスクリーン座標に変換する
+		// 取得したbodyのポジションに基づいてBox2dスケールの変換を行う
+		float draw_x = ((boss_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((boss_pos.y - PlayerPosition::GetPlayerPosition().y - (real_boss_size.y * 0.7)) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		// シェーダーリソースを設定
+
+		switch (boss_hp)
+		{
+		case 1:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv3_sheet);
+			break;
+		case 2:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv2_sheet);
+			break;
+		case 3:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_hp_Ui_Lv1_sheet);
+			break;
+		}
+
+		int hp_x=100;
+		int hp_y=-20;
+
+		if (!left_flag)
+		{
+			hp_x = -100;
+		}
+	
+		DrawDividedSpriteBoss(XMFLOAT2(draw_x+ hp_x, draw_y- hp_y), 0.0f, XMFLOAT2(200, 100), 4, 1, 3-boss_stock, boss_alpha, true);
+	}
+
+
 
 
 		
@@ -1977,6 +2042,11 @@ void Boss_1_1::Finalize()
 	if (g_boss_damage_sheet_Lv2_Texture) UnInitTexture(g_boss_damage_sheet_Lv2_Texture);
 	if (g_boss_damage_sheet_Lv3_Texture) UnInitTexture(g_boss_damage_sheet_Lv3_Texture);
 	
+
+	//bossのHP
+	if (g_boss_hp_Ui_Lv1_sheet) UnInitTexture(g_boss_hp_Ui_Lv1_sheet);
+	if (g_boss_hp_Ui_Lv2_sheet) UnInitTexture(g_boss_hp_Ui_Lv2_sheet);
+	if (g_boss_hp_Ui_Lv3_sheet) UnInitTexture(g_boss_hp_Ui_Lv3_sheet);
 }
 
 b2Body *Boss_1_1::GetOutSideBody(void)

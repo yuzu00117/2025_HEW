@@ -242,7 +242,12 @@ public:
 
 	void SetNowBossState(boss_state state)
 	{
-		 now_boss_state=state;
+		now_boss_state = state;
+
+		if (state == damage_state)
+		{
+			boss_stock--;
+		}
 	}
 
 	//コアが壊れるかどうか
@@ -302,6 +307,8 @@ private:
 	b2Vec2 Boss_size = b2Vec2(18, 24);
 
 	int boss_hp=3;		   //bossのHP
+
+	int boss_stock=3;
 
 	int dead_cnt;
 
