@@ -41,7 +41,7 @@ void OP::Update()
 	if (finished)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
-		sceneManager.ChangeScene(SCENE_GAME);
+		sceneManager.ChangeScene(SCENE_OP);
 	}
 
 	if (!g_pressed && Keyboard_IsKeyDownTrigger(KK_X))
