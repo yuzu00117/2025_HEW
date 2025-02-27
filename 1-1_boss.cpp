@@ -273,7 +273,10 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 	ObjectData *boss_sensor_data = new ObjectData{collider_boss_senosr};
 	m_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(boss_sensor_data);
 
-	boss_field_level = 1;
+	boss_field_level = 2;
+	sheet_cnt = 0;
+	boss_hp = 3;
+	dead_cnt = 0;
 
 	now_boss_state = charge_attack_state;
 }
@@ -312,8 +315,7 @@ void Boss_1_1::Update()
 		// ボスのコアの更新
 		BossCoreUpdate();
 
-		// ボスの死亡処理
-		BossDead();
+	
 
 		// クールタイムの管理
 		UpdateCoolTime();
@@ -620,6 +622,8 @@ void Boss_1_1::UpdateCoolTime(void)
 			}
 		}
 	}
+	// ボスの死亡処理
+	BossDead();
 }
 
 void Boss_1_1::BossDamaged(void)
@@ -1961,82 +1965,9 @@ void Boss_1_1::Finalize()
 	if (g_debug_core) UnInitTexture(g_debug_core);
 
 	// ボスのアイコン
-	UnInitTexture(g_boss_icon);
-	g_boss_icon = NULL;
-	UnInitTexture(g_boss_pin);
-	g_boss_pin = NULL;
 
-	UnInitTexture(g_boss_jump_sheet1_Lv3_Texture);
-	g_boss_jump_sheet1_Lv3_Texture = NULL;
-
-	UnInitTexture(g_boss_jump_sheet2_Lv3_Texture);
-	g_boss_jump_sheet2_Lv3_Texture = NULL;
-
-	// ゴーレムのパニックアニメーション
-	UnInitTexture(g_boss_panic_sheet_Texture);
-	g_boss_panic_sheet_Texture = NULL;
-
-	UnInitTexture(g_boss_panic_sheet_Lv2_Texture);
-	g_boss_panic_sheet_Lv2_Texture = NULL;
-
-	UnInitTexture(g_boss_panic_sheet_Lv3_Texture);
-	g_boss_panic_sheet_Lv3_Texture = NULL;
-
-	// ミニゴーレム生成時のボスアニメーション
-	UnInitTexture(g_mini_boss_create_sheet1_Texture);
-	g_mini_boss_create_sheet1_Texture = NULL;
-
-	UnInitTexture(g_mini_boss_create_sheet2_Texture);
-	g_mini_boss_create_sheet2_Texture = NULL;
-
-	UnInitTexture(g_mini_boss_create_sheet1_Lv2_Texture);
-	g_mini_boss_create_sheet1_Lv2_Texture = NULL;
-
-	UnInitTexture(g_mini_boss_create_sheet2_Lv2_Texture);
-	g_mini_boss_create_sheet2_Lv2_Texture = NULL;
-
-	UnInitTexture(g_mini_boss_create_sheet1_Lv3_Texture);
-	g_mini_boss_create_sheet1_Lv3_Texture = NULL;
-
-	UnInitTexture(g_mini_boss_create_sheet2_Lv3_Texture);
-	g_mini_boss_create_sheet2_Lv3_Texture = NULL;
-
-	// ボスのダウン状態
-	UnInitTexture(g_boss_down_sheet);
-	g_boss_down_sheet = NULL;
-
-	UnInitTexture(g_boss_down_Lv2_sheet);
-	g_boss_down_Lv2_sheet = NULL;
-
-	// ボス周辺のエフェクト
-	UnInitTexture(g_boss_charge_effect);
-	g_boss_charge_effect = NULL;
-
-	UnInitTexture(g_boss_charge_attack_effect);
-	g_boss_charge_attack_effect = NULL;
-
-	UnInitTexture(g_mini_golem_break_effect);
-	g_mini_golem_break_effect = NULL;
-
-	UnInitTexture(g_boss_panic_effect);
-	g_boss_panic_effect = NULL;
-
-	UnInitTexture(g_boss_shock_wave_effect);
-	g_boss_shock_wave_effect = NULL;
-
-	// デバッグ用のテクスチャ
-	UnInitTexture(g_debug_color);
-	g_debug_color = NULL;
-
-	UnInitTexture(g_debug_boss_body_color);
-	g_debug_boss_body_color = NULL;
-
-	UnInitTexture(g_debug_attack_color);
-	g_debug_attack_color = NULL;
-
-		UnInitTexture(g_debug_core);
-	g_debug_core = NULL;
-
+	if (g_boss_icon) UnInitTexture(g_boss_icon);
+	if (g_boss_pin) UnInitTexture(g_boss_pin);
 
 
 	//ダメージの処理

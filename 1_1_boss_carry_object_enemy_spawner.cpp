@@ -71,7 +71,7 @@ boss_carry_object_spawner::~boss_carry_object_spawner()
 {
     for (auto enemy : enemyList)
     {
-        delete enemy;
+     /*   delete enemy;*/
     }
     enemyList.clear();
 }
@@ -156,7 +156,7 @@ void boss_carry_object_spawner::Finalize()
 {
     for (auto enemy : enemyList)
     {
-        delete enemy;
+        /*delete enemy;*/
     }
     enemyList.clear();
 
