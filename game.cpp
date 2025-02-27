@@ -426,8 +426,6 @@ void Game::Update(void)
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.ChangeScene(SCENE_RESULT);
         }
-
-
     }
 
     //シーン移行の管理（死亡した時以外のシーン移動）
@@ -466,10 +464,7 @@ void Game::Update(void)
                 break;
             }
         }
-
-
     }
-
 }
 
 
