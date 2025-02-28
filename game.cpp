@@ -408,7 +408,7 @@ void Game::Update(void)
     if (dead_production::GetDeadFlag())
     {
         //プレイヤーの残機が残っていたら最初からスタート
-        if (PlayerLife::GetLife() > 0)
+        if (PlayerLife::GetLife() > 1)
         {
             if (player.GetRegisteredSavePoint() != nullptr) { next_state = GAME_STATE_RESPAWN_SAVE_POINT; }
             else { next_state = GAME_STATE_RESPAWN_INITIAL; }
@@ -423,7 +423,8 @@ void Game::Update(void)
             next_state = GAME_STATE_GAMEOVER;
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
-            sceneManager.ChangeScene(SCENE_RESULT);
+            sceneManager.SetStageName(STAGE_TUTORIAL);
+            sceneManager.ChangeScene(SCENE_TITLE);
         }
     }
 
