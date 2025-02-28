@@ -521,11 +521,11 @@ void wood::SetState(Wood_State state)
 	case Wood_Pulling:
 		m_destory_joint = true;	//切り株と本体のジョイントを消すためにフラグをオンにする
 		angle_when_pulling_start = Wood_body->GetAngle();
+		app_atomex_start(m_sound_FalledDown);	//音鳴らす
 		break; 
 	case Wood_Falling:
 		break;
 	case Wood_HitObject:
-		app_atomex_start(m_sound_FalledDown);	//音鳴らす
 		SetState(Wood_Idle);
 		angle_when_pulling_start = Wood_body->GetAngle();
 		break;
