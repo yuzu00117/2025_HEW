@@ -371,8 +371,7 @@ void boss_carry_object_enemy::AnchorHit()
 		objectBody->SetGravityScale(1.0f); // 変更後の値（デフォルト1.0）
 
 	
-		world->DestroyBody(enemyBody);
-		SetEnemyBody(nullptr);
+		
 	
 
 }
