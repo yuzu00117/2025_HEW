@@ -158,6 +158,8 @@ void EnemyFloating::Update()
 			now_vec = GetRandomVelocity(47.0f);
 		}
 
+		item_manager.AddDamageValue(b2Vec2{ now_positon.x, now_positon.y - 0.2f }, b2Vec2{ 1.0f,1.0f }, 0.0f, DamageOwnerType_enemy, ENEMY_FLOATING_LIFE);
+
 		//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();

@@ -376,7 +376,9 @@ private:
 
 	float soul_get_effect_sheet_cnt;
 
-	
+	//=======================================
+	//次Update関数で追加するダメージ表記のリスト
+	std::vector<int>add_item_damage_value;
 
 };
 

@@ -128,6 +128,7 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     is_tamachan_disappearing = false;        // たまちゃんが消えるエフェクトのフラグ
     tamachan_disappear_effect_cnt = 0.0f;    // たまちゃんが消えるエフェクトのカウント
 
+    add_item_damage_value.clear();          //ダメージを表記するリストのクリア
 
     if (g_player_Texture == NULL)
     {
@@ -324,6 +325,23 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
 void Player::Update()
 {
     // プレイヤーの更新処理
+
+    //ダメージ表記リスト更新
+    for (int i = 0; i < add_item_damage_value.size(); i++)
+    {
+        ItemManager& item_manager = ItemManager::GetInstance();
+        b2Vec2 player_position = m_body->GetPosition();
+        //ノックバックする方向によって、表記の座標が違う
+        if (g_damage_from_right)
+        {
+            item_manager.AddDamageValue(b2Vec2{ player_position.x - 0.5f, player_position.y - 0.2f }, b2Vec2{ 1.0f,1.0f }, 0.0f, DamageOwnerType_player, add_item_damage_value.at(i));
+        }
+        else
+        {
+            item_manager.AddDamageValue(b2Vec2{ player_position.x + 0.1f, player_position.y - 0.2f }, b2Vec2{ 1.0f,1.0f }, 0.0f, DamageOwnerType_player, add_item_damage_value.at(i));
+        }
+    }
+    add_item_damage_value.clear();
 
     // モーションのDrawカウントを加算
     draw_cnt++;
@@ -798,11 +816,14 @@ void Player::Update()
 
 void Player::Player_Damaged(int Change_to_HP, int invincibletime, const b2Body *attack_body, bool knock_back_only)
 {
+    ItemManager& item_mamager = ItemManager::GetInstance();
+
     // HPを減らす
     PlayerStamina::EditPlayerStaminaValue(Change_to_HP); // HPに加算減算する　今回は減算
+    //ダメージ表記リスト追加
+    if (Change_to_HP < 0 && item_mamager.FindItem_Barrier_ByOwnerBody(m_body) == nullptr) { add_item_damage_value.push_back(-Change_to_HP); }
 
     // 無敵時間を付与
-    ItemManager& item_mamager = ItemManager::GetInstance();
     //　点滅無しのノックバックオンリーやバリアが張っている時は、点滅無し
     if (knock_back_only || item_mamager.FindItem_Barrier_ByOwnerBody(m_body) != nullptr) { invincible_time = 1; }
     else { invincible_time = invincibletime; }
