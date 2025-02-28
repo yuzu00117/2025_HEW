@@ -46,6 +46,8 @@ ItemManager& itemManager = ItemManager::GetInstance();
 
 // 使用するテクスチャファイルを格納
 static ID3D11ShaderResourceView* g_Ground_Texture = NULL;//地面のテクスチャ
+static ID3D11ShaderResourceView* g_Ground_Grass_only_Texture = NULL;//はっぱだけ
+
 static ID3D11ShaderResourceView* g_under_Ground_Texture = NULL;//地面のテクスチャ
 
 static ID3D11ShaderResourceView* g_AnchorPoint_Texture = NULL;//アンカーポイントのテクスチャ
@@ -60,6 +62,7 @@ static ID3D11ShaderResourceView* g_under_left_ground_down_Texture = NULL;//地�
 
 static ID3D11ShaderResourceView* g_sloop_left_side_texture = NULL;//地面スロープの右側
 static ID3D11ShaderResourceView* g_sloop_right_side_texture = NULL;//地面スロープの左側
+
 
 
 static ID3D11ShaderResourceView* g_invisibility_wall_Texture = NULL;//不可視の壁
@@ -81,6 +84,11 @@ static ID3D11ShaderResourceView* g_Iseki_boss_wall_object_Texture = NULL;	//ボ�
 //チュートリアルリアルステージのテクスチャ
 static ID3D11ShaderResourceView* g_sand_Texture = NULL;	//砂のマップ
 static ID3D11ShaderResourceView* g_sand_up_Texture = NULL;	//砂のマップ上
+
+
+//背景ブロック
+static ID3D11ShaderResourceView* g_background_block_Texture = NULL;	//背景地中
+static ID3D11ShaderResourceView* g_background_block_down_Texture = NULL;	//背景地上
 
 
 
@@ -143,7 +151,12 @@ void Field::Initialize()
 
 		g_sand_Texture = InitTexture(L"asset\\texture\\stage_block\\sand_down.png");//砂のした
 		g_sand_up_Texture = InitTexture(L"asset\\texture\\stage_block\\sand_top.png");//砂の上
+
+		g_background_block_Texture= InitTexture(L"asset\\texture\\stage_block\\bg_background_block_up.png");
+		g_background_block_down_Texture= InitTexture(L"asset\\texture\\stage_block\\bg_background_block.png");
+
 		
+		g_Ground_Grass_only_Texture = InitTexture(L"asset\\texture\\stage_block\\grass_only.png");
 	}
 
 
@@ -260,7 +273,7 @@ void Field::Initialize()
 				//不可視の壁
 				if (field_map[y][x] == 7) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_GRASS_ONLY, false);
 				}
 
 
@@ -403,7 +416,8 @@ void Field::Initialize()
 				}
 				if (field_map[y][x] == 10) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y-0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 0.25f), 0.0f, true, true, STAGE_BLOCK_GRASS, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y-0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 0.25f), 0.0f, true, true, STAGE_GRASS_ONLY, false);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_Texture);
 				}
 				if (field_map[y][x] == 11) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
@@ -492,6 +506,9 @@ void Field::Initialize()
 				if (field_map[y][x] == 27) {//木のオブジェクト
 					objectManager.AddWood(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 11.f), b2Vec2(2.0f, 1.0f), 1);
 				}
+
+
+			
 
 				//-------------------------------------------------------------------------------------------
 			
@@ -584,6 +601,10 @@ void Field::Initialize()
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(50.0f, 2.0f), DEAD_BLOCK_TYPE, b2Vec2_zero);
 				}
 
+				//回復
+				if (field_map[y][x] == 66) {
+					itemManager.AddHealing(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 2.0f), 0.0f, respawning);
+				}
 			//------------------------------------------------------------------------------------------
 			//触れたら遺跡ステージに行く
 			//-------------------------------------------------------------------------------------------
@@ -591,15 +612,29 @@ void Field::Initialize()
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_STAGE_ISEKI, b2Vec2_zero);
 				}
 
-
-
-
 				//セーブポイント
-				if (field_map[y][x] == 75) {
+				if (field_map[y][x] == 71) {
 					itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 2.5f),0.0f, respawning);
 				}
 
 
+				//	地上の背景
+				if (field_map[y][x] == 72) {
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_Texture);
+				}
+				if (field_map[y][x] == 73) {
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_Texture);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y+1) / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_Texture);
+				}
+
+				//　地下の背景
+				if (field_map[y][x] == 74) {
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_down_Texture);
+				}
+				if (field_map[y][x] == 75) {
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_down_Texture);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y+1) / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_down_Texture);
+				}
 
 
 
@@ -612,10 +647,12 @@ void Field::Initialize()
 				//----------------------------------------------------------------------------------------
 				if (field_map[y][x] == 80) {//オブジェクトと接触したら壊れる
 					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 5,5,0.0, g_Ground_Texture);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_down_Texture);
 				}
 
 				if (field_map[y][x] == 81) {
 					objectManager.AddBreakBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 5, 5, 0.0, g_under_Ground_Texture);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_down_Texture);
 				}
 
 				if (field_map[y][x] == 82) {//左下斜面
@@ -681,7 +718,7 @@ void Field::Initialize()
 				if (field_map[y][x] == 105) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ROCK_SIGNBOARD, 0.f);
 				}
-
+				
 				//落ちるブロックの
 				if (field_map[y][x] == 106) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, FALL_SIGNBOARD, 0.f);
@@ -734,7 +771,10 @@ void Field::Initialize()
 						//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
 						m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_EARTH, false);
 					}
-			
+
+				
+
+				
 
 					//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 					//不可視の壁
@@ -776,6 +816,13 @@ void Field::Initialize()
 					}
 					if (field_map[y][x] == 15) {//左下斜面
 						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_down);
+					}
+
+					if (field_map[y][x] == 16) {//右下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_up);
+					}
+					if (field_map[y][x] == 17) {//左下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_up);
 					}
 					//------------------------------------------------------------------------------------------------------------------------------
 
@@ -1672,6 +1719,10 @@ void Field::Draw()
 					GetDeviceContext()->PSSetShaderResources(0, 1, &g_sand_up_Texture);
 					break;
 
+				case STAGE_GRASS_ONLY:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_Ground_Grass_only_Texture);
+					break;
+
 
 
 				default:
@@ -1769,6 +1820,13 @@ void Field::Finalize()
 
 	if (g_sand_Texture) UnInitTexture(g_sand_Texture);
 	if (g_sand_up_Texture) UnInitTexture(g_sand_up_Texture);
+
+	if (g_background_block_down_Texture) UnInitTexture(g_background_block_down_Texture);
+	if (g_background_block_Texture) UnInitTexture(g_background_block_Texture);
+
+
+	if (g_Ground_Grass_only_Texture) UnInitTexture(g_Ground_Grass_only_Texture);
+	
 }
 
 

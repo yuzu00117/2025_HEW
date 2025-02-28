@@ -106,6 +106,9 @@ private:
 	//テクスチャ
 	ID3D11ShaderResourceView* g_Texture;		    //宝石のテクスチャ
 	ID3D11ShaderResourceView* g_get_effect_texture; //宝石を取得した時のエフェクト
+	ID3D11ShaderResourceView* g_getting_effect_texture; //取得中のエフェクト
+	ID3D11ShaderResourceView* g_using_effect_texture;  //使用エフェクト
+
 
 	//効果発揮したのか
 	bool	m_functioned = false;
@@ -141,6 +144,13 @@ private:
 	float jem_get_sheet_cnt;
 
 	b2Vec2 get_effect_pos;
+
+	//取得エフェクトの描画用
+	int m_getting_anim_id = 0;
+	//仕様エフェクトの描画用
+	int m_use_anim_id = 0;
+	int m_use_anim_count = 0;
+	bool m_if_effect_using = false;
 };
 
 #endif // !ITEM_JEWELRY_H

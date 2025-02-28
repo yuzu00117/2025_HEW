@@ -383,7 +383,7 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
          
-#ifndef _DEBUG
+#ifdef _DEBUG
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
@@ -429,7 +429,7 @@ void Game::Update(void)
     if (dead_production::GetDeadFlag())
     {
         //プレイヤーの残機が残っていたら最初からスタート
-        if (PlayerLife::GetLife() > 0)
+        if (PlayerLife::GetLife() > 1)
         {
             if (player.GetRegisteredSavePoint() != nullptr) { m_next_state = GAME_STATE_RESPAWN_SAVE_POINT; }
             else { m_next_state = GAME_STATE_RESPAWN_INITIAL; }
@@ -444,7 +444,8 @@ void Game::Update(void)
             m_next_state = GAME_STATE_GAMEOVER;
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
-            sceneManager.ChangeScene(SCENE_RESULT);
+            sceneManager.SetStageName(STAGE_TUTORIAL);
+            sceneManager.ChangeScene(SCENE_TITLE);
         }
     }
 

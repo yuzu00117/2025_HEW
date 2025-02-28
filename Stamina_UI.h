@@ -34,6 +34,9 @@ private:
     static DirectX::XMFLOAT2 heart_position[3];
     static DirectX::XMFLOAT2 heart_size[3];
 
+
+    static float heart_sheet_cnt;
+
 };
 
 

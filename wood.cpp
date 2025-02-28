@@ -312,12 +312,12 @@ void wood::Initialize()
 		g_Wood_Texture2 = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_green.png");
 		g_Stump_Texture = InitTexture(L"asset\\texture\\wood_texture\\wood_stump.png");
 
-		g_Wood_Texture_Lv1 = InitTexture(L"asset\\texture\\wood_texture\\wood_Lv1.png");
-		g_Stump_Texture_Lv1 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_Lv1.png");
-		g_Wood_Texture_Lv2 = InitTexture(L"asset\\texture\\wood_texture\\wood_Lv2_TEST.png");
-		g_Stump_Texture_Lv2 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_Lv2_TEST.png");
-		g_Wood_Texture_Lv3 = InitTexture(L"asset\\texture\\wood_texture\\wood_Lv3_TEST.png");
-		g_Stump_Texture_Lv3 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_Lv3_TEST.png");
+		g_Wood_Texture_Lv1 = InitTexture(L"asset\\texture\\wood_texture\\wood_lv1_border.png");
+		g_Stump_Texture_Lv1 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_lv1_border.png");
+		g_Wood_Texture_Lv2 = InitTexture(L"asset\\texture\\wood_texture\\wood_lv2_border.png");
+		g_Stump_Texture_Lv2 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_lv2_border.png");
+		g_Wood_Texture_Lv3 = InitTexture(L"asset\\texture\\wood_texture\\wood_lv3_border.png");
+		g_Stump_Texture_Lv3 = InitTexture(L"asset\\texture\\wood_texture\\wood_stump_lv3_border.png");
 
 		g_leaf_Texture1 = InitTexture(L"asset\\texture\\wood_texture\\three_happa1.png");
 		g_leaf_Texture2 = InitTexture(L"asset\\texture\\wood_texture\\three_happa2.png");
@@ -521,11 +521,11 @@ void wood::SetState(Wood_State state)
 	case Wood_Pulling:
 		m_destory_joint = true;	//切り株と本体のジョイントを消すためにフラグをオンにする
 		angle_when_pulling_start = Wood_body->GetAngle();
+		app_atomex_start(m_sound_FalledDown);	//音鳴らす
 		break; 
 	case Wood_Falling:
 		break;
 	case Wood_HitObject:
-		app_atomex_start(m_sound_FalledDown);	//音鳴らす
 		SetState(Wood_Idle);
 		angle_when_pulling_start = Wood_body->GetAngle();
 		break;
