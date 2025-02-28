@@ -813,6 +813,13 @@ void Field::Initialize()
 					if (field_map[y][x] == 15) {//左下斜面
 						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_down);
 					}
+
+					if (field_map[y][x] == 16) {//右下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), right_up);
+					}
+					if (field_map[y][x] == 17) {//左下斜面
+						objectManager.AddSloping_block(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), left_up);
+					}
 					//------------------------------------------------------------------------------------------------------------------------------
 
 
