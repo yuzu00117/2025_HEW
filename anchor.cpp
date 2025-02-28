@@ -69,9 +69,7 @@ static b2Body* Target_anchor_point_body=nullptr;
 
 
 
-//アンカークラスのインスタンス
-Anchor*g_anchor_instance;
-
+Anchor Anchor::g_anchor_instance;  // グローバルなインスタンス
 
 Anchor::Anchor()
 {
@@ -128,24 +126,14 @@ void Anchor::Initialize()
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
 {
-	if (g_anchor_instance == nullptr)
-	{
-		g_anchor_instance = new Anchor();//NULLだったらアンカーを作って上げる
-	}
-	g_anchor_instance->CreateAnchorBody(anchor_size);//アンカーのボディをつくる
+	g_anchor_instance.CreateAnchorBody(anchor_size);//アンカーのボディをつくる
 }
 
 void Anchor::DeleteAnchor()
 {
-	if (g_anchor_instance != nullptr) {
-		g_anchor_instance->DestroyAnchorBody();
-	
-		////配列自体もデリート
-		//delete g_anchor_instance;
-		////NULLもしとく
-		//g_anchor_instance = nullptr;
 
-	}
+		g_anchor_instance.DestroyAnchorBody();
+
 	
 }
 
@@ -243,13 +231,13 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 void Anchor::DestroyAnchorBody()
 {
 	if (m_body != nullptr) {
-		if (m_body != nullptr) {
+		
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 			world->DestroyBody(m_body);
 			m_body = nullptr;
 			m_isAnchorCreated = false;
-		}
+		
 	}
 }
 
@@ -263,105 +251,107 @@ void Anchor::Update()
 void Anchor::Draw()
 {
 
-	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	float scale = SCREEN_SCALE;
-
-	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
-
-
-	if (g_anchor_instance == nullptr)
+	if (g_anchor_instance.GetAnchorBody() != nullptr)
 	{
-		return;
+
+
+		// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+		float scale = SCREEN_SCALE;
+
+		// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
+
+
+
+
+		b2Body* anchor = g_anchor_instance.GetAnchorBody();
+
+		if (anchor != nullptr)
+		{
+			b2Vec2 position;
+			position.x = anchor->GetPosition().x;
+			position.y = anchor->GetPosition().y;
+
+			// プレイヤー位置を考慮してスクロール補正を加える
+			//取得したbodyのポジションに対してBox2dスケールの補正を加える
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			float anchor_size_scale = 0;
+
+			switch (AnchorSpirit::GetAnchorLevel())
+			{
+			case 1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
+				anchor_size_scale = 1.3;
+				break;
+			case 2:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
+				anchor_size_scale = 2.0;
+				break;
+			case 3:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
+				anchor_size_scale = 3.0;
+				break;
+			default:
+				break;
+			}
+
+
+			b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
+
+			b2Vec2 Temporary_angle;//ベクトル使って飛んでいく角度 変数名は一時的なっていみ
+
+			if (Anchor::GetAnchorState() == Throwing_state)
+			{
+				Temporary_angle.x = target_AP_body->GetPosition().x - anchor->GetPosition().x;//xの座標の管理
+				Temporary_angle.y = target_AP_body->GetPosition().y - anchor->GetPosition().y;//yの座標の管理
+			}
+			else
+			{
+				Player& player = Player::GetInstance();
+				Temporary_angle.x = anchor->GetPosition().x - player.GetOutSidePlayerBody()->GetPosition().x;//xの座標の管理
+				Temporary_angle.y = anchor->GetPosition().y - player.GetOutSidePlayerBody()->GetPosition().y;//yの座標の管理
+			}
+
+
+
+			//ラジアン角を算出
+			float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
+
+			// ラジアンから度数へ変換
+			anchor_angle = anchor_angle * 180.0f / M_PI;
+
+			// 270度を補正 画像が下向きだったから
+			anchor_angle += 40.0f;
+
+			// 負の角度を正の範囲に調整（0°～360°）
+			if (anchor_angle < 0) {
+				anchor_angle += 360.0f;
+			}
+
+			//度数をラジアンに変換して
+			//Box2dのラジアンで管理してる
+			float angle = anchor_angle * M_PI / 180.0f;
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ g_anchor_instance.GetSize().x * scale * anchor_size_scale,g_anchor_instance.GetSize().y * scale * anchor_size_scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+			);
+
+
+
+		}
+
+		DrawChain();//チェーンの描画処理
+		DrawNormalAttack();//通常攻撃の描写
+		DrawAnchorHitEffect();//ヒットエフェクト
 	}
-
-	b2Body *anchor = g_anchor_instance->GetAnchorBody();
-
-	if (anchor!= nullptr)
-	{
-		b2Vec2 position;
-		position.x = anchor->GetPosition().x;
-		position.y = anchor->GetPosition().y;
-
-		// プレイヤー位置を考慮してスクロール補正を加える
-		//取得したbodyのポジションに対してBox2dスケールの補正を加える
-		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-		float anchor_size_scale = 0;
-
-		switch (AnchorSpirit::GetAnchorLevel())
-		{
-		case 1:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
-			anchor_size_scale = 1.3;
-			break;
-		case 2:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
-			anchor_size_scale = 2.0;
-			break;
-		case 3:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
-			anchor_size_scale = 3.0;
-			break;
-		default:
-			break;
-		}
-
-
-		b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
-
-		b2Vec2 Temporary_angle;//ベクトル使って飛んでいく角度 変数名は一時的なっていみ
-
-		if (Anchor::GetAnchorState() == Throwing_state)
-		{
-			Temporary_angle.x = target_AP_body->GetPosition().x - anchor->GetPosition().x;//xの座標の管理
-			Temporary_angle.y = target_AP_body->GetPosition().y - anchor->GetPosition().y;//yの座標の管理
-		}
-		else
-		{
-			Player& player = Player::GetInstance();
-			Temporary_angle.x = anchor->GetPosition().x -player.GetOutSidePlayerBody()->GetPosition().x;//xの座標の管理
-			Temporary_angle.y = anchor->GetPosition().y - player.GetOutSidePlayerBody()->GetPosition().y;//yの座標の管理
-		}
-
-
-
-		//ラジアン角を算出
-		float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
-
-		// ラジアンから度数へ変換
-		anchor_angle = anchor_angle * 180.0f / M_PI;
-
-		// 270度を補正 画像が下向きだったから
-		anchor_angle += 40.0f;
-
-		// 負の角度を正の範囲に調整（0°～360°）
-		if (anchor_angle < 0) {
-			anchor_angle += 360.0f;
-		}
-
-		//度数をラジアンに変換して
-		//Box2dのラジアンで管理してる
-		float angle=anchor_angle * M_PI / 180.0f;
-
-		//draw
-		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			angle,
-			{ g_anchor_instance->GetSize().x*scale*anchor_size_scale,g_anchor_instance->GetSize().y*scale* anchor_size_scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-		);
-
-
-		
-	}
-
-	DrawChain();//チェーンの描画処理
-	DrawNormalAttack();//通常攻撃の描写
-	DrawAnchorHitEffect();//ヒットエフェクト
 }
 
 
@@ -375,8 +365,8 @@ void Anchor::Finalize()
 
 
 
-	if(g_anchor_instance!=nullptr)
-	g_anchor_instance->DestroyAnchorBody();//アンカーのボディを解放
+	
+	g_anchor_instance.DestroyAnchorBody();//アンカーのボディを解放
 	if (g_Anchor_Texture_Lev1) UnInitTexture(g_Anchor_Texture_Lev1);
 	if (g_Anchor_Texture_Lev2) UnInitTexture(g_Anchor_Texture_Lev2);
 	if (g_Anchor_Texture_Lev3) UnInitTexture(g_Anchor_Texture_Lev3);
@@ -412,13 +402,10 @@ void Anchor::Finalize()
 
 void Anchor::ThrowAnchorToAP(float speed_up)
 {
-	if (g_anchor_instance == nullptr)
-	{
-		return;//NULLチェック
-	}
+
 
 	//今のアンカーがある座標の取得
-	b2Vec2 anchor_pos=g_anchor_instance->GetAnchorBody()->GetPosition();
+	b2Vec2 anchor_pos=g_anchor_instance.GetAnchorBody()->GetPosition();
 
 
 	b2Body* body=AnchorPoint::GetTargetAnchorPointBody();
@@ -439,21 +426,21 @@ void Anchor::ThrowAnchorToAP(float speed_up)
 		velocity.Normalize(); // 単位ベクトル化して方向を決定
 		velocity *= (20 * speed_up); // 投擲速度を設定	
 
-		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
+		g_anchor_instance.GetAnchorBody()->SetLinearVelocity(velocity);//ここで力を加えてる
 	}
 
 }
 	
 void Anchor::CreateRotateJoint()
 {
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(b2Vec2_zero);//とんできたアンカーのベロシティをゼロにする
+	g_anchor_instance.GetAnchorBody()->SetLinearVelocity(b2Vec2_zero);//とんできたアンカーのベロシティをゼロにする
 	MyContactListener& contact_listener = MyContactListener::GetInstance();
 
-	if (g_anchor_instance == nullptr || g_anchor_instance->GetAnchorBody() == nullptr) {
+	if (g_anchor_instance.GetAnchorBody() == nullptr) {
 		return; // アンカーが存在しない場合は何もしない
 	}
 
-	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
+	b2Body* anchorBody = g_anchor_instance.GetAnchorBody();
 	b2Body* targetBody = AnchorPoint::GetTargetAnchorPointBody();
 
 
@@ -558,7 +545,7 @@ void Anchor::CreateRotateJoint()
 		world->CreateJoint(&jointDef);
 
 		//エフェクトスタート
-		g_anchor_instance->anchor_hit_effect_flag = true;
+		g_anchor_instance.anchor_hit_effect_flag = true;
 	
 }
 
@@ -568,11 +555,11 @@ void Anchor::CreateRotateJoint()
  */
 void Anchor::DeleteRotateJoint(void)
 {
-	if (g_anchor_instance == nullptr || g_anchor_instance->GetAnchorBody() == nullptr) {
+	if (g_anchor_instance.GetAnchorBody() == nullptr) {
 		return; // アンカーが存在しない場合は何もしない
 	}
 
-	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
+	b2Body* anchorBody = g_anchor_instance.GetAnchorBody();
 
 	// すべてのジョイントを調べる
 	for (b2JointEdge* jointEdge = anchorBody->GetJointList(); jointEdge != nullptr; jointEdge = jointEdge->next) {
@@ -599,13 +586,13 @@ void Anchor::PullingAnchor(void)
 	//プレイヤーとアンカーの座標を取得する
 
 	b2Vec2 player_postion = PlayerPosition::GetPlayerPosition();
-	b2Vec2 anchor_postion = g_anchor_instance->GetAnchorBody()->GetPosition();
+	b2Vec2 anchor_postion = g_anchor_instance.GetAnchorBody()->GetPosition();
 
 	b2Vec2 velocity = player_postion - anchor_postion;
 	velocity.Normalize(); // 単位ベクトル化して方向を決定
 	velocity *= 6; // 投擲速度を設定	
 
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);
+	g_anchor_instance.GetAnchorBody()->SetLinearVelocity(velocity);
 
 }
 
@@ -645,7 +632,7 @@ void Anchor::SetChainEffect()
 	//０を代入
 	for (int i = 0; i < MAX_CHAIN_NUM; i++)
 	{
-		g_anchor_instance->Anchor_effect_sheet[i] = 0;
+		g_anchor_instance.Anchor_effect_sheet[i] = 0;
 	}
 
 
@@ -653,21 +640,21 @@ void Anchor::SetChainEffect()
 	{
 		//アンカーレベル１
 	case 1:
-		g_anchor_instance->chain_effect_scale = 10.0f;
+		g_anchor_instance.chain_effect_scale = 10.0f;
 		switch (rand)
 		{
 		case 1:
-			g_anchor_instance->Anchor_Effect_Type = 1;
-			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+			g_anchor_instance.Anchor_Effect_Type = 1;
+			g_anchor_instance.Max_Anchor_effect_sheet = 8;
 
 			break;
 		case 2:
-			g_anchor_instance->Anchor_Effect_Type = 2;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 2;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 		case 3:
-			g_anchor_instance->Anchor_Effect_Type = 3;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 3;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 
 
@@ -677,21 +664,21 @@ void Anchor::SetChainEffect()
 		break;
 		//アンカーレベル2
 	case 2:
-		g_anchor_instance->chain_effect_scale = 10.0f;
+		g_anchor_instance.chain_effect_scale = 10.0f;
 		switch (rand)
 		{
 		case 1:
-			g_anchor_instance->Anchor_Effect_Type = 4;
-			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+			g_anchor_instance.Anchor_Effect_Type = 4;
+			g_anchor_instance.Max_Anchor_effect_sheet = 8;
 
 			break;
 		case 2:
-			g_anchor_instance->Anchor_Effect_Type = 5;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 5;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 		case 3:
-			g_anchor_instance->Anchor_Effect_Type = 6;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 6;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 
 
@@ -701,21 +688,21 @@ void Anchor::SetChainEffect()
 		break;
 		//アンカーレベル3
 	case 3:
-		g_anchor_instance->chain_effect_scale = 8.0f;
+		g_anchor_instance.chain_effect_scale = 8.0f;
 		switch (rand)
 		{
 		case 1:
-			g_anchor_instance->Anchor_Effect_Type = 7;
-			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+			g_anchor_instance.Anchor_Effect_Type = 7;
+			g_anchor_instance.Max_Anchor_effect_sheet = 8;
 
 			break;
 		case 2:
-			g_anchor_instance->Anchor_Effect_Type = 8;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 8;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 		case 3:
-			g_anchor_instance->Anchor_Effect_Type = 9;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 9;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 
 
@@ -740,7 +727,7 @@ void Anchor::DrawChain()
 	b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
 	// プレイヤーとアンカーの位置を取得
-	b2Body* anchor = g_anchor_instance->GetAnchorBody();
+	b2Body* anchor = g_anchor_instance.GetAnchorBody();
 
 	if (anchor == nullptr)
 	{
@@ -804,23 +791,23 @@ void Anchor::DrawChain()
 
 		
 
-			int player_scale_x = g_anchor_instance->chain_effect_scale*2.0f;
-			int player_scale_y = g_anchor_instance->chain_effect_scale*2.0f;
+			int player_scale_x = g_anchor_instance.chain_effect_scale*2.0f;
+			int player_scale_y = g_anchor_instance.chain_effect_scale*2.0f;
 
 			float chain_alpha=1.0f;
 
 			bool m_direction=true;
 		
 
-			if (g_anchor_instance == nullptr)return;
+		
 
 			if (i % 2 == 0)
 			{
 
-				if (g_anchor_instance->Anchor_effect_sheet[i] < g_anchor_instance->Max_Anchor_effect_sheet)
+				if (g_anchor_instance.Anchor_effect_sheet[i] < g_anchor_instance.Max_Anchor_effect_sheet)
 				{
 
-					switch (g_anchor_instance->Anchor_Effect_Type)
+					switch (g_anchor_instance.Anchor_Effect_Type)
 					{
 					case 1:
 						// シェーダリソースを設定
@@ -831,7 +818,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x , chain_size.x * scale * player_scale_y },
-							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							4, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 2:
@@ -843,7 +830,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 3:
@@ -855,7 +842,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 4:
@@ -867,7 +854,7 @@ void Anchor::DrawChain()
 							 draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							4, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 5:
@@ -879,7 +866,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 6:
@@ -891,7 +878,7 @@ void Anchor::DrawChain()
 							 draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.y * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 7:
@@ -903,7 +890,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							4, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 8:
@@ -915,7 +902,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 
@@ -928,7 +915,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x, chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					default:
@@ -936,7 +923,7 @@ void Anchor::DrawChain()
 					}
 
 
-					g_anchor_instance->Anchor_effect_sheet[i] += 0.3;
+					g_anchor_instance.Anchor_effect_sheet[i] += 0.3;
 				}
 			}
 		
@@ -950,31 +937,31 @@ void Anchor::DrawAnchorHitEffect(void)
 {
 
 	//描画の表示が
-	if (g_anchor_instance->anchor_hit_effect_flag == true)
+	if (g_anchor_instance.anchor_hit_effect_flag == true)
 	{
 		// スケール設定
 		float scale = SCREEN_SCALE;
 		// スクリーン中央位置
 		b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
-		b2Body* anchor = g_anchor_instance->GetAnchorBody();
+		b2Body* anchor = g_anchor_instance.GetAnchorBody();
 
 		//アンカーの選択
-		if (g_anchor_instance->now_anchor_hit_effect_sheet_cnt == 0)
+		if (g_anchor_instance.now_anchor_hit_effect_sheet_cnt == 0)
 		{
 			switch (AnchorSpirit::GetAnchorLevel())
 			{
 			case 1:
-				g_anchor_instance->anchor_hit_effect_type = 1;
-				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 6;
+				g_anchor_instance.anchor_hit_effect_type = 1;
+				g_anchor_instance.max_anchor_hit_effect_sheet_cnt = 6;
 				break;
 			case 2:
-				g_anchor_instance->anchor_hit_effect_type = 2;
-				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 9;
+				g_anchor_instance.anchor_hit_effect_type = 2;
+				g_anchor_instance.max_anchor_hit_effect_sheet_cnt = 9;
 				break;
 			case 3:
-				g_anchor_instance->anchor_hit_effect_type = 3;
-				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 16;
+				g_anchor_instance.anchor_hit_effect_type = 3;
+				g_anchor_instance.max_anchor_hit_effect_sheet_cnt = 16;
 				break;
 			default:
 				break;
@@ -1003,7 +990,7 @@ void Anchor::DrawAnchorHitEffect(void)
 
 		
 
-			switch (g_anchor_instance->anchor_hit_effect_type)
+			switch (g_anchor_instance.anchor_hit_effect_type)
 			{
 			case 1:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level1_Texture);
@@ -1012,9 +999,9 @@ void Anchor::DrawAnchorHitEffect(void)
 					{ draw_x,
 					draw_y },
 					anchor->GetAngle(),
-					{ g_anchor_instance->GetSize().x * scale*1.5f  ,g_anchor_instance->GetSize().y * scale *1.5f },
+					{ g_anchor_instance.GetSize().x * scale*1.5f  ,g_anchor_instance.GetSize().y * scale *1.5f },
 					3, 2,
-					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					g_anchor_instance.now_anchor_hit_effect_sheet_cnt / 2,
 					1.0f
 				);
 				break;
@@ -1025,9 +1012,9 @@ void Anchor::DrawAnchorHitEffect(void)
 					{ draw_x ,
 					draw_y  },
 					anchor->GetAngle(),
-					{ g_anchor_instance->GetSize().x * scale *2.5f  ,g_anchor_instance->GetSize().y * scale * 2.5f },
+					{ g_anchor_instance.GetSize().x * scale *2.5f  ,g_anchor_instance.GetSize().y * scale * 2.5f },
 					3, 3,
-					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					g_anchor_instance.now_anchor_hit_effect_sheet_cnt / 2,
 					1.0f
 				);
 				break;
@@ -1038,9 +1025,9 @@ void Anchor::DrawAnchorHitEffect(void)
 					{ draw_x ,
 					draw_y },
 					anchor->GetAngle(),
-					{ g_anchor_instance->GetSize().x * scale * 3  ,g_anchor_instance->GetSize().y * scale * 3 },
+					{ g_anchor_instance.GetSize().x * scale * 3  ,g_anchor_instance.GetSize().y * scale * 3 },
 					4, 4,
-					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					g_anchor_instance.now_anchor_hit_effect_sheet_cnt / 2,
 					1.0f
 				);
 				break;
@@ -1051,13 +1038,13 @@ void Anchor::DrawAnchorHitEffect(void)
 			
 		}
 
-		g_anchor_instance->now_anchor_hit_effect_sheet_cnt++;
+		g_anchor_instance.now_anchor_hit_effect_sheet_cnt++;
 
-		if (g_anchor_instance->max_anchor_hit_effect_sheet_cnt <g_anchor_instance->now_anchor_hit_effect_sheet_cnt)
+		if (g_anchor_instance.max_anchor_hit_effect_sheet_cnt <g_anchor_instance.now_anchor_hit_effect_sheet_cnt)
 		{
-			g_anchor_instance->anchor_hit_effect_flag = false;
-			g_anchor_instance->now_anchor_hit_effect_sheet_cnt = 0;
-			g_anchor_instance->anchor_create_joint_flag = 0;
+			g_anchor_instance.anchor_hit_effect_flag = false;
+			g_anchor_instance.now_anchor_hit_effect_sheet_cnt = 0;
+			g_anchor_instance.anchor_create_joint_flag = 0;
 		}
 
 	}
@@ -1067,16 +1054,13 @@ void Anchor::DrawAnchorHitEffect(void)
 void Anchor::CreateNormalAttack(b2Vec2 anchor_size, bool right)
 {
 
-	if (g_anchor_instance == nullptr)
-	{
-		g_anchor_instance = new Anchor();//NULLだったらアンカーを作って上げる
-	}
-	g_anchor_instance->CreateNormalAttackAnchorBody(anchor_size, right);	
+
+	g_anchor_instance.CreateNormalAttackAnchorBody(anchor_size, right);	
 }
 	
 void Anchor::DeleteNormalAttackAnchor()
 {
-	g_anchor_instance->DeleteNormalAttackAnchorBody();
+	g_anchor_instance.DeleteNormalAttackAnchorBody();
 }
 
 
@@ -1165,7 +1149,7 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 	//world->CreateJoint(&jointDef); //ワールドにジョイントを追加
 
 	//エフェクトスタート
-	g_anchor_instance->anchor_hit_effect_flag = true;
+	g_anchor_instance.anchor_hit_effect_flag = true;
 }
 
 void Anchor::UpdateNormalAttack()
@@ -1184,12 +1168,8 @@ void Anchor::DrawNormalAttack()
 	screen_center.y = SCREEN_CENTER_Y;
 
 
-	if (g_anchor_instance == nullptr)
-	{
-		return;
-	}
 
-	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
+	b2Body* anchor = g_anchor_instance.GetNormalAttackAnchorBody();
 
 	if (anchor != nullptr)
 	{
@@ -1211,13 +1191,13 @@ void Anchor::DrawNormalAttack()
 			  draw_y },
 			0.0	,
 			{ 6 * scale, 6 * scale },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-			4,2,g_anchor_instance->anchor_nomal_attack_effect,1.0f
+			4,2,g_anchor_instance.anchor_nomal_attack_effect,1.0f
 		);
-		g_anchor_instance->anchor_nomal_attack_effect +=0.4;
+		g_anchor_instance.anchor_nomal_attack_effect +=0.4;
 	}
 	else
 	{
-		g_anchor_instance->anchor_nomal_attack_effect = 0;
+		g_anchor_instance.anchor_nomal_attack_effect = 0;
 	}
 }
 
