@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------------------------------
 // #name OP.cpp
-// #description ƒI[ƒvƒjƒ“ƒOƒV[ƒ“
-// #make 2025/2/7@‰¤‰jS
+// #description ã‚ªãƒ¼ãƒ—ãƒ‹ãƒ³ã‚°ã‚·ãƒ¼ãƒ³
+// #make 2025/2/7ã€€ç‹æ³³å¿ƒ
 // #update 2025/2/12
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 //          
 //----------------------------------------------------------------------------------------------------
 #include "OP.h"
@@ -12,8 +12,8 @@
 #include "sprite.h"
 #include "texture.h"
 
-static ID3D11ShaderResourceView* g_pause_Texture = NULL;//ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_background_Texture = NULL;//ƒAƒ“ƒJ[‚ÌƒeƒNƒXƒ`ƒƒ
+static ID3D11ShaderResourceView* g_pause_Texture = NULL;//ã‚¢ãƒ³ã‚«ãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_background_Texture = NULL;//ã‚¢ãƒ³ã‚«ãƒ¼ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 static bool g_pressed = false;
 
@@ -27,7 +27,7 @@ OP::~OP()
 
 void OP::Initialize()
 {
-	video.Initialize("asset/movie/op.mp4", false);
+	video.Initialize("asset/movie/hew_movie.mp4", false);
 	g_pause_Texture = InitTexture(L"asset\\texture\\sample_texture\\video_pause.png");
 
 	m_pause = false;
@@ -41,7 +41,11 @@ void OP::Update()
 	if (finished)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
-		sceneManager.ChangeScene(SCENE_OP);
+
+
+		sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+
+
 	}
 
 	if (!g_pressed && Keyboard_IsKeyDownTrigger(KK_X))
@@ -74,12 +78,12 @@ void OP::Update()
 
 void OP::Draw()
 {
-	//ƒoƒbƒtƒ@ƒNƒŠƒA
+	//ãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢
 	Clear();
 
 	if (m_pause)
 	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_pause_Texture);
 
 		DrawSprite(
@@ -94,7 +98,7 @@ void OP::Draw()
 
 
 
-	//ƒoƒbƒNƒoƒbƒtƒ@Aƒtƒƒ“ƒgƒoƒbƒtƒ@“ü‚ê‘Ö‚¦
+	//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã€ãƒ•ãƒ­ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡å…¥ã‚Œæ›¿ãˆ
 	Present();
 
 }
