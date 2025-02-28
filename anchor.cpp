@@ -87,6 +87,7 @@ void Anchor::Initialize()
 	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv1.png");
 	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv2.png");
 	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv3.png");
+	assert(g_Anchor_Texture_Lev3);
 
 
 	//ÉAÉìÉJÅ[ÇÃçΩ
