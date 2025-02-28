@@ -134,7 +134,7 @@ void ItemHealing::Initialize()
 {
     if (!g_Healing_Texture)
     {
-        g_Healing_Texture=InitTexture(L"asset\\texture\\sample_texture\\sample_rock.png");
+        g_Healing_Texture= InitTexture(L"asset\\texture\\UI_stamina\\heart_content.png");
         g_Effect_Texture= InitTexture(L"asset\\texture\\sample_texture\\coin_effect.png");
     }
 }

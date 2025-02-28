@@ -584,6 +584,10 @@ void Field::Initialize()
 					objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(50.0f, 2.0f), DEAD_BLOCK_TYPE, b2Vec2_zero);
 				}
 
+				//回復
+				if (field_map[y][x] == 66) {
+					itemManager.AddHealing(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 2.0f), 0.0f, respawning);
+				}
 			//------------------------------------------------------------------------------------------
 			//触れたら遺跡ステージに行く
 			//-------------------------------------------------------------------------------------------
