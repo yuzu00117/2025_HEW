@@ -326,6 +326,10 @@ void Game::Update(void)
             //ディスプレイの更新処理
             display::Update();
 
+
+            //アンカーの更新処理
+            Anchor::Update();
+
             //プレイヤーライフの更新処理
             PlayerLife::Update();
             //ソウルゲージUIの更新処理
@@ -337,9 +341,6 @@ void Game::Update(void)
 
             //プレイヤーの更新処理
             player.Update();
-
-            //アンカーの更新処理
-            Anchor::Update();
 
             //criの更新処理
             CRIUpdate();
