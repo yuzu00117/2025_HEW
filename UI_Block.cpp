@@ -31,6 +31,18 @@ static ID3D11ShaderResourceView* g_move_signboard = NULL;//看板　動き
 static ID3D11ShaderResourceView* g_jump_signboard = NULL;//看板　ジャンプ
 static ID3D11ShaderResourceView* g_anachor_signboard = NULL;//看板　アンカー
 
+
+static ID3D11ShaderResourceView* g_arrow_right_signboard = NULL;//看板　右
+static ID3D11ShaderResourceView* g_arrow_right_down_signboard = NULL;//看板　右下
+static ID3D11ShaderResourceView* g_arrow_left_signboard = NULL;//看板 左
+static ID3D11ShaderResourceView* g_arrow_up_signboard = NULL;//看板 上
+
+static ID3D11ShaderResourceView* g_boss_signboard = NULL;//看板　ボス
+static ID3D11ShaderResourceView* g_wood_signboard = NULL;//看板　木
+static ID3D11ShaderResourceView* g_rock_signboard = NULL;//看板　岩
+static ID3D11ShaderResourceView* g_fall_signboard = NULL;//看板　落ちる岩
+
+
 //センサーに触れたらUIを表示する
 UI_block::UI_block(b2Vec2 Position, b2Vec2 block_size, b2Vec2 Sensor_size, b2Vec2 Sensor_Position, Ui_Block_Type type, float texture_angle)
 {
@@ -118,37 +130,23 @@ void UI_block::Initialize()
 		g_move_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
 		g_jump_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_jump.png");
 		g_anachor_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_anchor.png");
+
+		//矢印ず
+		g_arrow_left_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_arrow_left.png");
+		g_arrow_right_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_arrow_right.png");
+		g_arrow_right_down_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_arrow_right_down.png");
+		g_arrow_up_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_arrow_up.png");
+
+
+		g_boss_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_boss.png");
+		g_wood_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_wood.png");
+		g_rock_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_rock.png");
+		g_fall_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_fall.png");
+	
+	
 	}
 
-	/*switch (m_ui_type)
-	{
-	case VIDEO_BUTTON_A:
-		m_video.Initialize("asset/movie/A.mp4", true);
-		m_is_video = true;
-		m_flag = true;
-		break;
-	case VIDEO_BUTTON_LEFT_STICK:
-		m_video.Initialize("asset/movie/LeftStick.mp4", true);
-		m_is_video = true;
-		m_flag = true;
-		break;
-	case VIDEO_BUTTON_RIGHT_STICK:
-		m_video.Initialize("asset/movie/RightStick.mp4", true);
-		m_is_video = true;
-		m_flag = true;
-		break;
-	case VIDEO_BUTTON_ZR:
-		m_video.Initialize("asset/movie/ZR.mp4", true);
-		m_is_video = true;
-		m_flag = true;
-		break;
-	default:
-		m_is_video = false;
-		break;
-	}
 
-	m_video.SetState(Video_Pause);
-}*/
 }
 void UI_block::Update()
 {
@@ -313,6 +311,103 @@ void UI_block::Draw()
 				{ GetSize().x * scale,GetSize().y * scale }
 			);
 			break;
+		case ARROW_LEFT_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_arrow_left_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+		case ARROW_RIGHT_DOWN_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_arrow_right_down_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+		case ARROW_RIGHT_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_arrow_right_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+		case ARROW_UP_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_arrow_up_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+
+		case BOSS_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_boss_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+		case WOOD_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_wood_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+		case ROCK_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_rock_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
+		case FALL_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_fall_signboard);
+
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ GetSize().x * scale,GetSize().y * scale }
+			);
+			break;
+
 		case BUTTON_A:
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_UI_texture);
 			DrawSprite(
@@ -399,6 +494,20 @@ void UI_block::Finalize()
 	if (g_UI_texture) UnInitTexture(g_UI_texture);
 	if (g_arrow_Texture) UnInitTexture(g_arrow_Texture);
 
-	m_video.Finalize();
+	if (g_arrow_right_signboard) UnInitTexture(g_arrow_right_signboard);
+	if (g_arrow_right_down_signboard) UnInitTexture(g_arrow_right_down_signboard);
+	if (g_arrow_left_signboard) UnInitTexture(g_arrow_left_signboard);
+	if (g_arrow_up_signboard) UnInitTexture(g_arrow_up_signboard);
+
+	if (g_boss_signboard) UnInitTexture(g_boss_signboard);
+	if (g_wood_signboard) UnInitTexture(g_wood_signboard);
+	if (g_rock_signboard) UnInitTexture(g_rock_signboard);
+	if (g_fall_signboard) UnInitTexture(g_fall_signboard);
+
+	
 
 }
+
+
+
+

@@ -13,9 +13,11 @@
 #include "collider_type.h"
 #include "player_position.h"
 #include "tool.h"
+#include "create_filter.h"
 
 
 static ID3D11ShaderResourceView* g_EnemyFloating_Texture = NULL;	//動的エネミーの移動中のテクスチャ
+static ID3D11ShaderResourceView* g_EnemyFloating_Explode_Texture = NULL;	//動的エネミーの爆発のテクスチャ
 static ID3D11ShaderResourceView* g_EnemyFloating_Die_Texture = NULL;	//動的エネミーの死ぬ間際のテクスチャ
 
 EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
@@ -55,8 +57,10 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 	fixture.friction = 0.05f;  //摩擦
 	fixture.restitution = 0.0f;//反発係数
 	fixture.isSensor = true;  //センサーかどうか、trueならあたり判定は消える
+	fixture.filter = createFilterExclude("enemy_filter", {});
 
 	b2Fixture* enemy_floating_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
+
 
 //プレイヤーを感知するセンサー
 //--------------------------------------------
@@ -87,6 +91,8 @@ EnemyFloating::EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle)
 	data->id = ID;
 	sensor_data->id = ID;
 	SetID(ID);
+
+	SetState(ENEMY_FLOATING_STATE_IDLE);
 }
 
 void EnemyFloating::Initialize()
@@ -94,6 +100,7 @@ void EnemyFloating::Initialize()
 	if (g_EnemyFloating_Texture == NULL)
 	{
 		g_EnemyFloating_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating_moving.png");//動的エネミーの移動のテクスチャ
+		g_EnemyFloating_Explode_Texture = InitTexture(L"asset\\texture\\boss_1_1\\mini_golem_break_effect.png");//動的エネミーの爆発のテクスチャ
 		g_EnemyFloating_Die_Texture = InitTexture(L"asset\\texture\\enemy_texture\\enemy_floating_dead.png");//動的エネミーが死ぬテクスチャ
 	}
 }
@@ -112,25 +119,39 @@ void EnemyFloating::Finalize()
 	}
 
 	if (g_EnemyFloating_Texture) UnInitTexture(g_EnemyFloating_Texture);
+	if (g_EnemyFloating_Explode_Texture) UnInitTexture(g_EnemyFloating_Explode_Texture);
 	if (g_EnemyFloating_Die_Texture) UnInitTexture(g_EnemyFloating_Die_Texture);
 
 }
 
 void EnemyFloating::Update()
 {
-	if (GetUse() && m_sensed_player)
+	if (GetUse() && m_sensed_player || m_state == ENEMY_FLOATING_STATE_EXPLODE)
 	{
-		if (m_attack_cooling_time > 0)
-		{
-			m_attack_cooling_time--;
-		}
-
 		switch (GetState())
 		{
 		case ENEMY_FLOATING_STATE_IDLE:
 			break;
 		case ENEMY_FLOATING_STATE_MOVE:
 			Move();
+			break;
+		case ENEMY_FLOATING_STATE_EXPLODE:
+			if (m_anim_id >= 7)
+			{
+				//ソウルを落とす
+				ItemManager& item_manager = ItemManager::GetInstance();
+				item_manager.AddSpirit(GetBody()->GetPosition(), { 2.0f,3.0f }, 0.0f, GetSpiritType(), false);
+
+				//ワールドに登録したbodyの削除
+				Box2dWorld& box2d_world = Box2dWorld::GetInstance();
+				b2World* world = box2d_world.GetBox2dWorldPointer();
+				world->DestroyBody(GetBody());
+				SetBody(nullptr);
+
+				//オブジェクトマネージャー内のエネミー削除
+				ObjectManager& object_manager = ObjectManager::GetInstance();
+				object_manager.DestroyEnemyFloating(GetID());	
+			}
 			break;
 		case ENEMY_FLOATING_STATE_DIE:
 			break;
@@ -178,72 +199,143 @@ void EnemyFloating::Update()
 
 void EnemyFloating::Draw()
 {
-	// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-	float scale = SCREEN_SCALE;
+	if (GetBody() != nullptr)
+	{
+		// スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+		float scale = SCREEN_SCALE;
 
-	// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
+		// スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
 
-	b2Vec2 position = GetBody()->GetPosition();
+		b2Vec2 position = GetBody()->GetPosition();
 
-	// プレイヤー位置を考慮してスクロール補正を加える
-	//取得したbodyのポジションに対してBox2dスケールの補正を加える
-	float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-	float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-	switch (GetState())
+		switch (GetState())
+		{
+		case ENEMY_FLOATING_STATE_IDLE:
+			break;
+		case ENEMY_FLOATING_STATE_MOVE:
+			//貼るテクスチャを指定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Texture);
+
+			DrawSplittingSprite(
+				{ draw_x,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale ,GetSize().y * scale },
+				5, 5, m_anim_id, 3.0f
+			);
+			m_anim_id++;
+			m_anim_id = (int)m_anim_id % 25;
+			break;
+		case ENEMY_FLOATING_STATE_EXPLODE:
+			//貼るテクスチャを指定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Explode_Texture);
+			DrawSplittingSprite(
+				{ draw_x,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale * 2.0f ,GetSize().y * scale * 2.0f },
+				4, 2, m_anim_id, 3.0f
+			);
+			m_anim_id+=0.2f;
+			break;
+		case ENEMY_FLOATING_STATE_DIE:
+			//貼るテクスチャを指定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Die_Texture);
+
+			DrawSplittingSprite(
+				{ draw_x,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale ,GetSize().y * scale },
+				5, 5, m_anim_id, 3.0f
+			);
+			m_anim_id++;
+			m_anim_id = (int)m_anim_id % 25;
+			break;
+		default:
+			break;
+		}
+
+	}
+
+}
+
+void EnemyFloating::SetState(ENEMY_FLOATING_STATE state)
+{
+	if (m_state == ENEMY_FLOATING_STATE_EXPLODE)
+	{
+		return;
+	}
+	switch (state)
 	{
 	case ENEMY_FLOATING_STATE_IDLE:
+		break;
 	case ENEMY_FLOATING_STATE_MOVE:
-		//貼るテクスチャを指定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Texture);
-
-		DrawSplittingSprite(
-			{ draw_x,
-			  draw_y },
-			GetBody()->GetAngle(),
-			{ GetSize().x * scale ,GetSize().y * scale },
-			5, 5, m_anim_id, 3.0f
-		);
-		m_anim_id++;
-		m_anim_id = m_anim_id % 25;
+		break;
+	case ENEMY_FLOATING_STATE_EXPLODE:
+		app_atomex_start(Enemy_MiniGolem_Explosion_Sound);//浮遊敵の破裂音
+		// フィルターを変更
+		updateFixtureFilter("enemy_filter", { "Player_filter" });
+		m_anim_id = 0.0f;
 		break;
 	case ENEMY_FLOATING_STATE_DIE:
-		//貼るテクスチャを指定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Die_Texture);
-
-		DrawSplittingSprite(
-			{ draw_x,
-			  draw_y },
-			GetBody()->GetAngle(),
-			{ GetSize().x * scale ,GetSize().y * scale },
-			5, 5, m_anim_id, 3.0f
-		);
-		m_anim_id++;
-		m_anim_id = m_anim_id % 25;
-
-		break;
-	default:
+		m_anim_id = 0.0f;
 		break;
 	}
+	m_state = state;
 }
+
+void EnemyFloating::updateFixtureFilter(const std::string& category, const std::vector<std::string>& includeMasks)
+{
+	// ボディの最初のフィクスチャを取得
+	b2Fixture* fixture = GetBody()->GetFixtureList();
+
+	// フィクスチャが存在しない場合は早期リターン
+	if (!fixture)
+	{
+		return;
+	}
+
+	// 新しいフィルターを作成
+	b2Filter newFilter = createFilterExclude(category, includeMasks);
+
+	// すべてのフィクスチャに対してフィルターを更新
+	while (fixture)
+	{
+
+
+		fixture->SetFilterData(newFilter);
+		fixture = fixture->GetNext(); // 次のフィクスチャに移動
+	}
+}
+
 
 //移動
 void EnemyFloating::Move()
 {
-	//プレイヤー追従(簡易)
-	//プレイヤーのポジション取得
-	b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
+	if (GetBody() != nullptr)
+	{
+		//プレイヤー追従(簡易)
+		//プレイヤーのポジション取得
+		b2Vec2 player_position = PlayerPosition::GetPlayerPosition();
 
-	//  プレイヤーへ向かうベクトル
-	b2Vec2 vec;
-	vec.x = player_position.x - GetBody()->GetPosition().x;
-	vec.y = player_position.y - GetBody()->GetPosition().y;
+		//  プレイヤーへ向かうベクトル
+		b2Vec2 vec;
+		vec.x = player_position.x - GetBody()->GetPosition().x;
+		vec.y = player_position.y - GetBody()->GetPosition().y;
 
 
 
-	GetBody()->SetLinearVelocity(b2Vec2(vec.x * m_speed, vec.y * m_speed));
+		GetBody()->SetLinearVelocity(b2Vec2(vec.x * m_speed, vec.y * m_speed));
+
+	}
 
 }

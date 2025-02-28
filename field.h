@@ -75,6 +75,10 @@ enum FieldTexture
 	STAGE_BLOCK_TYPE_12,
 	STAGE_BLOCK_TYPE_13,
 	STAGE_BLOCK_TYPE_14,
+
+
+	SAND_UP,
+	SAND_DOWN
 };
 
 enum class StageType {
