@@ -718,7 +718,7 @@ void Field::Initialize()
 				if (field_map[y][x] == 105) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ROCK_SIGNBOARD, 0.f);
 				}
-
+				
 				//落ちるブロックの
 				if (field_map[y][x] == 106) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, FALL_SIGNBOARD, 0.f);
