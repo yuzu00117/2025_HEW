@@ -107,14 +107,17 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     case BLUE:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
         g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Blue_3x4.png");
+        g_using_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemBuff_Blue_5x7.png");
         break;
     case RED:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
         g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Red_3x4.png");
+        g_using_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemBuff_Red_5x7.png");
         break;
     case YELLOW:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
         g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Yellow_3x4.png");
+        g_using_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemBuff_Yellow_5x7.png");
         break;
     }
 
@@ -122,6 +125,8 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     {
         g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
     }
+
+    g_getting_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemFitLoop_4x6.png");
 }
 
 void	ItemJewel::Update()
@@ -130,7 +135,6 @@ void	ItemJewel::Update()
     {
         app_atomex_start(Player_Jewelry_Colect_Sound);
         SetIfCollecting(false);
-        //ゲットエフェクトスタート
         
         //ボディの情報を消す
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
@@ -199,7 +203,7 @@ void ItemJewel::SetIfCollecting(bool flag)
         position.y = m_body->GetPosition().y;
 
         m_position_collecting_start.x = SCREEN_WIDTH / 2;
-        m_position_collecting_start.y = (PlayerPosition::GetPlayerPosition().y * BOX2D_SCALE_MANAGEMENT * scale + screen_center.y)- SCREEN_HEIGHT / 2;
+        m_position_collecting_start.y = SCREEN_HEIGHT / 2;
 
         m_position_while_collecting = m_position_collecting_start;
 
@@ -250,8 +254,7 @@ void    ItemJewel::Function()
     }
 
     m_functioned = true;
-
-
+    m_if_effect_using = true;
 }
 
 
@@ -272,6 +275,20 @@ void ItemJewel::Draw()
 
         if (m_collecting)
         {
+            //取得中エフェクト
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_getting_effect_texture);
+            //描画
+            DrawSpriteAnimOld(
+                { m_position_while_collecting.x,
+                  m_position_while_collecting.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * 10,GetSize().y * scale * 10 },
+                6, 4, m_getting_anim_id, 1
+            );
+            m_getting_anim_id += 1;
+            m_getting_anim_id %= 24;
+
             // シェーダリソースを設定
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
             //描画
@@ -282,8 +299,6 @@ void ItemJewel::Draw()
                 { GetSize().x * scale * 1.7f,GetSize().y * scale * 1.7f },
                 m_Alpha
             );
-
-            
         }
 
         b2Vec2 screen_center;
@@ -375,6 +390,30 @@ void ItemJewel::Draw()
         }
     }
 
+    if (m_if_effect_using)
+    {
+        // コライダーと位置情報の補正をするため
+        float scale = SCREEN_SCALE;
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+        //エフェクト描画
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_using_effect_texture);
+
+        DrawDividedSpritePlayer(
+            { screen_center.x,
+              screen_center.y },
+            0,
+            { GetSize().x * scale * 6.0f ,GetSize().y * scale * 6.0f },
+            7, 5, m_use_anim_id, 3.0, true
+        );
+        m_use_anim_id++;
+        if (m_use_anim_id == 35)
+        {
+            m_if_effect_using = false;
+        }
+    }
 }
 
 
@@ -412,6 +451,16 @@ ItemJewel::~ItemJewel()
     {
         UnInitTexture(g_get_effect_texture);
         g_get_effect_texture = NULL;
+    }
+    if (g_getting_effect_texture)
+    {
+        UnInitTexture(g_getting_effect_texture);
+        g_getting_effect_texture = NULL;
+    }
+    if (g_using_effect_texture)
+    {
+        UnInitTexture(g_using_effect_texture);
+        g_using_effect_texture = NULL;
     }
 }
 
