@@ -647,8 +647,6 @@ void ObjectManager::InitializeAll() {
         w->Initialize();
     }
 
-    Item_Coin_UI::Initialize();
-
 }
 
 
