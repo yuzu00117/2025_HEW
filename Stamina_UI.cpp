@@ -24,6 +24,10 @@ ID3D11ShaderResourceView* g_heart_content_Texture = NULL;//ハートの中身
 DirectX::XMFLOAT2 Stamina_UI::player_icon_position = {160.0f, 70.0f};
 DirectX::XMFLOAT2 Stamina_UI::player_icon_size = {300.0f, 120.0f};
 
+float Stamina_UI::heart_sheet_cnt = 0;
+
+
+
 DirectX::XMFLOAT2 Stamina_UI::heart_position[3] =
 {
 	{150.0f,75.0f},
@@ -50,11 +54,25 @@ void Stamina_UI::Initialize()
 {
 	g_player_icon_Texture = InitTexture(L"asset\\texture\\UI_stamina\\player_icon3.png");
 	g_heart_frame_Texture = InitTexture(L"asset\\texture\\UI_stamina\\heart_frame.png");
-	g_heart_content_Texture = InitTexture(L"asset\\texture\\UI_stamina\\heart_content.png");
+	g_heart_content_Texture = InitTexture(L"asset\\texture\\UI_stamina\\hp_pinch.png");
 }
 
 void Stamina_UI::Update()
 {
+	float player_stamina = PlayerStamina::GetPlayerStaminaValue();
+	if (player_stamina <= 100)
+	{
+		heart_sheet_cnt += 0.7;
+	}
+	else
+	{
+		heart_sheet_cnt += 0.2;
+	}
+
+	if (30 < heart_sheet_cnt)
+	{
+		heart_sheet_cnt = 0;
+	}
 }
 
 void Stamina_UI::Draw()
@@ -102,9 +120,11 @@ void Stamina_UI::Draw()
 
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_heart_content_Texture);
-		//描画
-		DrawSerialDividedSprite(draw_position, rotate, draw_scale, 100, 1, 0, ratio_of_filling * 100);
+		
+		
 
+		//描画
+		DrawDividedSprite(draw_position, rotate, { 93,65 }, 10, 3, heart_sheet_cnt, ratio_of_filling * 100);
 	}
 }
 

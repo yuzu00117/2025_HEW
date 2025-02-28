@@ -1654,6 +1654,7 @@ void Boss_1_1::DrawObjectFront()
 			//HPの表示
 
 
+
 			// コライダーの位置を取得（プレイヤーの位置）
 			b2Vec2 boss_pos = GetBossBody()->GetPosition();
 			b2Vec2 real_boss_size;
@@ -1689,6 +1690,10 @@ void Boss_1_1::DrawObjectFront()
 
 			DrawDividedSpriteBoss(XMFLOAT2(draw_x + hp_x, draw_y - hp_y), 0.0f, XMFLOAT2(200, 100), 4, 1, 3 - boss_stock, boss_alpha, true);
 		}
+
+
+	
+
 
 
 
