@@ -54,6 +54,22 @@ private:
 	static bool Dead_Flag;
 
 
+	static float Game_over_cnt;
+
+
+
+
+	static float Game_over_Black_fade_rate;
+
+	static float Game_over_tama_cnt;
+	static float Game_over_text_cnt;
+
+
+
+
+
+	
+
 	
 
 };
