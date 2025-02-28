@@ -40,6 +40,9 @@ public:
 	Anchor();//コンストラクタでは生成しない
 	~Anchor();
 
+
+	static Anchor g_anchor_instance;  // 静的なインスタンス
+
 	static void Initialize();
 	static void Update();
 	static void Draw();
