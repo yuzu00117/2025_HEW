@@ -362,7 +362,7 @@ void Game::Update(void)
             //撃墜演出エフェクト
             UpdateBlownAwayEffects();
          
-#ifndef _DEBUG
+#ifdef _DEBUG
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {

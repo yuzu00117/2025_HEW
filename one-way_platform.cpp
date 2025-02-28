@@ -23,8 +23,7 @@
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_one_way_platform_Texture = NULL;//足場ブロックのテクスチャ
-static ID3D11ShaderResourceView* g_one_way_platform1_Texture = NULL;//足場ブロックテクスチャ
-static ID3D11ShaderResourceView* g_ground_Texture = NULL;//足場ブロックテクスチャのしたに表示する背景のテクスチャ
+
 one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 size,bool object_contact)
 {
 	SetSize(size);
@@ -109,10 +108,9 @@ void one_way_platform::Initialize()
 	//視覚的に今センサーなのか定義している
 	//テクスチャのインクルード
 
-	if (g_one_way_platform1_Texture == NULL) {
+	if (g_one_way_platform_Texture == NULL) {
 		g_one_way_platform_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform.png");//センサーがオフ　あたり判定あり
-		g_one_way_platform1_Texture = InitTexture(L"asset\\texture\\sample_texture\\sample_one_way_platform1.png");//センサーがオン　あたり判定無し
-		g_ground_Texture= InitTexture(L"asset\\texture\\stage_block\\1-1_block_soil_02.png");//グラウンドのテクスチャ
+	
 	}
 }
 
@@ -150,24 +148,8 @@ void one_way_platform::Draw()
 	float draw_y = ((one_way_platform_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-	//背景を先に描画
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_ground_Texture);
-	DrawSprite(
-		{ draw_x+GetlocalPosition().x*scale,
-		  draw_y+(GetlocalPosition().y + GetSize().x) * scale},
-		GetObject_one_way_platform_Body()->GetAngle(),
-		{ GetSize().x * scale,GetSize().x * scale }///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
-	);
+	GetDeviceContext()->PSSetShaderResources(0, 1, &g_one_way_platform_Texture);
 
-
-	if (GetObject_one_way_platform_Body()->GetFixtureList()->IsSensor() == false)
-	{
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_one_way_platform_Texture);
-	}
-	else
-	{
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_one_way_platform1_Texture);
-	}
 	//draw
 	DrawSprite(
 		{ draw_x,
@@ -192,8 +174,7 @@ void one_way_platform::Finalize()
 
 
 	if (g_one_way_platform_Texture) UnInitTexture(g_one_way_platform_Texture);
-	if (g_one_way_platform1_Texture) UnInitTexture(g_one_way_platform1_Texture);
-	if (g_ground_Texture) UnInitTexture(g_ground_Texture);
+
 
 
 }

@@ -33,7 +33,7 @@
 
 //マクロ定義
 #define CLASS_NAME "GameWindow"
-#define WINDOW_CAPTION "このウィンドウを消すとプログラム終了"
+#define WINDOW_CAPTION	"このウィンドウを消すとプログラム終了"
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -136,9 +136,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//開発中はゲームシーンからスタート
 	#ifdef _DEBUG
 	sceneManager.SetStageName(STAGE_SELECT);
-	sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+
+	sceneManager.ChangeScene(SCENE_TITLE);
+
 	#else
 	sceneManager.ChangeScene(SCENE_TITLE);
+  sceneManager.SetStageName(STAGE_SELECT);
 	#endif
 	
 
@@ -215,7 +218,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_CLOSE:
-		if (MessageBox(hWnd, "本当に終了してよろしいですか？", "確認", MB_OKCANCEL | MB_DEFBUTTON2) == IDOK) {
+		if (MessageBox(hWnd, "本当に終了してよろしいですか？","確認", MB_OKCANCEL | MB_DEFBUTTON2) == IDOK) {
 			DestroyWindow(hWnd);//ウィンドウ消去
 		}
 		return 0;
