@@ -1688,9 +1688,12 @@ public:
 
 
         //進入禁止エリアとミニゴーレム
-        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_no_entry_block) ||
-            (objectA->collider_type == collider_no_entry_block && objectB->collider_type == collider_mini_golem))
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_mini_golem))
         {
+            if (objectA->object_name == Boss_field_block)return;
+            if (objectB->object_name == Boss_field_block)return;
+
             if (objectA->collider_type == collider_mini_golem)
             {
                 boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());

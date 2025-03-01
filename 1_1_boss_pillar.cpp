@@ -330,7 +330,7 @@ void boss_pillar::Destroy_Splitting()
 					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
 
 					// カスタムデータを作成して設定
-					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
+					ObjectData* object_anchorpoint_data = new ObjectData{ collider_texture_block };
 					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
 
@@ -343,14 +343,9 @@ void boss_pillar::Destroy_Splitting()
 
 				}
 			}
-
 			Splitting_Destroy_Flag = false;
 			Splitting_end = true;
 		}
-	
-
-		
-		
 	}
 
 }
