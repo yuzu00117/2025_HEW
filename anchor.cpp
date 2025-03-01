@@ -56,11 +56,8 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒ
 
 
 
-//ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğ‚à‚Á‚Æ‚­
-static b2Body* Player_body=nullptr;
 
-//ƒAƒ“ƒJ[‚Ì–Ú•W‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg
-static b2Body* Target_anchor_point_body=nullptr;
+
 
 
 
@@ -90,6 +87,7 @@ void Anchor::Initialize()
 	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv1.png");
 	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv2.png");
 	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv3.png");
+	assert(g_Anchor_Texture_Lev3);
 
 
 	//ƒAƒ“ƒJ[‚Ì½
@@ -281,23 +279,37 @@ void Anchor::Draw()
 
 			float anchor_size_scale = 0;
 
-			switch (AnchorSpirit::GetAnchorLevel())
-			{
+
+			
+			if (g_anchor_instance.GetAnchorBody() == nullptr) {
+				return;
+			}
+
+			// ƒAƒ“ƒJ[ƒŒƒxƒ‹‚É‚æ‚éƒeƒNƒXƒ`ƒƒ‘I‘ğ
+			ID3D11ShaderResourceView* texture = nullptr;
+			switch (AnchorSpirit::GetAnchorLevel()) {
 			case 1:
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
-				anchor_size_scale = 1.3;
+				texture = g_Anchor_Texture_Lev1;
+				anchor_size_scale = 1.3f;
 				break;
 			case 2:
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
-				anchor_size_scale = 2.0;
+				texture = g_Anchor_Texture_Lev2;
+				anchor_size_scale = 2.0f;
 				break;
 			case 3:
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
-				anchor_size_scale = 3.0;
+				texture = g_Anchor_Texture_Lev3;
+				anchor_size_scale = 3.0f;
 				break;
 			default:
 				break;
 			}
+
+			if (texture == nullptr) {
+				OutputDebugStringA("Error: Selected anchor texture is nullptr\n");
+				return;
+			}
+
+		
 
 
 			b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
@@ -336,6 +348,9 @@ void Anchor::Draw()
 			//Box2d‚Ìƒ‰ƒWƒAƒ“‚ÅŠÇ—‚µ‚Ä‚é
 			float angle = anchor_angle * M_PI / 180.0f;
 
+
+			//ƒVƒF[ƒ_[ƒŠƒ\[ƒXƒrƒ…[
+			GetDeviceContext()->PSSetShaderResources(0, 1, &texture);
 			//draw
 			DrawSprite(
 				{ draw_x,
@@ -367,6 +382,8 @@ void Anchor::Finalize()
 
 	
 	g_anchor_instance.DestroyAnchorBody();//ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğ‰ğ•ú
+
+
 	if (g_Anchor_Texture_Lev1) UnInitTexture(g_Anchor_Texture_Lev1);
 	if (g_Anchor_Texture_Lev2) UnInitTexture(g_Anchor_Texture_Lev2);
 	if (g_Anchor_Texture_Lev3) UnInitTexture(g_Anchor_Texture_Lev3);

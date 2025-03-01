@@ -26,6 +26,7 @@
 #include"include/box2d/box2d.h"
 
 
+
 class Box2dWorld
 {
 public:
@@ -68,6 +69,11 @@ public:
             m_p_world->DestroyBody(body);
             body = nextBody;
         }
+
+        world_call_step = false;
+        
+
+ 
     }
 
     // **ワールドを完全に作り直す**
@@ -76,8 +82,21 @@ public:
             delete m_p_world;
         }
         m_p_world = new b2World(b2Vec2(0.0f, 10.f)); // 重力もリセット
+      
+        world_call_step = true;
     }
 
+    bool GetWorldCallStep(void)
+    {
+        return world_call_step;
+    }
+
+
+    void SetWorldCallStep(bool flag)
+    {
+        world_call_step = flag;
+    }
+ 
 private:
 
 
@@ -86,12 +105,14 @@ private:
 	{
 		//ワールドを生成
 		m_p_world = new b2World(b2Vec2(0.0f, 10.f));
-
+    
+        world_call_step = true;
 	}
 
 
 	//ワールドのポインタ
 	b2World* m_p_world = nullptr;
+    bool world_call_step = false;
 };
 
 

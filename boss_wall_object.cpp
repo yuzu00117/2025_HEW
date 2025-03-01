@@ -21,6 +21,7 @@
 #include"sound.h"
 #include"anchor_spirit.h"
 #include"1-1_boss.h"
+#include"anchor_point.h"
 
 
 Boss_Wall_Objcet::Boss_Wall_Objcet(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,ID3D11ShaderResourceView* g_Texture,bool left)
@@ -170,7 +171,17 @@ void Boss_Wall_Objcet::Destroy_Splitting()
 			float angle = m_body->GetAngle(); // 元のボディの角度を取得
 			b2Vec2 vec = m_body->GetLinearVelocity();
 			float angle_vec = m_body->GetAngularVelocity();
-
+			
+			// ObjectData の削除
+			if ((m_body)) {
+				for (b2Fixture* f = m_body->GetFixtureList(); f; f = f->GetNext()) {
+					ObjectData* data = reinterpret_cast<ObjectData*>(f->GetUserData().pointer);
+					if (data) {
+						delete data;
+						f->GetUserData().pointer = 0;
+					}
+				}
+			}
 			world->DestroyBody(m_body);
 			m_body = nullptr;
 
@@ -183,8 +194,22 @@ void Boss_Wall_Objcet::Destroy_Splitting()
 
 			if (GetObjectAnchorPointBody() != nullptr)
 			{
+				AnchorPoint::OutsideSensor(GetObjectAnchorPointBody());
+				b2Body* m_body = GetObjectAnchorPointBody();
+				// ObjectData の削除
+				if ((m_body)) {
+					for (b2Fixture* f = m_body->GetFixtureList(); f; f = f->GetNext()) {
+						ObjectData* data = reinterpret_cast<ObjectData*>(f->GetUserData().pointer);
+						if (data) {
+							delete data;
+							f->GetUserData().pointer = 0;
+						}
+					}
+				}
 				world->DestroyBody(GetObjectAnchorPointBody());
 			}
+
+			SetObjectAnchorPointBody(nullptr);
 
 			b2Vec2 size;
 			size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;
@@ -338,10 +363,28 @@ void Boss_Wall_Objcet::DeleteAnchorPoint()
 	// アンカーポイントボディを削除
 	if (GetObjectAnchorPointBody() != nullptr)
 	{
+		AnchorPoint::OutsideSensor(GetObjectAnchorPointBody());
+
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance(); // ワールドのインスタンスを取得する
 		b2World* world = box2d_world.GetBox2dWorldPointer(); // ワールドのポインタを取得する
 
+
+		b2Body*m_body=GetObjectAnchorPointBody();
+		// ObjectData の削除
+		if ((m_body)) {
+			for (b2Fixture* f = m_body->GetFixtureList(); f; f = f->GetNext()) {
+				ObjectData* data = reinterpret_cast<ObjectData*>(f->GetUserData().pointer);
+				if (data) {
+					delete data;
+					f->GetUserData().pointer = 0;
+				}
+			}
+		}
+
 		world->DestroyBody(GetObjectAnchorPointBody());
+
+	
+
 
 		// nullに設定
 		SetObjectAnchorPointBody(nullptr);
@@ -359,6 +402,7 @@ void Boss_Wall_Objcet::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 			body = nullptr; // ポインタを無効化
 		}
 	}
+	bodyList.clear();  // vectorを空にする
 
 }
 
