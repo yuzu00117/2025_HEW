@@ -533,16 +533,6 @@ void Player::Update()
         m_jump_force = b2Vec2(0.0f, -0.40f * 1.5f);
     }
 
-    // アンカーのレベルを手動で変えられるしょり　完成版ではけす
-    if (Keyboard_IsKeyDown(KK_O))
-    {
-        AnchorSpirit::EditAnchorSpiritValue(50); // 加算
-    }
-
-    if (Keyboard_IsKeyDown(KK_P) )
-    {
-        AnchorSpirit::EditAnchorSpiritValue(-50); // 加算
-    }
 
     if (Keyboard_IsKeyDown(KK_L))
     {
@@ -556,6 +546,18 @@ void Player::Update()
         PlayerLife::SetLife(1);
     }
 #endif
+
+
+    // アンカーのレベルを手動で変えられるしょり　完成版ではけす
+    if (Keyboard_IsKeyDown(KK_O))
+    {
+        AnchorSpirit::EditAnchorSpiritValue(50); // 加算
+    }
+
+    if (Keyboard_IsKeyDown(KK_P))
+    {
+        AnchorSpirit::EditAnchorSpiritValue(-50); // 加算
+    }
    
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------

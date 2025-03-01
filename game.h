@@ -17,6 +17,8 @@
 #include"1-1_boss.h"
 #include"object_manager.h"
 #include"Item_Manager.h"
+#include"world_box2d.h"
+
 
 
 enum GAME_STATE
@@ -56,6 +58,8 @@ public:
 
 	void Teleport_player(b2Vec2 position);
 
+
+
 private:
 	//シングルトンをこっちに移動
 	Player &player=Player::GetInstance();
@@ -68,6 +72,9 @@ private:
 
 	//今のゲームシーンの状態リスポンしてたのか、開始したばかりなのかなどなど
 	GAME_STATE	m_state = GAME_STATE_START;
+
+
+	
 };
 
 
