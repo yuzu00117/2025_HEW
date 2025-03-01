@@ -832,8 +832,8 @@ void Field::Initialize()
 					if (field_map[y][x] == 20) {//コイン
 						itemManager.AddCoin(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0, respawning);
 					}
-					if (field_map[y][x] == 21) {//青宝石
-						itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, BLUE, respawning);
+					if (field_map[y][x] == 21) {//黄宝石
+						itemManager.AddJewel(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, YELLOW, respawning);
 					}
 
 					//------------------------------------------------------------------------------------------------------------------------------------------
