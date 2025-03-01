@@ -24,6 +24,7 @@
 #include"tool.h"
 #include"easing.h"
 #include"sound.h"
+#include"world_box2d.h"
 
 
 constexpr float SCALE = 30.0f; // ピクセルからメートルへの変換スケール
@@ -101,14 +102,17 @@ void StageSelectScene::Initialize()
 
 	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
+	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 
 	//ワールドをつくる
 	 // Box2Dワールドの作成
 	b2Vec2 gravity(0.0f,0.0f); // 重力なし
 	m_world = new b2World(gravity);
+	m_player.SetContactFlag(true);
+	
 
 	
-	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
+
 	//プレイヤーの定義
 	m_player.Initialize(m_world, 250, 500);
 
@@ -146,7 +150,11 @@ void StageSelectScene::Update()
 			float timeStep = 1.0f / 60.0f; // 更新間隔
 			int32 velocityIterations = 6;
 			int32 positionIterations = 2;
-			m_world->Step(timeStep, velocityIterations, positionIterations);
+
+			if (m_world && m_world->GetBodyCount() > 0 )
+			{
+				m_world->Step(timeStep, velocityIterations, positionIterations);
+			}
 		}
 
 		StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
@@ -940,6 +948,7 @@ void StageSelectScene::Finalize()
 	// ワールド解放
 	if (m_world) {
 		DestroyWorld(m_world);
+		m_player.SetContactFlag(false);
 	}
 
 	

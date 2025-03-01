@@ -263,7 +263,21 @@ void boss_pillar::Destroy_Splitting()
 
 			//アンカーポイントのボディも消す
 
+			b2Body* m_body = GetObjectAnchorPointBody();
+			// ObjectData の削除
+			if ((m_body)) {
+				for (b2Fixture* f = m_body->GetFixtureList(); f; f = f->GetNext()) {
+					ObjectData* data = reinterpret_cast<ObjectData*>(f->GetUserData().pointer);
+					if (data) {
+						delete data;
+						f->GetUserData().pointer = 0;
+					}
+				}
+			}
+
+			AnchorPoint::OutsideSensor(GetObjectAnchorPointBody());
 			world->DestroyBody(GetObjectAnchorPointBody());
+			SetObjectAnchorPointBody(nullptr);
 
 			b2Vec2 size;
 			size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;
@@ -352,6 +366,7 @@ void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 			body = nullptr; // ポインタを無効化
 		}
 	}
+	bodyList.clear();  // vectorを空にする
 	
 }
 

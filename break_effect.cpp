@@ -20,7 +20,7 @@ Fragment::Fragment(b2Body* b, ID3D11ShaderResourceView* tex, int idx)
 bool Fragment::ShouldDestroy() {
     return std::chrono::duration_cast<std::chrono::seconds>(
         std::chrono::steady_clock::now() - creationTime)
-        .count() >= 5;
+        .count() >= 2;
 }
 
 
