@@ -19,6 +19,8 @@
 #include"Item_Manager.h"
 #include"KeyInput_Flag.h"
 #include"GamePause.h"
+#include"world_box2d.h"
+
 
 
 enum GAME_STATE
@@ -68,6 +70,8 @@ public:
 
 
 	void Teleport_player(b2Vec2 position);
+
+
 
 private:
 	//ƒVƒ“ƒOƒ‹ƒgƒ“‚ð‚±‚Á‚¿‚ÉˆÚ“®

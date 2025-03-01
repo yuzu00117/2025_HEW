@@ -28,69 +28,74 @@ public:
 
 
     void BeginContact(b2Contact* contact) {
-        // 衝突した2つのフィクスチャを取得
-        b2Fixture* fixtureA = contact->GetFixtureA();
-        b2Fixture* fixtureB = contact->GetFixtureB();
-
-        // 衝突したボディを取得
-        b2Body* bodyA = fixtureA->GetBody();
-        b2Body* bodyB = fixtureB->GetBody();
-
-        // それぞれのボディからユーザーデータを取得
-          // ボディのユーザーデータを取得
-        auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
-        auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
-       
-
-        if ((objectA->collider_type == collider_stage_select_player && objectB->collider_type == collider_stage_select_point) ||
-            (objectA->collider_type == collider_stage_select_point && objectB->collider_type == collider_stage_select_player))
+ 
+        StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
+        if ( m_player.GetContactFlag() == true)
         {
+            // 衝突した2つのフィクスチャを取得
+            b2Fixture* fixtureA = contact->GetFixtureA();
+            b2Fixture* fixtureB = contact->GetFixtureB();
 
-            StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
-            //どっちがステージポイント
-            if (objectA->collider_type == collider_stage_select_point)
+            // 衝突したボディを取得
+            b2Body* bodyA = fixtureA->GetBody();
+            b2Body* bodyB = fixtureB->GetBody();
+
+            // それぞれのボディからユーザーデータを取得
+              // ボディのユーザーデータを取得
+            auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+            auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
+
+
+            if ((objectA->collider_type == collider_stage_select_player && objectB->collider_type == collider_stage_select_point) ||
+                (objectA->collider_type == collider_stage_select_point && objectB->collider_type == collider_stage_select_player))
             {
-           
-                switch (objectA->id)
+
+             
+                //どっちがステージポイント
+                if (objectA->collider_type == collider_stage_select_point)
                 {
 
-                case 1:
-                    m_player.SetTouchStageSelectNum(1);
-                    break;
-                case 2:
-                    m_player.SetTouchStageSelectNum(2);
-                    break;
-                case 3:
-                    m_player.SetTouchStageSelectNum(3);
-                    break;
-                case 4:
-                    m_player.SetTouchStageSelectNum(4);
-                    break;
-                default:
-                    break;
+                    switch (objectA->id)
+                    {
+
+                    case 1:
+                        m_player.SetTouchStageSelectNum(1);
+                        break;
+                    case 2:
+                        m_player.SetTouchStageSelectNum(2);
+                        break;
+                    case 3:
+                        m_player.SetTouchStageSelectNum(3);
+                        break;
+                    case 4:
+                        m_player.SetTouchStageSelectNum(4);
+                        break;
+                    default:
+                        break;
+                    }
+                    m_player.SetTouchStagePointBody(bodyA);
                 }
-                m_player.SetTouchStagePointBody(bodyA);
-            }
-            else
-            {
-                switch (objectB->id)
+                else
                 {
-                case 1:
-                    m_player.SetTouchStageSelectNum(1);
-                    break;
-                case 2:
-                    m_player.SetTouchStageSelectNum(2);
-                    break;
-                case 3:
-                    m_player.SetTouchStageSelectNum(3);
-                    break;
-                case 4:
-                    m_player.SetTouchStageSelectNum(4);
-                    break;
-                default:
-                    break;
+                    switch (objectB->id)
+                    {
+                    case 1:
+                        m_player.SetTouchStageSelectNum(1);
+                        break;
+                    case 2:
+                        m_player.SetTouchStageSelectNum(2);
+                        break;
+                    case 3:
+                        m_player.SetTouchStageSelectNum(3);
+                        break;
+                    case 4:
+                        m_player.SetTouchStageSelectNum(4);
+                        break;
+                    default:
+                        break;
+                    }
+                    m_player.SetTouchStagePointBody(bodyB);
                 }
-                m_player.SetTouchStagePointBody(bodyB);
             }
         }
     }
@@ -98,35 +103,40 @@ public:
 
 
     void EndContact(b2Contact* contact) {
-        // 衝突した2つのフィクスチャを取得
-        b2Fixture* fixtureA = contact->GetFixtureA();
-        b2Fixture* fixtureB = contact->GetFixtureB();
-
-        // 衝突したボディを取得
-        b2Body* bodyA = fixtureA->GetBody();
-        b2Body* bodyB = fixtureB->GetBody();
-
-        // それぞれのボディからユーザーデータを取得
-          // ボディのユーザーデータを取得
-        auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
-        auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
-
-
-        if ((objectA->collider_type == collider_stage_select_player && objectB->collider_type == collider_stage_select_point) ||
-            (objectA->collider_type == collider_stage_select_point && objectB->collider_type == collider_stage_select_player))
+        Box2dWorld& world_instance = Box2dWorld::GetInstance();
+        StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
+        if (m_player.GetContactFlag() == true)
         {
+            // 衝突した2つのフィクスチャを取得
+            b2Fixture* fixtureA = contact->GetFixtureA();
+            b2Fixture* fixtureB = contact->GetFixtureB();
 
-            StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
-            //どっちがステージポイント
-            if (objectA->collider_type == collider_stage_select_point)
-            {
-                m_player.SetTouchStageSelectNum(0);
-            }
-            else
-            {
-                m_player.SetTouchStageSelectNum(0);
-            }
+            // 衝突したボディを取得
+            b2Body* bodyA = fixtureA->GetBody();
+            b2Body* bodyB = fixtureB->GetBody();
 
+            // それぞれのボディからユーザーデータを取得
+              // ボディのユーザーデータを取得
+            auto* objectA = reinterpret_cast<ObjectData*>(fixtureA->GetUserData().pointer);
+            auto* objectB = reinterpret_cast<ObjectData*>(fixtureB->GetUserData().pointer);
+
+
+            if ((objectA->collider_type == collider_stage_select_player && objectB->collider_type == collider_stage_select_point) ||
+                (objectA->collider_type == collider_stage_select_point && objectB->collider_type == collider_stage_select_player))
+            {
+
+               
+                //どっちがステージポイント
+                if (objectA->collider_type == collider_stage_select_point)
+                {
+                    m_player.SetTouchStageSelectNum(0);
+                }
+                else
+                {
+                    m_player.SetTouchStageSelectNum(0);
+                }
+
+            }
         }
 
     }

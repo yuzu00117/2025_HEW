@@ -21,6 +21,7 @@
 #include"sound.h"
 #include"sprite.h"
 #include"include/box2d/box2d.h"
+#include"world_box2d.h"
 
 #include"clock.h"
 
@@ -190,6 +191,9 @@ public:
 
     // シーンの切り替え
     void ChangeScene(SCENE_NAME scene_name) {
+        
+        Box2dWorld& world = Box2dWorld::GetInstance();
+        world.SetWorldCallStep(false);
         if (currentScene) {
             currentScene->Finalize(); // 現在のシーンの終了処理
         }

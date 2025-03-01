@@ -76,6 +76,17 @@ public:
         tap_texture_flag = flag;
     }
 
+
+    bool GetContactFlag(void)
+    {
+        return m_stage_select_contact_flag;
+    }
+
+    void SetContactFlag(bool flag)
+    {
+        m_stage_select_contact_flag = flag;
+    }
+
 private:
     b2Body* m_body;           // プレイヤーのBox2Dボディ
     float m_size;             // プレイヤーのサイズ
@@ -88,8 +99,10 @@ private:
 
 
     int touch_stage_select_number;
+
+
+    bool m_stage_select_contact_flag = false;//接触できるかのフラグ
 };
 
 
 #endif // !STAGE_SELECT_PLAYER_H
-
