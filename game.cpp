@@ -14,7 +14,6 @@
 #include "sprite.h"
 #include "keyboard.h"
 #include "sound.h"
-#include"include/box2d/box2d.h"
 #include"directx_controller.h"
 #include"game.h"
 #include"contactlist.h"
@@ -48,6 +47,8 @@ int HitStop::delay_hit_stop_time = 0;
 int HitStop::delay_time = 0;
 
 GAME_STATE  next_state = GAME_STATE_RESPAWN_INITIAL;
+
+
 
 void Game::Initialize()
 {
@@ -193,6 +194,11 @@ void Game::Initialize()
     MyContactListener& contactListener = MyContactListener::GetInstance();
     world->SetContactListener(&contactListener);
 
+    Box2dWorld& world_instance = Box2dWorld::GetInstance();
+    world_instance.SetWorldCallStep(true);
+
+    
+
 #ifndef _DEBUG
     //デバッグ文字
     InitializeDebug();
@@ -311,12 +317,14 @@ void Game::Update(void)
     // Box2D ワールドのステップ更新
     b2World * world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
 
+    Box2dWorld& world_instance = Box2dWorld::GetInstance();
+
     if (HitStop::GetHitStopFlag()==true)
     {
         HitStop::CountHitStop();
     }
     else {
-        if (world && world->GetBodyCount() > 0)
+        if (world && world->GetBodyCount() > 0 && world_instance.GetWorldCallStep() == true)
         {
             world->Step(1.0f / 60.0f, 6, 2);
         }
@@ -325,6 +333,10 @@ void Game::Update(void)
 
             //ディスプレイの更新処理
             display::Update();
+
+
+            //アンカーの更新処理
+            Anchor::Update();
 
             //プレイヤーライフの更新処理
             PlayerLife::Update();
@@ -337,9 +349,6 @@ void Game::Update(void)
 
             //プレイヤーの更新処理
             player.Update();
-
-            //アンカーの更新処理
-            Anchor::Update();
 
             //criの更新処理
             CRIUpdate();
@@ -439,6 +448,7 @@ void Game::Update(void)
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
+                next_state = GAME_STATE_GAMEOVER;
                 sceneManager.SetStageName(STAGE_SELECT);
                 sceneManager.ChangeScene(SCENE_STAGE_SELECT);
                 break;
