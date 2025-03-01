@@ -40,6 +40,7 @@
 #include"UI_StaminaSpirit_Gauge.h"
 #include"Xinput_controller.h"
 #include"Stamina_UI.h"
+#include"Item_Coin_UI.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -152,6 +153,7 @@ void Game::Initialize()
         Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
         //コインの取得数を記録した値に戻す
         Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetCoinRecorded_WhenRegisteringSavePoint());
+        //ソウルゲージの宝石を記録した値に戻す
         Gauge_UI::SetJewelRecorded_WithRegisteredValue();
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn_SavePoint_GamePause();
@@ -492,7 +494,7 @@ void Game::Update(void)
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
-                next_state = GAME_STATE_GAMEOVER;
+                m_next_state = GAME_STATE_GAMEOVER;
                 sceneManager.SetStageName(STAGE_SELECT);
                 sceneManager.ChangeScene(SCENE_STAGE_SELECT);
                 break;
