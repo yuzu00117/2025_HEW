@@ -260,8 +260,26 @@ void    ItemJewel::Function()
 
 void ItemJewel::Initialize()
 {
-
-
+    m_functioned = false;
+    //消す予定なのかどうか
+     m_destory = false;
+    //回収中かどうか
+     m_collecting = false;
+    //プレイヤーにゲットされたかどうか
+    m_get_by_player = false;
+    //回収の経過時間
+    m_collecting_time = 0.3f;
+    //アニメーションid(エフェクト)
+    m_anim_id = 0;
+    m_anim_count = 0;
+    //宝石をゲットしてる
+    jem_get_sheet_cnt = 0.0f;
+    //取得エフェクトの描画用
+    m_getting_anim_id = 0;
+    //仕様エフェクトの描画用
+    m_use_anim_id = 0;
+    m_use_anim_count = 0;
+    m_if_effect_using = false;
 }
 
 
@@ -468,11 +486,6 @@ ItemJewel::~ItemJewel()
 
 void ItemJewel::CreateBody()
 {
-    m_functioned = false;
-    if (m_destory)
-    {
-        return;
-    }
     b2BodyDef body;
     body.type = b2_staticBody;
     body.position.Set(m_body_position.x, m_body_position.y);

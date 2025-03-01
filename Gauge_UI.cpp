@@ -39,6 +39,10 @@ float Gauge_UI::player_ui_alpha = 1.0f;
 bool	Gauge_UI::m_blue_jewel_collected = false;
 bool	Gauge_UI::m_red_jewel_collected = false;
 bool	Gauge_UI::m_yellow_jewel_collected = false;
+bool	Gauge_UI::m_blue_jewel_collected_WhenRegisteringSavePoint = false;
+bool	Gauge_UI::m_red_jewel_collected_WhenRegisteringSavePoint = false;
+bool	Gauge_UI::m_yellow_jewel_collected_WhenRegisteringSavePoint = false;
+
 float	Gauge_UI::m_blue_jewel_collected_effect_cnt = 0;
 float	Gauge_UI::m_red_jewel_collected_effect_cnt = 0;
 float	Gauge_UI::m_yellow_jewel_collected_effect_cnt = 0;
@@ -58,6 +62,10 @@ void Gauge_UI::Initialize()
 	m_blue_jewel_collected = false;
 	m_red_jewel_collected = false;
 	m_yellow_jewel_collected = false;
+	m_blue_jewel_collected_WhenRegisteringSavePoint = false;
+	m_red_jewel_collected_WhenRegisteringSavePoint = false;
+	m_yellow_jewel_collected_WhenRegisteringSavePoint = false;
+
 	m_blue_jewel_collected_effect_cnt = 0;
 	m_red_jewel_collected_effect_cnt = 0;
 	m_yellow_jewel_collected_effect_cnt = 0;

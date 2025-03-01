@@ -18,6 +18,9 @@
 #include "player.h"
 #include "sound.h"
 #include "gokai.h"
+#include "Item_Manager.h"
+#include "Item_Coin_UI.h"
+#include "Gauge_UI.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_get_save_point_effect = NULL;//セーブポイントを取得した時のエフェクト
@@ -118,7 +121,17 @@ void    ItemSavePoint::Function()
     
     //今の豪快値を豪快UIに記録
     int value = Gokai_UI::GetNowGokaiCount();
-    Gokai_UI::SetGokai_WhenRespawn(value);
+    Gokai_UI::RecordGokai_WhenRespawn(value);
+
+    //今のコイン取得数をコインUIに記録
+    value = Item_Coin_UI::GetNowCoinCount();
+    Item_Coin_UI::RecordCoinGot_WhenRegisteringSavePoint(value);
+
+    Gauge_UI::RecordJewel_WhenRegisteringSavePoint();
+
+    ItemManager& item_manager = ItemManager::GetInstance();
+    item_manager.SetJewelRegistered_ToSavePoint();
+    item_manager.SetCoinRegistered_ToSavePoint();
 
     //初回通過時の効果音
     app_atomex_start(Player_Coin_Colect_Sound);

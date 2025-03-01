@@ -21,6 +21,7 @@ int Item_Coin_UI::DrawCount = 0;			// 描画カウント
 int Item_Coin_UI::max_coin_count = 30;		// 最大コイン数
 int Item_Coin_UI::now_get_coin_count = 0;  // 現在のコイン数
 float Item_Coin_UI::coin_effect_frame = 0;
+int Item_Coin_UI::coin_got_when_registering_SavePoint = 0;
 
 void Item_Coin_UI::Initialize()
 {
@@ -29,6 +30,7 @@ void Item_Coin_UI::Initialize()
 	max_coin_count = 30;
 	now_get_coin_count = 0;
 	coin_effect_frame = 0;
+	coin_got_when_registering_SavePoint = 0;
 
 	if (g_number_Texture == NULL)
 	{
