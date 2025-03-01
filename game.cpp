@@ -46,7 +46,6 @@ bool  HitStop::hit_stop_flag = false;
 int HitStop::delay_hit_stop_time = 0;
 int HitStop::delay_time = 0;
 
-GAME_STATE  next_state = GAME_STATE_RESPAWN_INITIAL;
 
 
 
@@ -95,6 +94,8 @@ void Game::Initialize()
         Gokai_UI::Initialize();
         //体力UIの初期化
         Stamina_UI::Initialize();
+        //ゲームポーズ画面の初期化
+        pause.Initialize();
         break;
     case GAME_STATE_RESPAWN_INITIAL:
         //体力を初期化
@@ -117,7 +118,7 @@ void Game::Initialize()
         //アンカーを初期化
         AnchorSpirit::Initialize();
         //アンカーをlevel２にセット
-        AnchorSpirit::SetAnchorSpiritValueDirectly(100);
+        AnchorSpirit::SetAnchorSpiritValueDirectly(200);
         //豪快度を記録した値に戻す
         Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
 
@@ -219,7 +220,7 @@ void Game::Finalize(void)
     objectManager.FinalizeAll();
 
 
-    switch (next_state)
+    switch (m_next_state)
     {
     case GAME_STATE_START:
         break;
@@ -250,13 +251,15 @@ void Game::Finalize(void)
         Stamina_UI::Finalize();
         //プレイヤーが登録した中間地点を解除
         player.RegisterSavePoint(nullptr);
+        //ゲームポーズ画面の終了処理
+        pause.Finalize();
         break;
     default:
         break;
     }
-    m_state = next_state;
+    m_state = m_next_state;
     if (m_state == GAME_STATE_GAMEOVER) { m_state = GAME_STATE_START; }
-    next_state = GAME_STATE_RESPAWN_INITIAL;
+    m_next_state = GAME_STATE_RESPAWN_INITIAL;
 
 	//プレイヤーの終了処理
     player.ResetPlayerParameter();
@@ -316,6 +319,25 @@ void Game::Update(void)
 
     // Box2D ワールドのステップ更新
     b2World * world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
+    // コントローラーの入力の受け取り
+    ControllerState state = GetControllerInput();
+    
+    //ポーズ画面に関する処理
+    //====================================================================================================================
+    //ポーズ画面にいるかどうか
+    if (m_state == GAME_STATE_PAUSE)
+    {
+        pause.Update();
+        return;
+    }
+    //ポーズ押したかどうか
+    if(state.start && !key_flag.ControllerButton_Start)
+    {
+        m_state = GAME_STATE_PAUSE;
+    }
+    key_flag.ControllerButton_Start = state.start;
+
+    //========================================================================================================-
 
     Box2dWorld& world_instance = Box2dWorld::GetInstance();
 
@@ -375,20 +397,20 @@ void Game::Update(void)
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                next_state = GAME_STATE_GAMEOVER;
+                m_next_state = GAME_STATE_GAMEOVER;
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
             {
-                next_state = GAME_STATE_NEXT_STAGE;
+                m_next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
             }
 
             if (Keyboard_IsKeyDown(KK_I))//遺跡ステージにいく
             {
-                next_state = GAME_STATE_NEXT_STAGE;
+                m_next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
             }
@@ -419,8 +441,8 @@ void Game::Update(void)
         //プレイヤーの残機が残っていたら最初からスタート
         if (PlayerLife::GetLife() > 1)
         {
-            if (player.GetRegisteredSavePoint() != nullptr) { next_state = GAME_STATE_RESPAWN_SAVE_POINT; }
-            else { next_state = GAME_STATE_RESPAWN_INITIAL; }
+            if (player.GetRegisteredSavePoint() != nullptr) { m_next_state = GAME_STATE_RESPAWN_SAVE_POINT; }
+            else { m_next_state = GAME_STATE_RESPAWN_INITIAL; }
 
             PlayerLife::SetLife(PlayerLife::GetLife() - 1);
             dead_production::SetDeadFlag(false);
@@ -429,7 +451,7 @@ void Game::Update(void)
         }
         else
         {
-            next_state = GAME_STATE_GAMEOVER;
+            m_next_state = GAME_STATE_GAMEOVER;
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.SetStageName(STAGE_TUTORIAL);
@@ -448,7 +470,7 @@ void Game::Update(void)
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
-                next_state = GAME_STATE_GAMEOVER;
+                m_next_state = GAME_STATE_GAMEOVER;
                 sceneManager.SetStageName(STAGE_SELECT);
                 sceneManager.ChangeScene(SCENE_STAGE_SELECT);
                 break;
@@ -461,12 +483,12 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_ISEKI:
-                next_state = GAME_STATE_NEXT_STAGE;
+                m_next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
-                next_state = GAME_STATE_NEXT_STAGE;
+                m_next_state = GAME_STATE_NEXT_STAGE;
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
@@ -538,8 +560,14 @@ void Game::Draw(void)
 
     change_scene_start_production::Draw();
 
+    
 
-
+    //=======================================================================================
+    //ポーズ画面の描画
+    if (m_state == GAME_STATE_PAUSE)
+    {
+        pause.Draw();
+    }
 
 #ifndef _DEBUG
     //デバッグ文字
