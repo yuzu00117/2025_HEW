@@ -31,6 +31,7 @@ public:
 private:
     b2World* m_world;
 
+ 
 
     //コインの表示につかうランダム関数
     int g_coin_effect_random_number;
