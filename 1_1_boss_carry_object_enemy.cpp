@@ -212,7 +212,7 @@ void boss_carry_object_enemy::Destroy_Splitting()
 					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
 
 					// カスタムデータを作成して設定
-					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
+					ObjectData* object_anchorpoint_data = new ObjectData{ collider_texture_block};
 					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
 
@@ -285,7 +285,7 @@ void boss_carry_object_enemy::Update()
 
 		// 30秒（1800フレーム）経過後にボディ削除
 		lifetime++;
-		if (lifetime > 1800)
+		if (lifetime > 1200)
 		{
 			Destroy_Body();
 		}
