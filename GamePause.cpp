@@ -150,18 +150,18 @@ void GamePause::Update()
     //選択確定
     if (state.buttonA && !key_flag.ControllerButton_A)
     {
-       //SceneManager& sceneManager = SceneManager::GetInstance();
-       //Game& game = Game::GetInstance();
+       SceneManager& sceneManager = SceneManager::GetInstance();
+       Game& game = Game::GetInstance();
 
-       //switch(m_button_selected)
-       //{
-       //case Button_UnPause:
-       //    game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
-       //    break;
-       //case Button_Respawn_SavePoint:
-       //    game.SetNextGameState(GAME_STATE_RESPAWN_SAVE_POINT);
-       //    sceneManager.ChangeScene(SCENE_GAME);
-       //    break;
+       switch(m_button_selected)
+       {
+       case Button_UnPause:
+           game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
+           break;
+       case Button_Respawn_SavePoint:
+           game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_SAVE_POINT);
+           sceneManager.ChangeScene(SCENE_GAME);
+           break;
        //case Button_Respawn_InitalPoint:
        //    game.SetNextGameState(GAME_STATE_RESPAWN_INITIAL);
        //    sceneManager.ChangeScene(SCENE_GAME);
@@ -174,7 +174,7 @@ void GamePause::Update()
        //    game.SetNextGameState(GAME_STATE_GAMEOVER);
        //    sceneManager.ChangeScene(SCENE_TITLE);
        //    break;
-       //}
+       }
        
     }
 

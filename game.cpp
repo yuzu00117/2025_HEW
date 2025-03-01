@@ -102,7 +102,7 @@ void Game::Initialize()
         //アンカーを初期化
         AnchorSpirit::Initialize();
         //豪快度を記録した値に戻す
-        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
 
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
@@ -119,7 +119,7 @@ void Game::Initialize()
         //アンカーをlevel２にセット
         AnchorSpirit::SetAnchorSpiritValueDirectly(200);
         //豪快度を記録した値に戻す
-        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
 
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
@@ -133,14 +133,33 @@ void Game::Initialize()
         itemManager.Initialize_WhenNextStage();
 
         //今の豪快値を豪快UIに記録
-        Gokai_UI::SetGokai_WhenRespawn(Gokai_UI::GetNowGokaiCount());
+        Gokai_UI::RecordGokai_WhenRespawn(Gokai_UI::GetNowGokaiCount());
 
         if (scene.GetStageName() == STAGE_BOSS)
         {
             itemManager.UseAllJewel();
         }
         break;
-    case GAME_STATE_GAMEOVER:
+    case GAME_STATE_PAUSE_RESPAWN_SAVE_POINT:
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
+        //アンカーをlevel２にセット
+        AnchorSpirit::SetAnchorSpiritValueDirectly(200);
+        //豪快度を記録した値に戻す
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
+        //コインの取得数を記録した値に戻す
+        Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetCoinRecorded_WhenRegisteringSavePoint());
+        Gauge_UI::SetJewelRecorded_WithRegisteredValue();
+        //リスポン用のアイテムの初期化
+        itemManager.Initialize_WhenRespawn_SavePoint_GamePause();
+        if (scene.GetStageName() == STAGE_BOSS)
+        {
+            itemManager.UseAllJewel();
+        }
+        break;
+    case GAME_STATE_PAUSE_RESPAWN_INITIAL:
         break;
     default:
         break;
@@ -247,6 +266,10 @@ void Game::Finalize(void)
         player.RegisterSavePoint(nullptr);
         //ゲームポーズ画面の終了処理
         pause.Finalize();
+        break;
+    case GAME_STATE_PAUSE_RESPAWN_SAVE_POINT:
+        //リスポン用のアイテムの終了処理
+        itemManager.Finalize_WhenRespawn_SavePoint_GamePause();
         break;
     default:
         break;

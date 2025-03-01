@@ -228,8 +228,10 @@ void Field::Initialize()
 	//	respawningは生成処理してる時、引数としてItemManagerに渡せば、本当に生成するかどうかを制御できる
 	bool respawning = false;
 	Game& game_scene = Game::GetInstance();
-	if (game_scene.GetCurrentGameState() == GAME_STATE_RESPAWN_INITIAL ||
-		game_scene.GetCurrentGameState() == GAME_STATE_RESPAWN_SAVE_POINT)
+	auto state = game_scene.GetCurrentGameState();
+	if (state == GAME_STATE_RESPAWN_INITIAL ||
+		state == GAME_STATE_RESPAWN_SAVE_POINT||
+		state == GAME_STATE_PAUSE_RESPAWN_SAVE_POINT)
 	{
 		respawning = true;
 	}

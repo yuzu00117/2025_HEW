@@ -127,6 +127,11 @@ void    ItemCoin::Function()
 
 void ItemCoin::Initialize()
 {
+    m_destory = false;
+    coin_effect_sheet_cnt = 0;
+    coin_effect_start_cnt = 0;
+    m_registered_to_save_point = false;
+
 
     if (g_Texture == NULL)
     {
@@ -261,10 +266,7 @@ ItemCoin::~ItemCoin()
 
 void ItemCoin::CreateBody()
 {
-    if (m_destory)
-    {
-        return;
-    }
+
     b2BodyDef body;
     body.type = b2_staticBody;
     body.position.Set(m_body_position.x, m_body_position.y);

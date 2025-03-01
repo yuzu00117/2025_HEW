@@ -83,6 +83,11 @@ public:
 	void Finalize_WhenRespawn();
 	//　次のステージに進時の終了処理
 	void	Finalize_WhenNextStage();
+	//ポーズ画面でリスポン（中間地からやり直す）を選択した時用の終了処理
+	void	Finalize_WhenRespawn_SavePoint_GamePause();
+	//ポーズ画面でリスタート（最初からやり直す）を選択した時用の終了初期処理
+	void	Finalize_WhenRespawn_Initial_GamePause();
+
 
 
 	//全ての宝石を使う
@@ -92,7 +97,15 @@ public:
 	void	Initialize_WhenRespawn();
 	//　次のステージに進時の初期化処理
 	void	Initialize_WhenNextStage();
+	//ポーズ画面でリスポン（中間地からやり直す）を選択した時の初期処理
+	void	Initialize_WhenRespawn_SavePoint_GamePause();
+	//ポーズ画面でリスタート（最初からやり直す）を選択した時の初期処理
+	void	Initialize_WhenRespawn_Initial_GamePause();
 
+	//　中間地を登録した時、宝石に中間地に登録したかどうかを記録させる
+	void	SetJewelRegistered_ToSavePoint();
+	//　中間地を登録した時、コインに中間地に登録したかどうかを記録させる
+	void	SetCoinRegistered_ToSavePoint();
 
 
 private:
