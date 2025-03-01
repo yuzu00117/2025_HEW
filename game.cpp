@@ -448,6 +448,7 @@ void Game::Update(void)
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
+                next_state = GAME_STATE_GAMEOVER;
                 sceneManager.SetStageName(STAGE_SELECT);
                 sceneManager.ChangeScene(SCENE_STAGE_SELECT);
                 break;
