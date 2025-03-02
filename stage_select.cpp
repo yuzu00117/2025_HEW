@@ -69,6 +69,9 @@ static ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
 //説明に使うテクスチャ
 static ID3D11ShaderResourceView* g_Explanation_Texture = NULL;
 
+static ID3D11ShaderResourceView* g_Explanation_BackGround_Texture = NULL;
+
+
 
 // メンバ変数として保持
 
@@ -106,6 +109,8 @@ void StageSelectScene::Initialize()
 	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
 	g_Explanation_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\tips01.png");
+
+	g_Explanation_BackGround_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\ver01.png");
 
 	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 
@@ -929,11 +934,15 @@ void StageSelectScene::Draw()
 		if (3<fade_rate)
 		{
 			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_BackGround_Texture);
+			DrawSpriteOld(XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0.0, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 1.0);
+
+			// シェーダリソースを設定
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
 			DrawSpriteOld(
 				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 				0.0f,
-				XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT),
+				XMFLOAT2(SCREEN_WIDTH*0.7, SCREEN_HEIGHT*0.7),
 				1.0f
 			);
 		}
@@ -970,6 +979,8 @@ void StageSelectScene::Finalize()
 	if (g_stage_select_black_Texture) UnInitTexture(g_stage_select_black_Texture);
 
 	if (g_Explanation_Texture) UnInitTexture(g_Explanation_Texture);
+
+	if (g_Explanation_BackGround_Texture) UnInitTexture(g_Explanation_BackGround_Texture);
 
 
 	
