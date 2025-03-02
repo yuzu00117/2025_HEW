@@ -216,7 +216,10 @@ public:
 	//プレイヤーが前に登録した中間地点を取得（nullptrの場合は登録してない）（ポーズ画面の中間地リスポン用）
 	ItemSavePoint* GetPrevRegisteredSavePoint() { 
 		return m_prev_registered_SavePoint; }
-
+	//プレイヤーが前に登録した中間地点をセット（nullptrの場合は登録してない）
+	void	SetPrevRegisteredSavePoint(ItemSavePoint* SavePoint) {
+		m_prev_registered_SavePoint = SavePoint;
+	}
 
 
 

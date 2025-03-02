@@ -79,14 +79,16 @@ void GamePause::Finalize()
 
 void GamePause::Update()
 {
-    if (!Respawn_SavePoint)
+    Player& player = Player::GetInstance();
+    if (player.GetPrevRegisteredSavePoint() != nullptr)
     {
-        Player& player = Player::GetInstance();
-        if (player.GetPrevRegisteredSavePoint() != nullptr)
-        {
-            Respawn_SavePoint = true;
-        }
+        Respawn_SavePoint = true;
     }
+    else
+    {
+        Respawn_SavePoint = false;
+    }
+    
 
     // コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
@@ -161,6 +163,7 @@ void GamePause::Update()
           // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
            break;
        case Button_Respawn_SavePoint:
+       {
            game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_SAVE_POINT);
            Player& player = Player::GetInstance();
            ItemSavePoint* registered_SavePoint = player.GetRegisteredSavePoint();
@@ -176,11 +179,13 @@ void GamePause::Update()
                sceneManager.SetStageName(static_cast<STAGE_NAME>(registered_SavePoint->GetSavePoint_StageID()));
            }
            sceneManager.Set_Chenge_Scene_flag(true);
+       }
            break;
-       //case Button_Respawn_InitalPoint:
-       //    game.SetNextGameState(GAME_STATE_RESPAWN_INITIAL);
-       //    sceneManager.ChangeScene(SCENE_GAME);
-       //    break;
+       case Button_Respawn_InitalPoint:
+           game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_INITIAL);
+           sceneManager.SetStageName(STAGE_1_1);
+           sceneManager.Set_Chenge_Scene_flag(true);
+           break;
        //case Button_SelectScene:
        //    game.SetNextGameState(GAME_STATE_GAMEOVER);
        //    sceneManager.ChangeScene(SCENE_STAGE_SELECT);
