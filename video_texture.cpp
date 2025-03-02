@@ -441,13 +441,14 @@ public:
       target_texture->destroy();
       target_texture = nullptr;
     }
-    SAFE_RELEASE(pSourceResolver);
-    SAFE_RELEASE(uSource);
-    SAFE_RELEASE(mediaFileSource);
-    SAFE_RELEASE(pVideoReaderAttributes);
-    SAFE_RELEASE(pSourceReader);
-    SAFE_RELEASE(pReaderOutputType);
-    SAFE_RELEASE(pFirstOutputType);
+    if (pSourceResolver){ SAFE_RELEASE(pSourceResolver); }
+    if (uSource){ SAFE_RELEASE(uSource); }
+    if (mediaFileSource){ SAFE_RELEASE(mediaFileSource); }
+    if (pVideoReaderAttributes){ SAFE_RELEASE(pVideoReaderAttributes); }
+    if (pSourceReader){ SAFE_RELEASE(pSourceReader); }
+    if (pSourceReader){ SAFE_RELEASE(pSourceReader); }
+    if (pReaderOutputType){ SAFE_RELEASE(pReaderOutputType); }
+    if (pFirstOutputType){ SAFE_RELEASE(pFirstOutputType); }
   }
 
   bool open(const char* filename) {

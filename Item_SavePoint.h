@@ -52,6 +52,9 @@ public:
 	//この中間地にリスポンする時の座標を取得
 	b2Vec2	GetRespawnPosition()const { return m_body_position; }
 
+	//どこのステージの中間地なのか取得
+	int	GetSavePoint_StageID()const { return m_stage_id; }
+
 	//セーブポイントに到達した時の処理
 	void	Function();
 
@@ -89,6 +92,9 @@ private:
 
 	//プレイヤーが一回通過したか
 	bool m_player_passed = false;
+
+	//どこのステージなのか
+	int	m_stage_id;
 };
 
 #endif // !ITEM_SAVEPOINT_H
