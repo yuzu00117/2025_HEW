@@ -674,7 +674,7 @@ void Field::Initialize()
 				//--------------------------------------------------------------------------------------
 				//でかい木
 				if (field_map[y][x] == 96) {
-					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(20.0f,20.f), 0.0,g_Big_Wood_Texture);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(30.0f,30.f), 0.0,g_Big_Wood_Texture);
 				}
 
 				//----------------------------------------------------------
