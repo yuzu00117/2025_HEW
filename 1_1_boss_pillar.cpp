@@ -24,7 +24,7 @@
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
-boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int splitting_y,Boss_Room_Level level)
+boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int splitting_y,Boss_Room_Level level,int anchor_need_level)
 {
 	SetSize(size);//描画用のサイズを保存
 
@@ -77,6 +77,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	int ID = object_data->GenerateID();
 	object_data->id = ID;
 	object_data->object_name = Boss_pillar;
+	object_data->need_anchor_level = anchor_need_level;
 	SetID(ID);
 
 
@@ -124,7 +125,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 
 	object_anchorpoint_data->object_name = Boss_pillar;
-	object_anchorpoint_data->need_anchor_level = 1;
+	object_anchorpoint_data->need_anchor_level = anchor_need_level;
 
 	b2Vec2 need_power;
 

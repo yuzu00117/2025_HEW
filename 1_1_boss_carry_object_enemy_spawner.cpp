@@ -114,7 +114,7 @@ void boss_carry_object_spawner::SpawnEnemy()
     if (BossRoomLevel == boss.GetBossFieldLevel())
     {
         ObjectManager& objectManager = ObjectManager::GetInstance();
-        objectManager.AddBossCarryObjectEnemy(m_body->GetPosition(), b2Vec2(3.0f, 3.0f), left_flag, 1.0, b2Vec2(4.0f, 4.0f), 1, 2);
+        objectManager.AddBossCarryObjectEnemy(m_body->GetPosition(), b2Vec2(3.0f, 3.0f), left_flag, 1.0, b2Vec2(4.0f, 4.0f), 1, 3);
     }
 }
 

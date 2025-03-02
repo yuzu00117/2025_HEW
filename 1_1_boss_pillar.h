@@ -17,7 +17,7 @@
 class boss_pillar
 {
 public:
-	boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,Boss_Room_Level level);
+	boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y,Boss_Room_Level level, int anchor_need_level);
 	~boss_pillar();
 
 
