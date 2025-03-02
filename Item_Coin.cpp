@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------------------------------
 // #name Item_Coin.cpp
-// #description     coinƒAƒCƒeƒ€
-// #make 2024/12/28@‰i–ì‹`–ç
+// #description     coinã‚¢ã‚¤ãƒ†ãƒ 
+// #make 2024/12/28ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/28
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 
 //----------------------------------------------------------------------------------------------------
 
@@ -20,8 +20,8 @@
 #include"sound.h"
 #include"game.h"
 
-static ID3D11ShaderResourceView* g_Texture = NULL;//ƒRƒCƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_coin_effect = NULL;//ƒRƒCƒ“‚ÌƒeƒNƒXƒ`ƒƒ
+static ID3D11ShaderResourceView* g_Texture = NULL;//ã‚³ã‚¤ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_coin_effect = NULL;//ã‚³ã‚¤ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 
 ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_polygon, float Alpha)
@@ -31,7 +31,7 @@ ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_po
     body.type = b2_staticBody;
     body.position.Set(position.x, position.y);
     body.angle = angle;
-    body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+    body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
     body.userData.pointer = (uintptr_t)this;
 
 
@@ -40,11 +40,11 @@ ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_po
 
     m_body = world->CreateBody(&body);
 
-    SetSize(body_size);//ƒvƒŒƒCƒ„[•\¦‚ğ‚·‚é‚½‚ß‚ÉƒZƒbƒg‚·‚é
+    SetSize(body_size);//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¡¨ç¤ºã‚’ã™ã‚‹ãŸã‚ã«ã‚»ãƒƒãƒˆã™ã‚‹
 
 
     b2Vec2 size;
-    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ğ‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ğ‚³‚°‚ÄA•¨—‰‰Z‚Ì‹““®‚ğ‘€ì‚µ‚â‚·‚­‚·‚é
+    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
     size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
@@ -52,7 +52,7 @@ ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_po
     b2Fixture* p_fixture;
 
 
-    //lŠpŒ`‚Ìê‡
+    //å››è§’å½¢ã®å ´åˆ
    //-----------------------------------------------------------------------------
     if (shape_polygon)
     {
@@ -60,15 +60,15 @@ ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_po
         shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
 
     }
-    //‰~‚Ìê‡
+    //å††ã®å ´åˆ
 //-----------------------------------------------------------------------------
     else
     {
@@ -76,17 +76,17 @@ ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_po
         shape.m_radius = size.x * 0.5f;
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
     }
 
-    // ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-    // ƒvƒŒƒCƒ„[‚É’l‚ğ“o˜^
-    // ƒvƒŒ[ƒ„[‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+    // ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å€¤ã‚’ç™»éŒ²
+    // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
@@ -107,7 +107,7 @@ void	ItemCoin::Update()
         coin_effect_sheet_cnt = 1;
         coin_effect_pos = m_body->GetPosition();
 
-        //ƒ{ƒfƒB‚Ìî•ñ‚ğÁ‚·
+        //ãƒœãƒ‡ã‚£ã®æƒ…å ±ã‚’æ¶ˆã™
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
@@ -131,6 +131,7 @@ void ItemCoin::Initialize()
     m_destory = false;
     coin_effect_sheet_cnt = 0;
     coin_effect_start_cnt = 0;
+
     Game& game = Game::GetInstance();
     if (game.GetCurrentGameState() == GAME_STATE_PAUSE_RESPAWN_INITIAL)
     {
@@ -150,10 +151,10 @@ void ItemCoin::Draw()
 {
     if (m_body != nullptr)
     {
-        // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+        // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 
-        // ƒRƒ‰ƒCƒ_[‚ÆˆÊ’uî•ñ‚Ì•â³‚ğ‚·‚é‚½‚ß
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ä½ç½®æƒ…å ±ã®è£œæ­£ã‚’ã™ã‚‹ãŸã‚
         float scale = SCREEN_SCALE;
 
         b2Vec2 screen_center;
@@ -161,19 +162,19 @@ void ItemCoin::Draw()
         screen_center.y = SCREEN_CENTER_Y;
 
 
-        // ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒAƒCƒeƒ€[‚ÌˆÊ’uj
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆã‚¢ã‚¤ãƒ†ãƒ ãƒ¼ã®ä½ç½®ï¼‰
         b2Vec2 position;
         position.x = m_body->GetPosition().x;
         position.y = m_body->GetPosition().y;
 
 
-        // ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-        //æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+        //å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-        //•`‰æ
+        //æç”»
         DrawSprite(
             { draw_x,
               draw_y },
@@ -189,7 +190,7 @@ void ItemCoin::Draw()
 
         coin_effect_start_cnt++;
     }
-    //ƒGƒtƒFƒNƒg‚ÌŒÄ‚Ño‚µ
+    //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®å‘¼ã³å‡ºã—
     DrawEffect();
 }
 
@@ -198,10 +199,10 @@ void ItemCoin::DrawEffect()
   
     if (coin_effect_sheet_cnt!=0)
     {
-        // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+        // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_coin_effect);
 
-        // ƒRƒ‰ƒCƒ_[‚ÆˆÊ’uî•ñ‚Ì•â³‚ğ‚·‚é‚½‚ß
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ä½ç½®æƒ…å ±ã®è£œæ­£ã‚’ã™ã‚‹ãŸã‚
         float scale = SCREEN_SCALE;
 
         b2Vec2 screen_center;
@@ -209,18 +210,18 @@ void ItemCoin::DrawEffect()
         screen_center.y = SCREEN_CENTER_Y;
 
 
-        // ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒAƒCƒeƒ€[‚ÌˆÊ’uj
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆã‚¢ã‚¤ãƒ†ãƒ ãƒ¼ã®ä½ç½®ï¼‰
 
 
 
 
-        // ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-        //æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+        //å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
         float draw_x = ((coin_effect_pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((coin_effect_pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
 
-        //•`‰æ
+        //æç”»
         DrawSplittingSprite(
             { draw_x,
              draw_y },
@@ -252,7 +253,7 @@ void ItemCoin::Finalize()
 
     if (GetBody() != nullptr)
     {
-        //ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+        //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
         Box2dWorld& box2d_world = Box2dWorld::GetInstance();
         b2World* world = box2d_world.GetBox2dWorldPointer();
         world->DestroyBody(GetBody());
@@ -275,7 +276,7 @@ void ItemCoin::CreateBody()
     body.type = b2_staticBody;
     body.position.Set(m_body_position.x, m_body_position.y);
     body.angle = m_angle;
-    body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+    body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
     body.userData.pointer = (uintptr_t)this;
 
 
@@ -284,11 +285,11 @@ void ItemCoin::CreateBody()
 
     m_body = world->CreateBody(&body);
 
-    SetSize(m_size);//ƒvƒŒƒCƒ„[•\¦‚ğ‚·‚é‚½‚ß‚ÉƒZƒbƒg‚·‚é
+    SetSize(m_size);//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¡¨ç¤ºã‚’ã™ã‚‹ãŸã‚ã«ã‚»ãƒƒãƒˆã™ã‚‹
 
 
     b2Vec2 size;
-    size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ğ‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ğ‚³‚°‚ÄA•¨—‰‰Z‚Ì‹““®‚ğ‘€ì‚µ‚â‚·‚­‚·‚é
+    size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
     size.y = m_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
@@ -296,7 +297,7 @@ void ItemCoin::CreateBody()
     b2Fixture* p_fixture;
 
 
-    //lŠpŒ`‚Ìê‡
+    //å››è§’å½¢ã®å ´åˆ
    //-----------------------------------------------------------------------------
     if (m_shape_polygon)
     {
@@ -304,15 +305,15 @@ void ItemCoin::CreateBody()
         shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
 
     }
-    //‰~‚Ìê‡
+    //å††ã®å ´åˆ
 //-----------------------------------------------------------------------------
     else
     {
@@ -320,17 +321,17 @@ void ItemCoin::CreateBody()
         shape.m_radius = size.x * 0.5f;
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = false;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = false;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
     }
 
-    // ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-    // ƒvƒŒƒCƒ„[‚É’l‚ğ“o˜^
-    // ƒvƒŒ[ƒ„[‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+    // ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å€¤ã‚’ç™»éŒ²
+    // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
