@@ -933,8 +933,8 @@ void StageSelectScene::Draw()
 			DrawSpriteOld(
 				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 				0.0f,
-				XMFLOAT2(SCREEN_WIDTH*0.7, SCREEN_HEIGHT*0.7),
-				disply_Explanation
+				XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT),
+				1.0f
 			);
 		}
 
