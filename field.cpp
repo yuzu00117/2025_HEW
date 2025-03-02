@@ -275,7 +275,7 @@ void Field::Initialize()
 				//不可視の壁
 				if (field_map[y][x] == 7) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_GRASS_ONLY, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
 				}
 
 
@@ -365,6 +365,11 @@ void Field::Initialize()
 				//看板の矢印
 				if (field_map[y][x] == 23) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_SIGNBOARD, 0.f);
+				}
+
+				//看板のテクスチャ アンカー
+				if (field_map[y][x] == 24) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, SOUL_SIGNBOARD, 0.0f);
 				}
 
 

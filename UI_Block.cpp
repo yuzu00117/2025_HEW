@@ -30,6 +30,7 @@ static ID3D11ShaderResourceView* g_arrow_Texture = NULL;//矢印のテクスチャ
 static ID3D11ShaderResourceView* g_move_signboard = NULL;//看板　動き
 static ID3D11ShaderResourceView* g_jump_signboard = NULL;//看板　ジャンプ
 static ID3D11ShaderResourceView* g_anachor_signboard = NULL;//看板　アンカー
+static ID3D11ShaderResourceView* g_soul_signboard = NULL;//看板　ソウル
 
 
 static ID3D11ShaderResourceView* g_arrow_right_signboard = NULL;//看板　右
@@ -130,6 +131,7 @@ void UI_block::Initialize()
 		g_move_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_move.png");
 		g_jump_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_jump.png");
 		g_anachor_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_anchor.png");
+		g_soul_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_soul.png");
 
 		//矢印ず
 		g_arrow_left_signboard = InitTexture(L"asset\\texture\\signboard_texture\\signboard_arrow_left.png");
@@ -192,6 +194,7 @@ void UI_block::Update()
 
 				break;
 			case ANCHOR_SIGNBOARD:
+
 				
 
 				//ターゲット出来ている
@@ -233,6 +236,49 @@ void UI_block::Update()
 				}
 
 				break;
+
+			case SOUL_SIGNBOARD:
+
+				//ターゲット出来ている
+				if (AnchorPoint::GetTargetAnchorPointBody() != player.GetOutSidePlayerBody())
+				{
+					sheet_cnt += 0.3;
+					if (sheet_cnt < 50)
+					{
+						sheet_cnt = 50;
+					}
+					//ループ
+					if (105 < sheet_cnt)
+					{
+						sheet_cnt = 80;
+					}
+					change_flag = true;
+				}
+				else if (change_flag == true)
+				{
+					sheet_cnt += 0.5;
+					if (sheet_cnt < 50)
+					{
+						sheet_cnt = 50;
+					}
+					//ループ
+					if (105 < sheet_cnt)
+					{
+						sheet_cnt = 80;
+					}
+
+				}
+				else
+				{
+					sheet_cnt += 0.3;
+					//ループ
+					if (45 < sheet_cnt)
+					{
+						sheet_cnt = 0;
+					}
+				}
+				break;
+
 			default:
 				break;
 			}
@@ -467,6 +513,20 @@ void UI_block::Draw()
 			);
 
 			break;
+
+		case SOUL_SIGNBOARD:
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_soul_signboard);
+
+			DrawSplittingSprite(
+				{ draw_x ,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale,GetSize().y * scale },
+				17, 7, sheet_cnt, 1.0f
+			);
+
+			break;
+
 		}
 
 	
@@ -493,6 +553,8 @@ void UI_block::Finalize()
 	if (g_Texture) UnInitTexture(g_Texture);
 	if (g_UI_texture) UnInitTexture(g_UI_texture);
 	if (g_arrow_Texture) UnInitTexture(g_arrow_Texture);
+	if (g_soul_signboard) UnInitTexture(g_soul_signboard);
+	
 
 	if (g_arrow_right_signboard) UnInitTexture(g_arrow_right_signboard);
 	if (g_arrow_right_down_signboard) UnInitTexture(g_arrow_right_down_signboard);
@@ -503,6 +565,8 @@ void UI_block::Finalize()
 	if (g_wood_signboard) UnInitTexture(g_wood_signboard);
 	if (g_rock_signboard) UnInitTexture(g_rock_signboard);
 	if (g_fall_signboard) UnInitTexture(g_fall_signboard);
+
+
 
 	
 
