@@ -191,10 +191,10 @@ void GamePause::Update()
            sceneManager.SetStageName(STAGE_SELECT);
            sceneManager.Set_Chenge_Scene_flag(true);
            break;
-       //case Button_TitleScene:
-       //    game.SetNextGameState(GAME_STATE_GAMEOVER);
-       //    sceneManager.ChangeScene(SCENE_TITLE);
-       //    break;
+       case Button_TitleScene:
+           game.SetNextGameState(GAME_STATE_PAUSE_TITLE);
+           sceneManager.Set_Chenge_Scene_flag(true);
+           break;
        }
        
     }

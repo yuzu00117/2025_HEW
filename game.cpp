@@ -339,11 +339,29 @@ void Game::Finalize(void)
         //ゲームポーズ画面の終了処理
         pause.Finalize();
         break;
+    case GAME_STATE_PAUSE_TITLE:    //ゲームオーバーの時とまったく同じ
+        //アイテムの終了処理
+        itemManager.FinalizeAll();
+        //残機終了処理
+        PlayerLife::Finalize();
+        //ソウルゲージUIの終了処理
+        Gauge_UI::Finalize();
+        //豪快度UIの終了処理
+        Gokai_UI::Finalize();
+        //体力UIの終了処理
+        Stamina_UI::Finalize();
+        //プレイヤーが登録した中間地点を解除
+        player.RegisterSavePoint(nullptr);
+        //プレイヤーがひとつ前に登録した中間地点を解除
+        player.SetPrevRegisteredSavePoint(nullptr);
+        //ゲームポーズ画面の終了処理
+        pause.Finalize();
+        break;
     default:
         break;
     }
     m_state = m_next_state;
-    if (m_state == GAME_STATE_GAMEOVER) { m_state = GAME_STATE_START; }
+    if (m_state == GAME_STATE_GAMEOVER || m_state == GAME_STATE_PAUSE_TITLE) { m_state = GAME_STATE_START; }
     m_next_state = GAME_STATE_RESPAWN_INITIAL;
 
 	//プレイヤーの終了処理
@@ -554,6 +572,12 @@ void Game::Update(void)
         if (change_scene_end_production::GetChangeFlag() == true)
         {
             sceneManager.Set_Chenge_Scene_flag(false);
+            if (m_next_state == GAME_STATE_PAUSE_TITLE)
+            {
+                sceneManager.SetStageName(STAGE_1_1);
+                sceneManager.ChangeScene(SCENE_TITLE);
+                return;
+            }
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
