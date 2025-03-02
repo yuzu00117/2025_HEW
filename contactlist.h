@@ -1552,7 +1552,7 @@ public:
                 {
                     if (boss.GetNowBossState() != panic_state)
                     {
-                        boss.SetNowBossState(damage_state);
+                        boss.SetNowBossState(damage_state,objectA->need_anchor_level);
                     }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
@@ -1562,7 +1562,7 @@ public:
                 {
                     if (boss.GetNowBossState() != panic_state)
                     {
-                        boss.SetNowBossState(damage_state);
+                        boss.SetNowBossState(damage_state, objectB->need_anchor_level);
                     }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
@@ -1626,7 +1626,7 @@ public:
                         if (boss.GetNowBossState() != panic_state)
                         {
                             boss.SetBossSheetCnt(0);
-                            boss.SetNowBossState(damage_state);
+                            boss.SetNowBossState(damage_state,objectA->need_anchor_level);
                         }
                     }
                 }
@@ -1648,7 +1648,7 @@ public:
                         if (boss.GetNowBossState() != panic_state)
                         {
                             boss.SetBossSheetCnt(0);
-                            boss.SetNowBossState(damage_state);
+                            boss.SetNowBossState(damage_state, objectB->need_anchor_level);
                         }
                     }
                 }
