@@ -279,17 +279,16 @@ void ItemManager::Finalize_WhenRespawn()
    for (auto& w : m_Jewel_List) {
        w->Finalize();
    }
-   for (auto& w : m_Barrier_List) {
-       w->Finalize();
-   }
    for (auto& w : m_Healing_List) {
        w->Finalize();
    }
    for (auto& w : m_Barrier_List) {
        w->Finalize();
    }
+   for (auto& w : m_Coin_List) {
+       w->Finalize();
+   }
    m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
-   m_Barrier_List.clear(); //動的配列をクリアしてメモリ解放
    m_Healing_List.clear();  //動的配列をクリアしてメモリ解放
    m_Barrier_List.clear(); //動的配列をクリアしてメモリ解放
 }
@@ -319,6 +318,33 @@ void ItemManager::Finalize_WhenNextStage()
     m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Healing_List.clear(); //動的配列をクリアしてメモリ解放
     m_Barrier_List.clear(); //動的配列をクリアしてメモリ解放
+}
+
+void ItemManager::Finalize_WhenRespawn_SavePoint_GamePause()
+{
+    for (auto& w : m_Spirit_List) {
+        w->Finalize();
+    }
+    for (auto& w : m_Jewel_List) {
+        w->Finalize();
+    }
+    for (auto& w : m_Healing_List) {
+        w->Finalize();
+    }
+    for (auto& w : m_Barrier_List) {
+        w->Finalize();
+    }
+    for (auto& w : m_Coin_List) {
+        w->Finalize();
+    }
+    m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
+    m_Healing_List.clear();  //動的配列をクリアしてメモリ解放
+    m_Barrier_List.clear(); //動的配列をクリアしてメモリ解放
+
+}
+
+void ItemManager::Finalize_WhenRespawn_Initial_GamePause()
+{
 }
 
 
@@ -359,12 +385,19 @@ void ItemManager::Initialize_WhenRespawn()
     //----------------------------------------------------
 
     for (auto& w : m_Coin_List) {
-        w->CreateBody();
+        if (w->GetDestory() != true)
+        {
+            w->Initialize();
+            w->CreateBody();
+        }
     }
 
     for (auto& w : m_Jewel_List) {
-        w->Initialize();
-        w->CreateBody();
+        if (w->GetDestory() != true)
+        {
+            w->Initialize();
+            w->CreateBody();
+        }
     }
 
     for (auto& w : m_SavePoint_List) {
@@ -392,6 +425,69 @@ void ItemManager::Initialize_WhenNextStage()
     }
     for (auto& w : m_Barrier_List) {
         w->Initialize();
+    }
+}
+
+void ItemManager::Initialize_WhenRespawn_SavePoint_GamePause()
+{
+    for (auto& w : m_Spirit_List) {
+        w->Initialize();
+    }
+    for (const auto& w : m_Healing_List) {
+        w->Initialize();
+    }
+    for (auto& w : m_Barrier_List) {
+        w->Initialize();
+    }
+
+    //特別措置がいるアイテムだけ下みたいな処理してる、普通のアイテムは上のSpirit_Listみたいにやれば十分
+    //----------------------------------------------------
+
+    for (auto& w : m_Coin_List) {
+        if (w->GetIfRegisteredToSavePoint() == false) {
+            w->Initialize();
+            w->CreateBody();
+        }
+    }
+    
+    for (auto& w : m_Jewel_List) {
+        w->Initialize();
+        if (w->GetIfRegisteredToSavePoint() == false) {
+            w->Initialize();
+            w->CreateBody();
+        }
+    }
+
+    for (auto& w : m_SavePoint_List) {
+        w->CreateBody();
+    }
+}
+
+void ItemManager::Initialize_WhenRespawn_Initial_GamePause()
+{
+}
+
+void ItemManager::SetJewelRegistered_ToSavePoint()
+{
+    for (auto& w : m_Jewel_List)
+    {
+        if(w->GetBody() == nullptr)
+        {
+            w->SetIfRegisteredToSavePoint(true);
+        }
+
+    }
+}
+
+void ItemManager::SetCoinRegistered_ToSavePoint()
+{
+    for (auto& w : m_Coin_List)
+    {
+        if (w->GetBody() == nullptr)
+        {
+            w->SetIfRegisteredToSavePoint(true);
+        }
+
     }
 }
 
