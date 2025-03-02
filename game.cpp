@@ -40,6 +40,7 @@
 #include"UI_StaminaSpirit_Gauge.h"
 #include"Xinput_controller.h"
 #include"Stamina_UI.h"
+#include"Item_Coin_UI.h"
 
 int HitStop::hit_stop_time = 0;
 bool  HitStop::hit_stop_flag = false;
@@ -103,7 +104,7 @@ void Game::Initialize()
         //アンカーを初期化
         AnchorSpirit::Initialize();
         //豪快度を記録した値に戻す
-        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
 
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
@@ -120,7 +121,7 @@ void Game::Initialize()
         //アンカーをlevel２にセット
         AnchorSpirit::SetAnchorSpiritValueDirectly(200);
         //豪快度を記録した値に戻す
-        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokai_WhenRespawn());
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
 
         //リスポン用のアイテムの初期化
         itemManager.Initialize_WhenRespawn();
@@ -134,14 +135,62 @@ void Game::Initialize()
         itemManager.Initialize_WhenNextStage();
 
         //今の豪快値を豪快UIに記録
-        Gokai_UI::SetGokai_WhenRespawn(Gokai_UI::GetNowGokaiCount());
+        Gokai_UI::RecordGokai_WhenRespawn(Gokai_UI::GetNowGokaiCount());
 
         if (scene.GetStageName() == STAGE_BOSS)
         {
             itemManager.UseAllJewel();
         }
         break;
-    case GAME_STATE_GAMEOVER:
+    case GAME_STATE_PAUSE_RESPAWN_SAVE_POINT:
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
+        //アンカーをlevel２にセット
+        AnchorSpirit::SetAnchorSpiritValueDirectly(200);
+        //豪快度を記録した値に戻す
+        Gokai_UI::SetNowGokaiCount(Gokai_UI::GetGokaiRecorded_WhenRespawn());
+        //コインの取得数を記録した値に戻す
+        Item_Coin_UI::SetNowCoinCount(Item_Coin_UI::GetCoinRecorded_WhenRegisteringSavePoint());
+        //ソウルゲージの宝石を記録した値に戻す
+        Gauge_UI::SetJewelRecorded_WithRegisteredValue();
+        //リスポン用のアイテムの初期化
+        itemManager.Initialize_WhenRespawn_SavePoint_GamePause();
+        if (scene.GetStageName() == STAGE_BOSS)
+        {
+            itemManager.UseAllJewel();
+        }
+        break;
+    case GAME_STATE_PAUSE_RESPAWN_INITIAL:
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
+        //豪快度をリセット
+        Gokai_UI::Initialize();
+        //アイテムの初期化
+        itemManager.InitializeAll();
+        //ソウルゲージUIの初期化
+        Gauge_UI::Initialize();
+        //体力UIの初期化
+        Stamina_UI::Initialize();    
+        break;
+    case GAME_STATE_PAUSE_SELECT_SCENE:
+        //アイテムの初期化
+        itemManager.InitializeAll();
+        //プレイヤーの体力の初期化
+        PlayerStamina::Initialize();
+        //ソウルゲージの初期化
+        AnchorSpirit::Initialize();
+        //ソウルゲージUIの初期化
+        Gauge_UI::Initialize();
+        //豪快度UIの初期化
+        Gokai_UI::Initialize();
+        //体力UIの初期化
+        Stamina_UI::Initialize();
+        //ゲームポーズ画面の初期化
+        pause.Initialize();
         break;
     default:
         break;
@@ -251,6 +300,42 @@ void Game::Finalize(void)
         Stamina_UI::Finalize();
         //プレイヤーが登録した中間地点を解除
         player.RegisterSavePoint(nullptr);
+        //プレイヤーがひとつ前に登録した中間地点を解除
+        player.SetPrevRegisteredSavePoint(nullptr);
+        //ゲームポーズ画面の終了処理
+        pause.Finalize();
+        break;
+    case GAME_STATE_PAUSE_RESPAWN_SAVE_POINT:
+        //リスポン用のアイテムの終了処理
+        itemManager.Finalize_WhenRespawn_SavePoint_GamePause();
+        break;
+    case GAME_STATE_PAUSE_RESPAWN_INITIAL:
+        //アイテムの終了処理
+        itemManager.FinalizeAll();
+        //ソウルゲージUIの終了処理
+        Gauge_UI::Finalize();
+        //豪快度UIの終了処理
+        Gokai_UI::Finalize();
+        //体力UIの終了処理
+        Stamina_UI::Finalize();
+        //プレイヤーが登録した中間地点を解除
+        player.RegisterSavePoint(nullptr);
+        //プレイヤーがひとつ前に登録した中間地点を解除
+        player.SetPrevRegisteredSavePoint(nullptr);
+        break;
+    case GAME_STATE_PAUSE_SELECT_SCENE:
+        //アイテムの終了処理
+        itemManager.FinalizeAll();
+        //ソウルゲージUIの終了処理
+        Gauge_UI::Finalize();
+        //豪快度UIの終了処理
+        Gokai_UI::Finalize();
+        //体力UIの終了処理
+        Stamina_UI::Finalize();
+        //プレイヤーが登録した中間地点を解除
+        player.RegisterSavePoint(nullptr);
+        //プレイヤーがひとつ前に登録した中間地点を解除
+        player.SetPrevRegisteredSavePoint(nullptr);
         //ゲームポーズ画面の終了処理
         pause.Finalize();
         break;
@@ -328,7 +413,10 @@ void Game::Update(void)
     if (m_state == GAME_STATE_PAUSE)
     {
         pause.Update();
-        return;
+        if (m_state == GAME_STATE_PAUSE)
+        {
+            return;
+        }
     }
     //ポーズ押したかどうか
     if(state.start && !key_flag.ControllerButton_Start)
@@ -338,7 +426,6 @@ void Game::Update(void)
     key_flag.ControllerButton_Start = state.start;
 
     //========================================================================================================-
-
     Box2dWorld& world_instance = Box2dWorld::GetInstance();
 
     if (HitStop::GetHitStopFlag()==true)
@@ -470,7 +557,11 @@ void Game::Update(void)
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
-                m_next_state = GAME_STATE_GAMEOVER;
+                //セレクト画面遷移がポーズ画面によるものじゃない時だけ、普通のゲームオーバーの終了処理をやる
+                if (m_next_state != GAME_STATE_PAUSE_SELECT_SCENE)
+                {
+                    m_next_state = GAME_STATE_GAMEOVER;
+                }
                 sceneManager.SetStageName(STAGE_SELECT);
                 sceneManager.ChangeScene(SCENE_STAGE_SELECT);
                 break;
@@ -492,6 +583,9 @@ void Game::Update(void)
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
+            case STAGE_TEST:
+                sceneManager.SetStageName(STAGE_TEST);
+                sceneManager.ChangeScene(SCENE_GAME);
             default:
                 break;
             }

@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------------------------------
 // #name GamePause.cpp
-// #description     ƒQ[ƒ€‚Ìƒ|[ƒY‰æ–Ê
-// #make 2025/2/28@‰¤‰jS
+// #description     ã‚²ãƒ¼ãƒ ã®ãƒãƒ¼ã‚ºç”»é¢
+// #make 2025/2/28ã€€ç‹æ³³å¿ƒ
 // #update 2025/2/28
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 //                  
 //                  
 //----------------------------------------------------------------------------------------------------
@@ -17,20 +17,20 @@
 #include "game.h"
 #include "scene.h"
 
-//ƒOƒ[ƒoƒ‹•Ï”
-static ID3D11ShaderResourceView* g_UnPause_words_Texture;				//ƒ|[ƒY‰ğœƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_Respawn_SavePoint_words_Texture;     //’†ŠÔ’n‚ÉƒŠƒXƒ|ƒ“‚·‚é‚½‚ß‚Ìƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_Respawn_InitalPoint_words_Texture;   //ƒŠƒXƒ|ƒ“‚·‚é‚½‚ß‚Ìƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_SelectScene_words_Texture;           //ƒZƒŒƒNƒg‰æ–Ê‚É–ß‚éƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_TitleScene_words_Texture;            //ƒ^ƒCƒgƒ‹‰æ–Ê‚É–ß‚éƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_button_frame_Texture;				//‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢ƒ{ƒ^ƒ“‚Ì˜g‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_button_selected_frame_Texture;		//‘I‘ğ‚³‚ê‚½ƒ{ƒ^ƒ“‚Ì˜g‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_button_locked_frame_Texture;		    //‘I‘ğ‚Å‚«‚È‚¢ƒ{ƒ^ƒ“‚Ì˜g‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseBackground_Texture;				//ƒ|[ƒY‰æ–Ê‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒ
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
+static ID3D11ShaderResourceView* g_UnPause_words_Texture;				//ãƒãƒ¼ã‚ºè§£é™¤ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_Respawn_SavePoint_words_Texture;     //ä¸­é–“åœ°ã«ãƒªã‚¹ãƒãƒ³ã™ã‚‹ãŸã‚ã®ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_Respawn_InitalPoint_words_Texture;   //ãƒªã‚¹ãƒãƒ³ã™ã‚‹ãŸã‚ã®ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_SelectScene_words_Texture;           //ã‚»ãƒ¬ã‚¯ãƒˆç”»é¢ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_TitleScene_words_Texture;            //ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_button_frame_Texture;				//é¸æŠã•ã‚Œã¦ã„ãªã„ãƒœã‚¿ãƒ³ã®æ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_button_selected_frame_Texture;		//é¸æŠã•ã‚ŒãŸãƒœã‚¿ãƒ³ã®æ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_button_locked_frame_Texture;		    //é¸æŠã§ããªã„ãƒœã‚¿ãƒ³ã®æ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseBackground_Texture;				//ãƒãƒ¼ã‚ºç”»é¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 bool    Respawn_SavePoint = false;
 
-//ƒ{ƒ^ƒ“‚ÌƒTƒCƒY
+//ãƒœã‚¿ãƒ³ã®ã‚µã‚¤ã‚º
 XMFLOAT2 g_button_scale[BUTTON_NUM] =
 {
     {300.0f,100.0f},
@@ -40,7 +40,7 @@ XMFLOAT2 g_button_scale[BUTTON_NUM] =
     {300.0f,100.0f}
 };
 
-//ƒ{ƒ^ƒ“‚ÌÀ•W
+//ãƒœã‚¿ãƒ³ã®åº§æ¨™
 XMFLOAT2 g_button_position[BUTTON_NUM] =
 {
     {SCREEN_XCENTER,SCREEN_HEIGHT / BUTTON_NUM - g_button_scale[0].y / 2},
@@ -79,18 +79,20 @@ void GamePause::Finalize()
 
 void GamePause::Update()
 {
-    if (!Respawn_SavePoint)
+    Player& player = Player::GetInstance();
+    if (player.GetPrevRegisteredSavePoint() != nullptr)
     {
-        Player& player = Player::GetInstance();
-        if (player.GetRegisteredSavePoint() != nullptr)
-        {
-            Respawn_SavePoint = true;
-        }
+        Respawn_SavePoint = true;
     }
+    else
+    {
+        Respawn_SavePoint = false;
+    }
+    
 
-    // ƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Í‚Ìó‚¯æ‚è
+    // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›ã®å—ã‘å–ã‚Š
     ControllerState state = GetControllerInput();
-    //«ƒL[‚Å‰º‘I‘ğ
+    //â†“ã‚­ãƒ¼ã§ä¸‹é¸æŠ
     if(state.leftStickY < 0 && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -117,7 +119,7 @@ void GamePause::Update()
         }
         key_flag.CountTime = 0.0f;
     }
-    //ªƒL[‚Åã‘I‘ğ
+    //â†‘ã‚­ãƒ¼ã§ä¸Šé¸æŠ
     else if (state.leftStickY > 0 && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -147,39 +149,58 @@ void GamePause::Update()
 
     key_flag.CountTime++;
 
-    //‘I‘ğŠm’è
+    //é¸æŠç¢ºå®š
     if (state.buttonA && !key_flag.ControllerButton_A)
     {
-       //SceneManager& sceneManager = SceneManager::GetInstance();
-       //Game& game = Game::GetInstance();
+       SceneManager& sceneManager = SceneManager::GetInstance();
+       Game& game = Game::GetInstance();
 
-       //switch(m_button_selected)
-       //{
-       //case Button_UnPause:
-       //    game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //game‚Ì•û‚Ìˆ—‚É‰e‹¿‚È‚¢‚Ì‚ÅA“K“–‚Å‘åä•v
-       //    break;
-       //case Button_Respawn_SavePoint:
-       //    game.SetNextGameState(GAME_STATE_RESPAWN_SAVE_POINT);
-       //    sceneManager.ChangeScene(SCENE_GAME);
-       //    break;
-       //case Button_Respawn_InitalPoint:
-       //    game.SetNextGameState(GAME_STATE_RESPAWN_INITIAL);
-       //    sceneManager.ChangeScene(SCENE_GAME);
-       //    break;
-       //case Button_SelectScene:
-       //    game.SetNextGameState(GAME_STATE_GAMEOVER);
-       //    sceneManager.ChangeScene(SCENE_STAGE_SELECT);
-       //    break;
+       game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameã®æ–¹ã®å‡¦ç†ã«å½±éŸ¿ãªã„ã®ã§ã€é©å½“ã§å¤§ä¸ˆå¤«
+
+       switch(m_button_selected)
+       {
+       case Button_UnPause:
+          // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameã®æ–¹ã®å‡¦ç†ã«å½±éŸ¿ãªã„ã®ã§ã€é©å½“ã§å¤§ä¸ˆå¤«
+           break;
+       case Button_Respawn_SavePoint:
+       {
+           game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_SAVE_POINT);
+           Player& player = Player::GetInstance();
+           ItemSavePoint* registered_SavePoint = player.GetRegisteredSavePoint();
+           //ä»Šã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«ç™»éŒ²ã—ãŸä¸­é–“åœ°ãŒãªã‹ã£ãŸã‚‰ã€å‰ã‚¹ãƒ†ãƒ¼ã‚¸ã®ç™»éŒ²ã—ãŸä¸­é–“åœ°ã«è¡Œã
+           if (registered_SavePoint == nullptr)
+           {
+               registered_SavePoint = player.GetPrevRegisteredSavePoint();
+               sceneManager.SetStageName(static_cast<STAGE_NAME>(registered_SavePoint->GetSavePoint_StageID()));
+               player.RegisterSavePoint(registered_SavePoint);
+           }
+           else
+           {
+               sceneManager.SetStageName(static_cast<STAGE_NAME>(registered_SavePoint->GetSavePoint_StageID()));
+           }
+           sceneManager.Set_Chenge_Scene_flag(true);
+       }
+           break;
+       case Button_Respawn_InitalPoint:
+           game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_INITIAL);
+           sceneManager.SetStageName(STAGE_1_1);
+           sceneManager.Set_Chenge_Scene_flag(true);
+           break;
+       case Button_SelectScene:
+           game.SetNextGameState(GAME_STATE_PAUSE_SELECT_SCENE);
+           sceneManager.SetStageName(STAGE_SELECT);
+           sceneManager.Set_Chenge_Scene_flag(true);
+           break;
        //case Button_TitleScene:
        //    game.SetNextGameState(GAME_STATE_GAMEOVER);
        //    sceneManager.ChangeScene(SCENE_TITLE);
        //    break;
-       //}
+       }
        
     }
 
 #ifndef _DEBUG
-    //«ƒL[‚Å‰º‘I‘ğ
+    //â†“ã‚­ãƒ¼ã§ä¸‹é¸æŠ
     if (Keyboard_IsKeyDown(KK_DOWN) && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -202,7 +223,7 @@ void GamePause::Update()
         }
         key_flag.CountTime = 0.0f;
     }
-    //ªƒL[‚Åã‘I‘ğ
+    //â†‘ã‚­ãƒ¼ã§ä¸Šé¸æŠ
     else if (Keyboard_IsKeyDown(KK_UP) && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -229,7 +250,7 @@ void GamePause::Update()
 
     key_flag.CountTime++;
 
-    //‘I‘ğŠm’è
+    //é¸æŠç¢ºå®š
     if (Keyboard_IsKeyDown(KK_ENTER) && !key_flag.KeyboardButton_Enter)
     {
 
@@ -240,8 +261,8 @@ void GamePause::Update()
 
 void GamePause::Draw()
 {
-    //ƒ|[ƒY‰æ–Ê”wŒi
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢èƒŒæ™¯
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseBackground_Texture);
     DrawSpriteOld(XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER), 0.0f, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 0.7f);
 
@@ -249,15 +270,15 @@ void GamePause::Draw()
     {
         if (m_button_selected == i)
         {
-            //ƒ|[ƒY‰æ–Ê‚Ìƒ{ƒ^ƒ“˜gi‘I‘ğ‚µ‚½j
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            //ãƒãƒ¼ã‚ºç”»é¢ã®ãƒœã‚¿ãƒ³æ ï¼ˆé¸æŠã—ãŸï¼‰
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_selected_frame_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
         }
         else
         {
-            //ƒ|[ƒY‰æ–Ê‚Ìƒ{ƒ^ƒ“˜gi–¢‘I‘ğj
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            //ãƒãƒ¼ã‚ºç”»é¢ã®ãƒœã‚¿ãƒ³æ ï¼ˆæœªé¸æŠï¼‰
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_frame_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
         }
@@ -265,12 +286,12 @@ void GamePause::Draw()
         switch (i)
         {
         case Button_UnPause:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_UnPause_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
             break;
         case Button_Respawn_SavePoint:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Respawn_SavePoint_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
             if (!Respawn_SavePoint)
@@ -280,17 +301,17 @@ void GamePause::Draw()
             }
             break;        
         case Button_Respawn_InitalPoint:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Respawn_InitalPoint_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
             break;
         case Button_SelectScene:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_SelectScene_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
             break;
         case Button_TitleScene:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_TitleScene_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
             break;
