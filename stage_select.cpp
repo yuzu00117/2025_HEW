@@ -66,6 +66,13 @@ static ID3D11ShaderResourceView* g_stage_select_fade_black_Texture = NULL;
 static ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
 
 
+//説明に使うテクスチャ
+static ID3D11ShaderResourceView* g_Explanation_Texture = NULL;
+static ID3D11ShaderResourceView* g_Explanation_Texture2 = NULL;
+
+static ID3D11ShaderResourceView* g_Explanation_BackGround_Texture = NULL;
+
+
 
 // メンバ変数として保持
 
@@ -101,6 +108,11 @@ void StageSelectScene::Initialize()
 	g_stage_select_fade_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\sample_fade_black.png");
 
 	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
+
+	g_Explanation_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\tips01.png");
+	g_Explanation_Texture2 = InitTexture(L"asset\\texture\\Explanation_texture\\tips02.png");
+
+	g_Explanation_BackGround_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\ver01.png");
 
 	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 
@@ -204,33 +216,40 @@ void StageSelectScene::Update()
 
 		
 		//フェードの関数になったら
-		if (1<=fade_rate)
+		if (1 <= fade_rate)
 		{
 			SceneManager& sceneManager = SceneManager::GetInstance();
-		
-			switch (m_player.GetTouchStageSelectNum())
+
+			if (7 <= fade_rate)
 			{
-			case 0:
-				break;
-			case 1:
-				sceneManager.SetStageName(STAGE_TUTORIAL);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
-			case 2:
-				sceneManager.SetStageName(STAGE_1_1);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
+				
 
-			case 3:
-				sceneManager.SetStageName(STAGE_TEST);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
+				switch (m_player.GetTouchStageSelectNum())
+				{
+				case 0:
+					break;
+				case 1:
+					sceneManager.SetStageName(STAGE_TUTORIAL);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
+				case 2:
+					sceneManager.SetStageName(STAGE_1_1);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
 
-			case 4:
-				sceneManager.SetStageName(STAGE_BOSS);
-				sceneManager.ChangeScene(SCENE_GAME);
-				break;
+				case 3:
+					sceneManager.SetStageName(STAGE_TEST);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
+
+				case 4:
+					sceneManager.SetStageName(STAGE_TEST);
+					sceneManager.ChangeScene(SCENE_GAME);
+					break;
+				}
 			}
+
+			disply_Explanation += 0.01;
 		}
 
 
@@ -914,6 +933,45 @@ void StageSelectScene::Draw()
 
 		//----------------------------------------------------------------------------------------------
 
+		if (3<fade_rate)
+		{
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_BackGround_Texture);
+			DrawSpriteOld(XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0.0, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 1.0);
+
+			// シェーダリソースを設定
+
+			SceneManager& scene = SceneManager::GetInstance();
+
+			switch (scene.GetStageName())
+			{
+			case STAGE_BOSS:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture2);
+				break;
+			case STAGE_1_1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture2);
+				break;
+			case STAGE_TUTORIAL:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+			case STAGE_ISEKI:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+
+			default:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+			}
+			
+			DrawSpriteOld(
+				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+				0.0f,
+				XMFLOAT2(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.6),
+				1.0f
+			);
+		}
+
+
 		//バックバッファ、フロントバッファ入れ替え
 		Present();
 	
@@ -943,6 +1001,12 @@ void StageSelectScene::Finalize()
 
 	if (g_stage_select_fade_black_Texture) UnInitTexture(g_stage_select_fade_black_Texture);
 	if (g_stage_select_black_Texture) UnInitTexture(g_stage_select_black_Texture);
+
+	if (g_Explanation_Texture) UnInitTexture(g_Explanation_Texture);
+	if (g_Explanation_Texture2) UnInitTexture(g_Explanation_Texture2);
+
+	if (g_Explanation_BackGround_Texture) UnInitTexture(g_Explanation_BackGround_Texture);
+
 
 	
 	// ワールド解放
