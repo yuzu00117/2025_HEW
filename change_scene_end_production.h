@@ -50,8 +50,12 @@ private:
 
 	static float Black_hole_rate;
 
+	static float Explanation_cnt;
+
 
 	static bool Change_Flag;
+
+	static bool fade_end_flag;
 
 
 
