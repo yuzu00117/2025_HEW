@@ -67,7 +67,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 
 	//カスタムデータを作成
-	ObjectData* object_data = new ObjectData{ collider_ground};
+	ObjectData* object_data = new ObjectData{collider_ground};
 	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
 	int ID = object_data->GenerateID();
@@ -119,7 +119,7 @@ void boss_field_block::Update()
 			}
 
 			// 新しいフィルターを作成
-			b2Filter newFilter = createFilterExclude("Boss_field_filter", { "ground_filter","object_filter","Boss_filter" });
+			b2Filter newFilter = createFilterExclude("Boss_field_filter", {"ground_filter","object_filter","Boss_filter","Player_filter"});
 			fixture->SetFilterData(newFilter);
 
 			break_flag = true;
