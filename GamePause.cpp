@@ -1,0 +1,300 @@
+//-----------------------------------------------------------------------------------------------------
+// #name GamePause.cpp
+// #description     ゲームのポーズ画面
+// #make 2025/2/28　王泳心
+// #update 2025/2/28
+// #comment 追加・修正予定
+//                  
+//                  
+//----------------------------------------------------------------------------------------------------
+#include "GamePause.h"
+#include "texture.h"
+#include "sprite.h"
+#include "main.h"
+#include "keyboard.h"
+#include "Xinput_controller.h"
+#include "player.h"
+#include "game.h"
+#include "scene.h"
+
+//グローバル変数
+static ID3D11ShaderResourceView* g_UnPause_words_Texture;				//ポーズ解除ボタンのテクスチャ
+static ID3D11ShaderResourceView* g_Respawn_SavePoint_words_Texture;     //中間地にリスポンするためのボタンのテクスチャ
+static ID3D11ShaderResourceView* g_Respawn_InitalPoint_words_Texture;   //リスポンするためのボタンのテクスチャ
+static ID3D11ShaderResourceView* g_SelectScene_words_Texture;           //セレクト画面に戻るボタンのテクスチャ
+static ID3D11ShaderResourceView* g_TitleScene_words_Texture;            //タイトル画面に戻るボタンのテクスチャ
+static ID3D11ShaderResourceView* g_button_frame_Texture;				//選択されていないボタンの枠のテクスチャ
+static ID3D11ShaderResourceView* g_button_selected_frame_Texture;		//選択されたボタンの枠のテクスチャ
+static ID3D11ShaderResourceView* g_button_locked_frame_Texture;		    //選択できないボタンの枠のテクスチャ
+static ID3D11ShaderResourceView* g_PauseBackground_Texture;				//ポーズ画面の背景のテクスチャ
+
+bool    Respawn_SavePoint = false;
+
+//ボタンのサイズ
+XMFLOAT2 g_button_scale[BUTTON_NUM] =
+{
+    {300.0f,100.0f},
+    {300.0f,100.0f},
+    {300.0f,100.0f},
+    {300.0f,100.0f},
+    {300.0f,100.0f}
+};
+
+//ボタンの座標
+XMFLOAT2 g_button_position[BUTTON_NUM] =
+{
+    {SCREEN_XCENTER,SCREEN_HEIGHT / BUTTON_NUM - g_button_scale[0].y / 2},
+    {SCREEN_XCENTER, SCREEN_HEIGHT / BUTTON_NUM * 2 - g_button_scale[1].y / 2},
+    {SCREEN_XCENTER, SCREEN_HEIGHT / BUTTON_NUM * 3 - g_button_scale[2].y / 2},
+    {SCREEN_XCENTER, SCREEN_HEIGHT / BUTTON_NUM * 4 - g_button_scale[3].y / 2},
+    {SCREEN_XCENTER, SCREEN_HEIGHT - g_button_scale[2].y / 2}
+};
+
+void GamePause::Initialize()
+{
+    g_UnPause_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UnPause_words.png");
+    g_Respawn_SavePoint_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\Respawn_SavePoint_words.png");
+    g_Respawn_InitalPoint_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\Respawn_InitalPoint_words.png");
+    g_SelectScene_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\SelectScene_words.png");
+    g_TitleScene_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\TitleScene_words.png");
+    g_button_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\button_frame.png");
+    g_button_selected_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\button_selected_frame.png");
+    g_button_locked_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\button_locked_frame.png");
+    g_PauseBackground_Texture = InitTexture(L"asset\\texture\\Pause_texture\\PauseBackground.png");
+
+}
+
+void GamePause::Finalize()
+{
+    if (g_UnPause_words_Texture) { UnInitTexture(g_UnPause_words_Texture); }
+    if (g_Respawn_SavePoint_words_Texture) { UnInitTexture(g_Respawn_SavePoint_words_Texture); }
+    if (g_Respawn_InitalPoint_words_Texture) { UnInitTexture(g_Respawn_InitalPoint_words_Texture); }
+    if (g_SelectScene_words_Texture) { UnInitTexture(g_SelectScene_words_Texture); }
+    if (g_TitleScene_words_Texture) { UnInitTexture(g_TitleScene_words_Texture); }
+    if (g_button_frame_Texture) { UnInitTexture(g_button_frame_Texture); }
+    if (g_button_selected_frame_Texture) { UnInitTexture(g_button_selected_frame_Texture); }
+    if (g_button_locked_frame_Texture) { UnInitTexture(g_button_locked_frame_Texture); }
+    if (g_PauseBackground_Texture) { UnInitTexture(g_PauseBackground_Texture); }
+}
+
+void GamePause::Update()
+{
+    if (!Respawn_SavePoint)
+    {
+        Player& player = Player::GetInstance();
+        if (player.GetRegisteredSavePoint() != nullptr)
+        {
+            Respawn_SavePoint = true;
+        }
+    }
+
+    // コントローラーの入力の受け取り
+    ControllerState state = GetControllerInput();
+    //↓キーで下選択
+    if(state.leftStickY < 0 && key_flag.CountTime > 15.0f)
+    {
+        switch (m_button_selected)
+        {
+        case Button_UnPause:
+            m_button_selected = Button_Respawn_SavePoint;
+            if (!Respawn_SavePoint)
+            {
+                m_button_selected = Button_Respawn_InitalPoint;
+            }
+            break;
+        case Button_Respawn_SavePoint:
+            m_button_selected = Button_Respawn_InitalPoint;
+            break;
+        case Button_Respawn_InitalPoint:
+            m_button_selected = Button_SelectScene;
+            break;
+        case Button_SelectScene:
+            m_button_selected = Button_TitleScene;
+            break;
+        case Button_TitleScene:
+            m_button_selected = Button_UnPause;
+            break;
+        }
+        key_flag.CountTime = 0.0f;
+    }
+    //↑キーで上選択
+    else if (state.leftStickY > 0 && key_flag.CountTime > 15.0f)
+    {
+        switch (m_button_selected)
+        {
+        case Button_UnPause:
+            m_button_selected = Button_TitleScene;
+            break;
+        case Button_Respawn_SavePoint:
+            m_button_selected = Button_UnPause;
+            break;
+        case Button_Respawn_InitalPoint:
+            m_button_selected = Button_Respawn_SavePoint;
+            if (!Respawn_SavePoint)
+            {
+                m_button_selected = Button_UnPause;
+            }
+            break;
+        case Button_SelectScene:
+            m_button_selected = Button_Respawn_InitalPoint;
+            break;
+        case Button_TitleScene:
+            m_button_selected = Button_SelectScene;
+            break;
+        }
+        key_flag.CountTime = 0.0f;
+    }
+
+    key_flag.CountTime++;
+
+    //選択確定
+    if (state.buttonA && !key_flag.ControllerButton_A)
+    {
+       //SceneManager& sceneManager = SceneManager::GetInstance();
+       //Game& game = Game::GetInstance();
+
+       //switch(m_button_selected)
+       //{
+       //case Button_UnPause:
+       //    game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
+       //    break;
+       //case Button_Respawn_SavePoint:
+       //    game.SetNextGameState(GAME_STATE_RESPAWN_SAVE_POINT);
+       //    sceneManager.ChangeScene(SCENE_GAME);
+       //    break;
+       //case Button_Respawn_InitalPoint:
+       //    game.SetNextGameState(GAME_STATE_RESPAWN_INITIAL);
+       //    sceneManager.ChangeScene(SCENE_GAME);
+       //    break;
+       //case Button_SelectScene:
+       //    game.SetNextGameState(GAME_STATE_GAMEOVER);
+       //    sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+       //    break;
+       //case Button_TitleScene:
+       //    game.SetNextGameState(GAME_STATE_GAMEOVER);
+       //    sceneManager.ChangeScene(SCENE_TITLE);
+       //    break;
+       //}
+       
+    }
+
+#ifndef _DEBUG
+    //↓キーで下選択
+    if (Keyboard_IsKeyDown(KK_DOWN) && key_flag.CountTime > 15.0f)
+    {
+        switch (m_button_selected)
+        {
+        case Button_UnPause:
+            m_button_selected = Button_Respawn_SavePoint;
+            break;
+        case Button_Respawn_SavePoint:
+            m_button_selected = Button_Respawn_InitalPoint;
+            break;
+        case Button_Respawn_InitalPoint:
+            m_button_selected = Button_SelectScene;
+            break;
+        case Button_SelectScene:
+            m_button_selected = Button_TitleScene;
+            break;
+        case Button_TitleScene:
+            m_button_selected = Button_UnPause;
+            break;
+        }
+        key_flag.CountTime = 0.0f;
+    }
+    //↑キーで上選択
+    else if (Keyboard_IsKeyDown(KK_UP) && key_flag.CountTime > 15.0f)
+    {
+        switch (m_button_selected)
+        {
+        case Button_UnPause:
+            m_button_selected = Button_TitleScene;
+            break;
+        case Button_Respawn_SavePoint:
+            m_button_selected = Button_UnPause;
+            break;
+        case Button_Respawn_InitalPoint:
+            m_button_selected = Button_Respawn_SavePoint;
+            break;
+        case Button_SelectScene:
+            m_button_selected = Button_Respawn_InitalPoint;
+            break;
+        case Button_TitleScene:
+            m_button_selected = Button_SelectScene;
+            break;
+        }
+        key_flag.CountTime = 0.0f;
+    }
+
+
+    key_flag.CountTime++;
+
+    //選択確定
+    if (Keyboard_IsKeyDown(KK_ENTER) && !key_flag.KeyboardButton_Enter)
+    {
+
+    }
+
+#endif // _DEBUG
+}
+
+void GamePause::Draw()
+{
+    //ポーズ画面背景
+    // シェーダリソースを設定
+    GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseBackground_Texture);
+    DrawSpriteOld(XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER), 0.0f, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 0.7f);
+
+    for (int i = 0; i < BUTTON_NUM; i++)
+    {
+        if (m_button_selected == i)
+        {
+            //ポーズ画面のボタン枠（選択した）
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_selected_frame_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+        }
+        else
+        {
+            //ポーズ画面のボタン枠（未選択）
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_frame_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+        }
+
+        switch (i)
+        {
+        case Button_UnPause:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_UnPause_words_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+            break;
+        case Button_Respawn_SavePoint:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Respawn_SavePoint_words_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+            if (!Respawn_SavePoint)
+            {
+                GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_locked_frame_Texture);
+                DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+            }
+            break;        
+        case Button_Respawn_InitalPoint:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_Respawn_InitalPoint_words_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+            break;
+        case Button_SelectScene:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_SelectScene_words_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+            break;
+        case Button_TitleScene:
+            // シェーダリソースを設定
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_TitleScene_words_Texture);
+            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+            break;
+        }
+    }
+
+}
