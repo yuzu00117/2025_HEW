@@ -128,6 +128,7 @@ private:
     int id;
     bool destroyed = false;
 
+    int needlevel;
 
     int lifetime = 0;
 
