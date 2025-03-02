@@ -353,7 +353,10 @@ void Game::Update(void)
     if (m_state == GAME_STATE_PAUSE)
     {
         pause.Update();
-        return;
+        if (m_state == GAME_STATE_PAUSE)
+        {
+            return;
+        }
     }
     //ポーズ押したかどうか
     if(state.start && !key_flag.ControllerButton_Start)
@@ -516,6 +519,9 @@ void Game::Update(void)
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
+            case STAGE_TEST:
+                sceneManager.SetStageName(STAGE_TEST);
+                sceneManager.ChangeScene(SCENE_GAME);
             default:
                 break;
             }

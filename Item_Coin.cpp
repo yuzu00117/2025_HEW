@@ -18,6 +18,7 @@
 #include"Item_Manager.h"
 #include"Item_Coin_UI.h"
 #include"sound.h"
+#include"game.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//コインのテクスチャ
 static ID3D11ShaderResourceView* g_coin_effect = NULL;//コインのテクスチャ
@@ -130,8 +131,11 @@ void ItemCoin::Initialize()
     m_destory = false;
     coin_effect_sheet_cnt = 0;
     coin_effect_start_cnt = 0;
-    m_registered_to_save_point = false;
-
+    Game& game = Game::GetInstance();
+    if (game.GetCurrentGameState() == GAME_STATE_PAUSE_RESPAWN_INITIAL)
+    {
+        m_registered_to_save_point = false;
+    }
 
     if (g_Texture == NULL)
     {

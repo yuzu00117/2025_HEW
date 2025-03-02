@@ -1050,6 +1050,7 @@ void Field::Initialize()
 						//リスポンした時の効果音
 						app_atomex_start(Player_Jewelry_Colect_Sound);
 					}
+					else
 					{
 						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
 					}

@@ -21,6 +21,7 @@
 #include "Item_Manager.h"
 #include "Item_Coin_UI.h"
 #include "Gauge_UI.h"
+#include "scene.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_get_save_point_effect = NULL;//セーブポイントを取得した時のエフェクト
@@ -98,7 +99,8 @@ ItemSavePoint::ItemSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, boo
     data->id = ID;
     SetID(ID);
 
-
+    SceneManager& sceneManager = SceneManager::GetInstance();
+    m_stage_id = sceneManager.GetStageName();
 }
 
 void	ItemSavePoint::Update()

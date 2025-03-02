@@ -82,7 +82,7 @@ void GamePause::Update()
     if (!Respawn_SavePoint)
     {
         Player& player = Player::GetInstance();
-        if (player.GetRegisteredSavePoint() != nullptr)
+        if (player.GetPrevRegisteredSavePoint() != nullptr)
         {
             Respawn_SavePoint = true;
         }
@@ -153,14 +153,29 @@ void GamePause::Update()
        SceneManager& sceneManager = SceneManager::GetInstance();
        Game& game = Game::GetInstance();
 
+       game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
+
        switch(m_button_selected)
        {
        case Button_UnPause:
-           game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
+          // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
            break;
        case Button_Respawn_SavePoint:
            game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_SAVE_POINT);
-           sceneManager.ChangeScene(SCENE_GAME);
+           Player& player = Player::GetInstance();
+           ItemSavePoint* registered_SavePoint = player.GetRegisteredSavePoint();
+           //今のステージに登録した中間地がなかったら、前ステージの登録した中間地に行く
+           if (registered_SavePoint == nullptr)
+           {
+               registered_SavePoint = player.GetPrevRegisteredSavePoint();
+               sceneManager.SetStageName(static_cast<STAGE_NAME>(registered_SavePoint->GetSavePoint_StageID()));
+               player.RegisterSavePoint(registered_SavePoint);
+           }
+           else
+           {
+               sceneManager.SetStageName(static_cast<STAGE_NAME>(registered_SavePoint->GetSavePoint_StageID()));
+           }
+           sceneManager.Set_Chenge_Scene_flag(true);
            break;
        //case Button_Respawn_InitalPoint:
        //    game.SetNextGameState(GAME_STATE_RESPAWN_INITIAL);

@@ -23,6 +23,7 @@
 #include"Gauge_UI.h"
 #include"easing.h"
 #include"Item_Manager.h"
+#include"game.h"
 
 //グローバル変数
 static ID3D11ShaderResourceView* g_Effect_Texture;    //エフェクトのテクスチャ
@@ -265,8 +266,6 @@ void ItemJewel::Initialize()
      m_destory = false;
     //回収中かどうか
      m_collecting = false;
-    //プレイヤーにゲットされたかどうか
-    m_get_by_player = false;
     //回収の経過時間
     m_collecting_time = 0.3f;
     //アニメーションid(エフェクト)
@@ -280,6 +279,13 @@ void ItemJewel::Initialize()
     m_use_anim_id = 0;
     m_use_anim_count = 0;
     m_if_effect_using = false;
+
+    Game& game = Game::GetInstance();
+    if (game.GetCurrentGameState() == GAME_STATE_PAUSE_RESPAWN_INITIAL)
+    {
+        m_registered_to_save_point = false;
+    }
+
 }
 
 
@@ -486,6 +492,9 @@ ItemJewel::~ItemJewel()
 
 void ItemJewel::CreateBody()
 {
+    //プレイヤーにゲットされたかどうか
+    m_get_by_player = false;
+
     b2BodyDef body;
     body.type = b2_staticBody;
     body.position.Set(m_body_position.x, m_body_position.y);
