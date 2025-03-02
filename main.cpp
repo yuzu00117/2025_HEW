@@ -137,7 +137,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	#ifdef _DEBUG
 	sceneManager.SetStageName(STAGE_SELECT);
 
-	sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+	sceneManager.ChangeScene(SCENE_TITLE);
 
 	#else
 	sceneManager.ChangeScene(SCENE_TITLE);

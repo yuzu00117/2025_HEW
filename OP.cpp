@@ -44,7 +44,7 @@ void OP::Update()
 
 
 		sceneManager.ChangeScene(SCENE_STAGE_SELECT);
-
+		return;
 
 	}
 
@@ -106,4 +106,5 @@ void OP::Draw()
 void OP::Finalize()
 {
 	video.Finalize();
+	if (g_pause_Texture) { UnInitTexture(g_pause_Texture); }
 }
