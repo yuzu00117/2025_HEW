@@ -463,9 +463,7 @@ void ItemManager::Initialize_WhenRespawn_SavePoint_GamePause()
     }
 }
 
-void ItemManager::Initialize_WhenRespawn_Initial_GamePause()
-{
-}
+
 
 void ItemManager::SetJewelRegistered_ToSavePoint()
 {

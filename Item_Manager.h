@@ -99,8 +99,6 @@ public:
 	void	Initialize_WhenNextStage();
 	//ポーズ画面でリスポン（中間地からやり直す）を選択した時の初期処理
 	void	Initialize_WhenRespawn_SavePoint_GamePause();
-	//ポーズ画面でリスタート（最初からやり直す）を選択した時の初期処理
-	void	Initialize_WhenRespawn_Initial_GamePause();
 
 	//　中間地を登録した時、宝石に中間地に登録したかどうかを記録させる
 	void	SetJewelRegistered_ToSavePoint();

@@ -163,6 +163,18 @@ void Game::Initialize()
         }
         break;
     case GAME_STATE_PAUSE_RESPAWN_INITIAL:
+        //体力を初期化
+        PlayerStamina::Initialize();
+        //アンカーを初期化
+        AnchorSpirit::Initialize();
+        //豪快度をリセット
+        Gokai_UI::Initialize();
+        //アイテムの初期化
+        itemManager.InitializeAll();
+        //ソウルゲージUIの初期化
+        Gauge_UI::Initialize();
+        //体力UIの初期化
+        Stamina_UI::Initialize();    
         break;
     default:
         break;
@@ -279,6 +291,19 @@ void Game::Finalize(void)
         //リスポン用のアイテムの終了処理
         itemManager.Finalize_WhenRespawn_SavePoint_GamePause();
         break;
+    case GAME_STATE_PAUSE_RESPAWN_INITIAL:
+        //アイテムの終了処理
+        itemManager.FinalizeAll();
+        //ソウルゲージUIの終了処理
+        Gauge_UI::Finalize();
+        //豪快度UIの終了処理
+        Gokai_UI::Finalize();
+        //体力UIの終了処理
+        Stamina_UI::Finalize();
+        //プレイヤーが登録した中間地点を解除
+        player.RegisterSavePoint(nullptr);
+        //プレイヤーがひとつ前に登録した中間地点を解除
+        player.SetPrevRegisteredSavePoint(nullptr);
     default:
         break;
     }
