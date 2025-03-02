@@ -315,7 +315,7 @@ void ItemManager::Finalize_WhenNextStage()
         w->Finalize();
     }
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
-    m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
+    //m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Healing_List.clear(); //動的配列をクリアしてメモリ解放
     m_Barrier_List.clear(); //動的配列をクリアしてメモリ解放
 }
