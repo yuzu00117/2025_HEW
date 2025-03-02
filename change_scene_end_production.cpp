@@ -91,7 +91,7 @@ void change_scene_end_production::Draw()
 
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
-		DrawSpriteOld(XMFLOAT2(SCREEN_WIDTH / 2 ,  SCREEN_HEIGHT / 2), 0.0, XMFLOAT2(SCREEN_WIDTH * 0.7, SCREEN_HEIGHT * 0.7), 1.0);
+		DrawSpriteOld(XMFLOAT2(SCREEN_WIDTH / 2 ,  SCREEN_HEIGHT / 2), 0.0, XMFLOAT2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.6), 1.0);
 
 		Explanation_cnt += 0.1;
 	}
