@@ -68,6 +68,7 @@ static ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
 
 //説明に使うテクスチャ
 static ID3D11ShaderResourceView* g_Explanation_Texture = NULL;
+static ID3D11ShaderResourceView* g_Explanation_Texture2 = NULL;
 
 static ID3D11ShaderResourceView* g_Explanation_BackGround_Texture = NULL;
 
@@ -109,6 +110,7 @@ void StageSelectScene::Initialize()
 	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
 	g_Explanation_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\tips01.png");
+	g_Explanation_Texture2 = InitTexture(L"asset\\texture\\Explanation_texture\\tips02.png");
 
 	g_Explanation_BackGround_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\ver01.png");
 
@@ -938,7 +940,29 @@ void StageSelectScene::Draw()
 			DrawSpriteOld(XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0.0, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 1.0);
 
 			// シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+
+			SceneManager& scene = SceneManager::GetInstance();
+
+			switch (scene.GetStageName())
+			{
+			case STAGE_BOSS:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture2);
+				break;
+			case STAGE_1_1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture2);
+				break;
+			case STAGE_TUTORIAL:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+			case STAGE_ISEKI:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+
+			default:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+			}
+			
 			DrawSpriteOld(
 				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 				0.0f,
@@ -979,6 +1003,7 @@ void StageSelectScene::Finalize()
 	if (g_stage_select_black_Texture) UnInitTexture(g_stage_select_black_Texture);
 
 	if (g_Explanation_Texture) UnInitTexture(g_Explanation_Texture);
+	if (g_Explanation_Texture2) UnInitTexture(g_Explanation_Texture2);
 
 	if (g_Explanation_BackGround_Texture) UnInitTexture(g_Explanation_BackGround_Texture);
 
