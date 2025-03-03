@@ -167,6 +167,8 @@ void EnemyStatic::Update()
 		b2Vec2 now_size = GetSize();
 		b2Vec2 now_vec = GetBody()->GetLinearVelocity();
 
+		item_manager.AddDamageValue(b2Vec2{ now_positon.x, now_positon.y - 0.2f }, b2Vec2{ 1.5f,1.5f }, 0.0f, DamageOwnerType_enemy, ENEMY_STATIC_LIFE);
+
 		//ƒ[ƒ‹ƒh‚É“o˜^‚µ‚½body‚Ìíœ
 		Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 		b2World* world = box2d_world.GetBox2dWorldPointer();
