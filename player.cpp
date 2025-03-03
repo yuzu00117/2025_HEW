@@ -518,10 +518,12 @@ void Player::Update()
 
         // playerのスピード上昇
         // 上がり方がわかりずらいかもしれない
+#ifdef _DEBUG
         if (Keyboard_IsKeyDownTrigger(KK_Q))
         {
             m_speed = 0.75f;
         }
+#endif
     }
 
     // ジャンプ処理
@@ -544,7 +546,7 @@ void Player::Update()
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
 
-#ifndef _DEBUG
+#ifdef _DEBUG
     // ジャンプのバフ
     if (Keyboard_IsKeyDownTrigger(KK_Z))
     {
@@ -563,8 +565,6 @@ void Player::Update()
         PlayerStamina::EditPlayerStaminaValue(-300); // HPに加算減算する　今回は減算
         PlayerLife::SetLife(1);
     }
-#endif
-
 
     // アンカーのレベルを手動で変えられるしょり　完成版ではけす
     if (Keyboard_IsKeyDown(KK_O))
@@ -576,7 +576,7 @@ void Player::Update()
     {
         AnchorSpirit::EditAnchorSpiritValue(-50); // 加算
     }
-   
+#endif
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -585,7 +585,7 @@ void Player::Update()
 
     // 宝石使う処理(テスト用)
     //----------------------------------------------------------------------------------------------------------------------------------------------------
-#ifndef _DEBUG
+#ifdef _DEBUG
     if (!CollectSpirit_pressed && (Keyboard_IsKeyDownTrigger(KK_J)))
     {
         ItemManager &itemManager = ItemManager::GetInstance();
@@ -812,7 +812,7 @@ void Player::Update()
     }
 
     // ダメージのテスト
-#ifndef _DEBUG
+#ifdef _DEBUG
     if (Keyboard_IsKeyDown(KK_M))
     {
         draw_state = player_dameged_state;

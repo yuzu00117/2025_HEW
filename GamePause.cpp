@@ -274,7 +274,7 @@ void GamePause::Update()
        m_button_selected = Button_NULL;
     }
 
-#ifndef _DEBUG
+#ifdef _DEBUG
     //↓キーで下選択
     if (Keyboard_IsKeyDown(KK_DOWN) && key_flag.CountTime > 15.0f)
     {
