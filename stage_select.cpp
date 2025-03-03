@@ -74,6 +74,13 @@ static ID3D11ShaderResourceView* g_Explanation_BackGround_Texture = NULL;
 
 
 
+static ID3D11ShaderResourceView* g_Button_A_Texture = NULL;
+static ID3D11ShaderResourceView* g_Button_B_Texture = NULL;
+static ID3D11ShaderResourceView* g_Text_select_Texture = NULL;
+static ID3D11ShaderResourceView* g_Text_exit_Texture = NULL;
+
+
+
 // ÉÅÉìÉoïœêîÇ∆ÇµÇƒï€éù
 
 static StagePointFactory m_stagePointFactory;
@@ -113,6 +120,13 @@ void StageSelectScene::Initialize()
 	g_Explanation_Texture2 = InitTexture(L"asset\\texture\\Explanation_texture\\tips02.png");
 
 	g_Explanation_BackGround_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\ver01.png");
+
+
+	g_Button_A_Texture = InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
+	g_Button_B_Texture = InitTexture(L"asset\\texture\\sample_texture\\b_push.png");
+	g_Text_exit_Texture = InitTexture(L"asset\\texture\\sample_texture\\UI_exit_B.png");
+	g_Text_select_Texture = InitTexture(L"asset\\texture\\sample_texture\\UI_select_A.png");
+
 
 	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 
@@ -212,6 +226,18 @@ void StageSelectScene::Update()
 		}
 
 
+		if (button_sheet_cnt < 16)
+		{
+			button_sheet_cnt += 0.3;
+		}
+		else
+		{
+			button_sheet_cnt = 0;
+		}
+	
+
+
+
 		
 
 		
@@ -292,7 +318,64 @@ void StageSelectScene::Draw()
 		}
 		//------------------------------------------------------------------------------------------------------
 		
-		
+
+		if (g_Text_select_Texture != nullptr)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Text_select_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 500, SCREEN_YCENTER + 225),
+				0.0f,
+				XMFLOAT2(200, 90),
+				1, 1, 1
+			);
+		}
+
+
+		if (g_Button_A_Texture!= nullptr)
+		{
+			int sheet_cnt = g_tap_addition;
+			if (15 < sheet_cnt)
+			{
+				sheet_cnt = 15;
+			}
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Button_A_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 440, SCREEN_YCENTER + 225),
+				0.0f,
+				XMFLOAT2(100, 75),
+				5, 4, sheet_cnt
+			);
+		}
+
+
+
+		if (g_Text_exit_Texture != nullptr)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Text_exit_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 500, SCREEN_YCENTER + 300),
+				0.0f,
+				XMFLOAT2(200, 90),
+				1, 1, 1
+			);
+		}
+
+
+		if (g_Button_B_Texture != nullptr)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Button_B_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 440, SCREEN_YCENTER + 300),
+				0.0f,
+				XMFLOAT2(100, 75),
+				5, 4, 1
+			);
+		}
 
 
 		
@@ -815,7 +898,7 @@ void StageSelectScene::Draw()
 					max_score /= 10;
 				}
 
-			}
+			} 
 			break;
 
 		case 4:
@@ -1007,7 +1090,10 @@ void StageSelectScene::Finalize()
 
 	if (g_Explanation_BackGround_Texture) UnInitTexture(g_Explanation_BackGround_Texture);
 
-
+	if (g_Button_A_Texture) UnInitTexture(g_Button_A_Texture);
+	if (g_Button_B_Texture) UnInitTexture(g_Button_B_Texture);
+	if (g_Text_exit_Texture) UnInitTexture(g_Text_exit_Texture);
+	if (g_Text_select_Texture) UnInitTexture(g_Text_select_Texture);
 	
 	// ÉèÅ[ÉãÉhâï˙
 	if (m_world) {

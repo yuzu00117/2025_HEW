@@ -73,11 +73,8 @@ void TitleScene::Update()
 	}
 
 	
-	bottom_sheet_cnt += 0.3;
-	if (bottom_sheet_cnt > 15)
-	{
-		bottom_sheet_cnt = 0;
-	}
+	
+
 
 
 
@@ -99,7 +96,11 @@ void TitleScene::Update()
 	if (scene_change_flag == true)
 	{
 		scene_change_cnt++;
-		bottom_sheet_cnt = 0;
+		
+		if (bottom_sheet_cnt < 15)
+		{
+			bottom_sheet_cnt += 0.8;
+		}
 
 		if (text_sheet_end_cnt < 15)
 		{
@@ -107,6 +108,8 @@ void TitleScene::Update()
 		}
 		
 	}
+
+	
 
 
 

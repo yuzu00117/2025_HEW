@@ -78,6 +78,8 @@ private:
     
 
     bool Stage_select_flag = false;
+
+    float button_sheet_cnt = 0;
  
 };
 
