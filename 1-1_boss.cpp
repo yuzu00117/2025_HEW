@@ -299,6 +299,7 @@ void Boss_1_1::Update()
 {
 	if (m_body != nullptr)
 	{
+		SetBossElapsedTime(1);
 
 		//ダメージ表記リスト更新
 		for (int i = 0; i < add_item_damage_value.size(); i++)
