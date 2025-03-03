@@ -60,7 +60,7 @@ void Video::Draw(const XMFLOAT2& pos, float height)
         size.y = height;
 
         //•`‰æ
-        DrawSprite(
+        DrawSpriteOld(
             pos,
             0.0f,
             size,
@@ -70,6 +70,8 @@ void Video::Draw(const XMFLOAT2& pos, float height)
         SetShaderNormal();
 
     }
+
+  
 
 
 }
