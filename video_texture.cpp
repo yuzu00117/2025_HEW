@@ -30,6 +30,8 @@
 
 #define CHECK_HR(x, msg) hr = x; if( hr != S_OK ) { dbg(msg); return false; }
 
+static bool isMFShutdownCalled = false;
+
 //#define SHOW_DEBUG        1
 #if SHOW_DEBUG
 static void dbg(const char* format, ...) {
@@ -445,8 +447,8 @@ public:
     if (uSource){ SAFE_RELEASE(uSource); }
     if (mediaFileSource){ SAFE_RELEASE(mediaFileSource); }
     if (pVideoReaderAttributes){ SAFE_RELEASE(pVideoReaderAttributes); }
-    if (pSourceReader){ SAFE_RELEASE(pSourceReader); }
-    if (pSourceReader){ SAFE_RELEASE(pSourceReader); }
+    //if (pSourceReader){ SAFE_RELEASE(pSourceReader); }
+#define SAFE_RELEASE(p) { if (p) { (p)->Release(); (p) = nullptr; } }
     if (pReaderOutputType){ SAFE_RELEASE(pReaderOutputType); }
     if (pFirstOutputType){ SAFE_RELEASE(pFirstOutputType); }
   }
@@ -653,7 +655,11 @@ bool VideoTexture::createAPI() {
 }
 
 void VideoTexture::destroyAPI() {
-  MFShutdown();
+  if (!isMFShutdownCalled)
+  {
+      MFShutdown();
+      isMFShutdownCalled = true;
+  }
 }
 
 bool VideoTexture::create(const char* filename, bool looping) {
