@@ -28,6 +28,9 @@ static ID3D11ShaderResourceView* g_black_Texture = NULL;
 
 
 
+//決定を押すためのAボタン
+static ID3D11ShaderResourceView* g_bottom_A_texture = NULL;
+
 
 
 void TitleScene::Initialize()
@@ -38,6 +41,8 @@ void TitleScene::Initialize()
 	g_title_logo_anchor_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_anchor.png");
 
 	g_black_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
+
+	g_bottom_A_texture=InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
 	
 
 	//全ての音を止める
@@ -67,8 +72,12 @@ void TitleScene::Update()
 
 	
 
-
-
+	//ボタンのシートの管理
+	bottom_sheet_cnt += 0.2;
+	if (15 < bottom_sheet_cnt)
+	{
+		bottom_sheet_cnt = 0;
+	}
 
 	//----------------------------------------------------------------------------------------
 	//文字のテキストのシート管理
@@ -190,6 +199,18 @@ void TitleScene::Draw()
 		);
 	}
 
+	if (g_bottom_A_texture != nullptr)
+	{
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_bottom_A_texture);
+
+		DrawDividedSprite(
+			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER+200),
+			0.0f,
+			XMFLOAT2(150, 100),
+			5, 4, bottom_sheet_cnt
+		);
+	}
 
 
 
@@ -205,6 +226,9 @@ void TitleScene::Finalize()
 	if (g_title_logo_text_Texture) UnInitTexture(g_title_logo_text_Texture);
 	if (g_title_logo_anchor_Texture) UnInitTexture(g_title_logo_anchor_Texture);
 	if (g_black_Texture) UnInitTexture(g_black_Texture);
+	if (g_bottom_A_texture) UnInitTexture(g_bottom_A_texture);
+
+
 
 
 
