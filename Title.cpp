@@ -124,6 +124,8 @@ void TitleScene::Draw()
 	SetDepthEnable(false);
 
 
+	float draw_x = 685;
+
 	//”wŒi
 	if (g_title_background_Texture != nullptr)
 	{
@@ -161,7 +163,7 @@ void TitleScene::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text_Texture);
 
 				DrawDividedSprite(
-					XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+					XMFLOAT2(draw_x, SCREEN_YCENTER),
 					0.0f,
 					XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 					6, 6, text_sheet_cnt
@@ -177,7 +179,7 @@ void TitleScene::Draw()
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text2_Texture);
 
 				DrawDividedSprite(
-					XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+					XMFLOAT2(draw_x, SCREEN_YCENTER),
 					0.0f,
 					XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 					6, 6, text_sheet_cnt
@@ -197,7 +199,7 @@ void TitleScene::Draw()
 			GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text3_Texture);
 
 			DrawDividedSprite(
-				XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+				XMFLOAT2(draw_x, SCREEN_YCENTER),
 				0.0f,
 				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 				4, 4, text_sheet_end_cnt
@@ -212,7 +214,7 @@ void TitleScene::Draw()
 		DrawDividedSprite(
 			XMFLOAT2(SCREEN_XCENTER+500, SCREEN_YCENTER + 300),
 			0.0f,
-			XMFLOAT2(300,125),
+			XMFLOAT2(200,90),
 			1, 1, 1
 		);
 	}
@@ -223,9 +225,9 @@ void TitleScene::Draw()
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_bottom_A_texture);
 
 		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER+410, SCREEN_YCENTER + 300),
+			XMFLOAT2(SCREEN_XCENTER+435, SCREEN_YCENTER + 300),
 			0.0f,
-			XMFLOAT2(150, 100),
+			XMFLOAT2(100, 75),
 			5, 4, bottom_sheet_cnt
 		);
 	}
@@ -245,13 +247,6 @@ void TitleScene::Finalize()
 	if (g_title_logo_text2_Texture) UnInitTexture(g_title_logo_text2_Texture);
 	if (g_title_logo_text3_Texture) UnInitTexture(g_title_logo_text3_Texture);
 	if (g_black_Texture) UnInitTexture(g_black_Texture);
-
-
 	if (g_bottom_A_texture) UnInitTexture(g_bottom_A_texture);
-
-
 	if (g_start_texture) UnInitTexture(g_start_texture);
-	
-
-
 }
