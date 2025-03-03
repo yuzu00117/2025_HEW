@@ -267,7 +267,7 @@ public:
 	// ボス戦の経過時間を設定
   void SetBossElapsedTime(float time) 
   {
-    elapsed_time = time;
+    elapsed_time += time;
   }
   
   // ボス戦の経過時間を取得
