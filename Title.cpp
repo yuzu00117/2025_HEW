@@ -225,7 +225,7 @@ void TitleScene::Draw()
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_bottom_A_texture);
 
 		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER+435, SCREEN_YCENTER + 300),
+			XMFLOAT2(SCREEN_XCENTER+440, SCREEN_YCENTER + 300),
 			0.0f,
 			XMFLOAT2(100, 75),
 			5, 4, bottom_sheet_cnt
