@@ -13,11 +13,12 @@
 
 //スコアランクの描画サイズ
 #define RANK_SIZE (150)
-#define TOTAL_RANK_SIZE (200)
+#define TOTAL_RANK_SIZE (190)
 #define NUMBER_SIZE (50)
 
 enum RESULT_STATE
 {
+    STATE_RESULT_START,
     STATE_RESULT_COIN,
     STATE_RESULT_DYNAMIC,
     STATE_RESULT_BOSS,
@@ -37,21 +38,23 @@ public:
     void Finalize() override;
 
 private:
+    float m_back_alpha = 0.0f;
+
     int m_coin_count = 0;
-    const XMFLOAT2 m_coin_pos_finish = XMFLOAT2(500.0f, 160.0f);
-    XMFLOAT2 m_coin_pos = XMFLOAT2(600.0f, 160.0f);
+    const XMFLOAT2 m_coin_pos_finish = XMFLOAT2(500.0f, 215.0f);
+    XMFLOAT2 m_coin_pos = XMFLOAT2(600.0f, 215.0f);
     float m_coin_alpha = 0;
     float m_coin_score_alpha = 0;
 
     int m_gokai_count = 0;
-    const XMFLOAT2 m_gokai_pos_finish = XMFLOAT2(500.0f, 240.0f);
-    XMFLOAT2 m_gokai_pos = XMFLOAT2(600.0f, 240.0f);
+    const XMFLOAT2 m_gokai_pos_finish = XMFLOAT2(500.0f, 295.0f);
+    XMFLOAT2 m_gokai_pos = XMFLOAT2(600.0f, 295.0f);
     float m_gokai_alpha = 0;
     float m_gokai_score_alpha = 0;
 
     int m_boss_clear_time = 0;
-    const XMFLOAT2 m_boss_pos_finish = XMFLOAT2(500.0f, 330.0f);
-    XMFLOAT2 m_boss_pos = XMFLOAT2(600.0f, 330.0f);
+    const XMFLOAT2 m_boss_pos_finish = XMFLOAT2(500.0f, 385.0f);
+    XMFLOAT2 m_boss_pos = XMFLOAT2(600.0f, 385.0f);
     float m_boss_alpha = 0;
     float m_boss_score_alpha = 0;
 
@@ -59,10 +62,10 @@ private:
     float m_total_gage_filling = 0;
     float m_total_score_alpha = 0;
 
-    int m_state = STATE_RESULT_COIN;
+    int m_state = STATE_RESULT_START;
     int m_ui_move_speed = 2;
     int m_gage_move_speed = 4;
-    int m_score_alpha_move_speed = 4;
+    int m_score_alpha_move_speed = 5;
 };
 
 #endif //RESULT_H
