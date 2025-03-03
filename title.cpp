@@ -1,10 +1,10 @@
 //-----------------------------------------------------------------------------------------------------
 // #name title.cpp
-// #description ƒ^ƒCƒgƒ‹‚Â‚­‚Á‚½‚æ[
-// #make 2024/12/17@@‰i–ì‹`–ç
+// #description ã‚¿ã‚¤ãƒˆãƒ«ã¤ãã£ãŸã‚ˆãƒ¼
+// #make 2024/12/17ã€€ã€€æ°¸é‡ç¾©ä¹Ÿ
 // #update 2024/12/17
-// #comment ’Ç‰ÁEC³—\’è
-//          Eƒ^ƒCƒgƒ‹ì‚Á‚½‚³‚Ë[
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//          ãƒ»ã‚¿ã‚¤ãƒˆãƒ«ä½œã£ãŸã•ã­ãƒ¼
 //           
 //----------------------------------------------------------------------------------------------------
 
@@ -17,44 +17,45 @@
 #include"main.h"
 
 
-//ƒeƒNƒXƒ`ƒƒ‚Ìƒ_ƒEƒ“ƒ[ƒh ƒOƒ[ƒoƒ‹•Ï”‚É‚µ‚Ä‚é
+//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰ ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã«ã—ã¦ã‚‹
 static ID3D11ShaderResourceView* g_title_background_Texture = NULL;
 static ID3D11ShaderResourceView* g_title_logo_text_Texture = NULL;
-static ID3D11ShaderResourceView* g_title_logo_chain_Texture = NULL;
-static ID3D11ShaderResourceView* g_title_logo_anchor_Texture = NULL;
+static ID3D11ShaderResourceView* g_title_logo_text2_Texture = NULL;
+static ID3D11ShaderResourceView* g_title_logo_text3_Texture = NULL;
 
-//Œˆ’è‚µ‚ÄƒXƒe[ƒW‚É‚Æ‚Ô‚Ü‚Å‚ÉƒeƒNƒXƒ`ƒƒ‚È‚­‚È‚é–â‘è‚ğ’×‚·‚½‚ß‚Ì‚­‚ë
+//æ±ºå®šã—ã¦ã‚¹ãƒ†ãƒ¼ã‚¸ã«ã¨ã¶ã¾ã§ã«ãƒ†ã‚¯ã‚¹ãƒãƒ£ãªããªã‚‹å•é¡Œã‚’æ½°ã™ãŸã‚ã®ãã‚
 static ID3D11ShaderResourceView* g_black_Texture = NULL;
 
-
-
-//Œˆ’è‚ğ‰Ÿ‚·‚½‚ß‚ÌAƒ{ƒ^ƒ“
 static ID3D11ShaderResourceView* g_bottom_A_texture = NULL;
+
+static ID3D11ShaderResourceView* g_start_texture = NULL;
 
 
 
 void TitleScene::Initialize()
 {
 	g_title_background_Texture = InitTexture(L"asset\\texture\\title_texture\\title_background.jpg");
-	g_title_logo_text_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text.png");
-	g_title_logo_chain_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_chain.png");
-	g_title_logo_anchor_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_anchor.png");
+	g_title_logo_text_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text_start.png");
+	g_title_logo_text2_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text_loop.png");
+	g_title_logo_text3_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text_end.png");
 
 	g_black_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
 	g_bottom_A_texture=InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
-	
 
-	//‘S‚Ä‚Ì‰¹‚ğ~‚ß‚é
+
+	g_start_texture = InitTexture(L"asset\\texture\\sample_texture\\UI_start_A.png");
+
+	//å…¨ã¦ã®éŸ³ã‚’æ­¢ã‚ã‚‹
 	app_atomex_stop_player();
-	//ƒ^ƒCƒgƒ‹‚ÌBGM‚ğ‚©‚¯‚é
+	//ã‚¿ã‚¤ãƒˆãƒ«ã®BGMã‚’ã‹ã‘ã‚‹
 	app_atomex_start(TITLE_BGM);
 }
 
 
 void TitleScene::Update()
 {
-	//ƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Í‚Ìó‚¯æ‚è
+	//ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›ã®å—ã‘å–ã‚Š
 	ControllerState state = GetControllerInput();
 
 	if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
@@ -72,50 +73,43 @@ void TitleScene::Update()
 
 	
 
-	//ƒ{ƒ^ƒ“‚ÌƒV[ƒg‚ÌŠÇ—
-	bottom_sheet_cnt += 0.2;
-	if (15 < bottom_sheet_cnt)
+	bottom_sheet_cnt += 0.3;
+	if (bottom_sheet_cnt > 15)
 	{
 		bottom_sheet_cnt = 0;
 	}
 
+
+
+
 	//----------------------------------------------------------------------------------------
-	//•¶š‚ÌƒeƒLƒXƒg‚ÌƒV[ƒgŠÇ—
-	int max_text_sheet = 32;
-	if (text_sheet_cnt <= max_text_sheet)
+	//æ–‡å­—ã®ãƒ†ã‚­ã‚¹ãƒˆã®ã‚·ãƒ¼ãƒˆç®¡ç†
+	int max_text_sheet = 72;
+	if (text_sheet_cnt < max_text_sheet)
 	{
 		text_sheet_cnt += 0.5f;
+
+	}
+	else
+	{
+		text_sheet_cnt = 36;
 	}
 
 
-	//ƒtƒ‰ƒO@ƒ`ƒFƒ“ƒWƒVƒV[ƒ“‚Ìƒtƒ‰ƒO
+	//ãƒ•ãƒ©ã‚°ã€€ãƒã‚§ãƒ³ã‚¸ã‚·ã‚·ãƒ¼ãƒ³ã®ãƒ•ãƒ©ã‚°
 	if (scene_change_flag == true)
 	{
-		//----------------------------------------------------------------------------------------
-		//ƒ`ƒFƒCƒ“‚ÌƒV[ƒgƒJƒEƒ“ƒg
-		int max_chain_sheet = 47;
-		if (chain_sheet_cnt <= max_chain_sheet)
-		{
-			chain_sheet_cnt += 0.5;
-		}
-
-		//----------------------------------------------------------------------------------------
-		//ƒAƒ“ƒJ[‚ÌƒV[ƒgƒJƒEƒ“ƒg
-		int max_anchor_sheet = 47;
-		if (anchor_sheet_cnt <= max_anchor_sheet)
-		{
-			anchor_sheet_cnt += 0.5;
-		}
-
 		scene_change_cnt++;
+		bottom_sheet_cnt = 0;
 
-		
-		if (black_fade_cnt<0.4)
+		if (text_sheet_end_cnt < 15)
 		{
-			black_fade_cnt += 0.005;
+			text_sheet_end_cnt += 0.3;
 		}
 		
 	}
+
+
 
 
 
@@ -124,17 +118,19 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 
-	//ƒoƒbƒtƒ@ƒNƒŠƒA
+	//ãƒãƒƒãƒ•ã‚¡ã‚¯ãƒªã‚¢
 	Clear();
 
-	//2D•`‰æ‚È‚Ì‚Å[“x–³Œø
+	//2Dæç”»ãªã®ã§æ·±åº¦ç„¡åŠ¹
 	SetDepthEnable(false);
 
 
-	//”wŒi
+	float draw_x = 685;
+
+	//èƒŒæ™¯
 	if (g_title_background_Texture != nullptr)
 	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_background_Texture);
 
 		DrawSpriteOld(
@@ -146,7 +142,7 @@ void TitleScene::Draw()
 
 	if (g_black_Texture)
 	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_black_Texture);
 
 		DrawSpriteOld(
@@ -157,51 +153,89 @@ void TitleScene::Draw()
 		);
 	}
 
-	//ƒƒS‚Ìƒ`ƒFƒCƒ“
-	if (g_title_logo_chain_Texture != nullptr)
+	if (scene_change_flag == false)
 	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_chain_Texture);
+		if (text_sheet_cnt < 36)
+		{
+			//ãƒ­ã‚´ã®ãƒã‚§ã‚¤ãƒ³
+			if (g_title_logo_text_Texture != nullptr)
+			{
+				// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text_Texture);
+
+				DrawDividedSprite(
+					XMFLOAT2(draw_x, SCREEN_YCENTER),
+					0.0f,
+					XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+					6, 6, text_sheet_cnt
+				);
+			}
+		}
+		else if (36 <= text_sheet_cnt && text_sheet_cnt <= 72)
+		{
+			//ãƒ­ã‚´ã®ãƒ†ã‚­ã‚¹ãƒˆ
+			if (g_title_logo_text2_Texture != nullptr)
+			{
+				// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text2_Texture);
+
+				DrawDividedSprite(
+					XMFLOAT2(draw_x, SCREEN_YCENTER),
+					0.0f,
+					XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+					6, 6, text_sheet_cnt
+				);
+			}
+
+		}
+	}
+
+
+	if (text_sheet_end_cnt != 0)
+	{
+		//é¸æŠå¾Œ
+		if (g_title_logo_text3_Texture != nullptr)
+		{
+			// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text3_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(draw_x, SCREEN_YCENTER),
+				0.0f,
+				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+				4, 4, text_sheet_end_cnt
+			);
+		}
+	}
+
+	if (g_start_texture != nullptr)
+	{
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_start_texture);
 
 		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+			XMFLOAT2(SCREEN_XCENTER+500, SCREEN_YCENTER + 300),
 			0.0f,
-			XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
-			7, 7, chain_sheet_cnt
+			XMFLOAT2(200,90),
+			1, 1, 1
 		);
 	}
 
-	//ƒƒS‚ÌƒeƒLƒXƒg
-	if (g_title_logo_text_Texture != nullptr)
+
+	if (g_bottom_A_texture != nullptr)
 	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text_Texture);
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_bottom_A_texture);
 
 		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+			XMFLOAT2(SCREEN_XCENTER+440, SCREEN_YCENTER + 300),
 			0.0f,
-			XMFLOAT2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
-			6,6, text_sheet_cnt
-		);
-	}
-
-	//ƒAƒ“ƒJ[‚ÌƒeƒLƒXƒg
-	if (g_title_logo_anchor_Texture != nullptr)
-	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_anchor_Texture);
-
-		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
-			0.0f,
-			XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
-			7, 7, anchor_sheet_cnt
+			XMFLOAT2(100, 75),
+			5, 4, bottom_sheet_cnt
 		);
 	}
 
 	if (g_bottom_A_texture != nullptr)
 	{
-		// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_bottom_A_texture);
 
 		DrawDividedSprite(
@@ -214,7 +248,7 @@ void TitleScene::Draw()
 
 
 
-	//ƒoƒbƒNƒoƒbƒtƒ@Aƒtƒƒ“ƒgƒoƒbƒtƒ@“ü‚ê‘Ö‚¦
+	//ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã€ãƒ•ãƒ­ãƒ³ãƒˆãƒãƒƒãƒ•ã‚¡å…¥ã‚Œæ›¿ãˆ
 	Present();
 
 }
@@ -222,11 +256,14 @@ void TitleScene::Draw()
 void TitleScene::Finalize()
 {
 	if (g_title_background_Texture) UnInitTexture(g_title_background_Texture);
-	if (g_title_logo_chain_Texture) UnInitTexture(g_title_logo_chain_Texture);
 	if (g_title_logo_text_Texture) UnInitTexture(g_title_logo_text_Texture);
-	if (g_title_logo_anchor_Texture) UnInitTexture(g_title_logo_anchor_Texture);
+	if (g_title_logo_text2_Texture) UnInitTexture(g_title_logo_text2_Texture);
+	if (g_title_logo_text3_Texture) UnInitTexture(g_title_logo_text3_Texture);
 	if (g_black_Texture) UnInitTexture(g_black_Texture);
 	if (g_bottom_A_texture) UnInitTexture(g_bottom_A_texture);
+
+	if (g_start_texture) UnInitTexture(g_start_texture);
+
 
 
 
