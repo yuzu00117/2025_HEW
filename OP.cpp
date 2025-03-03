@@ -53,7 +53,7 @@ void OP::Update()
 		return;
 
 	}
-
+#ifdef _DEBUG
 	if (!g_pressed && Keyboard_IsKeyDownTrigger(KK_X))
 	{
 		Video_State state = video.GetState();
@@ -79,7 +79,7 @@ void OP::Update()
 	{
 		video.SetState(Video_Skip);
 	}
-
+#endif // _DEBUG
 
 	//コントローラーの入力の受け取り
 	ControllerState state = GetControllerInput();

@@ -37,11 +37,13 @@ void PlayerLife::Finalize()
 
 void PlayerLife::Update()
 {
+#ifdef _DEBUG
 	//テスト用　残機を減らす
 	if (Keyboard_IsKeyDown(KK_L))
 	{
 		m_life -= 1;
 	}
+#endif // DEBUG
 }
 
 void PlayerLife::Draw()
