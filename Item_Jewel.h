@@ -55,6 +55,11 @@ public:
 	//　ゲージへ回収されている途中なのかどうかをセット
 	void	SetIfCollecting(bool flag);
 
+	//	どっかの中間地に登録されたかどうかを取得
+	bool	GetIfRegisteredToSavePoint() { return m_registered_to_save_point; }
+	//　どっかの中間地に登録されたかどうかをセット
+	void	SetIfRegisteredToSavePoint(bool flag) { m_registered_to_save_point = flag; }
+
 	//　もうプレイヤーにゲットされたかをチェック
 	bool	SearchIfJewelHaveGotByPlayer() { return m_get_by_player; }
 
@@ -121,6 +126,9 @@ private:
 
 	//プレイヤーにゲットされたかどうか
 	bool	m_get_by_player = false;
+
+	//中間地に登録されたかどうか
+	bool	m_registered_to_save_point = false;
 
 	//回収の経過時間
 	float	m_collecting_time = 0.3f;

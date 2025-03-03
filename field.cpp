@@ -228,8 +228,10 @@ void Field::Initialize()
 	//	respawningは生成処理してる時、引数としてItemManagerに渡せば、本当に生成するかどうかを制御できる
 	bool respawning = false;
 	Game& game_scene = Game::GetInstance();
-	if (game_scene.GetCurrentGameState() == GAME_STATE_RESPAWN_INITIAL ||
-		game_scene.GetCurrentGameState() == GAME_STATE_RESPAWN_SAVE_POINT)
+	auto state = game_scene.GetCurrentGameState();
+	if (state == GAME_STATE_RESPAWN_INITIAL ||
+		state == GAME_STATE_RESPAWN_SAVE_POINT||
+		state == GAME_STATE_PAUSE_RESPAWN_SAVE_POINT)
 	{
 		respawning = true;
 	}
@@ -273,7 +275,7 @@ void Field::Initialize()
 				//不可視の壁
 				if (field_map[y][x] == 7) {//動かない物
 					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_GRASS_ONLY, false);
+					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, STAGE_BLOCK_INVISIBILITY, false);
 				}
 
 
@@ -363,6 +365,11 @@ void Field::Initialize()
 				//看板の矢印
 				if (field_map[y][x] == 23) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 3.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_RIGHT_SIGNBOARD, 0.f);
+				}
+
+				//看板のテクスチャ アンカー
+				if (field_map[y][x] == 24) {
+					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(10.0f, 8.0f), b2Vec2(20.0f, 8.0f), b2Vec2_zero, SOUL_SIGNBOARD, 0.0f);
 				}
 
 
@@ -674,7 +681,7 @@ void Field::Initialize()
 				//--------------------------------------------------------------------------------------
 				//でかい木
 				if (field_map[y][x] == 96) {
-					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(20.0f,20.f), 0.0,g_Big_Wood_Texture);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(30.0f,30.f), 0.0,g_Big_Wood_Texture);
 				}
 
 				//----------------------------------------------------------
@@ -1048,6 +1055,7 @@ void Field::Initialize()
 						//リスポンした時の効果音
 						app_atomex_start(Player_Jewelry_Colect_Sound);
 					}
+					else
 					{
 						player.Initialize(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1, 2), size);
 					}
