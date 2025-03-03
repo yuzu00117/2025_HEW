@@ -32,11 +32,6 @@ static ID3D11ShaderResourceView* g_start_texture = NULL;
 
 
 
-//決定を押すためのAボタン
-static ID3D11ShaderResourceView* g_bottom_A_texture = NULL;
-
-
-
 void TitleScene::Initialize()
 {
 	g_title_background_Texture = InitTexture(L"asset\\texture\\title_texture\\title_background.jpg");
@@ -47,8 +42,7 @@ void TitleScene::Initialize()
 	g_black_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
 	g_bottom_A_texture=InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
-	
-	g_bottom_A_texture = InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
+
 
 	g_start_texture = InitTexture(L"asset\\texture\\sample_texture\\UI_start_A.png");
 
