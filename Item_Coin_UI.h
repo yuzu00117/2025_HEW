@@ -38,6 +38,12 @@ public:
 		now_get_coin_count = setCount;
 	}
 
+	// 最大コイン数を取得
+	static int GetMaxCoinCount(void)
+	{
+		return max_coin_count;
+	}
+
 
 	// 中間地を登録した時のコイン取得数を取得
 	static int GetCoinRecorded_WhenRegisteringSavePoint()
