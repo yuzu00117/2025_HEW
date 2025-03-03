@@ -27,8 +27,10 @@ static ID3D11ShaderResourceView* g_button_frame_Texture;				//選択されていないボ
 static ID3D11ShaderResourceView* g_button_selected_frame_Texture;		//選択されたボタンの枠のテクスチャ
 static ID3D11ShaderResourceView* g_button_locked_frame_Texture;		    //選択できないボタンの枠のテクスチャ
 static ID3D11ShaderResourceView* g_PauseBackground_Texture;				//ポーズ画面の背景のテクスチャ
+static ID3D11ShaderResourceView* g_PauseSelectionBackground_Texture;	//ポーズ画面の選択肢の背景のテクスチャ
 
 bool    Respawn_SavePoint = false;
+
 
 //ボタンのサイズ
 XMFLOAT2 g_button_scale[BUTTON_NUM] =
@@ -50,17 +52,22 @@ XMFLOAT2 g_button_position[BUTTON_NUM] =
     {SCREEN_XCENTER, SCREEN_HEIGHT - g_button_scale[2].y / 2}
 };
 
+XMFLOAT2    g_selection_background_scale = { g_button_scale[0].x + 200.0f, (g_button_position[BUTTON_NUM - 1].y + g_button_scale[BUTTON_NUM - 1].y / 2) - (g_button_position[0].y - g_button_scale[0].y / 2) + 100.0f };
+XMFLOAT2    g_selection_background_position = { g_button_position[0].x, SCREEN_HEIGHT/2};
+
+
 void GamePause::Initialize()
 {
-    g_UnPause_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UnPause_words.png");
-    g_Respawn_SavePoint_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\Respawn_SavePoint_words.png");
-    g_Respawn_InitalPoint_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\Respawn_InitalPoint_words.png");
-    g_SelectScene_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\SelectScene_words.png");
-    g_TitleScene_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\TitleScene_words.png");
+    g_UnPause_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UI_ResumeGame.png");
+    g_Respawn_SavePoint_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UI_Restart_Checkpoint.png");
+    g_Respawn_InitalPoint_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UI_RestartBeginning.png");
+    g_SelectScene_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UI_ReturnStageSelect.png");
+    g_TitleScene_words_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UI_ReturnTitle.png");
     g_button_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\button_frame.png");
     g_button_selected_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\button_selected_frame.png");
-    g_button_locked_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\button_locked_frame.png");
+    g_button_locked_frame_Texture = InitTexture(L"asset\\texture\\Pause_texture\\UI_RestartCheckpoint_NOcheckpoint.png");
     g_PauseBackground_Texture = InitTexture(L"asset\\texture\\Pause_texture\\PauseBackground.png");
+    g_PauseSelectionBackground_Texture = InitTexture(L"asset\\texture\\Pause_texture\\pose_BG.png");
 
 }
 
@@ -75,6 +82,7 @@ void GamePause::Finalize()
     if (g_button_selected_frame_Texture) { UnInitTexture(g_button_selected_frame_Texture); }
     if (g_button_locked_frame_Texture) { UnInitTexture(g_button_locked_frame_Texture); }
     if (g_PauseBackground_Texture) { UnInitTexture(g_PauseBackground_Texture); }
+    if (g_PauseSelectionBackground_Texture) { UnInitTexture(g_PauseSelectionBackground_Texture); }
 }
 
 void GamePause::Update()
@@ -266,22 +274,27 @@ void GamePause::Draw()
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseBackground_Texture);
     DrawSpriteOld(XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER), 0.0f, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 0.7f);
 
+    //ポーズ画面選択肢の背景
+    // シェーダリソースを設定
+    GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseSelectionBackground_Texture);
+    DrawSpriteOld(g_selection_background_position, 0.0f, g_selection_background_scale);
+
     for (int i = 0; i < BUTTON_NUM; i++)
     {
-        if (m_button_selected == i)
-        {
-            //ポーズ画面のボタン枠（選択した）
-            // シェーダリソースを設定
-            GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_selected_frame_Texture);
-            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
-        }
-        else
-        {
-            //ポーズ画面のボタン枠（未選択）
-            // シェーダリソースを設定
-            GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_frame_Texture);
-            DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
-        }
+        //if (m_button_selected == i)
+        //{
+        //    //ポーズ画面のボタン枠（選択した）
+        //    // シェーダリソースを設定
+        //    GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_selected_frame_Texture);
+        //    DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+        //}
+        //else
+        //{
+        //    //ポーズ画面のボタン枠（未選択）
+        //    // シェーダリソースを設定
+        //    GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_frame_Texture);
+        //    DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
+        //}
 
         switch (i)
         {
