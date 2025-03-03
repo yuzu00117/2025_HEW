@@ -21,7 +21,6 @@ static ID3D11ShaderResourceView* g_soul_gage_blue_Texture = NULL;          //ƒ\ƒ
 static ID3D11ShaderResourceView* g_soul_gage_yellow_Texture = NULL;        //ƒ\ƒEƒ‹ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒi‰©Fj
 static ID3D11ShaderResourceView* g_soul_gage_red_Texture = NULL;           //ƒ\ƒEƒ‹ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒiÔj
 static ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ƒ\ƒEƒ‹ƒQ[ƒW‚ÌŠO˜g
-static ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŽdØ‚è
 static ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO‘¤‚Ì‘•ü
 
 
@@ -31,8 +30,8 @@ static ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒ
 DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 440.f);
 DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(310.f, 630.f);
 
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(105.f, 405.f);	//˜g‚ðœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚Ý‚ÌˆÊ’u
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(68.f, 420.f);		//˜g‚ðœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚Ý‚ÌƒTƒCƒY
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(106.f, 405.f);	//˜g‚ðœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚Ý‚ÌˆÊ’u
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(64.f, 420.f);		//˜g‚ðœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚Ý‚ÌƒTƒCƒY
 
 float Gauge_UI::player_ui_alpha = 1.0f;
 
@@ -92,7 +91,6 @@ void Gauge_UI::Initialize()
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
 
 	//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌƒeƒNƒXƒ`ƒƒ‚½‚¿
-	g_anchor_level_division_Texture= InitTexture(L"asset\\texture\\UI_soul_gage\\gage_division.png");
 	g_anchor_level_outline_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_out_line.png");
 
 	
@@ -259,18 +257,6 @@ void Gauge_UI::Draw()
 
 
 
-	//˜g‚ð•\Ž¦
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ðÝ’è
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_division_Texture);
-
-	DrawSpriteOld(
-		{ player_ui_position },
-		0,
-		{ player_ui_size },
-		player_ui_alpha
-	);
-	
-
 	//ŠO‘¤‚Ì‘•ü‚ð•\Ž¦
 	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ðÝ’è
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_outline_Texture);
@@ -418,7 +404,6 @@ void Gauge_UI::Finalize()
 	if (g_soul_gage_red_Texture) UnInitTexture(g_soul_gage_red_Texture);
 	if (g_soul_gage_border_Texture) UnInitTexture(g_soul_gage_border_Texture);
 
-	if (g_anchor_level_division_Texture) UnInitTexture(g_anchor_level_division_Texture);
 	if (g_anchor_level_outline_Texture) UnInitTexture(g_anchor_level_outline_Texture);
 
 }
