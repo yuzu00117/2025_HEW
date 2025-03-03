@@ -345,7 +345,7 @@ void StageSelectScene::Draw()
 			DrawDividedSprite(
 				XMFLOAT2(SCREEN_XCENTER + 440, SCREEN_YCENTER + 225),
 				0.0f,
-				XMFLOAT2(100, 75),
+				XMFLOAT2(100*0.8, 75*0.8),
 				5, 4, sheet_cnt
 			);
 		}
@@ -372,7 +372,7 @@ void StageSelectScene::Draw()
 			DrawDividedSprite(
 				XMFLOAT2(SCREEN_XCENTER + 440, SCREEN_YCENTER + 300),
 				0.0f,
-				XMFLOAT2(100, 75),
+				XMFLOAT2(100*0.8, 75*0.8),
 				5, 4, 1
 			);
 		}
