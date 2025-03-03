@@ -22,6 +22,7 @@
 #include"Item_SavePoint.h"
 #include"Item_Healing.h"
 #include"Item_Barrier.h"
+#include"Item_DamageValue.h"
 
 //アイテムの種類
 enum ItemType
@@ -33,6 +34,7 @@ enum ItemType
 	ITEM_SAVEPOINT,	//セーブポイント
 	ITEM_HEALING, //回復アイテム
 	ITEM_BARRIER,	//バリア
+	ITEM_DAMAGE_VALUE,	//ダメージ表記
 };
 
 
@@ -55,6 +57,7 @@ public:
 	void	AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
 	void	AddHealing(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning);
 	void	AddBarrier(b2Vec2 position, b2Vec2 body_size, float angle, const b2Body* owner_body, float Alpha = 1.0f);
+	void	AddDamageValue(b2Vec2 position, b2Vec2 body_size, float angle, DamageOwnerType owner_type, int damage_value, float Alpha = 1.0f);
 
 	// ID を使ってアイテムを検索
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
@@ -64,6 +67,7 @@ public:
 	ItemHealing* FindItem_Healing(int id);
 	ItemBarrier* FindItem_Barrier_ByID(int id);
 	ItemBarrier* FindItem_Barrier_ByOwnerBody(const b2Body* owner);
+	ItemDamageValue* FindItem_DamageValue_ByID(int id);
 
 	// 全てのアイテムを初期化
 	void InitializeAll();
@@ -114,6 +118,7 @@ private:
 	std::vector<std::unique_ptr<ItemSavePoint>> m_SavePoint_List; // セーブポイントのリスト
 	std::vector<std::unique_ptr<ItemHealing>> m_Healing_List;	//回復アイテムのリスト
 	std::list<std::unique_ptr<ItemBarrier>> m_Barrier_List;	//バリアのリスト
+	std::list<std::unique_ptr<ItemDamageValue>> m_DamageValue_List;	//ダメージ表記のリスト
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;

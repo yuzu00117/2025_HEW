@@ -78,6 +78,11 @@ void ItemManager::AddBarrier(b2Vec2 position, b2Vec2 body_size, float angle, con
     m_Barrier_List.emplace_back(std::make_unique<ItemBarrier>(position, body_size, angle, owner_body));
 }
 
+void ItemManager::AddDamageValue(b2Vec2 position, b2Vec2 body_size, float angle, DamageOwnerType owner_type, int damage_value, float Alpha)
+{
+    m_DamageValue_List.emplace_back(std::make_unique<ItemDamageValue>(position, body_size, angle, owner_type, damage_value));
+}
+
 
 
 ItemCoin* ItemManager::FindItem_Coin_ByID(int ID)
@@ -152,6 +157,16 @@ ItemBarrier* ItemManager::FindItem_Barrier_ByOwnerBody(const b2Body* owner)
     return nullptr;
 }
 
+ItemDamageValue* ItemManager::FindItem_DamageValue_ByID(int id)
+{
+    for (const auto& w : m_DamageValue_List) {
+        if (w->GetID() == id) {
+            return w.get();
+        }
+    }
+    return nullptr;
+}
+
 // 全てのアイテムを初期化
 void ItemManager::InitializeAll() 
 {
@@ -172,6 +187,9 @@ void ItemManager::InitializeAll()
         w->Initialize();
     }
     for (const auto& w : m_Barrier_List) {
+        w->Initialize();
+    }
+    for (const auto& w : m_DamageValue_List) {
         w->Initialize();
     }
 }
@@ -198,7 +216,11 @@ void ItemManager::UpdateAll() {
         w->Update();
     }
     m_Barrier_List.remove_if([](const auto& p) {return p->GetBody() == nullptr; });
-    
+
+    for (const auto& w : m_DamageValue_List) {
+        w->Update();
+    }
+    m_DamageValue_List.remove_if([](const auto& p) {return p->GetBody() == nullptr; });
 }
 
 // 全てのアイテムを描画
@@ -235,6 +257,9 @@ void ItemManager::DrawFront() {
     for (auto& w : m_Barrier_List) {
         w->Draw();
     }
+    for (const auto& w : m_DamageValue_List) {
+        w->Draw();
+    }
 }
 
 
@@ -263,11 +288,15 @@ void ItemManager::FinalizeAll()
     for (const auto& w : m_Barrier_List) {
         w->Finalize();
     }
+    for (const auto& w : m_DamageValue_List) {
+        w->Finalize();
+    }
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Jewel_List.clear(); // 動的配列をクリアしてメモリ解放
     m_SavePoint_List.clear(); // 動的配列をクリアしてメモリ解放
     m_Healing_List.clear();
     m_Barrier_List.clear();
+    m_DamageValue_List.clear();
 }
 
 //リスポン時の終了処理
@@ -285,12 +314,16 @@ void ItemManager::Finalize_WhenRespawn()
    for (auto& w : m_Barrier_List) {
        w->Finalize();
    }
+   for (const auto& w : m_DamageValue_List) {
+       w->Finalize();
+   }
    for (auto& w : m_Coin_List) {
        w->Finalize();
    }
    m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
    m_Healing_List.clear();  //動的配列をクリアしてメモリ解放
    m_Barrier_List.clear(); //動的配列をクリアしてメモリ解放
+   m_DamageValue_List.clear();
 }
 
 void ItemManager::Finalize_WhenNextStage()
@@ -312,6 +345,9 @@ void ItemManager::Finalize_WhenNextStage()
         w->Finalize();
     }
     for (auto& w : m_Barrier_List) {
+        w->Finalize();
+    }
+    for (const auto& w : m_DamageValue_List) {
         w->Finalize();
     }
     m_Spirit_List.clear(); // 動的配列をクリアしてメモリ解放
@@ -380,6 +416,9 @@ void ItemManager::Initialize_WhenRespawn()
     for (auto& w : m_Barrier_List) {
         w->Initialize();
     }
+    for (const auto& w : m_DamageValue_List) {
+        w->Initialize();
+    }
 
     //特別措置がいるアイテムだけ下みたいな処理してる、普通のアイテムは上のSpirit_Listみたいにやれば十分
     //----------------------------------------------------
@@ -424,6 +463,9 @@ void ItemManager::Initialize_WhenNextStage()
         w->Initialize();
     }
     for (auto& w : m_Barrier_List) {
+        w->Initialize();
+    }
+    for (const auto& w : m_DamageValue_List) {
         w->Initialize();
     }
 }
