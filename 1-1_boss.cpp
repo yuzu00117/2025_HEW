@@ -1160,7 +1160,7 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 		ItemManager &item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(m_mini_golem_body->GetPosition(), {2.0f, 3.0f}, 0.0f, ENEMY_GOLEM_SPIRIT_TYPE, false);
 
-		item_manager.AddDamageValue(b2Vec2{ m_mini_golem_body->GetPosition().x, m_mini_golem_body->GetPosition().y - 0.2f}, b2Vec2{1.0f,1.0f}, 0.0f, DamageOwnerType_enemy, 100);
+		item_manager.AddDamageValue(b2Vec2{ m_mini_golem_body->GetPosition().x, m_mini_golem_body->GetPosition().y - 0.2f}, b2Vec2{1.5f,1.5f}, 0.0f, DamageOwnerType_enemy, 100);
 
 		// 生成エフェクト用の管理
 		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();

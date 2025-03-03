@@ -186,7 +186,7 @@ void EnemyDynamic::Update()
 		b2Vec2 now_size = GetSize();
 		b2Vec2 now_vec = GetBody()->GetLinearVelocity();
 
-		item_manager.AddDamageValue(b2Vec2{ now_positon.x, now_positon.y - 0.2f }, b2Vec2{ 1.0f,1.0f }, 0.0f, DamageOwnerType_enemy, ENEMY_DYNAMIC_LIFE);
+		item_manager.AddDamageValue(b2Vec2{ now_positon.x, now_positon.y - 0.2f }, b2Vec2{ 1.5f,1.5f }, 0.0f, DamageOwnerType_enemy, ENEMY_DYNAMIC_LIFE);
 
 
 		//ワールドに登録したbodyの削除

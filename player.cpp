@@ -335,11 +335,11 @@ void Player::Update()
         //ノックバックする方向によって、表記の座標が違う
         if (g_damage_from_right)
         {
-            item_manager.AddDamageValue(b2Vec2{ player_position.x - 0.5f, player_position.y - 0.2f }, b2Vec2{ 1.0f,1.0f }, 0.0f, DamageOwnerType_player, add_item_damage_value.at(i));
+            item_manager.AddDamageValue(b2Vec2{ player_position.x - 0.5f, player_position.y - 0.2f }, b2Vec2{ 0.8f,0.8f }, 0.0f, DamageOwnerType_player, add_item_damage_value.at(i));
         }
         else
         {
-            item_manager.AddDamageValue(b2Vec2{ player_position.x + 0.1f, player_position.y - 0.2f }, b2Vec2{ 1.0f,1.0f }, 0.0f, DamageOwnerType_player, add_item_damage_value.at(i));
+            item_manager.AddDamageValue(b2Vec2{ player_position.x + 0.1f, player_position.y - 0.2f }, b2Vec2{ 0.8f,0.8f }, 0.0f, DamageOwnerType_player, add_item_damage_value.at(i));
         }
     }
     add_item_damage_value.clear();
