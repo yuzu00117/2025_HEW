@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------------------------------
 // #name GamePause.cpp
-// #description     ƒQ[ƒ€‚Ìƒ|[ƒY‰æ–Ê
-// #make 2025/2/28@‰¤‰jS
+// #description     ã‚²ãƒ¼ãƒ ã®ãƒãƒ¼ã‚ºç”»é¢
+// #make 2025/2/28ã€€ç‹æ³³å¿ƒ
 // #update 2025/2/28
-// #comment ’Ç‰ÁEC³—\’è
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
 //                  
 //                  
 //----------------------------------------------------------------------------------------------------
@@ -19,32 +19,32 @@
 #include "Item_Coin_UI.h"
 #include "Gauge_UI.h"
 
-//ƒOƒ[ƒoƒ‹•Ï”
-static ID3D11ShaderResourceView* g_UnPause_words_Texture;				//ƒ|[ƒY‰ğœƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_Respawn_SavePoint_words_Texture;     //’†ŠÔ’n‚ÉƒŠƒXƒ|ƒ“‚·‚é‚½‚ß‚Ìƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_Respawn_InitalPoint_words_Texture;   //ƒŠƒXƒ|ƒ“‚·‚é‚½‚ß‚Ìƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_SelectScene_words_Texture;           //ƒZƒŒƒNƒg‰æ–Ê‚É–ß‚éƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_TitleScene_words_Texture;            //ƒ^ƒCƒgƒ‹‰æ–Ê‚É–ß‚éƒ{ƒ^ƒ“‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_button_frame_Texture;				//‘I‘ğ‚³‚ê‚Ä‚¢‚È‚¢ƒ{ƒ^ƒ“‚Ì˜g‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_button_selected_frame_Texture;		//‘I‘ğ‚³‚ê‚½ƒ{ƒ^ƒ“‚Ì˜g‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_button_locked_frame_Texture;		    //‘I‘ğ‚Å‚«‚È‚¢ƒ{ƒ^ƒ“‚Ì˜g‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseBackground_Texture;				//ƒ|[ƒY‰æ–Ê‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseSelectionBackground_Texture;	//ƒ|[ƒY‰æ–Ê‚Ì‘I‘ğˆ‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseSelectionHand_Texture;	        //ƒ|[ƒY‰æ–Ê‚Ì‘I‘ğˆ‚ğw‚·è‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecordingBackground_Texture;	//ƒ|[ƒY‰æ–Ê‚Ìæ“¾”‹L˜^‚Ì”wŒi‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecording_JewelRing_Texture;	//ƒ|[ƒY‰æ–Ê‚Ì•óÎ‚ÌƒŠƒ“ƒO‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecording_Jewel_Blue_Texture; //ƒ|[ƒY‰æ–Ê‚ÌÂ•óÎ‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecording_Jewel_Yellow_Texture; //ƒ|[ƒY‰æ–Ê‚ÌÂ•óÎ‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecording_Jewel_Red_Texture;  //ƒ|[ƒY‰æ–Ê‚ÌÂ•óÎ‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecording_CoinUI_Texture; 	//ƒ|[ƒY‰æ–Ê‚ÌƒRƒCƒ“UI‚ÌƒeƒNƒXƒ`ƒƒ
-static ID3D11ShaderResourceView* g_PauseUIRecording_NumberUI_Texture; 	//ƒ|[ƒY‰æ–Ê‚Ì”šUI‚ÌƒeƒNƒXƒ`ƒƒ
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
+static ID3D11ShaderResourceView* g_UnPause_words_Texture;				//ãƒãƒ¼ã‚ºè§£é™¤ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_Respawn_SavePoint_words_Texture;     //ä¸­é–“åœ°ã«ãƒªã‚¹ãƒãƒ³ã™ã‚‹ãŸã‚ã®ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_Respawn_InitalPoint_words_Texture;   //ãƒªã‚¹ãƒãƒ³ã™ã‚‹ãŸã‚ã®ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_SelectScene_words_Texture;           //ã‚»ãƒ¬ã‚¯ãƒˆç”»é¢ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_TitleScene_words_Texture;            //ã‚¿ã‚¤ãƒˆãƒ«ç”»é¢ã«æˆ»ã‚‹ãƒœã‚¿ãƒ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_button_frame_Texture;				//é¸æŠã•ã‚Œã¦ã„ãªã„ãƒœã‚¿ãƒ³ã®æ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_button_selected_frame_Texture;		//é¸æŠã•ã‚ŒãŸãƒœã‚¿ãƒ³ã®æ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_button_locked_frame_Texture;		    //é¸æŠã§ããªã„ãƒœã‚¿ãƒ³ã®æ ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseBackground_Texture;				//ãƒãƒ¼ã‚ºç”»é¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseSelectionBackground_Texture;	//ãƒãƒ¼ã‚ºç”»é¢ã®é¸æŠè‚¢ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseSelectionHand_Texture;	        //ãƒãƒ¼ã‚ºç”»é¢ã®é¸æŠè‚¢ã‚’æŒ‡ã™æ‰‹ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecordingBackground_Texture;	//ãƒãƒ¼ã‚ºç”»é¢ã®å–å¾—æ•°è¨˜éŒ²ã®èƒŒæ™¯ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecording_JewelRing_Texture;	//ãƒãƒ¼ã‚ºç”»é¢ã®å®çŸ³ã®ãƒªãƒ³ã‚°ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecording_Jewel_Blue_Texture; //ãƒãƒ¼ã‚ºç”»é¢ã®é’å®çŸ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecording_Jewel_Yellow_Texture; //ãƒãƒ¼ã‚ºç”»é¢ã®é’å®çŸ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecording_Jewel_Red_Texture;  //ãƒãƒ¼ã‚ºç”»é¢ã®é’å®çŸ³ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecording_CoinUI_Texture; 	//ãƒãƒ¼ã‚ºç”»é¢ã®ã‚³ã‚¤ãƒ³UIã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
+static ID3D11ShaderResourceView* g_PauseUIRecording_NumberUI_Texture; 	//ãƒãƒ¼ã‚ºç”»é¢ã®æ•°å­—UIã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 bool    Respawn_SavePoint = false;
 int     Max_Coin = 0;
 int     Current_Coin = 0;
 
 
-//ƒ{ƒ^ƒ“‚ÌƒTƒCƒY
+//ãƒœã‚¿ãƒ³ã®ã‚µã‚¤ã‚º
 XMFLOAT2 g_button_scale[BUTTON_NUM] =
 {
     {370.0f,60.0f},
@@ -55,7 +55,7 @@ XMFLOAT2 g_button_scale[BUTTON_NUM] =
 };
 
 float space = 100.0f;
-//ƒ{ƒ^ƒ“‚ÌÀ•W
+//ãƒœã‚¿ãƒ³ã®åº§æ¨™
 XMFLOAT2 g_button_position[BUTTON_NUM] =
 {
     {320.0f, 220.0f},
@@ -64,19 +64,19 @@ XMFLOAT2 g_button_position[BUTTON_NUM] =
     {320.0f, g_button_position[2].y + space},
     {320.0f, g_button_position[3].y + space}
 };
-//‘I‘ğˆ‚Ì”wŒii†j
+//é¸æŠè‚¢ã®èƒŒæ™¯ï¼ˆç´™ï¼‰
 XMFLOAT2    g_selection_background_scale = { 650.0f, 870.0f };
 XMFLOAT2    g_selection_background_position = { g_button_position[1].x, 330.0f};
-//‘I‘ğˆ‚ğw‚·è
+//é¸æŠè‚¢ã‚’æŒ‡ã™æ‰‹
 XMFLOAT2    g_selection_hand_scale = { 50.0f, 50.0f };
 XMFLOAT2    g_selection_hand_position = { g_button_position[0].x + (g_button_scale[0].x/2)*1.15f, g_button_position[0].y};
-//æ“¾”‚Ì”wŒii†j
+//å–å¾—æ•°ã®èƒŒæ™¯ï¼ˆç´™ï¼‰
 XMFLOAT2    g_UIRecording_background_scale = { 650.0f, 420.0f };
 XMFLOAT2    g_UIRecording_background_position = { 950.0f, 520.0f};
-//•óÎ‚ÌƒŠƒ“ƒO
+//å®çŸ³ã®ãƒªãƒ³ã‚°
 XMFLOAT2    g_UIRecording_JewelRing_scale = { 260.0f, 200.0f };
 XMFLOAT2    g_UIRecording_JewelRing_position = { g_UIRecording_background_position.x, g_UIRecording_background_position.y * 0.85f };
-//•óÎi0FÂ@@‚PF‰©F@@2FÔj
+//å®çŸ³ï¼ˆ0ï¼šé’ã€€ã€€ï¼‘ï¼šé»„è‰²ã€€ã€€2ï¼šèµ¤ï¼‰
 XMFLOAT2 g_UIRecording_Jewel_scale[3] =
 {
     {400.0f,800.0f},
@@ -89,10 +89,10 @@ XMFLOAT2 g_UIRecording_Jewel_position[3] =
     {g_UIRecording_JewelRing_position.x * 1.069f, g_UIRecording_JewelRing_position.y * 0.33f},
     {g_UIRecording_JewelRing_position.x * 1.06f, g_UIRecording_JewelRing_position.y * 0.33f}
 };
-//ƒRƒCƒ“‚ÌƒAƒCƒRƒ“
+//ã‚³ã‚¤ãƒ³ã®ã‚¢ã‚¤ã‚³ãƒ³
 XMFLOAT2    g_UIRecording_CoinUI_scale = { 120.0f, 120.0f };
 XMFLOAT2    g_UIRecording_CoinUI_position = { g_UIRecording_background_position.x * 0.83f, g_UIRecording_background_position.y * 1.15f };
-//ƒRƒCƒ“‚Ì”š•\¦
+//ã‚³ã‚¤ãƒ³ã®æ•°å­—è¡¨ç¤º
 XMFLOAT2    g_UIRecording_NumberUI_scale = { 40.0f, 40.0f };
 XMFLOAT2    g_UIRecording_NumberUI_Left_position = { g_UIRecording_background_position.x, g_UIRecording_background_position.y * 1.19f };
 XMFLOAT2    g_UIRecording_NumberUI_Right_position = { g_UIRecording_background_position.x * 1.12f, g_UIRecording_background_position.y * 1.19f };
@@ -156,9 +156,9 @@ void GamePause::Update()
     
     Current_Coin = Item_Coin_UI::GetNowCoinCount();
 
-    // ƒRƒ“ƒgƒ[ƒ‰[‚Ì“ü—Í‚Ìó‚¯æ‚è
+    // ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®å…¥åŠ›ã®å—ã‘å–ã‚Š
     ControllerState state = GetControllerInput();
-    //«ƒL[‚Å‰º‘I‘ğ
+    //â†“ã‚­ãƒ¼ã§ä¸‹é¸æŠ
     if(state.leftStickY < 0 && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -189,7 +189,7 @@ void GamePause::Update()
         key_flag.CountTime = 0.0f;
         g_selection_hand_position.y = g_button_position[m_button_selected].y + 20.0f;
     }
-    //ªƒL[‚Åã‘I‘ğ
+    //â†‘ã‚­ãƒ¼ã§ä¸Šé¸æŠ
     else if (state.leftStickY > 0 && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -223,25 +223,25 @@ void GamePause::Update()
 
     key_flag.CountTime++;
 
-    //‘I‘ğŠm’è
+    //é¸æŠç¢ºå®š
     if (state.buttonA && !key_flag.ControllerButton_A)
     {
        SceneManager& sceneManager = SceneManager::GetInstance();
        Game& game = Game::GetInstance();
 
-       game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //game‚Ì•û‚Ìˆ—‚É‰e‹¿‚È‚¢‚Ì‚ÅA“K“–‚Å‘åä•v
+       game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameã®æ–¹ã®å‡¦ç†ã«å½±éŸ¿ãªã„ã®ã§ã€é©å½“ã§å¤§ä¸ˆå¤«
 
        switch(m_button_selected)
        {
        case Button_UnPause:
-          // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //game‚Ì•û‚Ìˆ—‚É‰e‹¿‚È‚¢‚Ì‚ÅA“K“–‚Å‘åä•v
+          // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameã®æ–¹ã®å‡¦ç†ã«å½±éŸ¿ãªã„ã®ã§ã€é©å½“ã§å¤§ä¸ˆå¤«
            break;
        case Button_Respawn_SavePoint:
        {
            game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_SAVE_POINT);
            Player& player = Player::GetInstance();
            ItemSavePoint* registered_SavePoint = player.GetRegisteredSavePoint();
-           //¡‚ÌƒXƒe[ƒW‚É“o˜^‚µ‚½’†ŠÔ’n‚ª‚È‚©‚Á‚½‚çA‘OƒXƒe[ƒW‚Ì“o˜^‚µ‚½’†ŠÔ’n‚És‚­
+           //ä»Šã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«ç™»éŒ²ã—ãŸä¸­é–“åœ°ãŒãªã‹ã£ãŸã‚‰ã€å‰ã‚¹ãƒ†ãƒ¼ã‚¸ã®ç™»éŒ²ã—ãŸä¸­é–“åœ°ã«è¡Œã
            if (registered_SavePoint == nullptr)
            {
                registered_SavePoint = player.GetPrevRegisteredSavePoint();
@@ -275,7 +275,7 @@ void GamePause::Update()
     }
 
 #ifndef _DEBUG
-    //«ƒL[‚Å‰º‘I‘ğ
+    //â†“ã‚­ãƒ¼ã§ä¸‹é¸æŠ
     if (Keyboard_IsKeyDown(KK_DOWN) && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -299,7 +299,7 @@ void GamePause::Update()
         key_flag.CountTime = 0.0f;
         g_selection_hand_position.y = g_button_position[m_button_selected].y + 20.0f;
     }
-    //ªƒL[‚Åã‘I‘ğ
+    //â†‘ã‚­ãƒ¼ã§ä¸Šé¸æŠ
     else if (Keyboard_IsKeyDown(KK_UP) && key_flag.CountTime > 15.0f)
     {
         switch (m_button_selected)
@@ -327,25 +327,25 @@ void GamePause::Update()
 
     key_flag.CountTime++;
 
-    //‘I‘ğŠm’è
+    //é¸æŠç¢ºå®š
     if (Keyboard_IsKeyDown(KK_ENTER) && !key_flag.KeyboardButton_Enter)
     {
         SceneManager& sceneManager = SceneManager::GetInstance();
         Game& game = Game::GetInstance();
 
-        game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //game‚Ì•û‚Ìˆ—‚É‰e‹¿‚È‚¢‚Ì‚ÅA“K“–‚Å‘åä•v
+        game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameã®æ–¹ã®å‡¦ç†ã«å½±éŸ¿ãªã„ã®ã§ã€é©å½“ã§å¤§ä¸ˆå¤«
 
         switch (m_button_selected)
         {
         case Button_UnPause:
-            // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //game‚Ì•û‚Ìˆ—‚É‰e‹¿‚È‚¢‚Ì‚ÅA“K“–‚Å‘åä•v
+            // game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameã®æ–¹ã®å‡¦ç†ã«å½±éŸ¿ãªã„ã®ã§ã€é©å½“ã§å¤§ä¸ˆå¤«
             break;
         case Button_Respawn_SavePoint:
         {
             game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_SAVE_POINT);
             Player& player = Player::GetInstance();
             ItemSavePoint* registered_SavePoint = player.GetRegisteredSavePoint();
-            //¡‚ÌƒXƒe[ƒW‚É“o˜^‚µ‚½’†ŠÔ’n‚ª‚È‚©‚Á‚½‚çA‘OƒXƒe[ƒW‚Ì“o˜^‚µ‚½’†ŠÔ’n‚És‚­
+            //ä»Šã®ã‚¹ãƒ†ãƒ¼ã‚¸ã«ç™»éŒ²ã—ãŸä¸­é–“åœ°ãŒãªã‹ã£ãŸã‚‰ã€å‰ã‚¹ãƒ†ãƒ¼ã‚¸ã®ç™»éŒ²ã—ãŸä¸­é–“åœ°ã«è¡Œã
             if (registered_SavePoint == nullptr)
             {
                 registered_SavePoint = player.GetPrevRegisteredSavePoint();
@@ -384,57 +384,57 @@ void GamePause::Update()
 
 void GamePause::Draw()
 {
-    //ƒ|[ƒY‰æ–Ê”wŒi
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢èƒŒæ™¯
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseBackground_Texture);
     DrawSpriteOld(XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER), 0.0f, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 0.7f);
 
-    //ƒ|[ƒY‰æ–ÊƒAƒCƒeƒ€æ“¾”‚Ì”wŒi
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢ã‚¢ã‚¤ãƒ†ãƒ å–å¾—æ•°ã®èƒŒæ™¯
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecordingBackground_Texture);
     DrawSpriteOld(g_UIRecording_background_position, 0.0f, g_UIRecording_background_scale);
     
-    //ƒ|[ƒY‰æ–Ê‚Ì•óÎ‚ÌƒŠƒ“ƒO
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢ã®å®çŸ³ã®ãƒªãƒ³ã‚°
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecording_JewelRing_Texture);
     DrawSpriteOld(g_UIRecording_JewelRing_position, 0.0f, g_UIRecording_JewelRing_scale);
 
-    //ƒ|[ƒY‰æ–Ê‚Ì•óÎ‚ÌƒŠƒ“ƒO
+    //ãƒãƒ¼ã‚ºç”»é¢ã®å®çŸ³ã®ãƒªãƒ³ã‚°
     if (Gauge_UI::GetIfJewelCollected(BLUE))
     {
-        // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+        // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecording_Jewel_Blue_Texture);
         DrawSpriteOld(g_UIRecording_Jewel_position[0], 0.0f, g_UIRecording_Jewel_scale[0]);
     }
     if (Gauge_UI::GetIfJewelCollected(YELLOW))
     {
-        // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+        // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecording_Jewel_Yellow_Texture);
         DrawSpriteOld(g_UIRecording_Jewel_position[1], 0.0f, g_UIRecording_Jewel_scale[1]);
     }
     if (Gauge_UI::GetIfJewelCollected(RED))
     {
-        // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+        // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecording_Jewel_Red_Texture);
         DrawSpriteOld(g_UIRecording_Jewel_position[2], 0.0f, g_UIRecording_Jewel_scale[2]);
     }
 
-    //ƒ|[ƒY‰æ–Ê‚ÌƒRƒCƒ“UI
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢ã®ã‚³ã‚¤ãƒ³UI
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecording_CoinUI_Texture);
     DrawSpriteOld(g_UIRecording_CoinUI_position, 0.0f, g_UIRecording_CoinUI_scale);
 
-    //ƒ|[ƒY‰æ–Ê‚Ì”šUI
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢ã®æ•°å­—UI
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseUIRecording_NumberUI_Texture);
     int cnt = Current_Coin;
-    // ¶‘¤‚Ì•\¦ Œ»İ‚Ì—Ê
+    // å·¦å´ã®è¡¨ç¤º ç¾åœ¨ã®é‡
     for (int i = 0; i < 2; i++)
     {
         DrawDividedSprite({ g_UIRecording_NumberUI_Left_position.x - (i * 45), g_UIRecording_NumberUI_Left_position.y }, 0.0f, g_UIRecording_NumberUI_scale, 10, 1, cnt);
         cnt /= 10;
     }
-    //@‰E‘¤‚Ì•\¦@Å‘å”
+    //ã€€å³å´ã®è¡¨ç¤ºã€€æœ€å¤§æ•°
     int max_cnt = Max_Coin;
     for (int i = 0; i < 2; i++)
     {
@@ -444,12 +444,12 @@ void GamePause::Draw()
 
 
     //----------------------------------------------------------------------------------------------------------------------------
-    //ƒ|[ƒY‰æ–Ê‘I‘ğˆ‚Ì”wŒi
-    // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+    //ãƒãƒ¼ã‚ºç”»é¢é¸æŠè‚¢ã®èƒŒæ™¯
+    // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
     GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseSelectionBackground_Texture);
     DrawSpriteOld(g_selection_background_position, 0.0f, g_selection_background_scale);
 
-    //‘I‘ğ‚³‚ê‚½‚ÌƒTƒCƒY‘‰Á (‚±‚ê‚Í”{—¦)
+    //é¸æŠã•ã‚ŒãŸæ™‚ã®ã‚µã‚¤ã‚ºå¢—åŠ  (ã“ã‚Œã¯å€ç‡)
     XMFLOAT2 selected_size = { 1.0f,1.0f };
 
     for (int i = 0; i < BUTTON_NUM; i++)
@@ -461,36 +461,36 @@ void GamePause::Draw()
         switch (i)
         {
         case Button_UnPause:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_UnPause_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, { g_button_scale[i].x * selected_size.x,g_button_scale[i].y * selected_size.y });
             break;
         case Button_Respawn_SavePoint:
             if (!Respawn_SavePoint)
             {
-                // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+                // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
                 GetDeviceContext()->PSSetShaderResources(0, 1, &g_button_locked_frame_Texture);
                 DrawSpriteOld(g_button_position[i], 0.0f, g_button_scale[i]);
             }
             else
             {
-                // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+                // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
                 GetDeviceContext()->PSSetShaderResources(0, 1, &g_Respawn_SavePoint_words_Texture);
                 DrawSpriteOld(g_button_position[i], 0.0f, { g_button_scale[i].x * selected_size.x,g_button_scale[i].y * selected_size.y });
             }
             break;        
         case Button_Respawn_InitalPoint:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Respawn_InitalPoint_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, { g_button_scale[i].x * selected_size.x,g_button_scale[i].y * selected_size.y });
             break;
         case Button_SelectScene:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_SelectScene_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, { g_button_scale[i].x * selected_size.x,g_button_scale[i].y * selected_size.y });
             break;
         case Button_TitleScene:
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_TitleScene_words_Texture);
             DrawSpriteOld(g_button_position[i], 0.0f, { g_button_scale[i].x * selected_size.x,g_button_scale[i].y * selected_size.y });
             break;
@@ -498,10 +498,10 @@ void GamePause::Draw()
 
         selected_size = { 1.0f, 1.0f };
 
-        //‘I‘ğˆ‚ğw‚·è‚Ì•`‰æ
+        //é¸æŠè‚¢ã‚’æŒ‡ã™æ‰‹ã®æç”»
         if (m_button_selected == i)
         {
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_PauseSelectionHand_Texture);
             DrawSpriteOld(g_selection_hand_position, 0.0f, g_selection_hand_scale);
         }
