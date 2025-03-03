@@ -39,6 +39,8 @@ private:
 	Video video;
 	bool m_pause;
 
+	float skip_cnt;
+
 
 };
 

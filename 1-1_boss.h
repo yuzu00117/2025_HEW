@@ -11,7 +11,7 @@
 
 #include"easing.h"
 #include"include/box2d/box2d.h"
-
+#include <vector>
 
 #define BOSS_SIZE_SCALE (1.5)
 #define ENEMY_GOLEM_SPIRIT_TYPE (Spirit_L)
@@ -503,6 +503,11 @@ private:
 
 	static constexpr float boss_alpha = 3.0f;//ボスのアルファ値
 	static constexpr float effect_alpha = 3.0f;//ボスのアルファ値
+
+	//--------------------------------------------------------------------
+	//次Update関数で追加するダメージ表記のリスト
+	std::vector<int>add_item_damage_value;
+
 };
 
 

@@ -109,11 +109,11 @@ void Stamina_UI::Draw()
 		else if (player_stamina < i * 100) { ratio_of_filling = 0.0f; }
 
 		XMFLOAT2 draw_scale;
-		draw_scale.x = ratio_of_filling * heart_size[i].x;
-		draw_scale.y = heart_size[i].y;
+		draw_scale.x = ratio_of_filling * heart_size[i].x * 2.5f;
+		draw_scale.y = heart_size[i].y * 1.4f;
 
 		XMFLOAT2 draw_position;
-		draw_position.x = heart_position[i].x - (heart_size[i].x - draw_scale.x) / 2;
+		draw_position.x =heart_position[i].x - (heart_size[i].x *2.5f - draw_scale.x) / 2/* heart_position[i].x * (1-ratio_of_filling)/2*/;
 		draw_position.y = heart_position[i].y;
 
 		float rotate = 0.0f;
@@ -121,10 +121,10 @@ void Stamina_UI::Draw()
 		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_heart_content_Texture);
 		
-		
+		int weight = 10;
 
-		//描画
-		DrawDividedSprite(draw_position, rotate, { 93,65 }, 10, 3, heart_sheet_cnt, ratio_of_filling * 100);
+		DrawStaminaSprite(draw_position, rotate, draw_scale, 10, 3, heart_sheet_cnt, ratio_of_filling);
+		
 	}
 }
 
