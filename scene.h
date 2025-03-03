@@ -85,8 +85,9 @@ public:
 
 private:
     float text_sheet_cnt = 0;
-    float chain_sheet_cnt = 0;
-    float anchor_sheet_cnt = 0;
+
+    float text_sheet_end_cnt = 0;
+ 
     float bottom_sheet_cnt = 0;
 
     bool scene_change_flag=false;

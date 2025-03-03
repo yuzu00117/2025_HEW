@@ -20,30 +20,32 @@
 //テクスチャのダウンロード グローバル変数にしてる
 static ID3D11ShaderResourceView* g_title_background_Texture = NULL;
 static ID3D11ShaderResourceView* g_title_logo_text_Texture = NULL;
-static ID3D11ShaderResourceView* g_title_logo_chain_Texture = NULL;
-static ID3D11ShaderResourceView* g_title_logo_anchor_Texture = NULL;
+static ID3D11ShaderResourceView* g_title_logo_text2_Texture = NULL;
+static ID3D11ShaderResourceView* g_title_logo_text3_Texture = NULL;
 
 //決定してステージにとぶまでにテクスチャなくなる問題を潰すためのくろ
 static ID3D11ShaderResourceView* g_black_Texture = NULL;
 
-
-
-//決定を押すためのAボタン
 static ID3D11ShaderResourceView* g_bottom_A_texture = NULL;
+
+static ID3D11ShaderResourceView* g_start_texture = NULL;
+
+
 
 
 
 void TitleScene::Initialize()
 {
 	g_title_background_Texture = InitTexture(L"asset\\texture\\title_texture\\title_background.jpg");
-	g_title_logo_text_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text.png");
-	g_title_logo_chain_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_chain.png");
-	g_title_logo_anchor_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_anchor.png");
+	g_title_logo_text_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text_start.png");
+	g_title_logo_text2_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text_loop.png");
+	g_title_logo_text3_Texture = InitTexture(L"asset\\texture\\title_texture\\title_logo_text_end.png");
 
 	g_black_Texture = InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
-
-	g_bottom_A_texture=InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
 	
+	g_bottom_A_texture = InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
+
+	g_start_texture = InitTexture(L"asset\\texture\\sample_texture\\UI_start_A.png");
 
 	//全ての音を止める
 	app_atomex_stop_player();
@@ -71,51 +73,42 @@ void TitleScene::Update()
 	}
 
 	
-
-	//ボタンのシートの管理
-	bottom_sheet_cnt += 0.2;
-	if (15 < bottom_sheet_cnt)
+	bottom_sheet_cnt += 0.3;
+	if (bottom_sheet_cnt > 15)
 	{
 		bottom_sheet_cnt = 0;
 	}
 
+
+
 	//----------------------------------------------------------------------------------------
 	//文字のテキストのシート管理
-	int max_text_sheet = 32;
-	if (text_sheet_cnt <= max_text_sheet)
+	int max_text_sheet = 72;
+	if (text_sheet_cnt < max_text_sheet)
 	{
 		text_sheet_cnt += 0.5f;
+
+	}
+	else
+	{
+		text_sheet_cnt = 36;
 	}
 
 
 	//フラグ　チェンジシシーンのフラグ
 	if (scene_change_flag == true)
 	{
-		//----------------------------------------------------------------------------------------
-		//チェインのシートカウント
-		int max_chain_sheet = 47;
-		if (chain_sheet_cnt <= max_chain_sheet)
-		{
-			chain_sheet_cnt += 0.5;
-		}
-
-		//----------------------------------------------------------------------------------------
-		//アンカーのシートカウント
-		int max_anchor_sheet = 47;
-		if (anchor_sheet_cnt <= max_anchor_sheet)
-		{
-			anchor_sheet_cnt += 0.5;
-		}
-
 		scene_change_cnt++;
+		bottom_sheet_cnt = 0;
 
-		
-		if (black_fade_cnt<0.4)
+		if (text_sheet_end_cnt < 15)
 		{
-			black_fade_cnt += 0.005;
+			text_sheet_end_cnt += 0.3;
 		}
 		
 	}
+
+
 
 
 
@@ -157,60 +150,86 @@ void TitleScene::Draw()
 		);
 	}
 
-	//ロゴのチェイン
-	if (g_title_logo_chain_Texture != nullptr)
+	if (scene_change_flag == false)
 	{
-		// シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_chain_Texture);
+		if (text_sheet_cnt < 36)
+		{
+			//ロゴのチェイン
+			if (g_title_logo_text_Texture != nullptr)
+			{
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text_Texture);
+
+				DrawDividedSprite(
+					XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+					0.0f,
+					XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+					6, 6, text_sheet_cnt
+				);
+			}
+		}
+		else if (36 <= text_sheet_cnt && text_sheet_cnt <= 72)
+		{
+			//ロゴのテキスト
+			if (g_title_logo_text2_Texture != nullptr)
+			{
+				// シェーダリソースを設定
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text2_Texture);
+
+				DrawDividedSprite(
+					XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+					0.0f,
+					XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+					6, 6, text_sheet_cnt
+				);
+			}
+
+		}
+	}
+
+
+	if (text_sheet_end_cnt != 0)
+	{
+		//選択後
+		if (g_title_logo_text3_Texture != nullptr)
+		{
+			// シェーダリソースを設定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text3_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+				0.0f,
+				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
+				4, 4, text_sheet_end_cnt
+			);
+		}
+	}
+
+	if (g_start_texture != nullptr)
+	{
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_start_texture);
 
 		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
+			XMFLOAT2(SCREEN_XCENTER+500, SCREEN_YCENTER + 300),
 			0.0f,
-			XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
-			7, 7, chain_sheet_cnt
+			XMFLOAT2(300,125),
+			1, 1, 1
 		);
 	}
 
-	//ロゴのテキスト
-	if (g_title_logo_text_Texture != nullptr)
-	{
-		// シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_text_Texture);
-
-		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
-			0.0f,
-			XMFLOAT2(SCREEN_WIDTH/2, SCREEN_HEIGHT/2),
-			6,6, text_sheet_cnt
-		);
-	}
-
-	//アンカーのテキスト
-	if (g_title_logo_anchor_Texture != nullptr)
-	{
-		// シェーダリソースを設定
-		GetDeviceContext()->PSSetShaderResources(0, 1, &g_title_logo_anchor_Texture);
-
-		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER),
-			0.0f,
-			XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
-			7, 7, anchor_sheet_cnt
-		);
-	}
 
 	if (g_bottom_A_texture != nullptr)
 	{
-		// シェーダリソースを設定
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_bottom_A_texture);
 
 		DrawDividedSprite(
-			XMFLOAT2(SCREEN_XCENTER, SCREEN_YCENTER+200),
+			XMFLOAT2(SCREEN_XCENTER+410, SCREEN_YCENTER + 300),
 			0.0f,
 			XMFLOAT2(150, 100),
 			5, 4, bottom_sheet_cnt
 		);
 	}
+
 
 
 
@@ -222,14 +241,17 @@ void TitleScene::Draw()
 void TitleScene::Finalize()
 {
 	if (g_title_background_Texture) UnInitTexture(g_title_background_Texture);
-	if (g_title_logo_chain_Texture) UnInitTexture(g_title_logo_chain_Texture);
 	if (g_title_logo_text_Texture) UnInitTexture(g_title_logo_text_Texture);
-	if (g_title_logo_anchor_Texture) UnInitTexture(g_title_logo_anchor_Texture);
+	if (g_title_logo_text2_Texture) UnInitTexture(g_title_logo_text2_Texture);
+	if (g_title_logo_text3_Texture) UnInitTexture(g_title_logo_text3_Texture);
 	if (g_black_Texture) UnInitTexture(g_black_Texture);
+
+
 	if (g_bottom_A_texture) UnInitTexture(g_bottom_A_texture);
 
 
-
+	if (g_start_texture) UnInitTexture(g_start_texture);
+	
 
 
 }
