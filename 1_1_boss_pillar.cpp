@@ -24,7 +24,7 @@
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
-boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int splitting_y,Boss_Room_Level level)
+boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int splitting_y,Boss_Room_Level level,int anchor_need_level)
 {
 	SetSize(size);//描画用のサイズを保存
 
@@ -77,6 +77,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	int ID = object_data->GenerateID();
 	object_data->id = ID;
 	object_data->object_name = Boss_pillar;
+	object_data->need_anchor_level = anchor_need_level;
 	SetID(ID);
 
 
@@ -124,7 +125,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 
 	object_anchorpoint_data->object_name = Boss_pillar;
-	object_anchorpoint_data->need_anchor_level = 1;
+	object_anchorpoint_data->need_anchor_level = anchor_need_level;
 
 	b2Vec2 need_power;
 
@@ -263,7 +264,21 @@ void boss_pillar::Destroy_Splitting()
 
 			//アンカーポイントのボディも消す
 
+			b2Body* m_body = GetObjectAnchorPointBody();
+			// ObjectData の削除
+			if ((m_body)) {
+				for (b2Fixture* f = m_body->GetFixtureList(); f; f = f->GetNext()) {
+					ObjectData* data = reinterpret_cast<ObjectData*>(f->GetUserData().pointer);
+					if (data) {
+						delete data;
+						f->GetUserData().pointer = 0;
+					}
+				}
+			}
+
+			AnchorPoint::OutsideSensor(GetObjectAnchorPointBody());
 			world->DestroyBody(GetObjectAnchorPointBody());
+			SetObjectAnchorPointBody(nullptr);
 
 			b2Vec2 size;
 			size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;
@@ -316,7 +331,7 @@ void boss_pillar::Destroy_Splitting()
 					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
 
 					// カスタムデータを作成して設定
-					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
+					ObjectData* object_anchorpoint_data = new ObjectData{ collider_texture_block };
 					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
 
@@ -329,14 +344,9 @@ void boss_pillar::Destroy_Splitting()
 
 				}
 			}
-
 			Splitting_Destroy_Flag = false;
 			Splitting_end = true;
 		}
-	
-
-		
-		
 	}
 
 }
@@ -352,6 +362,7 @@ void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
 			body = nullptr; // ポインタを無効化
 		}
 	}
+	bodyList.clear();  // vectorを空にする
 	
 }
 

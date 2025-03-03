@@ -56,11 +56,6 @@ static ID3D11ShaderResourceView* g_Anchor_Effect_L3 = NULL;//ƒAƒ“ƒJ[‚ÌƒGƒtƒFƒNƒ
 
 
 
-//ƒAƒ“ƒJ[‚Ìˆê’[‚ÌƒvƒŒƒCƒ„[‚Ìƒ{ƒfƒB‚ğ‚à‚Á‚Æ‚­
-static b2Body* Player_body=nullptr;
-
-//ƒAƒ“ƒJ[‚Ì–Ú•W‚ÌƒAƒ“ƒJ[ƒ|ƒCƒ“ƒg
-static b2Body* Target_anchor_point_body=nullptr;
 
 
 
@@ -69,9 +64,9 @@ static b2Body* Target_anchor_point_body=nullptr;
 
 
 
-//ƒAƒ“ƒJ[ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX
-Anchor*g_anchor_instance;
 
+
+Anchor Anchor::g_anchor_instance;  // ƒOƒ[ƒoƒ‹‚ÈƒCƒ“ƒXƒ^ƒ“ƒX
 
 Anchor::Anchor()
 {
@@ -92,6 +87,7 @@ void Anchor::Initialize()
 	g_Anchor_Texture_Lev1 =InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv1.png");
 	g_Anchor_Texture_Lev2 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv2.png");
 	g_Anchor_Texture_Lev3 = InitTexture(L"asset\\texture\\anchor_point\\Anchor_Lv3.png");
+	assert(g_Anchor_Texture_Lev3);
 
 
 	//ƒAƒ“ƒJ[‚Ì½
@@ -128,24 +124,14 @@ void Anchor::Initialize()
 
 void Anchor::CreateAnchor(b2Vec2 anchor_size)
 {
-	if (g_anchor_instance == nullptr)
-	{
-		g_anchor_instance = new Anchor();//NULL‚¾‚Á‚½‚çƒAƒ“ƒJ[‚ğì‚Á‚Äã‚°‚é
-	}
-	g_anchor_instance->CreateAnchorBody(anchor_size);//ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğ‚Â‚­‚é
+	g_anchor_instance.CreateAnchorBody(anchor_size);//ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğ‚Â‚­‚é
 }
 
 void Anchor::DeleteAnchor()
 {
-	if (g_anchor_instance != nullptr) {
-		g_anchor_instance->DestroyAnchorBody();
-	
-		////”z—ñ©‘Ì‚àƒfƒŠ[ƒg
-		//delete g_anchor_instance;
-		////NULL‚à‚µ‚Æ‚­
-		//g_anchor_instance = nullptr;
 
-	}
+		g_anchor_instance.DestroyAnchorBody();
+
 	
 }
 
@@ -243,13 +229,13 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 void Anchor::DestroyAnchorBody()
 {
 	if (m_body != nullptr) {
-		if (m_body != nullptr) {
+		
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 			world->DestroyBody(m_body);
 			m_body = nullptr;
 			m_isAnchorCreated = false;
-		}
+		
 	}
 }
 
@@ -263,105 +249,124 @@ void Anchor::Update()
 void Anchor::Draw()
 {
 
-	// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
-	float scale = SCREEN_SCALE;
-
-	// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
-	b2Vec2 screen_center;
-	screen_center.x = SCREEN_CENTER_X;
-	screen_center.y = SCREEN_CENTER_Y;
-
-
-	if (g_anchor_instance == nullptr)
+	if (g_anchor_instance.GetAnchorBody() != nullptr)
 	{
-		return;
-	}
 
-	b2Body *anchor = g_anchor_instance->GetAnchorBody();
 
-	if (anchor!= nullptr)
-	{
-		b2Vec2 position;
-		position.x = anchor->GetPosition().x;
-		position.y = anchor->GetPosition().y;
+		// ƒXƒP[ƒ‹‚ğ‚©‚¯‚È‚¢‚ÆƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY‚Ì•\¦‚ª¬‚³‚¢‚©‚çg‚¤
+		float scale = SCREEN_SCALE;
 
-		// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-		//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
-		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u (ƒvƒƒgƒ^ƒCƒv‚Å‚ÍæZ‚¾‚Á‚½‚¯‚Ç@¡‰ñ‚©‚ç‰ÁZ‚É‚µ‚Äj
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
 
-		float anchor_size_scale = 0;
 
-		switch (AnchorSpirit::GetAnchorLevel())
+
+
+		b2Body* anchor = g_anchor_instance.GetAnchorBody();
+
+		if (anchor != nullptr)
 		{
-		case 1:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev1);
-			anchor_size_scale = 1.3;
-			break;
-		case 2:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev2);
-			anchor_size_scale = 2.0;
-			break;
-		case 3:
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Texture_Lev3);
-			anchor_size_scale = 3.0;
-			break;
-		default:
-			break;
-		}
+			b2Vec2 position;
+			position.x = anchor->GetPosition().x;
+			position.y = anchor->GetPosition().y;
+
+			// ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
+			//æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+			float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+			float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+			float anchor_size_scale = 0;
 
 
-		b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
+			
+			if (g_anchor_instance.GetAnchorBody() == nullptr) {
+				return;
+			}
 
-		b2Vec2 Temporary_angle;//ƒxƒNƒgƒ‹g‚Á‚Ä”ò‚ñ‚Å‚¢‚­Šp“x •Ï”–¼‚Íˆê“I‚È‚Á‚Ä‚¢‚İ
+			// ƒAƒ“ƒJ[ƒŒƒxƒ‹‚É‚æ‚éƒeƒNƒXƒ`ƒƒ‘I‘ğ
+			ID3D11ShaderResourceView* texture = nullptr;
+			switch (AnchorSpirit::GetAnchorLevel()) {
+			case 1:
+				texture = g_Anchor_Texture_Lev1;
+				anchor_size_scale = 1.3f;
+				break;
+			case 2:
+				texture = g_Anchor_Texture_Lev2;
+				anchor_size_scale = 2.0f;
+				break;
+			case 3:
+				texture = g_Anchor_Texture_Lev3;
+				anchor_size_scale = 3.0f;
+				break;
+			default:
+				break;
+			}
 
-		if (Anchor::GetAnchorState() == Throwing_state)
-		{
-			Temporary_angle.x = target_AP_body->GetPosition().x - anchor->GetPosition().x;//x‚ÌÀ•W‚ÌŠÇ—
-			Temporary_angle.y = target_AP_body->GetPosition().y - anchor->GetPosition().y;//y‚ÌÀ•W‚ÌŠÇ—
-		}
-		else
-		{
-			Player& player = Player::GetInstance();
-			Temporary_angle.x = anchor->GetPosition().x -player.GetOutSidePlayerBody()->GetPosition().x;//x‚ÌÀ•W‚ÌŠÇ—
-			Temporary_angle.y = anchor->GetPosition().y - player.GetOutSidePlayerBody()->GetPosition().y;//y‚ÌÀ•W‚ÌŠÇ—
-		}
-
-
-
-		//ƒ‰ƒWƒAƒ“Šp‚ğZo
-		float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
-
-		// ƒ‰ƒWƒAƒ“‚©‚ç“x”‚Ö•ÏŠ·
-		anchor_angle = anchor_angle * 180.0f / M_PI;
-
-		// 270“x‚ğ•â³ ‰æ‘œ‚ª‰ºŒü‚«‚¾‚Á‚½‚©‚ç
-		anchor_angle += 40.0f;
-
-		// •‰‚ÌŠp“x‚ğ³‚Ì”ÍˆÍ‚É’²®i0‹`360‹j
-		if (anchor_angle < 0) {
-			anchor_angle += 360.0f;
-		}
-
-		//“x”‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·‚µ‚Ä
-		//Box2d‚Ìƒ‰ƒWƒAƒ“‚ÅŠÇ—‚µ‚Ä‚é
-		float angle=anchor_angle * M_PI / 180.0f;
-
-		//draw
-		DrawSprite(
-			{ draw_x,
-			  draw_y },
-			angle,
-			{ g_anchor_instance->GetSize().x*scale*anchor_size_scale,g_anchor_instance->GetSize().y*scale* anchor_size_scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-		);
-
+			if (texture == nullptr) {
+				OutputDebugStringA("Error: Selected anchor texture is nullptr\n");
+				return;
+			}
 
 		
-	}
 
-	DrawChain();//ƒ`ƒF[ƒ“‚Ì•`‰æˆ—
-	DrawNormalAttack();//’ÊíUŒ‚‚Ì•`Ê
-	DrawAnchorHitEffect();//ƒqƒbƒgƒGƒtƒFƒNƒg
+
+			b2Body* target_AP_body = AnchorPoint::GetTargetAnchorPointBody();
+
+			b2Vec2 Temporary_angle;//ƒxƒNƒgƒ‹g‚Á‚Ä”ò‚ñ‚Å‚¢‚­Šp“x •Ï”–¼‚Íˆê“I‚È‚Á‚Ä‚¢‚İ
+
+			if (Anchor::GetAnchorState() == Throwing_state)
+			{
+				Temporary_angle.x = target_AP_body->GetPosition().x - anchor->GetPosition().x;//x‚ÌÀ•W‚ÌŠÇ—
+				Temporary_angle.y = target_AP_body->GetPosition().y - anchor->GetPosition().y;//y‚ÌÀ•W‚ÌŠÇ—
+			}
+			else
+			{
+				Player& player = Player::GetInstance();
+				Temporary_angle.x = anchor->GetPosition().x - player.GetOutSidePlayerBody()->GetPosition().x;//x‚ÌÀ•W‚ÌŠÇ—
+				Temporary_angle.y = anchor->GetPosition().y - player.GetOutSidePlayerBody()->GetPosition().y;//y‚ÌÀ•W‚ÌŠÇ—
+			}
+
+
+
+			//ƒ‰ƒWƒAƒ“Šp‚ğZo
+			float anchor_angle = atan2(Temporary_angle.y, Temporary_angle.x);
+
+			// ƒ‰ƒWƒAƒ“‚©‚ç“x”‚Ö•ÏŠ·
+			anchor_angle = anchor_angle * 180.0f / M_PI;
+
+			// 270“x‚ğ•â³ ‰æ‘œ‚ª‰ºŒü‚«‚¾‚Á‚½‚©‚ç
+			anchor_angle += 40.0f;
+
+			// •‰‚ÌŠp“x‚ğ³‚Ì”ÍˆÍ‚É’²®i0‹`360‹j
+			if (anchor_angle < 0) {
+				anchor_angle += 360.0f;
+			}
+
+			//“x”‚ğƒ‰ƒWƒAƒ“‚É•ÏŠ·‚µ‚Ä
+			//Box2d‚Ìƒ‰ƒWƒAƒ“‚ÅŠÇ—‚µ‚Ä‚é
+			float angle = anchor_angle * M_PI / 180.0f;
+
+
+			//ƒVƒF[ƒ_[ƒŠƒ\[ƒXƒrƒ…[
+			GetDeviceContext()->PSSetShaderResources(0, 1, &texture);
+			//draw
+			DrawSprite(
+				{ draw_x,
+				  draw_y },
+				angle,
+				{ g_anchor_instance.GetSize().x * scale * anchor_size_scale,g_anchor_instance.GetSize().y * scale * anchor_size_scale }///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
+			);
+
+
+
+		}
+
+		DrawChain();//ƒ`ƒF[ƒ“‚Ì•`‰æˆ—
+		DrawNormalAttack();//’ÊíUŒ‚‚Ì•`Ê
+		DrawAnchorHitEffect();//ƒqƒbƒgƒGƒtƒFƒNƒg
+	}
 }
 
 
@@ -375,8 +380,10 @@ void Anchor::Finalize()
 
 
 
-	if(g_anchor_instance!=nullptr)
-	g_anchor_instance->DestroyAnchorBody();//ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğ‰ğ•ú
+	
+	g_anchor_instance.DestroyAnchorBody();//ƒAƒ“ƒJ[‚Ìƒ{ƒfƒB‚ğ‰ğ•ú
+
+
 	if (g_Anchor_Texture_Lev1) UnInitTexture(g_Anchor_Texture_Lev1);
 	if (g_Anchor_Texture_Lev2) UnInitTexture(g_Anchor_Texture_Lev2);
 	if (g_Anchor_Texture_Lev3) UnInitTexture(g_Anchor_Texture_Lev3);
@@ -412,13 +419,10 @@ void Anchor::Finalize()
 
 void Anchor::ThrowAnchorToAP(float speed_up)
 {
-	if (g_anchor_instance == nullptr)
-	{
-		return;//NULLƒ`ƒFƒbƒN
-	}
+
 
 	//¡‚ÌƒAƒ“ƒJ[‚ª‚ ‚éÀ•W‚Ìæ“¾
-	b2Vec2 anchor_pos=g_anchor_instance->GetAnchorBody()->GetPosition();
+	b2Vec2 anchor_pos=g_anchor_instance.GetAnchorBody()->GetPosition();
 
 
 	b2Body* body=AnchorPoint::GetTargetAnchorPointBody();
@@ -439,21 +443,21 @@ void Anchor::ThrowAnchorToAP(float speed_up)
 		velocity.Normalize(); // ’PˆÊƒxƒNƒgƒ‹‰»‚µ‚Ä•ûŒü‚ğŒˆ’è
 		velocity *= (20 * speed_up); // “Š±‘¬“x‚ğİ’è	
 
-		g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);//‚±‚±‚Å—Í‚ğ‰Á‚¦‚Ä‚é
+		g_anchor_instance.GetAnchorBody()->SetLinearVelocity(velocity);//‚±‚±‚Å—Í‚ğ‰Á‚¦‚Ä‚é
 	}
 
 }
 	
 void Anchor::CreateRotateJoint()
 {
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(b2Vec2_zero);//‚Æ‚ñ‚Å‚«‚½ƒAƒ“ƒJ[‚ÌƒxƒƒVƒeƒB‚ğƒ[ƒ‚É‚·‚é
+	g_anchor_instance.GetAnchorBody()->SetLinearVelocity(b2Vec2_zero);//‚Æ‚ñ‚Å‚«‚½ƒAƒ“ƒJ[‚ÌƒxƒƒVƒeƒB‚ğƒ[ƒ‚É‚·‚é
 	MyContactListener& contact_listener = MyContactListener::GetInstance();
 
-	if (g_anchor_instance == nullptr || g_anchor_instance->GetAnchorBody() == nullptr) {
+	if (g_anchor_instance.GetAnchorBody() == nullptr) {
 		return; // ƒAƒ“ƒJ[‚ª‘¶İ‚µ‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
 	}
 
-	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
+	b2Body* anchorBody = g_anchor_instance.GetAnchorBody();
 	b2Body* targetBody = AnchorPoint::GetTargetAnchorPointBody();
 
 
@@ -558,7 +562,7 @@ void Anchor::CreateRotateJoint()
 		world->CreateJoint(&jointDef);
 
 		//ƒGƒtƒFƒNƒgƒXƒ^[ƒg
-		g_anchor_instance->anchor_hit_effect_flag = true;
+		g_anchor_instance.anchor_hit_effect_flag = true;
 	
 }
 
@@ -568,11 +572,11 @@ void Anchor::CreateRotateJoint()
  */
 void Anchor::DeleteRotateJoint(void)
 {
-	if (g_anchor_instance == nullptr || g_anchor_instance->GetAnchorBody() == nullptr) {
+	if (g_anchor_instance.GetAnchorBody() == nullptr) {
 		return; // ƒAƒ“ƒJ[‚ª‘¶İ‚µ‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
 	}
 
-	b2Body* anchorBody = g_anchor_instance->GetAnchorBody();
+	b2Body* anchorBody = g_anchor_instance.GetAnchorBody();
 
 	// ‚·‚×‚Ä‚ÌƒWƒ‡ƒCƒ“ƒg‚ğ’²‚×‚é
 	for (b2JointEdge* jointEdge = anchorBody->GetJointList(); jointEdge != nullptr; jointEdge = jointEdge->next) {
@@ -599,13 +603,13 @@ void Anchor::PullingAnchor(void)
 	//ƒvƒŒƒCƒ„[‚ÆƒAƒ“ƒJ[‚ÌÀ•W‚ğæ“¾‚·‚é
 
 	b2Vec2 player_postion = PlayerPosition::GetPlayerPosition();
-	b2Vec2 anchor_postion = g_anchor_instance->GetAnchorBody()->GetPosition();
+	b2Vec2 anchor_postion = g_anchor_instance.GetAnchorBody()->GetPosition();
 
 	b2Vec2 velocity = player_postion - anchor_postion;
 	velocity.Normalize(); // ’PˆÊƒxƒNƒgƒ‹‰»‚µ‚Ä•ûŒü‚ğŒˆ’è
 	velocity *= 6; // “Š±‘¬“x‚ğİ’è	
 
-	g_anchor_instance->GetAnchorBody()->SetLinearVelocity(velocity);
+	g_anchor_instance.GetAnchorBody()->SetLinearVelocity(velocity);
 
 }
 
@@ -645,7 +649,7 @@ void Anchor::SetChainEffect()
 	//‚O‚ğ‘ã“ü
 	for (int i = 0; i < MAX_CHAIN_NUM; i++)
 	{
-		g_anchor_instance->Anchor_effect_sheet[i] = 0;
+		g_anchor_instance.Anchor_effect_sheet[i] = 0;
 	}
 
 
@@ -653,21 +657,21 @@ void Anchor::SetChainEffect()
 	{
 		//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚P
 	case 1:
-		g_anchor_instance->chain_effect_scale = 10.0f;
+		g_anchor_instance.chain_effect_scale = 10.0f;
 		switch (rand)
 		{
 		case 1:
-			g_anchor_instance->Anchor_Effect_Type = 1;
-			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+			g_anchor_instance.Anchor_Effect_Type = 1;
+			g_anchor_instance.Max_Anchor_effect_sheet = 8;
 
 			break;
 		case 2:
-			g_anchor_instance->Anchor_Effect_Type = 2;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 2;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 		case 3:
-			g_anchor_instance->Anchor_Effect_Type = 3;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 3;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 
 
@@ -677,21 +681,21 @@ void Anchor::SetChainEffect()
 		break;
 		//ƒAƒ“ƒJ[ƒŒƒxƒ‹2
 	case 2:
-		g_anchor_instance->chain_effect_scale = 10.0f;
+		g_anchor_instance.chain_effect_scale = 10.0f;
 		switch (rand)
 		{
 		case 1:
-			g_anchor_instance->Anchor_Effect_Type = 4;
-			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+			g_anchor_instance.Anchor_Effect_Type = 4;
+			g_anchor_instance.Max_Anchor_effect_sheet = 8;
 
 			break;
 		case 2:
-			g_anchor_instance->Anchor_Effect_Type = 5;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 5;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 		case 3:
-			g_anchor_instance->Anchor_Effect_Type = 6;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 6;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 
 
@@ -701,21 +705,21 @@ void Anchor::SetChainEffect()
 		break;
 		//ƒAƒ“ƒJ[ƒŒƒxƒ‹3
 	case 3:
-		g_anchor_instance->chain_effect_scale = 8.0f;
+		g_anchor_instance.chain_effect_scale = 8.0f;
 		switch (rand)
 		{
 		case 1:
-			g_anchor_instance->Anchor_Effect_Type = 7;
-			g_anchor_instance->Max_Anchor_effect_sheet = 8;
+			g_anchor_instance.Anchor_Effect_Type = 7;
+			g_anchor_instance.Max_Anchor_effect_sheet = 8;
 
 			break;
 		case 2:
-			g_anchor_instance->Anchor_Effect_Type = 8;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 8;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 		case 3:
-			g_anchor_instance->Anchor_Effect_Type = 9;
-			g_anchor_instance->Max_Anchor_effect_sheet = 10;
+			g_anchor_instance.Anchor_Effect_Type = 9;
+			g_anchor_instance.Max_Anchor_effect_sheet = 10;
 			break;
 
 
@@ -740,7 +744,7 @@ void Anchor::DrawChain()
 	b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
 	// ƒvƒŒƒCƒ„[‚ÆƒAƒ“ƒJ[‚ÌˆÊ’u‚ğæ“¾
-	b2Body* anchor = g_anchor_instance->GetAnchorBody();
+	b2Body* anchor = g_anchor_instance.GetAnchorBody();
 
 	if (anchor == nullptr)
 	{
@@ -804,23 +808,23 @@ void Anchor::DrawChain()
 
 		
 
-			int player_scale_x = g_anchor_instance->chain_effect_scale*2.0f;
-			int player_scale_y = g_anchor_instance->chain_effect_scale*2.0f;
+			int player_scale_x = g_anchor_instance.chain_effect_scale*2.0f;
+			int player_scale_y = g_anchor_instance.chain_effect_scale*2.0f;
 
 			float chain_alpha=1.0f;
 
 			bool m_direction=true;
 		
 
-			if (g_anchor_instance == nullptr)return;
+		
 
 			if (i % 2 == 0)
 			{
 
-				if (g_anchor_instance->Anchor_effect_sheet[i] < g_anchor_instance->Max_Anchor_effect_sheet)
+				if (g_anchor_instance.Anchor_effect_sheet[i] < g_anchor_instance.Max_Anchor_effect_sheet)
 				{
 
-					switch (g_anchor_instance->Anchor_Effect_Type)
+					switch (g_anchor_instance.Anchor_Effect_Type)
 					{
 					case 1:
 						// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
@@ -831,7 +835,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x , chain_size.x * scale * player_scale_y },
-							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							4, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 2:
@@ -843,7 +847,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 3:
@@ -855,7 +859,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 4:
@@ -867,7 +871,7 @@ void Anchor::DrawChain()
 							 draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							4, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 5:
@@ -879,7 +883,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 6:
@@ -891,7 +895,7 @@ void Anchor::DrawChain()
 							 draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.y * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 7:
@@ -903,7 +907,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							4, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							4, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					case 8:
@@ -915,7 +919,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x ,chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 
@@ -928,7 +932,7 @@ void Anchor::DrawChain()
 							  draw_y },
 							angle,
 							{ chain_size.x * scale * player_scale_x, chain_size.x * scale * player_scale_y },
-							5, 2, g_anchor_instance->Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
+							5, 2, g_anchor_instance.Anchor_effect_sheet[i] / 4, chain_alpha, m_direction
 						);
 						break;
 					default:
@@ -936,7 +940,7 @@ void Anchor::DrawChain()
 					}
 
 
-					g_anchor_instance->Anchor_effect_sheet[i] += 0.3;
+					g_anchor_instance.Anchor_effect_sheet[i] += 0.3;
 				}
 			}
 		
@@ -950,31 +954,31 @@ void Anchor::DrawAnchorHitEffect(void)
 {
 
 	//•`‰æ‚Ì•\¦‚ª
-	if (g_anchor_instance->anchor_hit_effect_flag == true)
+	if (g_anchor_instance.anchor_hit_effect_flag == true)
 	{
 		// ƒXƒP[ƒ‹İ’è
 		float scale = SCREEN_SCALE;
 		// ƒXƒNƒŠ[ƒ“’†‰›ˆÊ’u
 		b2Vec2 screen_center(SCREEN_CENTER_X, SCREEN_CENTER_Y);
 
-		b2Body* anchor = g_anchor_instance->GetAnchorBody();
+		b2Body* anchor = g_anchor_instance.GetAnchorBody();
 
 		//ƒAƒ“ƒJ[‚Ì‘I‘ğ
-		if (g_anchor_instance->now_anchor_hit_effect_sheet_cnt == 0)
+		if (g_anchor_instance.now_anchor_hit_effect_sheet_cnt == 0)
 		{
 			switch (AnchorSpirit::GetAnchorLevel())
 			{
 			case 1:
-				g_anchor_instance->anchor_hit_effect_type = 1;
-				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 6;
+				g_anchor_instance.anchor_hit_effect_type = 1;
+				g_anchor_instance.max_anchor_hit_effect_sheet_cnt = 6;
 				break;
 			case 2:
-				g_anchor_instance->anchor_hit_effect_type = 2;
-				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 9;
+				g_anchor_instance.anchor_hit_effect_type = 2;
+				g_anchor_instance.max_anchor_hit_effect_sheet_cnt = 9;
 				break;
 			case 3:
-				g_anchor_instance->anchor_hit_effect_type = 3;
-				g_anchor_instance->max_anchor_hit_effect_sheet_cnt = 16;
+				g_anchor_instance.anchor_hit_effect_type = 3;
+				g_anchor_instance.max_anchor_hit_effect_sheet_cnt = 16;
 				break;
 			default:
 				break;
@@ -1003,7 +1007,7 @@ void Anchor::DrawAnchorHitEffect(void)
 
 		
 
-			switch (g_anchor_instance->anchor_hit_effect_type)
+			switch (g_anchor_instance.anchor_hit_effect_type)
 			{
 			case 1:
 				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Anchor_Hit_Effect_Level1_Texture);
@@ -1012,9 +1016,9 @@ void Anchor::DrawAnchorHitEffect(void)
 					{ draw_x,
 					draw_y },
 					anchor->GetAngle(),
-					{ g_anchor_instance->GetSize().x * scale*1.5f  ,g_anchor_instance->GetSize().y * scale *1.5f },
+					{ g_anchor_instance.GetSize().x * scale*1.5f  ,g_anchor_instance.GetSize().y * scale *1.5f },
 					3, 2,
-					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					g_anchor_instance.now_anchor_hit_effect_sheet_cnt / 2,
 					1.0f
 				);
 				break;
@@ -1025,9 +1029,9 @@ void Anchor::DrawAnchorHitEffect(void)
 					{ draw_x ,
 					draw_y  },
 					anchor->GetAngle(),
-					{ g_anchor_instance->GetSize().x * scale *2.5f  ,g_anchor_instance->GetSize().y * scale * 2.5f },
+					{ g_anchor_instance.GetSize().x * scale *2.5f  ,g_anchor_instance.GetSize().y * scale * 2.5f },
 					3, 3,
-					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					g_anchor_instance.now_anchor_hit_effect_sheet_cnt / 2,
 					1.0f
 				);
 				break;
@@ -1038,9 +1042,9 @@ void Anchor::DrawAnchorHitEffect(void)
 					{ draw_x ,
 					draw_y },
 					anchor->GetAngle(),
-					{ g_anchor_instance->GetSize().x * scale * 3  ,g_anchor_instance->GetSize().y * scale * 3 },
+					{ g_anchor_instance.GetSize().x * scale * 3  ,g_anchor_instance.GetSize().y * scale * 3 },
 					4, 4,
-					g_anchor_instance->now_anchor_hit_effect_sheet_cnt / 2,
+					g_anchor_instance.now_anchor_hit_effect_sheet_cnt / 2,
 					1.0f
 				);
 				break;
@@ -1051,13 +1055,13 @@ void Anchor::DrawAnchorHitEffect(void)
 			
 		}
 
-		g_anchor_instance->now_anchor_hit_effect_sheet_cnt++;
+		g_anchor_instance.now_anchor_hit_effect_sheet_cnt++;
 
-		if (g_anchor_instance->max_anchor_hit_effect_sheet_cnt <g_anchor_instance->now_anchor_hit_effect_sheet_cnt)
+		if (g_anchor_instance.max_anchor_hit_effect_sheet_cnt <g_anchor_instance.now_anchor_hit_effect_sheet_cnt)
 		{
-			g_anchor_instance->anchor_hit_effect_flag = false;
-			g_anchor_instance->now_anchor_hit_effect_sheet_cnt = 0;
-			g_anchor_instance->anchor_create_joint_flag = 0;
+			g_anchor_instance.anchor_hit_effect_flag = false;
+			g_anchor_instance.now_anchor_hit_effect_sheet_cnt = 0;
+			g_anchor_instance.anchor_create_joint_flag = 0;
 		}
 
 	}
@@ -1067,16 +1071,13 @@ void Anchor::DrawAnchorHitEffect(void)
 void Anchor::CreateNormalAttack(b2Vec2 anchor_size, bool right)
 {
 
-	if (g_anchor_instance == nullptr)
-	{
-		g_anchor_instance = new Anchor();//NULL‚¾‚Á‚½‚çƒAƒ“ƒJ[‚ğì‚Á‚Äã‚°‚é
-	}
-	g_anchor_instance->CreateNormalAttackAnchorBody(anchor_size, right);	
+
+	g_anchor_instance.CreateNormalAttackAnchorBody(anchor_size, right);	
 }
 	
 void Anchor::DeleteNormalAttackAnchor()
 {
-	g_anchor_instance->DeleteNormalAttackAnchorBody();
+	g_anchor_instance.DeleteNormalAttackAnchorBody();
 }
 
 
@@ -1165,7 +1166,7 @@ void Anchor::CreateNormalAttackAnchorBody(b2Vec2 size,bool right)
 	//world->CreateJoint(&jointDef); //ƒ[ƒ‹ƒh‚ÉƒWƒ‡ƒCƒ“ƒg‚ğ’Ç‰Á
 
 	//ƒGƒtƒFƒNƒgƒXƒ^[ƒg
-	g_anchor_instance->anchor_hit_effect_flag = true;
+	g_anchor_instance.anchor_hit_effect_flag = true;
 }
 
 void Anchor::UpdateNormalAttack()
@@ -1184,12 +1185,8 @@ void Anchor::DrawNormalAttack()
 	screen_center.y = SCREEN_CENTER_Y;
 
 
-	if (g_anchor_instance == nullptr)
-	{
-		return;
-	}
 
-	b2Body* anchor = g_anchor_instance->GetNormalAttackAnchorBody();
+	b2Body* anchor = g_anchor_instance.GetNormalAttackAnchorBody();
 
 	if (anchor != nullptr)
 	{
@@ -1211,13 +1208,13 @@ void Anchor::DrawNormalAttack()
 			  draw_y },
 			0.0	,
 			{ 6 * scale, 6 * scale },///ƒTƒCƒY‚ğæ“¾‚·‚é‚·‚×‚ª‚È‚¢@ƒtƒBƒNƒXƒ`ƒƒ‚Ìƒ|ƒCƒ“ƒ^[‚É’Ç‰Á‚µ‚æ‚¤‚©‚ÈH‚Á‚ÄƒŒƒxƒ‹
-			4,2,g_anchor_instance->anchor_nomal_attack_effect,1.0f
+			4,2,g_anchor_instance.anchor_nomal_attack_effect,1.0f
 		);
-		g_anchor_instance->anchor_nomal_attack_effect +=0.4;
+		g_anchor_instance.anchor_nomal_attack_effect +=0.4;
 	}
 	else
 	{
-		g_anchor_instance->anchor_nomal_attack_effect = 0;
+		g_anchor_instance.anchor_nomal_attack_effect = 0;
 	}
 }
 

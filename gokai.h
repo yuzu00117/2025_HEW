@@ -46,13 +46,13 @@ public:
 	}
 
 	// リスポン時の豪快値を取得
-	static int GetGokai_WhenRespawn(void)
+	static int GetGokaiRecorded_WhenRespawn(void)
 	{
 		return gokai_when_respawn;
 	}
 
 	// リスポン時の豪快値を設定
-	static void SetGokai_WhenRespawn(int setCount)
+	static void RecordGokai_WhenRespawn(int setCount)
 	{
 		gokai_when_respawn = setCount;
 	}

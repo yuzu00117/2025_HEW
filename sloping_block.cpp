@@ -24,7 +24,10 @@
 //テクスチャの入れ物
 //グローバル変数
 static ID3D11ShaderResourceView* g_sloping_block_right_down_Texture = NULL;//テクスチャ 右下
-static ID3D11ShaderResourceView* g_sloping_block_left_down_Texture = NULL;//テクスチャ 　左した
+static ID3D11ShaderResourceView* g_sloping_block_left_down_Texture = NULL;//テクスチャ  左した
+
+static ID3D11ShaderResourceView* g_sloping_block_right_up_Texture = NULL;//テクスチャ 右上
+static ID3D11ShaderResourceView* g_sloping_block_left_up_Texture = NULL;//テクスチャ  左上
 
 
 
@@ -133,18 +136,26 @@ void sloping_block::Initialize()
 		case STAGE_TUTORIAL:
 			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
 			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
+			g_sloping_block_left_up_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
+			g_sloping_block_right_up_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
 			break;
 		case STAGE_1_1:
 			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
 			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
+			g_sloping_block_left_up_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_Downhill_02.png");//右側のテクスチャ
+			g_sloping_block_right_up_Texture = InitTexture(L"asset\\texture\\stage_block\\1-1_block_slope_02.png");//右側のテクスチャ
 			break;
 		case STAGE_ISEKI:
 			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_blokc_left.png");//右側のテクスチャ
 			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//右側のテクスチャ
+			g_sloping_block_left_up_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_blokc_left_up.png");//右側のテクスチャ
+			g_sloping_block_right_up_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right_up.png");//右側のテクスチャ
 			break;
 		case STAGE_BOSS:
 			g_sloping_block_left_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_blokc_left.png");//右側のテクスチャ
 			g_sloping_block_right_down_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right.png");//右側のテクスチャ
+			g_sloping_block_left_up_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_blokc_left_up.png");//右側のテクスチャ
+			g_sloping_block_right_up_Texture = InitTexture(L"asset\\texture\\stage_block\\iseki_sloping_block_right_up.png");//右側のテクスチャ
 			break;
 
 		default:
@@ -287,6 +298,13 @@ void sloping_block::Draw()
 		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_down_Texture);
 		break;
 
+	case right_up:
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_right_up_Texture);
+		break;
+
+	case left_up:
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_sloping_block_left_up_Texture);
+		break;
 	default:
 		break;
 	}
@@ -318,6 +336,9 @@ void sloping_block::Finalize()
 	
 	if (g_sloping_block_right_down_Texture) UnInitTexture(g_sloping_block_right_down_Texture);
 	if (g_sloping_block_left_down_Texture) UnInitTexture(g_sloping_block_left_down_Texture);
+
+	if (g_sloping_block_right_up_Texture) UnInitTexture(g_sloping_block_right_up_Texture);
+	if (g_sloping_block_left_up_Texture) UnInitTexture(g_sloping_block_left_up_Texture);
 
 
 

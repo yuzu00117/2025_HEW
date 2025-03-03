@@ -20,6 +20,7 @@
 #include "display.h"
 #include <cmath>
 #include "FixtureSizeCalculate.h"
+#include"player_life.h"
 
 // テクスチャのダウンロード グローバル変数にしてる
 static ID3D11ShaderResourceView *g_player_Texture = NULL;
@@ -550,22 +551,32 @@ void Player::Update()
         m_jump_force = b2Vec2(0.0f, -0.40f * 1.5f);
     }
 
+
+    if (Keyboard_IsKeyDown(KK_L))
+    {
+        HitStop::StartHitStop(60);
+    }
+   
+    //そくし
+    if (Keyboard_IsKeyDown(KK_U))
+    {
+        PlayerStamina::EditPlayerStaminaValue(-300); // HPに加算減算する　今回は減算
+        PlayerLife::SetLife(1);
+    }
+#endif
+
+
     // アンカーのレベルを手動で変えられるしょり　完成版ではけす
-    if (Keyboard_IsKeyDown(KK_O) || (state.dpadUp))
+    if (Keyboard_IsKeyDown(KK_O))
     {
         AnchorSpirit::EditAnchorSpiritValue(50); // 加算
     }
 
-    if (Keyboard_IsKeyDown(KK_P) || (state.dpadDown))
+    if (Keyboard_IsKeyDown(KK_P))
     {
         AnchorSpirit::EditAnchorSpiritValue(-50); // 加算
     }
-
-    if (Keyboard_IsKeyDown(KK_L) || (state.dpadDown))
-    {
-        HitStop::StartHitStop(60);
-    }
-#endif
+   
 
     //----------------------------------------------------------------------------------------------------------------------------------------------------
 

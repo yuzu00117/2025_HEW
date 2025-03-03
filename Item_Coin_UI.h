@@ -38,6 +38,19 @@ public:
 		now_get_coin_count = setCount;
 	}
 
+
+	// ’†ŠÔ’n‚ğ“o˜^‚µ‚½‚ÌƒRƒCƒ“æ“¾”‚ğæ“¾
+	static int GetCoinRecorded_WhenRegisteringSavePoint()
+	{
+		return coin_got_when_registering_SavePoint;
+	}
+
+	// ’†ŠÔ’n‚ğ“o˜^‚µ‚½Œ»İ‚ÌƒRƒCƒ“æ“¾”‚ğİ’è
+	static void RecordCoinGot_WhenRegisteringSavePoint(int value)
+	{
+		coin_got_when_registering_SavePoint = value;
+	}
+
 	static int GetDrawCount(void)
 	{
 		return DrawCount;
@@ -52,6 +65,7 @@ private:
 
 	static int max_coin_count;
 	static int now_get_coin_count;
+	static int coin_got_when_registering_SavePoint;		//’†ŠÔ’n‚ğ“o˜^‚·‚é‚ÌƒRƒCƒ“æ“¾”
 
 	static float coin_effect_frame;
 

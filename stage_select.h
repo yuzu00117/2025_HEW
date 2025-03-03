@@ -31,6 +31,7 @@ public:
 private:
     b2World* m_world;
 
+ 
 
     //コインの表示につかうランダム関数
     int g_coin_effect_random_number;
@@ -73,6 +74,7 @@ private:
     //フェードの時に使う 進行度
     double fade_rate = 0.0f;
 
+    float disply_Explanation = 0.0f;
     
 
     bool Stage_select_flag = false;

@@ -240,13 +240,13 @@ public:
 		return now_boss_state;
 	}
 
-	void SetNowBossState(boss_state state)
+	void SetNowBossState(boss_state state,int boss_damege=0)
 	{
 		now_boss_state = state;
 
 		if (state == damage_state)
 		{
-			boss_stock--;
+			boss_stock=boss_stock-boss_damege;
 		}
 	}
 

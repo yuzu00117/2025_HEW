@@ -55,6 +55,11 @@ public:
 	//　ゲージへ回収されている途中なのかどうかをセット
 	void	SetIfCollecting(bool flag);
 
+	//	どっかの中間地に登録されたかどうかを取得
+	bool	GetIfRegisteredToSavePoint() { return m_registered_to_save_point; }
+	//　どっかの中間地に登録されたかどうかをセット
+	void	SetIfRegisteredToSavePoint(bool flag) { m_registered_to_save_point = flag; }
+
 	//　もうプレイヤーにゲットされたかをチェック
 	bool	SearchIfJewelHaveGotByPlayer() { return m_get_by_player; }
 
@@ -106,6 +111,9 @@ private:
 	//テクスチャ
 	ID3D11ShaderResourceView* g_Texture;		    //宝石のテクスチャ
 	ID3D11ShaderResourceView* g_get_effect_texture; //宝石を取得した時のエフェクト
+	ID3D11ShaderResourceView* g_getting_effect_texture; //取得中のエフェクト
+	ID3D11ShaderResourceView* g_using_effect_texture;  //使用エフェクト
+
 
 	//効果発揮したのか
 	bool	m_functioned = false;
@@ -118,6 +126,9 @@ private:
 
 	//プレイヤーにゲットされたかどうか
 	bool	m_get_by_player = false;
+
+	//中間地に登録されたかどうか
+	bool	m_registered_to_save_point = false;
 
 	//回収の経過時間
 	float	m_collecting_time = 0.3f;
@@ -141,6 +152,13 @@ private:
 	float jem_get_sheet_cnt;
 
 	b2Vec2 get_effect_pos;
+
+	//取得エフェクトの描画用
+	int m_getting_anim_id = 0;
+	//仕様エフェクトの描画用
+	int m_use_anim_id = 0;
+	int m_use_anim_count = 0;
+	bool m_if_effect_using = false;
 };
 
 #endif // !ITEM_JEWELRY_H

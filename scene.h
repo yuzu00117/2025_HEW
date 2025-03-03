@@ -21,6 +21,7 @@
 #include"sound.h"
 #include"sprite.h"
 #include"include/box2d/box2d.h"
+#include"world_box2d.h"
 
 #include"clock.h"
 
@@ -86,6 +87,7 @@ private:
     float text_sheet_cnt = 0;
     float chain_sheet_cnt = 0;
     float anchor_sheet_cnt = 0;
+    float bottom_sheet_cnt = 0;
 
     bool scene_change_flag=false;
     int scene_change_cnt = 0;
@@ -190,6 +192,9 @@ public:
 
     // シーンの切り替え
     void ChangeScene(SCENE_NAME scene_name) {
+        
+        Box2dWorld& world = Box2dWorld::GetInstance();
+        world.SetWorldCallStep(false);
         if (currentScene) {
             currentScene->Finalize(); // 現在のシーンの終了処理
         }

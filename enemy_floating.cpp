@@ -219,6 +219,18 @@ void EnemyFloating::Draw()
 		switch (GetState())
 		{
 		case ENEMY_FLOATING_STATE_IDLE:
+			//貼るテクスチャを指定
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_EnemyFloating_Texture);
+
+			DrawSplittingSprite(
+				{ draw_x,
+				  draw_y },
+				GetBody()->GetAngle(),
+				{ GetSize().x * scale ,GetSize().y * scale },
+				5, 5, m_anim_id, 3.0f
+			);
+			m_anim_id++;
+			m_anim_id = (int)m_anim_id % 25;
 			break;
 		case ENEMY_FLOATING_STATE_MOVE:
 			//貼るテクスチャを指定

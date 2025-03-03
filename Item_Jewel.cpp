@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------------------------------------
 // #name Item_Jewel.h
-// #description     •óÎƒAƒCƒeƒ€
-// #make 2025/1/24@‰¤‰jS
+// #description     å®çŸ³ã‚¢ã‚¤ãƒ†ãƒ 
+// #make 2025/1/24ã€€ç‹æ³³å¿ƒ
 // #update 2025/1/24
-// #comment ’Ç‰ÁEC³—\’è
-//                  ƒAƒ“ƒJ[‚ªƒŠƒƒCƒN‚³‚ê‚½‚çÔ‚Ì•óÎ‚ÌŒø‰Ê‚ÉƒAƒ“ƒJ[“Š‚°‚é‘¬“xƒAƒbƒv‚ğ’Ç‰Á‚·‚é—\’è
-//                  Œø‰Ê‚Ì”{—¦‚Ü‚¾’²®‚¢‚é
+// #comment è¿½åŠ ãƒ»ä¿®æ­£äºˆå®š
+//                  ã‚¢ãƒ³ã‚«ãƒ¼ãŒãƒªãƒ¡ã‚¤ã‚¯ã•ã‚ŒãŸã‚‰èµ¤ã®å®çŸ³ã®åŠ¹æœã«ã‚¢ãƒ³ã‚«ãƒ¼æŠ•ã’ã‚‹é€Ÿåº¦ã‚¢ãƒƒãƒ—ã‚’è¿½åŠ ã™ã‚‹äºˆå®š
+//                  åŠ¹æœã®å€ç‡ã¾ã èª¿æ•´ã„ã‚‹
 //----------------------------------------------------------------------------------------------------
 
 #include "Item_Jewel.h"
@@ -23,9 +23,10 @@
 #include"Gauge_UI.h"
 #include"easing.h"
 #include"Item_Manager.h"
+#include"game.h"
 
-//ƒOƒ[ƒoƒ‹•Ï”
-static ID3D11ShaderResourceView* g_Effect_Texture;    //ƒGƒtƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ
+//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
+static ID3D11ShaderResourceView* g_Effect_Texture;    //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 
 ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type type, bool shape_polygon, float Alpha)
     :m_body_position(position), m_size(body_size), m_angle(angle), m_type(type), m_shape_polygon(shape_polygon), m_Alpha(Alpha)
@@ -34,7 +35,7 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     body.type = b2_staticBody;
     body.position.Set(position.x, position.y);
     body.angle = angle;
-    body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+    body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
     body.userData.pointer = (uintptr_t)this;
 
 
@@ -43,11 +44,11 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
 
     m_body = world->CreateBody(&body);
 
-    SetSize(body_size);//ƒvƒŒƒCƒ„[•\¦‚ğ‚·‚é‚½‚ß‚ÉƒZƒbƒg‚·‚é
+    SetSize(body_size);//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¡¨ç¤ºã‚’ã™ã‚‹ãŸã‚ã«ã‚»ãƒƒãƒˆã™ã‚‹
 
 
     b2Vec2 size;
-    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ğ‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ğ‚³‚°‚ÄA•¨—‰‰Z‚Ì‹““®‚ğ‘€ì‚µ‚â‚·‚­‚·‚é
+    size.x = body_size.x / BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
     size.y = body_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
@@ -55,7 +56,7 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     b2Fixture* p_fixture;
 
 
-    //lŠpŒ`‚Ìê‡
+    //å››è§’å½¢ã®å ´åˆ
    //-----------------------------------------------------------------------------
     if (shape_polygon)
     {
@@ -63,15 +64,15 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
         shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
 
     }
-    //‰~‚Ìê‡
+    //å††ã®å ´åˆ
 //-----------------------------------------------------------------------------
     else
     {
@@ -79,17 +80,17 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
         shape.m_radius = size.x * 0.5f;
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
     }
 
-    // ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-    // ƒvƒŒƒCƒ„[‚É’l‚ğ“o˜^
-    // ƒvƒŒ[ƒ„[‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+    // ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å€¤ã‚’ç™»éŒ²
+    // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
@@ -107,14 +108,17 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     case BLUE:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_blue_jewel.png");
         g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Blue_3x4.png");
+        g_using_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemBuff_Blue_5x7.png");
         break;
     case RED:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_red_jewel.png");
         g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Red_3x4.png");
+        g_using_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemBuff_Red_5x7.png");
         break;
     case YELLOW:
         g_Texture = InitTexture(L"asset\\texture\\Item_texture\\item_yellow_jewel.png");
         g_get_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemGet_Yellow_3x4.png");
+        g_using_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemBuff_Yellow_5x7.png");
         break;
     }
 
@@ -122,6 +126,8 @@ ItemJewel::ItemJewel(b2Vec2 position, b2Vec2 body_size, float angle, Jewel_Type 
     {
         g_Effect_Texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemIdle_4x6.png");
     }
+
+    g_getting_effect_texture = InitTexture(L"asset\\texture\\Item_texture\\EFF_GemFitLoop_4x6.png");
 }
 
 void	ItemJewel::Update()
@@ -130,9 +136,8 @@ void	ItemJewel::Update()
     {
         app_atomex_start(Player_Jewelry_Colect_Sound);
         SetIfCollecting(false);
-        //ƒQƒbƒgƒGƒtƒFƒNƒgƒXƒ^[ƒg
         
-        //ƒ{ƒfƒB‚Ìî•ñ‚ğÁ‚·
+        //ãƒœãƒ‡ã‚£ã®æƒ…å ±ã‚’æ¶ˆã™
         b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
         world->DestroyBody(m_body);
         m_body = nullptr;
@@ -148,11 +153,11 @@ void	ItemJewel::Update()
         ring_position.y += 170.0f;
 
 
-        //ƒC[ƒWƒ“ƒO
+        //ã‚¤ãƒ¼ã‚¸ãƒ³ã‚°
         //=====================================================================================================================================
         float collecting_time = Ease::InQuint(m_collecting_time);
 
-        b2Vec2	new_position;	//start‚©‚çend‚ğt‚Å•ÛŠÇ‚µ‚Äretv‚ğì‚é
+        b2Vec2	new_position;	//startã‹ã‚‰endã‚’tã§ä¿ç®¡ã—ã¦retvã‚’ä½œã‚‹
         new_position.x = (1 - collecting_time) * m_position_collecting_start.x + collecting_time * ring_position.x;
         new_position.y = (1 - collecting_time) * m_position_collecting_start.y+ collecting_time * ring_position.y;
 
@@ -183,7 +188,7 @@ void ItemJewel::SetIfCollecting(bool flag)
 
     if (m_collecting)
     {
-        //  ‚à‚¤ƒvƒŒƒCƒ„[‚ÉƒQƒbƒg‚³‚ê‚½
+        //  ã‚‚ã†ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‚²ãƒƒãƒˆã•ã‚ŒãŸ
         m_get_by_player = true;
 
         float scale = SCREEN_SCALE;
@@ -193,13 +198,13 @@ void ItemJewel::SetIfCollecting(bool flag)
         screen_center.y = SCREEN_CENTER_Y;
 
 
-        // ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒAƒCƒeƒ€[‚ÌˆÊ’uj
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆã‚¢ã‚¤ãƒ†ãƒ ãƒ¼ã®ä½ç½®ï¼‰
         b2Vec2 position;
         position.x = m_body->GetPosition().x;
         position.y = m_body->GetPosition().y;
 
         m_position_collecting_start.x = SCREEN_WIDTH / 2;
-        m_position_collecting_start.y = (PlayerPosition::GetPlayerPosition().y * BOX2D_SCALE_MANAGEMENT * scale + screen_center.y)- SCREEN_HEIGHT / 2;
+        m_position_collecting_start.y = SCREEN_HEIGHT / 2;
 
         m_position_while_collecting = m_position_collecting_start;
 
@@ -225,20 +230,20 @@ void    ItemJewel::Function()
     switch (m_type)
     {
     case BLUE:
-        //ƒvƒŒƒCƒ„[‚ÌˆÚ“®‘¬“x‚ª1.5”{
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•é€Ÿåº¦ãŒ1.5å€
         speed = player.GetSpeed();
         speed_change_value = speed * 4.0f - speed;
         player.SetSpeed(speed_change_value);
-        //ƒvƒŒƒCƒ„[‚ÌƒWƒƒƒ“ƒv—Í‚ª1.5”{
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¸ãƒ£ãƒ³ãƒ—åŠ›ãŒ1.5å€
         jump_force = player.GetJumpForce();
         jump_force_change_value = b2Vec2{ 0.0f, jump_force.y * 2.0f - jump_force.y };
         player.SetJumpForce(jump_force_change_value);
         app_atomex_start(Player_Buff_SpeedUp_Sound);
         break;
     case RED:
-        //ƒIƒuƒWƒF‚ğˆø‚Á’£‚é‚Ì—Í‚ğ”{”‚ÅŠ|‚¯‚é
+        //ã‚ªãƒ–ã‚¸ã‚§ã‚’å¼•ã£å¼µã‚‹æ™‚ã®åŠ›ã‚’å€æ•°ã§æ›ã‘ã‚‹
         object_manager.SetPullingPower_With_Multiple(b2Vec2{ 1.5f,1.5f });
-        //ƒAƒ“ƒJ[“Š‚°‚é‘¬“xUP
+        //ã‚¢ãƒ³ã‚«ãƒ¼æŠ•ã’ã‚‹é€Ÿåº¦UP
         player.SetAnchorThrowing_SpeedUp(1.5f);
         app_atomex_start(Player_Buff_AnchorSpeedUp_Sound);
         break;
@@ -250,15 +255,40 @@ void    ItemJewel::Function()
     }
 
     m_functioned = true;
-
-
+    m_if_effect_using = true;
 }
 
 
 void ItemJewel::Initialize()
 {
+    m_functioned = false;
+    //æ¶ˆã™äºˆå®šãªã®ã‹ã©ã†ã‹
+     m_destory = false;
+    //å›åä¸­ã‹ã©ã†ã‹
+     m_collecting = false;
 
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‚²ãƒƒãƒˆã•ã‚ŒãŸã‹ã©ã†ã‹
+    m_get_by_player = false;
 
+    //å›åã®çµŒéæ™‚é–“
+    m_collecting_time = 0.3f;
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³id(ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ)
+    m_anim_id = 0;
+    m_anim_count = 0;
+    //å®çŸ³ã‚’ã‚²ãƒƒãƒˆã—ã¦ã‚‹
+    jem_get_sheet_cnt = 0.0f;
+    //å–å¾—ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»ç”¨
+    m_getting_anim_id = 0;
+    //ä»•æ§˜ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®æç”»ç”¨
+    m_use_anim_id = 0;
+    m_use_anim_count = 0;
+    m_if_effect_using = false;
+
+    Game& game = Game::GetInstance();
+    if (game.GetCurrentGameState() == GAME_STATE_PAUSE_RESPAWN_INITIAL)
+    {
+        m_registered_to_save_point = false;
+    }
 }
 
 
@@ -267,14 +297,28 @@ void ItemJewel::Draw()
 {
     if (m_body != nullptr)
     {
-        // ƒRƒ‰ƒCƒ_[‚ÆˆÊ’uî•ñ‚Ì•â³‚ğ‚·‚é‚½‚ß
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ä½ç½®æƒ…å ±ã®è£œæ­£ã‚’ã™ã‚‹ãŸã‚
         float scale = SCREEN_SCALE;
 
         if (m_collecting)
         {
-            // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+            //å–å¾—ä¸­ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
+            GetDeviceContext()->PSSetShaderResources(0, 1, &g_getting_effect_texture);
+            //æç”»
+            DrawSpriteAnimOld(
+                { m_position_while_collecting.x,
+                  m_position_while_collecting.y },
+                m_body->GetAngle(),
+                { GetSize().x * scale * 10,GetSize().y * scale * 10 },
+                6, 4, m_getting_anim_id, 1
+            );
+            m_getting_anim_id += 1;
+            m_getting_anim_id %= 24;
+
+            // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
             GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
-            //•`‰æ
+            //æç”»
             DrawSpriteOld(
                 { m_position_while_collecting.x,
                   m_position_while_collecting.y },
@@ -282,8 +326,6 @@ void ItemJewel::Draw()
                 { GetSize().x * scale * 1.7f,GetSize().y * scale * 1.7f },
                 m_Alpha
             );
-
-            
         }
 
         b2Vec2 screen_center;
@@ -291,18 +333,18 @@ void ItemJewel::Draw()
         screen_center.y = SCREEN_CENTER_Y;
 
 
-        // ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒAƒCƒeƒ€[‚ÌˆÊ’uj
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆã‚¢ã‚¤ãƒ†ãƒ ãƒ¼ã®ä½ç½®ï¼‰
         b2Vec2 position;
         position.x = m_body->GetPosition().x;
         position.y = m_body->GetPosition().y;
 
 
-        // ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-        //æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+        //å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
         
-        //ƒGƒtƒFƒNƒg•`‰æ
+        //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæç”»
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_Effect_Texture);
 
         DrawDividedSpritePlayer(
@@ -321,9 +363,9 @@ void ItemJewel::Draw()
         }
 
 
-        // ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
+        // ã‚·ã‚§ãƒ¼ãƒ€ãƒªã‚½ãƒ¼ã‚¹ã‚’è¨­å®š
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
-        //•`‰æ
+        //æç”»
         DrawSprite(
             { draw_x,
               draw_y },
@@ -335,7 +377,7 @@ void ItemJewel::Draw()
 
     if (jem_get_sheet_cnt != 0)
     {
-        // ƒRƒ‰ƒCƒ_[‚ÆˆÊ’uî•ñ‚Ì•â³‚ğ‚·‚é‚½‚ß
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ä½ç½®æƒ…å ±ã®è£œæ­£ã‚’ã™ã‚‹ãŸã‚
         float scale = SCREEN_SCALE;
 
 
@@ -345,18 +387,18 @@ void ItemJewel::Draw()
         screen_center.y = SCREEN_CENTER_Y;
 
 
-        // ƒRƒ‰ƒCƒ_[‚ÌˆÊ’u‚Ìæ“¾iƒAƒCƒeƒ€[‚ÌˆÊ’uj
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã®ä½ç½®ã®å–å¾—ï¼ˆã‚¢ã‚¤ãƒ†ãƒ ãƒ¼ã®ä½ç½®ï¼‰
         b2Vec2 position;
         position.x = get_effect_pos.x;
         position.y = get_effect_pos.y;
 
 
-        // ƒvƒŒƒCƒ„[ˆÊ’u‚ğl—¶‚µ‚ÄƒXƒNƒ[ƒ‹•â³‚ğ‰Á‚¦‚é
-        //æ“¾‚µ‚½body‚Ìƒ|ƒWƒVƒ‡ƒ“‚É‘Î‚µ‚ÄBox2dƒXƒP[ƒ‹‚Ì•â³‚ğ‰Á‚¦‚é
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ä½ç½®ã‚’è€ƒæ…®ã—ã¦ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è£œæ­£ã‚’åŠ ãˆã‚‹
+        //å–å¾—ã—ãŸbodyã®ãƒã‚¸ã‚·ãƒ§ãƒ³ã«å¯¾ã—ã¦Box2dã‚¹ã‚±ãƒ¼ãƒ«ã®è£œæ­£ã‚’åŠ ãˆã‚‹
         float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
         float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-        //ƒGƒtƒFƒNƒg•`‰æ
+        //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæç”»
         GetDeviceContext()->PSSetShaderResources(0, 1, &g_get_effect_texture);
 
         DrawSplittingSprite(
@@ -375,6 +417,30 @@ void ItemJewel::Draw()
         }
     }
 
+    if (m_if_effect_using)
+    {
+        // ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ä½ç½®æƒ…å ±ã®è£œæ­£ã‚’ã™ã‚‹ãŸã‚
+        float scale = SCREEN_SCALE;
+        b2Vec2 screen_center;
+        screen_center.x = SCREEN_CENTER_X;
+        screen_center.y = SCREEN_CENTER_Y;
+
+        //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆæç”»
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_using_effect_texture);
+
+        DrawDividedSpritePlayer(
+            { screen_center.x,
+              screen_center.y },
+            0,
+            { GetSize().x * scale * 6.0f ,GetSize().y * scale * 6.0f },
+            7, 5, m_use_anim_id, 3.0, true
+        );
+        m_use_anim_id++;
+        if (m_use_anim_id == 35)
+        {
+            m_if_effect_using = false;
+        }
+    }
 }
 
 
@@ -388,7 +454,7 @@ void ItemJewel::Finalize()
     }
     if (GetBody() != nullptr)
     {
-        //ƒ[ƒ‹ƒh‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ‚Á‚Ä‚­‚é
+        //ãƒ¯ãƒ¼ãƒ«ãƒ‰ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŒã£ã¦ãã‚‹
         Box2dWorld& box2d_world = Box2dWorld::GetInstance();
         b2World* world = box2d_world.GetBox2dWorldPointer();
         world->DestroyBody(GetBody());
@@ -413,22 +479,30 @@ ItemJewel::~ItemJewel()
         UnInitTexture(g_get_effect_texture);
         g_get_effect_texture = NULL;
     }
+    if (g_getting_effect_texture)
+    {
+        UnInitTexture(g_getting_effect_texture);
+        g_getting_effect_texture = NULL;
+    }
+    if (g_using_effect_texture)
+    {
+        UnInitTexture(g_using_effect_texture);
+        g_using_effect_texture = NULL;
+    }
 }
 
 
 
 void ItemJewel::CreateBody()
 {
-    m_functioned = false;
-    if (m_destory)
-    {
-        return;
-    }
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«ã‚²ãƒƒãƒˆã•ã‚ŒãŸã‹ã©ã†ã‹
+    m_get_by_player = false;
+
     b2BodyDef body;
     body.type = b2_staticBody;
     body.position.Set(m_body_position.x, m_body_position.y);
     body.angle = m_angle;
-    body.fixedRotation = true;//‰ñ“]‚ğŒÅ’è‚É‚·‚é
+    body.fixedRotation = true;//å›è»¢ã‚’å›ºå®šã«ã™ã‚‹
     body.userData.pointer = (uintptr_t)this;
 
 
@@ -437,11 +511,11 @@ void ItemJewel::CreateBody()
 
     m_body = world->CreateBody(&body);
 
-    SetSize(m_size);//ƒvƒŒƒCƒ„[•\¦‚ğ‚·‚é‚½‚ß‚ÉƒZƒbƒg‚·‚é
+    SetSize(m_size);//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¡¨ç¤ºã‚’ã™ã‚‹ãŸã‚ã«ã‚»ãƒƒãƒˆã™ã‚‹
 
 
     b2Vec2 size;
-    size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;//ƒTƒCƒY‚ğ‚P‚É‚·‚é‚Æ@1m*1m‚É‚È‚é‚½‚ß@ƒTƒCƒY‚ğ‚³‚°‚ÄA•¨—‰‰Z‚Ì‹““®‚ğ‘€ì‚µ‚â‚·‚­‚·‚é
+    size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;//ã‚µã‚¤ã‚ºã‚’ï¼‘ã«ã™ã‚‹ã¨ã€€1m*1mã«ãªã‚‹ãŸã‚ã€€ã‚µã‚¤ã‚ºã‚’ã•ã’ã¦ã€ç‰©ç†æ¼”ç®—ã®æŒ™å‹•ã‚’æ“ä½œã—ã‚„ã™ãã™ã‚‹
     size.y = m_size.y / BOX2D_SCALE_MANAGEMENT;
 
 
@@ -449,7 +523,7 @@ void ItemJewel::CreateBody()
     b2Fixture* p_fixture;
 
 
-    //lŠpŒ`‚Ìê‡
+    //å››è§’å½¢ã®å ´åˆ
    //-----------------------------------------------------------------------------
     if (m_shape_polygon)
     {
@@ -457,15 +531,15 @@ void ItemJewel::CreateBody()
         shape.SetAsBox(size.x * 0.5f, size.y * 0.5f);
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
 
     }
-    //‰~‚Ìê‡
+    //å††ã®å ´åˆ
 //-----------------------------------------------------------------------------
     else
     {
@@ -473,17 +547,17 @@ void ItemJewel::CreateBody()
         shape.m_radius = size.x * 0.5f;
 
         fixture.shape = &shape;
-        fixture.density = 1.0f;//–§“x
-        fixture.friction = 0.3f;//–€C
-        fixture.restitution = 0.1f;//”½”­ŒW”
-        fixture.isSensor = true;//ƒZƒ“ƒT[‚©‚Ç‚¤‚©Atrue‚È‚ç‚ ‚½‚è”»’è‚ÍÁ‚¦‚é
+        fixture.density = 1.0f;//å¯†åº¦
+        fixture.friction = 0.3f;//æ‘©æ“¦
+        fixture.restitution = 0.1f;//åç™ºä¿‚æ•°
+        fixture.isSensor = true;//ã‚»ãƒ³ã‚µãƒ¼ã‹ã©ã†ã‹ã€trueãªã‚‰ã‚ãŸã‚Šåˆ¤å®šã¯æ¶ˆãˆã‚‹
 
         p_fixture = m_body->CreateFixture(&fixture);
     }
 
-    // ƒJƒXƒ^ƒ€ƒf[ƒ^‚ğì¬‚µ‚Äİ’è
-    // ƒvƒŒƒCƒ„[‚É’l‚ğ“o˜^
-    // ƒvƒŒ[ƒ„[‚Éƒ†[ƒU[ƒf[ƒ^‚ğ“o˜^
+    // ã‚«ã‚¹ã‚¿ãƒ ãƒ‡ãƒ¼ã‚¿ã‚’ä½œæˆã—ã¦è¨­å®š
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å€¤ã‚’ç™»éŒ²
+    // ãƒ—ãƒ¬ãƒ¼ãƒ¤ãƒ¼ã«ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²
     ObjectData* data = new ObjectData{ collider_item };
     p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
 
