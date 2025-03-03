@@ -23,6 +23,8 @@ enum ButtonSelection
 	Button_Respawn_InitalPoint,
 	Button_SelectScene,
 	Button_TitleScene,
+
+	Button_NULL,
 };
 
 
@@ -40,7 +42,7 @@ public:
 
 
 private:
-	ButtonSelection m_button_selected = Button_SelectScene;
+	ButtonSelection m_button_selected = Button_NULL;
 	Button_PressFlag key_flag;
 };
 
