@@ -75,7 +75,7 @@ void OP::Update()
 	}
 	g_pressed = Keyboard_IsKeyDownTrigger(KK_X);
 
-	if (Keyboard_IsKeyDownTrigger(KK_LEFTCONTROL))
+	if (Keyboard_IsKeyDownTrigger(KK_S))
 	{
 		video.SetState(Video_Skip);
 	}
