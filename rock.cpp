@@ -120,8 +120,10 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 
 
 	int ID = object_rock_anchorpoint_data->GenerateID();
+	object_rock_data->id = ID;
 	object_rock_anchorpoint_data->id = ID;
 	SetID(ID);
+	object_rock_data->need_anchor_level = set_need_anchor_level;
 	object_rock_anchorpoint_data->need_anchor_level = set_need_anchor_level;
 
 	//アンカーレベルをメンバ変数で保持

@@ -223,6 +223,10 @@ private:
 
 	const int NUM_BODIES = 11;
 
+	std::unique_ptr<class ObjectData> m_wood_objectData;  // ユニークポインターに変更
+	std::unique_ptr<class ObjectData> m_anchor_point_objectData;  // ユニークポインターに変更
+	std::unique_ptr<class ObjectData> m_stump_objectData;  // ユニークポインターに変更
+
 
 	bool camera_shake_was;//カメラシェイクを既にしたかどうか
 };

@@ -102,8 +102,9 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	b2Fixture* object_wood_fixture = m_Wood_body->CreateFixture(&wood_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_wood_data = new ObjectData{ collider_object };//一旦壁判定
-	object_wood_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_wood_data);
+	// ユニークポインターを使って ObjectData を作成
+	m_wood_objectData = std::make_unique<ObjectData>(collider_object);
+	object_wood_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_wood_objectData.get());
 
 	//---------------------------------------------------------------------------//
 	//2つめのボディ　木の上のアンカーポイントをつくる
@@ -143,12 +144,13 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
-	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+	// ユニークポインターを使って ObjectData を作成
+	m_anchor_point_objectData = std::make_unique<ObjectData>(collider_anchor_point);
+	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_anchor_point_objectData.get());
 
-	object_wood_data->object_name = Object_Wood;
-	object_wood_data->need_anchor_level = need_level;
-	object_anchorpoint_data->object_name = Object_Wood;
+	m_wood_objectData->object_name = Object_Wood;
+	m_wood_objectData->need_anchor_level = need_level;
+	m_anchor_point_objectData->object_name = Object_Wood;
 
 
 	//-----------------------------------------------------------------------------------------------------------------------------------------
@@ -204,19 +206,20 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	b2Fixture* object_stump_fixture = GetObjectStumpBody()->CreateFixture(&stump_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_stump_data = new ObjectData{ collider_object };//一旦壁判定
-	object_stump_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_stump_data);
+	m_stump_objectData = std::make_unique<ObjectData>(collider_ground);
+	object_stump_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_stump_objectData.get());
 
-	object_stump_data->object_name = Object_Wood;
+
+	m_stump_objectData->object_name = Object_Wood;
 
 
 
 
 	//ObjecrDataの　ID設定　や　他の設定
 	//------------------------------------------------------------------------------------------------------------------------------------------
-	int ID=object_anchorpoint_data->GenerateID();
-	object_wood_data->id = ID;
-	object_anchorpoint_data->id = ID;
+	int ID= m_anchor_point_objectData->GenerateID();
+	m_wood_objectData->id = ID;
+	m_anchor_point_objectData->id = ID;
 	SetID(ID);
 
 	//木を倒しす時に必要になるForce とりあえずサイズに依存でつくる
@@ -226,12 +229,12 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 	need_power.y = 10.0f;//縦に必要な力はない
 	
 
-	object_anchorpoint_data->add_force = need_power;
+	m_anchor_point_objectData->add_force = need_power;
 	m_pulling_power = need_power;
 
 
 	//アンカーレベルの設定
-	object_anchorpoint_data->need_anchor_level = need_level;
+	m_anchor_point_objectData->need_anchor_level = need_level;
 
 	//アンカーレベルをメンバ変数で保持
 	m_need_level = need_level;
@@ -300,6 +303,7 @@ wood::wood(b2Vec2 Position, b2Vec2 Wood_size, b2Vec2 AnchorPoint_size,int need_l
 
 wood::~wood()
 {
+	Finalize();
 }
 
 
@@ -725,17 +729,86 @@ void wood::Finalize()
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-
-	if (GetObjectWoodBody() != nullptr)
+	if (Wood_body != nullptr)
 	{
-		//ボディの削除
-		world->DestroyBody(Wood_body);
+		for (b2Fixture* fixture = GetObjectWoodBody()->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
+
+		// `b2Body` を削除
+		Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(Wood_body);
+		Wood_body = nullptr;
 	}
 
-	if (GetObjectAnchorPointBody() != nullptr)
+
+	if (Stump_body != nullptr)
 	{
-		world->DestroyBody(AnchorPoint_body);
+		for (b2Fixture* fixture = GetObjectStumpBody()->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
+
+		// `b2Body` を削除
+		Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(Stump_body);
+		Stump_body = nullptr;
 	}
+
+
+	if (AnchorPoint_body != nullptr)
+	{
+		for (b2Fixture* fixture = GetObjectAnchorPointBody()->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
+
+		// `b2Body` を削除
+		Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(AnchorPoint_body);
+		AnchorPoint_body = nullptr;
+	}
+
+	
+
+
 
 
 	if (g_Wood_Texture) UnInitTexture(g_Wood_Texture);
