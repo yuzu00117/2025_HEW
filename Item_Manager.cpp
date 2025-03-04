@@ -228,9 +228,7 @@ void ItemManager::DrawAll() {
 	for (auto& w : m_Coin_List) {
 		w->Draw();
 	}
-    for (const auto& w : m_Healing_List) {
-        w->Draw();
-    }
+
 }
 
 // 全てのアイテムを描画
@@ -246,6 +244,10 @@ void ItemManager::DrawFront() {
     }
 
     for (auto& w : m_SavePoint_List) {
+        w->Draw();
+    }
+
+    for (const auto& w : m_Healing_List) {
         w->Draw();
     }
 

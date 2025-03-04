@@ -61,7 +61,7 @@ change_enemy_filter_and_body::change_enemy_filter_and_body(b2Vec2 position, b2Ve
 	fixture.friction = 0.01f;
 	fixture.restitution = 0.3f;
 	fixture.isSensor = false;
-	fixture.filter = createFilterExclude("blown_away_enemy_filter", {"Player_filter", "ground_filter","enemy_filter","one-way_platform_filter","object_filter","item_filter","Boss_filter" });
+	fixture.filter = createFilterExclude("blown_away_enemy_filter", {"Player_filter", "ground_filter","enemy_filter","one-way_platform_filter","object_filter","item_filter","Boss_filter","texture_body_filter"});
 
 	b2Fixture* m_fixture = m_Body->CreateFixture(&fixture);
 

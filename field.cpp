@@ -675,6 +675,7 @@ void Field::Initialize()
 				//足場ブロック
 				if (field_map[y][x] == 95) {
 					objectManager.AddOne_way_platformList(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(0.0f, -0.5f), b2Vec2(1.0f, 0.2f) ,false);
+					objectManager.AddTextureBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.f, 1.f), 0.0, g_background_block_down_Texture);
 				}
 
 
@@ -733,6 +734,12 @@ void Field::Initialize()
 
 				if (field_map[y][x] == 107) {
 					objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, ARROW_LEFT_SIGNBOARD, 0.f);
+				}
+
+
+				//ハート
+				if (field_map[y][x] == 108) {
+					itemManager.AddHealing(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f,respawning);
 				}
 			}
 		}	
