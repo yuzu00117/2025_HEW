@@ -10,6 +10,7 @@
 #ifndef BOSS_FIELD_BLOCK_H
 #define BOSS_FIELD_BLOCK_H
 #include"include/box2d/box2d.h"
+#include<memory>
 
 
 enum Boss_Room_Level
@@ -107,6 +108,8 @@ private:
 	bool break_flag=false;
 
 	int Texture_type;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 };
 
 
