@@ -1036,7 +1036,7 @@ void Field::Initialize()
 				//}
 
 				if (field_map[y][x] == 12) {//壊れるブロック
-					m_p_field_array[y][x] = new Ground(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 25.0f), 0.0f, true, true, BOSS_WALL, false);
+					objectManager.AddGround(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(3.0f, 25.0f), 0.0f, true, true, g_Iseki_boss_wall_object_Texture, false);
 				}
 
 
