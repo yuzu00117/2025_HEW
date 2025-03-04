@@ -23,6 +23,7 @@ enum Contact_Block_Type
 
 	GO_STAGE_ISEKI,//遺跡のステージにいく
 	GO_BOSS_STAGE,//ボス戦に行く
+	GO_BOSS_MOVIE,//ボス戦ムービーシーンに移行
 
 };
 
