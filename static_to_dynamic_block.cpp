@@ -90,12 +90,15 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 		b2Fixture* m_top_fixture = m_body->CreateFixture(&topFixture);
 		
 		
-		ObjectData* object_top_data = new ObjectData{ collider_ground };
+		// ユニークポインターを使って ObjectData を作成
+		m_top_objectData = std::make_unique<ObjectData>(collider_ground);
+		
+		
 		if (m_top_fixture)
 		{
-			m_top_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_top_data);
-			object_top_data->need_anchor_level = need_anchor_level;
-			object_top_data->object_name = Object_Static_to_Dynamic;
+			m_top_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_top_objectData.get());
+			m_top_objectData->need_anchor_level = need_anchor_level;
+			m_top_objectData->object_name = Object_Static_to_Dynamic;
 		}
 
 		// 下半分のボックス
@@ -110,12 +113,15 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 		b2Fixture* m_bottom_fixture = m_body->CreateFixture(&bottomFixture);
 
 
-		ObjectData* object_bottom_data = new ObjectData{ collider_object };
+		// ユニークポインターを使って ObjectData を作成
+		m_bottom_objectData = std::make_unique<ObjectData>(collider_object);
+		
+
 		if (m_bottom_fixture)
 		{
-			m_bottom_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_bottom_data);
-			object_bottom_data->need_anchor_level = need_anchor_level;
-			object_bottom_data->object_name = Object_Static_to_Dynamic;
+			m_bottom_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_bottom_objectData.get());
+			m_bottom_objectData->need_anchor_level = need_anchor_level;
+			m_bottom_objectData->object_name = Object_Static_to_Dynamic;
 		}
 	
 
@@ -145,8 +151,10 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 	b2Fixture* m_anchorpoint_fixture = m_body->CreateFixture(&fixture_anchorpoint);
 
 
-	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
-	m_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+	// ユニークポインターを使って ObjectData を作成
+	m_anchor_point_objectData = std::make_unique<ObjectData>(collider_ground);
+	m_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_anchor_point_objectData.get());
+
 
 
 	//------------------------------------------------------------------------
@@ -154,20 +162,20 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 	
 
-	int ID = object_anchorpoint_data->GenerateID();
-	object_anchorpoint_data->id = ID;
+	int ID = m_anchor_point_objectData->GenerateID();
+	m_anchor_point_objectData->id = ID;
 	SetID(ID);
 
-	object_anchorpoint_data->object_name = Object_Static_to_Dynamic;
+	m_anchor_point_objectData->object_name = Object_Static_to_Dynamic;
 
-	object_anchorpoint_data->need_anchor_level = need_anchor_level;
+	m_anchor_point_objectData->need_anchor_level = need_anchor_level;
 	m_need_level = need_anchor_level;
 
 
 
-	object_bottom_data->id = GetID();
+	m_bottom_objectData->id = GetID();
 
-	object_top_data->id = GetID();
+	m_top_objectData->id = GetID();
 
 	
 	Break_Flag = break_flag;
@@ -296,7 +304,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 position, b2Vec2 body_si
 
 static_to_dynamic_block::~static_to_dynamic_block()
 {
-
+	Finalize();
 }
 
 
@@ -515,15 +523,29 @@ void static_to_dynamic_block::Draw()
 
 void static_to_dynamic_block::Finalize()
 {
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!object_body) return;
 
-	if (GetObjectBody() != nullptr)
-	{
-		//ボディの削除
-		world->DestroyBody(object_body);
+	for (b2Fixture* fixture = object_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
+
+
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(object_body);
+	object_body = nullptr;
 
 	
 	if (g_BoxRock_Texture) UnInitTexture(g_BoxRock_Texture);
