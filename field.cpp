@@ -811,7 +811,7 @@ void Field::Initialize()
 						const ItemSavePoint* SavePoint = player.GetRegisteredSavePoint();
 						if (SavePoint != nullptr)
 						{
-							player.Initialize(SavePoint->GetBody()->GetPosition(), b2Vec2(1, 2), size);
+							player.Initialize(SavePoint->GetRespawnPosition(), b2Vec2(1, 2), size);
 							//リスポンした時の効果音
 							app_atomex_start(Player_Jewelry_Colect_Sound);
 						}
@@ -978,7 +978,13 @@ void Field::Initialize()
 						objectManager.AddUiBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, (y + 0.5) / BOX2D_SCALE_MANAGEMENT), b2Vec2(4.0f, 4.0f), b2Vec2(1.0f, 1.0f), b2Vec2_zero, BOSS_SIGNBOARD, 0.f);
 					}
 
-						
+					//------------------------------------------------------------------------------------------------------
+					//中間地
+					if (field_map[y][x] == 99) {//中間地
+						itemManager.AddSavePoint(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(5.0f, 2.5f), 0.0f, respawning);
+					}
+
+
 				}
 			}
 			break;

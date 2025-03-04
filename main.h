@@ -11,6 +11,11 @@
 #ifndef _MAIN_H
 #define _MAIN_H
 
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
+
+
 #pragma warning(push)
 #pragma warning(disable:4005)
 
@@ -28,6 +33,8 @@
 #include "mmsystem.h"
 
 
+
+
 #pragma warning(pop)
 
 
@@ -41,6 +48,16 @@ using namespace DirectX;
 #pragma comment(lib, "DirectXTex_Debug.lib")
 #else
 #pragma comment(lib, "DirectXTex_Release.lib")
+#endif
+
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#else
+#define DBG_NEW new
+#endif
+
+#ifdef _DEBUG
+#define new DBG_NEW
 #endif
 
 //*****************************************************************************
