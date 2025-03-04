@@ -124,7 +124,6 @@ void contact_block::Update()
 
 				break;
 			case GO_BOSS_STAGE:
-			
 				sceneManager.SetStageName(STAGE_BOSS);
 				sceneManager.Set_Chenge_Scene_flag(true);
 				break;
@@ -133,8 +132,11 @@ void contact_block::Update()
 				sceneManager.Set_Chenge_Scene_flag(true);
 				break;
 			case GO_STAGE_SELECT:
-			
 				sceneManager.SetStageName(STAGE_SELECT);
+				sceneManager.Set_Chenge_Scene_flag(true);
+				break;
+			case GO_BOSS_MOVIE:
+				sceneManager.ChangeScene(SCENE_BOSS_MOVIE);
 				sceneManager.Set_Chenge_Scene_flag(true);
 				break;
 			default:
