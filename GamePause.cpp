@@ -257,9 +257,16 @@ void GamePause::Update()
        }
            break;
        case Button_Respawn_InitalPoint:
+       {
            game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_INITIAL);
-           sceneManager.SetStageName(sceneManager.GetStageName());
+           STAGE_NAME stage = sceneManager.GetStageName();
+           if (stage == STAGE_TUTORIAL || stage == STAGE_TEST)
+           {
+               sceneManager.SetStageName(stage);
+           }
+           else { sceneManager.SetStageName(STAGE_1_1); }
            sceneManager.Set_Chenge_Scene_flag(true);
+       }
            break;
        case Button_SelectScene:
            game.SetNextGameState(GAME_STATE_PAUSE_SELECT_SCENE);
