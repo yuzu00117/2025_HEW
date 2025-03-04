@@ -226,10 +226,18 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     circle_bottom.m_p.Set(0.0f, size.y / 2); // 下の方の円
     circle_bottom.m_radius = body_size.x / BOX2D_SCALE_MANAGEMENT * 0.5f;
 
+    SceneManager& sceneManager = SceneManager::GetInstance();
     b2FixtureDef fixture_circle_bottom;
     fixture_circle_bottom.shape = &circle_bottom;
     fixture_circle_bottom.density = 1.3f;
-    fixture_circle_bottom.friction = 2.5f;    // 摩擦
+    if (sceneManager.GetStageName() == STAGE_BOSS)
+    {
+        fixture_circle_bottom.friction = 40.0f;    // 摩擦
+    }
+    else
+    {
+        fixture_circle_bottom.friction = 2.5f;    // 摩擦
+    }
     fixture_circle_bottom.restitution = 0.0f; // 反発係数
     fixture_circle_bottom.isSensor = false;   // センサーかどうか、trueならあたり判定は消える
     fixture_circle_bottom.filter = createFilterExclude("Player_filter", {});
