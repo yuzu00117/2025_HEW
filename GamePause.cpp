@@ -258,7 +258,7 @@ void GamePause::Update()
            break;
        case Button_Respawn_InitalPoint:
            game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_INITIAL);
-           sceneManager.SetStageName(STAGE_1_1);
+           sceneManager.SetStageName(sceneManager.GetStageName());
            sceneManager.Set_Chenge_Scene_flag(true);
            break;
        case Button_SelectScene:
