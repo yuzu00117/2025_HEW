@@ -262,13 +262,8 @@ void    ItemJewel::Function()
 void ItemJewel::Initialize()
 {
     m_functioned = false;
-    //消す予定なのかどうか
-     m_destory = false;
     //回収中かどうか
      m_collecting = false;
-
-    //プレイヤーにゲットされたかどうか
-    m_get_by_player = false;
 
     //回収の経過時間
     m_collecting_time = 0.3f;
@@ -436,7 +431,7 @@ void ItemJewel::Draw()
             7, 5, m_use_anim_id, 3.0, true
         );
         m_use_anim_id++;
-        if (m_use_anim_id == 35)
+        if (m_use_anim_id >= 35)
         {
             m_if_effect_using = false;
         }
@@ -497,6 +492,9 @@ void ItemJewel::CreateBody()
 {
     //プレイヤーにゲットされたかどうか
     m_get_by_player = false;
+    //消す予定なのかどうか
+    m_destory = false;
+
 
     b2BodyDef body;
     body.type = b2_staticBody;
