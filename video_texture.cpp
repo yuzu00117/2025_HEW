@@ -30,6 +30,8 @@
 
 #define CHECK_HR(x, msg) hr = x; if( hr != S_OK ) { dbg(msg); return false; }
 
+static bool isMFShutdownCalled = false;
+
 //#define SHOW_DEBUG        1
 #if SHOW_DEBUG
 static void dbg(const char* format, ...) {
@@ -441,13 +443,14 @@ public:
       target_texture->destroy();
       target_texture = nullptr;
     }
-    SAFE_RELEASE(pSourceResolver);
-    SAFE_RELEASE(uSource);
-    SAFE_RELEASE(mediaFileSource);
-    SAFE_RELEASE(pVideoReaderAttributes);
-    SAFE_RELEASE(pSourceReader);
-    SAFE_RELEASE(pReaderOutputType);
-    SAFE_RELEASE(pFirstOutputType);
+    if (pSourceResolver){ SAFE_RELEASE(pSourceResolver); }
+    if (uSource){ SAFE_RELEASE(uSource); }
+    if (mediaFileSource){ SAFE_RELEASE(mediaFileSource); }
+    if (pVideoReaderAttributes){ SAFE_RELEASE(pVideoReaderAttributes); }
+    //if (pSourceReader){ SAFE_RELEASE(pSourceReader); }
+#define SAFE_RELEASE(p) { if (p) { (p)->Release(); (p) = nullptr; } }
+    if (pReaderOutputType){ SAFE_RELEASE(pReaderOutputType); }
+    if (pFirstOutputType){ SAFE_RELEASE(pFirstOutputType); }
   }
 
   bool open(const char* filename) {
@@ -652,7 +655,11 @@ bool VideoTexture::createAPI() {
 }
 
 void VideoTexture::destroyAPI() {
-  MFShutdown();
+  if (!isMFShutdownCalled)
+  {
+      MFShutdown();
+      isMFShutdownCalled = true;
+  }
 }
 
 bool VideoTexture::create(const char* filename, bool looping) {

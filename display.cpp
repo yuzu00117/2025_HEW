@@ -32,6 +32,7 @@ display::~display()
 
 void display::Update()
 {
+#ifdef _DEBUG
 	//デバック用
 
 	if (Keyboard_IsKeyDown(KK_D0))
@@ -51,7 +52,7 @@ void display::Update()
 	{
 		SetDisplayWidth(+10);
 	}
-
+#endif
 
 	//-----------------------------------------------------------------------------------------------------------
 	//アンカーのレベルに応じた変更

@@ -139,6 +139,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	sceneManager.RegisterScene(SCENE_STAGE_SELECT, []() { return std::make_unique<StageSelectScene>(); });
 	sceneManager.RegisterScene(SCENE_GAME, []() { return std::make_unique<GameScene>(); });
 	sceneManager.RegisterScene(SCENE_RESULT, []() { return std::make_unique<ResultScene>(); });
+	sceneManager.RegisterScene(SCENE_BOSS_MOVIE, []() { return std::make_unique<BossMovieScene>(); });
+
 	
 
 	//èâä˙ÉVÅ[ÉìÇÃê›íË
@@ -147,10 +149,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	#ifdef _DEBUG
 	sceneManager.SetStageName(STAGE_SELECT);
 
-	sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+	sceneManager.ChangeScene(SCENE_TITLE);
 
 	#else
-	sceneManager.ChangeScene(SCENE_TITLE);
+	sceneManager.ChangeScene(SCENE_BOSS_MOVIE);
   sceneManager.SetStageName(STAGE_SELECT);
 	#endif
 	

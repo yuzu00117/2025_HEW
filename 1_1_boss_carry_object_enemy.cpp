@@ -20,6 +20,7 @@ static ID3D11ShaderResourceView* g_Object_Texture = NULL;//エネミーのテクスチャ
 
 boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_size,bool left, float Enemy_speed,b2Vec2 Object_size, int Object_type,int anchor_level)
 {
+	needlevel = anchor_level;
 
 	if (g_Enemy_Texture == NULL)
 	{
@@ -82,7 +83,7 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 	SetID(ID);
 
 	enemy_data->id = GetID();
-
+	enemy_data->need_anchor_level = needlevel;
 
 
 	// === ObjectBody の作成 ===
@@ -107,7 +108,7 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 	ObjectData* object_data = new ObjectData{ collider_anchor_point };
 	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
-	object_data->need_anchor_level = anchor_level;
+	object_data->need_anchor_level = needlevel;
 	object_data->id = GetID();
 	object_data->object_name = Boss_Carry_Object_Enemy;
 
@@ -212,7 +213,7 @@ void boss_carry_object_enemy::Destroy_Splitting()
 					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
 
 					// カスタムデータを作成して設定
-					ObjectData* object_anchorpoint_data = new ObjectData{ collider_ground };
+					ObjectData* object_anchorpoint_data = new ObjectData{ collider_texture_block};
 					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
 
 
@@ -285,7 +286,7 @@ void boss_carry_object_enemy::Update()
 
 		// 30秒（1800フレーム）経過後にボディ削除
 		lifetime++;
-		if (lifetime > 1800)
+		if (lifetime > 1200)
 		{
 			Destroy_Body();
 		}
@@ -346,6 +347,7 @@ void boss_carry_object_enemy::AnchorHit()
 		newEnemyFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemyData);
 		enemyData->id = GetID();
 		enemyData->object_name = Boss_Carry_Object_Enemy;
+		enemyData->need_anchor_level = needlevel;
 
 		// --- ObjectBodyの再設定 ---
 		b2PolygonShape newObjectShape;
@@ -363,6 +365,7 @@ void boss_carry_object_enemy::AnchorHit()
 		ObjectData* objectData = new ObjectData{ collider_object };
 		objectData-= GetID();
 		objectData->object_name = Boss_Carry_Object_Enemy;
+		objectData->need_anchor_level = needlevel;
 		newObjectFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(objectData);
 		objectData->id = GetID();
 

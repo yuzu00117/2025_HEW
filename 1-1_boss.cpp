@@ -116,7 +116,7 @@ Boss_1_1::Boss_1_1()
 }
 
 Boss_1_1::~Boss_1_1()
-{
+{ 
 }
 
 void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
@@ -289,6 +289,8 @@ void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
 	boss_hp = 3;
 	dead_cnt = 0;
 
+	//次Update関数で追加するダメージ表記のリストのリセット
+	add_item_damage_value.clear();
 
 	now_boss_state = charge_attack_state;
 }
@@ -297,6 +299,17 @@ void Boss_1_1::Update()
 {
 	if (m_body != nullptr)
 	{
+		SetBossElapsedTime(1);
+
+		//ダメージ表記リスト更新
+		for (int i = 0; i < add_item_damage_value.size(); i++)
+		{
+			ItemManager& item_manager = ItemManager::GetInstance();
+			item_manager.AddDamageValue(b2Vec2{ m_body->GetPosition().x, m_body->GetPosition().y - 1.0f}, b2Vec2{2.5f, 2.5f}, 0.0f, DamageOwnerType_enemy, 1000);
+		}
+		add_item_damage_value.clear();
+
+
 		//---------------------------------------------------------------------------------------------------------------------------
 		// プレイヤーの位置を取得
 		float player_x = PlayerPosition::GetPlayerPosition().x;
@@ -343,7 +356,7 @@ void Boss_1_1::Update()
 
 		//-------------------------------------------------------------------------------------------
 		// デバッグ用　ボタン押下でレベルアップ
-
+#ifdef _DEBUG
 		// アンカーポイントのボディを削除するデバッグ用
 		if (Keyboard_IsKeyDown(KK_Y) && debug_flag == 0)
 		{
@@ -355,7 +368,7 @@ void Boss_1_1::Update()
 		{
 			debug_flag--;
 		}
-
+#endif
 		//-------------------------------------------------------------------------------------------
 
 		switch (now_boss_state)
@@ -649,9 +662,14 @@ void Boss_1_1::UpdateCoolTime(void)
 void Boss_1_1::BossDamaged(void)
 {
 	// ボスのHPを減らす処理
-	SetBossHP(GetBossHP() - 1);
-	boss_stock = 3;
+	int damage = 1;
+	SetBossHP(GetBossHP() - damage);
+	//次Update関数で追加するダメージ表記のリストに追加
+	add_item_damage_value.push_back(damage);
 	sheet_cnt = 0;
+
+	//ボスのストックをリセットする
+	boss_stock = 3;
 }
 
 
@@ -1145,6 +1163,8 @@ void Boss_1_1::DestroyMiniGolemBody(void)
 		// ソウルを落とす
 		ItemManager &item_manager = ItemManager::GetInstance();
 		item_manager.AddSpirit(m_mini_golem_body->GetPosition(), {2.0f, 3.0f}, 0.0f, ENEMY_GOLEM_SPIRIT_TYPE, false);
+
+		item_manager.AddDamageValue(b2Vec2{ m_mini_golem_body->GetPosition().x, m_mini_golem_body->GetPosition().y - 0.2f}, b2Vec2{1.5f,1.5f}, 0.0f, DamageOwnerType_enemy, 100);
 
 		// 生成エフェクト用の管理
 		mini_golem_delete_effect_position = m_mini_golem_body->GetPosition();

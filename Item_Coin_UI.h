@@ -38,6 +38,25 @@ public:
 		now_get_coin_count = setCount;
 	}
 
+	// 最大コイン数を取得
+	static int GetMaxCoinCount(void)
+	{
+		return max_coin_count;
+	}
+
+
+	// 中間地を登録した時のコイン取得数を取得
+	static int GetCoinRecorded_WhenRegisteringSavePoint()
+	{
+		return coin_got_when_registering_SavePoint;
+	}
+
+	// 中間地を登録した時現在のコイン取得数を設定
+	static void RecordCoinGot_WhenRegisteringSavePoint(int value)
+	{
+		coin_got_when_registering_SavePoint = value;
+	}
+
 	static int GetDrawCount(void)
 	{
 		return DrawCount;
@@ -52,6 +71,7 @@ private:
 
 	static int max_coin_count;
 	static int now_get_coin_count;
+	static int coin_got_when_registering_SavePoint;		//中間地を登録する時のコイン取得数
 
 	static float coin_effect_frame;
 

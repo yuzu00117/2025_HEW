@@ -47,6 +47,11 @@ public:
 	//アイテムがゲットされた時の処理
 	void	Function();
 
+	//	どっかの中間地に登録されたかどうかを取得
+	bool	GetIfRegisteredToSavePoint() { return m_registered_to_save_point; }
+	//　どっかの中間地に登録されたかどうかをセット
+	void	SetIfRegisteredToSavePoint(bool flag) { m_registered_to_save_point = flag; }
+
 
 	void Initialize();
 	void Update();
@@ -91,6 +96,8 @@ private:
 
 	b2Vec2 coin_effect_pos;
 
+	//中間地に登録されたかどうか
+	bool	m_registered_to_save_point = false;
 
 };
 

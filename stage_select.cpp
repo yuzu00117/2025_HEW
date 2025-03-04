@@ -68,6 +68,17 @@ static ID3D11ShaderResourceView* g_stage_select_black_Texture = NULL;
 
 //説明に使うテクスチャ
 static ID3D11ShaderResourceView* g_Explanation_Texture = NULL;
+static ID3D11ShaderResourceView* g_Explanation_Texture2 = NULL;
+
+static ID3D11ShaderResourceView* g_Explanation_BackGround_Texture = NULL;
+
+
+
+static ID3D11ShaderResourceView* g_Button_A_Texture = NULL;
+static ID3D11ShaderResourceView* g_Button_B_Texture = NULL;
+static ID3D11ShaderResourceView* g_Text_select_Texture = NULL;
+static ID3D11ShaderResourceView* g_Text_exit_Texture = NULL;
+
 
 
 // メンバ変数として保持
@@ -106,6 +117,16 @@ void StageSelectScene::Initialize()
 	g_stage_select_black_Texture= InitTexture(L"asset\\texture\\sample_texture\\img_sample_texture_block.png");
 
 	g_Explanation_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\tips01.png");
+	g_Explanation_Texture2 = InitTexture(L"asset\\texture\\Explanation_texture\\tips02.png");
+
+	g_Explanation_BackGround_Texture = InitTexture(L"asset\\texture\\Explanation_texture\\ver01.png");
+
+
+	g_Button_A_Texture = InitTexture(L"asset\\texture\\sample_texture\\A_push.png");
+	g_Button_B_Texture = InitTexture(L"asset\\texture\\sample_texture\\b_push.png");
+	g_Text_exit_Texture = InitTexture(L"asset\\texture\\sample_texture\\UI_exit_B.png");
+	g_Text_select_Texture = InitTexture(L"asset\\texture\\sample_texture\\UI_select_A.png");
+
 
 	StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
 
@@ -205,6 +226,18 @@ void StageSelectScene::Update()
 		}
 
 
+		if (button_sheet_cnt < 16)
+		{
+			button_sheet_cnt += 0.3;
+		}
+		else
+		{
+			button_sheet_cnt = 0;
+		}
+	
+
+
+
 		
 
 		
@@ -287,7 +320,64 @@ void StageSelectScene::Draw()
 		}
 		//------------------------------------------------------------------------------------------------------
 		
-		
+
+		if (g_Text_select_Texture != nullptr)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Text_select_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 500, SCREEN_YCENTER + 225),
+				0.0f,
+				XMFLOAT2(200, 90),
+				1, 1, 1
+			);
+		}
+
+
+		if (g_Button_A_Texture!= nullptr)
+		{
+			int sheet_cnt = g_tap_addition;
+			if (15 < sheet_cnt)
+			{
+				sheet_cnt = 15;
+			}
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Button_A_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 440, SCREEN_YCENTER + 225),
+				0.0f,
+				XMFLOAT2(100*0.8, 75*0.8),
+				5, 4, sheet_cnt
+			);
+		}
+
+
+
+		if (g_Text_exit_Texture != nullptr)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Text_exit_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 500, SCREEN_YCENTER + 300),
+				0.0f,
+				XMFLOAT2(200, 90),
+				1, 1, 1
+			);
+		}
+
+
+		if (g_Button_B_Texture != nullptr)
+		{
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Button_B_Texture);
+
+			DrawDividedSprite(
+				XMFLOAT2(SCREEN_XCENTER + 440, SCREEN_YCENTER + 300),
+				0.0f,
+				XMFLOAT2(100*0.8, 75*0.8),
+				5, 4, 1
+			);
+		}
 
 
 		
@@ -810,7 +900,7 @@ void StageSelectScene::Draw()
 					max_score /= 10;
 				}
 
-			}
+			} 
 			break;
 
 		case 4:
@@ -931,12 +1021,38 @@ void StageSelectScene::Draw()
 		if (3<fade_rate)
 		{
 			// シェーダリソースを設定
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_BackGround_Texture);
+			DrawSpriteOld(XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), 0.0, XMFLOAT2(SCREEN_WIDTH, SCREEN_HEIGHT), 1.0);
+
+			// シェーダリソースを設定
+
+			SceneManager& scene = SceneManager::GetInstance();
+
+			switch (scene.GetStageName())
+			{
+			case STAGE_BOSS:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture2);
+				break;
+			case STAGE_1_1:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture2);
+				break;
+			case STAGE_TUTORIAL:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+			case STAGE_ISEKI:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+
+			default:
+				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Explanation_Texture);
+				break;
+			}
+			
 			DrawSpriteOld(
 				XMFLOAT2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2),
 				0.0f,
-				XMFLOAT2(SCREEN_WIDTH*0.7, SCREEN_HEIGHT*0.7),
-				disply_Explanation
+				XMFLOAT2(SCREEN_WIDTH*0.5, SCREEN_HEIGHT*0.6),
+				1.0f
 			);
 		}
 
@@ -972,8 +1088,14 @@ void StageSelectScene::Finalize()
 	if (g_stage_select_black_Texture) UnInitTexture(g_stage_select_black_Texture);
 
 	if (g_Explanation_Texture) UnInitTexture(g_Explanation_Texture);
+	if (g_Explanation_Texture2) UnInitTexture(g_Explanation_Texture2);
 
+	if (g_Explanation_BackGround_Texture) UnInitTexture(g_Explanation_BackGround_Texture);
 
+	if (g_Button_A_Texture) UnInitTexture(g_Button_A_Texture);
+	if (g_Button_B_Texture) UnInitTexture(g_Button_B_Texture);
+	if (g_Text_exit_Texture) UnInitTexture(g_Text_exit_Texture);
+	if (g_Text_select_Texture) UnInitTexture(g_Text_select_Texture);
 	
 	// ワールド解放
 	if (m_world) {

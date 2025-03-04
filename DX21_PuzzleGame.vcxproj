@@ -144,6 +144,7 @@
     <ClCompile Include="anchor_point.cpp" />
     <ClCompile Include="anchor_spirit.cpp" />
     <ClCompile Include="bg.cpp" />
+    <ClCompile Include="boss_movie.cpp" />
     <ClCompile Include="boss_wall_object.cpp" />
     <ClCompile Include="bound_block.cpp" />
     <ClCompile Include="break_block.cpp" />
@@ -168,7 +169,9 @@
     <ClCompile Include="enemy_attack.cpp" />
     <ClCompile Include="enemy_dynamic.cpp" />
     <ClCompile Include="enemy_floating.cpp" />
+    <ClCompile Include="GamePause.cpp" />
     <ClCompile Include="Item_Barrier.cpp" />
+    <ClCompile Include="Item_DamageValue.cpp" />
     <ClCompile Include="spawner_block_damage.cpp" />
     <ClCompile Include="spawner_enemy.cpp" />
     <ClCompile Include="enemy_static.cpp" />
@@ -236,6 +239,7 @@
     <ClInclude Include="anchor_spirit.h" />
     <ClInclude Include="bg.h" />
     <ClInclude Include="blown_away_effect.h" />
+    <ClInclude Include="boss_movie.h" />
     <ClInclude Include="boss_wall_object.h" />
     <ClInclude Include="bound_block.h" />
     <ClInclude Include="break_block.h" />
@@ -263,7 +267,10 @@
     <ClInclude Include="enemy_attack.h" />
     <ClInclude Include="enemy_dynamic.h" />
     <ClInclude Include="enemy_floating.h" />
+    <ClInclude Include="GamePause.h" />
     <ClInclude Include="Item_Barrier.h" />
+    <ClInclude Include="Item_DamageValue.h" />
+    <ClInclude Include="KeyInput_Flag.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="spawner_block_damage.h" />
     <ClInclude Include="spawner_enemy.h" />
