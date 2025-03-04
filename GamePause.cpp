@@ -160,7 +160,7 @@ void GamePause::Update()
     // コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
     //↓キーで下選択
-    if(state.leftStickY < 0 && key_flag.CountTime > 15.0f)
+    if(state.leftStickY < -100 && key_flag.CountTime > 30.0f)
     {
         switch (m_button_selected)
         {
@@ -191,7 +191,7 @@ void GamePause::Update()
         g_selection_hand_position.y = g_button_position[m_button_selected].y + 20.0f;
     }
     //↑キーで上選択
-    else if (state.leftStickY > 0 && key_flag.CountTime > 15.0f)
+    else if (state.leftStickY > 100 && key_flag.CountTime > 30.0f)
     {
         switch (m_button_selected)
         {
