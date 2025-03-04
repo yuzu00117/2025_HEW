@@ -20,6 +20,12 @@ ObjectManager& ObjectManager::GetInstance() {
     return instance;
 }
 
+
+void ObjectManager::AddGround(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, ID3D11ShaderResourceView* texture, bool object_sensorAddGround)
+{
+    GroundList.emplace_back(std::make_unique<Ground>(position, body_size, angle, bFixed, is_sensor, texture, object_sensorAddGround));
+}
+
 // 木を追加
 void ObjectManager::AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int& need_level) {
     // 既存の 3 引数コンストラクタを利用して生成
@@ -529,6 +535,12 @@ void ObjectManager::DestroyBlockDamage(int id)
 
 // 全ての木を初期化
 void ObjectManager::InitializeAll() {
+
+    for (auto& w : GroundList) {
+        w->Initialize();
+    }
+
+
     for (auto& w : woodList) {
         w->Initialize();
     }
@@ -653,6 +665,12 @@ void ObjectManager::InitializeAll() {
 
 // 全ての木を更新
 void ObjectManager::UpdateAll() {
+
+
+    for (auto& w : GroundList) {
+        w->Update();
+    }
+
     for (auto& w : woodList) {
         w->Update();
     }
@@ -791,6 +809,11 @@ void ObjectManager::UpdateAll() {
 
 // 全ての木を描画
 void ObjectManager::DrawAll() {
+
+    for (auto& w : GroundList) {
+        w->Draw();
+    }
+
     for (auto& w : woodList) {
         w->Draw();
     }
@@ -929,6 +952,11 @@ void ObjectManager::DrawBack()
 
 // 全ての木を破棄
 void ObjectManager::FinalizeAll() {
+
+    for (auto& w : GroundList) {
+        w->Finalize();
+    }
+
     for (auto& w : woodList) {
         w->Finalize();
     }
@@ -1041,7 +1069,7 @@ void ObjectManager::FinalizeAll() {
 
 
 
-
+    GroundList.clear();
     woodList.clear(); // 動的配列をクリアしてメモリ解放
     rockList.clear();
     one_way_platformList.clear();
@@ -1086,6 +1114,9 @@ void ObjectManager::FinalizeAll() {
 
     spawner_enemyList.clear();
     spawner_block_damageList.clear();
+
+
+    GroundList.clear();
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)
