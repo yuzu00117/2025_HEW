@@ -121,6 +121,7 @@ void GamePause::Initialize()
     Max_Coin = 0;
     Current_Coin = 0;
     Max_Coin = Item_Coin_UI::GetMaxCoinCount();
+    key_flag.ControllerButton_Start = true;
 }
 
 void GamePause::Finalize()
@@ -145,7 +146,7 @@ void GamePause::Finalize()
 void GamePause::Update()
 {
     Player& player = Player::GetInstance();
-    if (player.GetPrevRegisteredSavePoint() != nullptr)
+    if (player.GetPrevRegisteredSavePoint() != nullptr || player.GetRegisteredSavePoint() != nullptr)
     {
         Respawn_SavePoint = true;
     }
@@ -273,6 +274,15 @@ void GamePause::Update()
        
        m_button_selected = Button_NULL;
     }
+
+    //ポーズ押したかどうか
+    if (state.start && !key_flag.ControllerButton_Start)
+    {
+        SceneManager& sceneManager = SceneManager::GetInstance();
+        Game& game = Game::GetInstance();
+        game.SetCurrentGameState(GAME_STATE_RESPAWN_INITIAL);    //gameの方の処理に影響ないので、適当で大丈夫
+    }
+    key_flag.ControllerButton_Start = state.start;
 
 #ifdef _DEBUG
     //↓キーで下選択
