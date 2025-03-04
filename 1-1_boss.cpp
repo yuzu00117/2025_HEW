@@ -116,7 +116,7 @@ Boss_1_1::Boss_1_1()
 }
 
 Boss_1_1::~Boss_1_1()
-{
+{ 
 }
 
 void Boss_1_1::Initialize(b2Vec2 position, b2Vec2 bodysize, bool left)
