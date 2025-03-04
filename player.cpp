@@ -22,6 +22,8 @@
 #include "FixtureSizeCalculate.h"
 #include"player_life.h"
 
+#define PLAYER_JUMPING_FORCE_Y  (-0.45f)
+
 // テクスチャのダウンロード グローバル変数にしてる
 static ID3D11ShaderResourceView *g_player_Texture = NULL;
 
@@ -75,7 +77,7 @@ float Player::m_AnchorThrowing_SpeedUp = 1.0f;
 bool Player::m_is_jumping = false;
 bool Player::m_jump_pressed = false;
 bool Player::m_direction = 1;
-b2Vec2 Player::m_jump_force = b2Vec2(0.0f, -0.45f);
+b2Vec2 Player::m_jump_force = b2Vec2(0.0f, PLAYER_JUMPING_FORCE_Y);
 float Player::m_speed = 0.04f;
 
 int Player::invincible_time = 0;
@@ -550,7 +552,7 @@ void Player::Update()
     // ジャンプのバフ
     if (Keyboard_IsKeyDownTrigger(KK_Z))
     {
-        m_jump_force = b2Vec2(0.0f, -0.40f * 1.5f);
+        m_jump_force = b2Vec2(0.0f, PLAYER_JUMPING_FORCE_Y * 1.5f);
     }
 
 
@@ -1025,7 +1027,7 @@ void Player::ResetPlayerParameter()
     m_is_jumping = false;
     m_jump_pressed = false;
     m_direction = 1;
-    m_jump_force = b2Vec2(0.0f, -0.40f);
+    m_jump_force = b2Vec2(0.0f, PLAYER_JUMPING_FORCE_Y);
     m_speed = 0.04f;
     invincible_time = 0;
 }
