@@ -204,7 +204,11 @@ public:
 	ItemSavePoint*	GetRegisteredSavePoint() { return m_registered_SavePoint; }
 	//プレイヤーが中間地点を登録（nullptrの場合は登録解除）
 	void	RegisterSavePoint(ItemSavePoint* SavePoint) { 
-		m_prev_registered_SavePoint = m_registered_SavePoint;
+		//現在の登録を解除じゃなくて、新しく登録するなら、今の登録を先に避難させる
+		if (SavePoint != nullptr)
+		{
+			m_prev_registered_SavePoint = m_registered_SavePoint;
+		}
 		//初回登録の時だけ前の登録した中間地も今回の中間地にする
 		if (m_prev_registered_SavePoint == nullptr)
 		{
