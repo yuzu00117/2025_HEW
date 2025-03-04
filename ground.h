@@ -10,20 +10,54 @@
 #ifndef GROUND_H
 #define GROUND_H
 
-#include"field.h"
+#include"include/box2d/box2d.h"
+#include"texture.h"
+#include"sprite.h"
+#include <memory>  // 追加
+
 
 
 //Filedを継承している　Drawとかの処理自体もFieldでやってるぞ
-class Ground:public Field
+class Ground
 {
 public:
-	Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture,bool object_sensor);
+	Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, ID3D11ShaderResourceView *texture,bool object_sensor);
 	~Ground();
 
+	void Initialize(void);
+	void Update(void);
+	void Draw(void);
+	void Finalize(void);
 
-	//Updata
+
+	b2Body* GetBody(void)
+	{
+		return m_body;
+	}
+
+	void SetBody(b2Body* body)
+	{
+		m_body = body;
+	}
+
+	b2Vec2 GetSize(void)
+	{
+		return m_size;
+	}
+
+	void SetSize(b2Vec2 size)
+	{
+		m_size = size;
+	}
 
 private:
+	b2Body* m_body;
+	b2Vec2 m_size;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
+	
+	ID3D11ShaderResourceView* g_texture;
+	
 
 };
 

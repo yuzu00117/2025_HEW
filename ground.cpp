@@ -13,7 +13,9 @@
 #include"world_box2d.h"
 #include"create_filter.h"
 #include"contactlist.h"
+#include"player_position.h"
 #include"create_filter.h"
+#include"collider_type.h"
 
 
 /**
@@ -25,10 +27,10 @@
  * @param is_sensor
  * @param texture
  */
-Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, FieldTexture texture,bool object_sensor)
+Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, ID3D11ShaderResourceView* texture, bool object_sensor)
 {
 	//テクスチャをセット
-	SetFieldTexture(texture);
+	g_texture=texture;
 
 
 	b2BodyDef body;
@@ -42,7 +44,9 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();//ワールドのインスタンスを取得する
 	b2World* world = box2d_world.GetBox2dWorldPointer();//ワールドのポインタを持ってくる
 
-	SetFieldBody(world->CreateBody(&body));//Bodyをワールドに固定
+	m_body = world->CreateBody(&body);
+
+	SetBody(m_body);//Bodyをワールドに固定
 
 
 	SetSize(body_size);//表示用にサイズをセットしとく、表示のときにGetSizeを呼び出す
@@ -76,22 +80,97 @@ Ground::Ground(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool
 	{
 		fixture.filter = createFilterExclude("ground_filter", {});
 	}
-	b2Fixture* ground_fixture = GetFieldBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
+	b2Fixture* ground_fixture = GetBody()->CreateFixture(&fixture);//Bodyをにフィクスチャを登録する
 
 	
 
 
-	// カスタムデータを作成して設定
-	// プレイヤーに値を登録
-	// プレーヤーにユーザーデータを登録
-	ObjectData* playerdata = new ObjectData{ collider_ground };
+	
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_ground);
+	ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
 
-
-
-	ground_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata);
 }
-
 Ground::~Ground()
 {
+	Finalize();
 }
+
+void Ground::Finalize() {
+	if (!m_body) return;
+
+	for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
+	
+
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+		
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
+	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+	m_body = nullptr;
+}
+
+
+void Ground::Initialize()
+{
+
+}
+
+void Ground::Update()
+{
+
+}
+
+void Ground::Draw()
+{
+	if (m_body != nullptr)
+	{
+	
+
+		// コライダーと位置情報の補正をするため
+		float scale = SCREEN_SCALE;
+
+		b2Vec2 screen_center;
+		screen_center.x = SCREEN_CENTER_X;
+		screen_center.y = SCREEN_CENTER_Y;
+
+
+		// コライダーの位置の取得（アイテムーの位置）
+		b2Vec2 position;
+		position.x = m_body->GetPosition().x;
+		position.y = m_body->GetPosition().y;
+
+
+		// プレイヤー位置を考慮してスクロール補正を加える
+		//取得したbodyのポジションに対してBox2dスケールの補正を加える
+		float draw_x = ((position.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+		float draw_y = ((position.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+		// シェーダリソースを設定
+		GetDeviceContext()->PSSetShaderResources(0, 1, &g_texture);
+		//描画
+		DrawSprite(
+			{ draw_x,
+			  draw_y },
+			m_body->GetAngle(),
+			{ GetSize().x * scale ,GetSize().y * scale  },
+			3
+		);
+
+		
+	}
+}
+

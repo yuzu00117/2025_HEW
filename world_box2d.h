@@ -33,10 +33,7 @@ public:
 
 	//デストラクタ
 	~Box2dWorld() {
-		if (m_p_world) {
-			delete m_p_world;
-			m_p_world = nullptr;
-		}
+	
 	}
 
 	static Box2dWorld& GetInstance() {
@@ -81,7 +78,7 @@ public:
         if (m_p_world) {
             delete m_p_world;
         }
-        m_p_world = new b2World(b2Vec2(0.0f, 10.f)); // 重力もリセット
+       m_p_world = new b2World(b2Vec2(0.0f, 10.f)); // 重力もリセット
       
         world_call_step = true;
     }

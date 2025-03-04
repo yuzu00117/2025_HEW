@@ -39,6 +39,7 @@
 #include"texture_block.h"
 #include"spawner_enemy.h"
 #include"spawner_block_damage.h"
+#include"ground.h"
 
 // オブジェクトの種類を定義
 enum ObjectType {
@@ -83,6 +84,9 @@ class ObjectManager {
 public:
     // シングルトンのインスタンス取得
     static ObjectManager& GetInstance();
+
+    //地面を追加する
+    void AddGround(b2Vec2 position, b2Vec2 body_size, float angle, bool bFixed, bool is_sensor, ID3D11ShaderResourceView* texture, bool object_sensor);
 
     // 木を追加
     void AddWood(const b2Vec2& position, const b2Vec2& woodSize, const b2Vec2& anchorPointSize,const int&need_level);
@@ -240,7 +244,14 @@ public:
     //  引っ張る強さを更新
     void    SetPullingPower_With_Multiple(b2Vec2 multiple);
 
+
+    ~ObjectManager() {
+        FinalizeAll();
+    }
+
 private:
+
+    std::vector<std::unique_ptr<Ground>> GroundList;//木のリスト
     std::vector<std::unique_ptr<wood>> woodList;//木のリスト
     std::vector < std::unique_ptr<rock>>rockList;//岩のリスト
     std::vector<std::unique_ptr<one_way_platform>> one_way_platformList;// 足場のリスト

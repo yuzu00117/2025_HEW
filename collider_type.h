@@ -90,12 +90,12 @@ public:
     void* extra;                    // 拡張用途の設定
 
     // Constructor
-    ObjectData(const ColliderTypeList type)
+    ObjectData(ColliderTypeList type)
         : collider_type(type), extra(nullptr) {}
 
 
     b2Vec2 add_force = { 0.0f,0.0f }; // 追加のb2Vecデータ
-    ObjectType object_name = NULL_object;           // オブジェクト用の識別データ
+    ObjectType object_name = NULL_object;// オブジェクト用の識別データ
     ItemType Item_name;               // アイテム用の識別データ
     int id;                           // オブジェクト管理用ID
 
