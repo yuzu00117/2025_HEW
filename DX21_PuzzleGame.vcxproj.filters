@@ -314,6 +314,9 @@
     <ClCompile Include="Item_Barrier.cpp" />
     <ClCompile Include="Item_Healing.cpp" />
     <ClCompile Include="Stamina_UI.cpp" />
+    <ClCompile Include="GamePause.cpp" />
+    <ClCompile Include="Item_DamageValue.cpp" />
+    <ClCompile Include="boss_movie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemy.h">
@@ -659,6 +662,10 @@
     <ClInclude Include="result.h">
       <Filter>ヘッダーファイル\scene</Filter>
     </ClInclude>
+    <ClInclude Include="GamePause.h" />
+    <ClInclude Include="Item_DamageValue.h" />
+    <ClInclude Include="KeyInput_Flag.h" />
+    <ClInclude Include="boss_movie.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソースファイル">
