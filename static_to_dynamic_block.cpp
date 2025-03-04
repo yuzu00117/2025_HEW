@@ -152,7 +152,7 @@ static_to_dynamic_block::static_to_dynamic_block(b2Vec2 Position, b2Vec2 size, c
 
 
 	// ユニークポインターを使って ObjectData を作成
-	m_anchor_point_objectData = std::make_unique<ObjectData>(collider_ground);
+	m_anchor_point_objectData = std::make_unique<ObjectData>(collider_anchor_point);
 	m_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_anchor_point_objectData.get());
 
 
