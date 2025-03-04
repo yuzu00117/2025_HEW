@@ -77,8 +77,8 @@ Texture_block::Texture_block(b2Vec2 Position, b2Vec2 block_size, float texture_a
 	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
 
-	int ID = object_data->GenerateID();
-	object_data->id = ID;
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
 
 	SetID(ID);
 
