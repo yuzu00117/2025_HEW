@@ -8,6 +8,11 @@
 //          
 //----------------------------------------------------------------------------------------------------
 
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include <Windows.h>
 #include "renderer.h"
 #include "sprite.h"
@@ -17,9 +22,12 @@
 #include"scene.h"
 #include"stage_select.h"
 #include"sound.h"
+
 #include"result.h"
 
 #include"video_texture.h"
+
+
 
 
 
@@ -50,6 +58,8 @@ char g_DebugStr[2048] = WINDOW_CAPTION;
 //メイン
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -147,6 +157,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	while (1)
 	{
+
+		
+
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -190,6 +203,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 				sceneManager.Draw();
 
+				
+				
 				dwFrameCount++;
 			}
 		}
@@ -247,6 +262,8 @@ HRESULT FirstInit(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	//ポリゴン
 	InitSprite();
 
+
+
 	return S_OK;
 }
 
@@ -259,6 +276,9 @@ void FinalFinalize()
 	CRIFinalize();
 
 	VideoTexture::destroyAPI();
+
+
+	_CrtDumpMemoryLeaks();  // メモリリークをチェック
 
 	//レンダリングの終了処理
 	UninitRenderer();
