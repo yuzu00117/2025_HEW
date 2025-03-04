@@ -1642,7 +1642,7 @@ public:
                     if (objectA->object_name == Boss_Carry_Object_Enemy) { return; }
 
                     boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
-                    enemy_instance->SetSplittingDestroyFlag(true);
+                    if(enemy_instance != nullptr){ enemy_instance->SetSplittingDestroyFlag(true); }
                     if (objectA->collider_type == collider_boss)
                     {
                         if (boss.GetNowBossState() != panic_state)
