@@ -18,6 +18,7 @@
 #include <memory>
 #include"game.h"
 #include"OP.h"
+#include"boss_movie.h"
 #include"sound.h"
 #include"sprite.h"
 #include"include/box2d/box2d.h"
@@ -33,6 +34,7 @@ enum SCENE_NAME
    SCENE_STAGE_SELECT,
    SCENE_GAME,
    SCENE_RESULT,
+   SCENE_BOSS_MOVIE,
 };
 
 
@@ -123,6 +125,32 @@ public :
     }
 
 };
+
+class BossMovieScene : public Scene {
+public:
+    BossMovie& boss_movie = BossMovie::GetInstance();
+
+    void Initialize() override {
+        std::cout << "Boss Movie Scene Initialized" << std::endl;
+        boss_movie.Initialize();
+    }
+
+    void Update() override {
+        std::cout << "Boss Movie Scene Updating" << std::endl;
+        boss_movie.Update();
+    }
+
+    void Draw() override {
+        std::cout << "Boss Movie Scene Drawing" << std::endl;
+        boss_movie.Draw();
+    }
+
+    void Finalize() override {
+        std::cout << "Boss Movie Scene Finalized" << std::endl;
+        boss_movie.Finalize();
+    }
+};
+
 
 class GameScene : public Scene {
 public:

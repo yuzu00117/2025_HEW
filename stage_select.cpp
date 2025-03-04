@@ -253,6 +253,8 @@ void StageSelectScene::Update()
 				switch (m_player.GetTouchStageSelectNum())
 				{
 				case 0:
+					sceneManager.SetStageName(STAGE_SELECT);
+					sceneManager.ChangeScene(SCENE_STAGE_SELECT);
 					break;
 				case 1:
 					sceneManager.SetStageName(STAGE_TUTORIAL);
