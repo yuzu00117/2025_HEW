@@ -448,6 +448,13 @@ void Game::Update(void)
         m_state = GAME_STATE_PAUSE;
     }
     key_flag.ControllerButton_Start = state.start;
+#ifdef _DEBUG
+    if (Keyboard_IsKeyDown(KK_TAB) && !key_flag.KeyboardButton_TAB)
+    {
+        m_state = GAME_STATE_PAUSE;
+    }
+    key_flag.KeyboardButton_TAB = Keyboard_IsKeyDown(KK_TAB);
+#endif // _DEBUG
 
     //========================================================================================================-
     Box2dWorld& world_instance = Box2dWorld::GetInstance();

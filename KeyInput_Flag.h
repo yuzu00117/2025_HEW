@@ -28,6 +28,8 @@ public:
 	bool ControllerButton_ZR = false;
 	bool ControllerButton_Start = false;
 
+	bool KeyboardButton_Escape = false;
+	bool KeyboardButton_TAB = false;
 	bool KeyboardButton_Enter = false;
 	bool KeyboardButton_Up = false;
 	bool KeyboardButton_Down = false;
