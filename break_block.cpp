@@ -66,10 +66,11 @@ Break_Block::Break_Block(b2Vec2 Position, b2Vec2 block_size, int divisions_x, in
 
 	b2Fixture* object_fixture = m_body->CreateFixture(&block_fixture);
 
-	// カスタムデータを作成して設定
-	ObjectData* object_data = new ObjectData{ collider_break_block };
-	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
+	
 
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_break_block);
+	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
 	b2FixtureDef player_fixture;
 
@@ -82,15 +83,15 @@ Break_Block::Break_Block(b2Vec2 Position, b2Vec2 block_size, int divisions_x, in
 
 	b2Fixture* m_player_fixture = m_body->CreateFixture(&player_fixture);
 
-	// カスタムデータを作成して設定
-	ObjectData* player_data = new ObjectData{ collider_break_player_block };
-	m_player_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_data);
+	// ユニークポインターを使って ObjectData を作成
+	m_player_objectData = std::make_unique<ObjectData>(collider_break_block);
+	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_player_objectData.get());
 
 
 
-	int ID = object_data->GenerateID();
-	object_data->id = ID;
-	player_data->id = ID;
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
+	m_player_objectData->id = ID;
 
 	SetID(ID);
 
@@ -102,6 +103,7 @@ Break_Block::Break_Block(b2Vec2 Position, b2Vec2 block_size, int divisions_x, in
 
 Break_Block::~Break_Block()
 {
+	Finalize();
 }
 
 
@@ -175,15 +177,26 @@ void Break_Block::Draw()
 
 void Break_Block::Finalize()
 {
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!m_body) return;
 
-	if (GetBody() != nullptr)
-	{
-		//ボディの削除
-		world->DestroyBody(m_body);
+	for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
+
+
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
 
-
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+	m_body = nullptr;
 }

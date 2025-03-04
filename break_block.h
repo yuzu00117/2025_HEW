@@ -14,6 +14,7 @@
 #include"include/box2d/box2d.h"
 #include"sprite.h"
 #include"texture.h"
+#include <memory>  // 追加
 
 
 class Break_Block
@@ -98,7 +99,9 @@ private:
 	bool m_flag = false;
 
 
-	
+	std::unique_ptr<class ObjectData> m_player_objectData;  // ユニークポインターに変更
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 
 	ID3D11ShaderResourceView* Texture;
 
