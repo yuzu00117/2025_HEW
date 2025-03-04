@@ -426,11 +426,12 @@ void Gauge_UI::DrawGaugeDamaged()
 	//テクスチャUVを弄って表示しているので（真ん中を中心にサイズ変わっちゃから、それを左中心にしたい）下の処理をする
 	//Max状態の時の長さに比例して、今のソウル値の長さを調整
 	temp_spirit_scale_y = (prev_virtual_spirit / GaugeUI_Cols_MAX) * gauge_only_size.y;
-	if (temp_spirit_scale_y > GaugeUI_Cols_MAX) { temp_spirit_scale_y = GaugeUI_Cols_MAX; }
+	if (temp_spirit_scale_y > gauge_only_size.y) { temp_spirit_scale_y = gauge_only_size.y; }
 	scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
 	//Max状態の時の位置に比例して、今のソウル値の場合の位置に移動
 //ブランチ前のバージョン	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
 	temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
+
 
 
 	float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() + AnchorSpirit::GetAnchorSpiritDamage();
