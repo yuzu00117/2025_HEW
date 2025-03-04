@@ -815,22 +815,6 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
-    for (auto& w : enemy_staticList) {
-        w->Draw();
-    }
-
-    for (auto& w : enemy_dynamicList) {
-        w->Draw();
-    }
-
-
-    for (auto& w : enemy_attackList) {
-        w->Draw();
-    }
-
-    for (auto& w : enemy_floatingList) {
-        w->Draw();
-    }
 
 
     for (auto& w : geyserList) {
@@ -896,6 +880,24 @@ void ObjectManager::DrawAll() {
 
     for (auto& w : spawner_block_damageList)
     {
+        w->Draw();
+    }
+
+
+    for (auto& w : enemy_staticList) {
+        w->Draw();
+    }
+
+    for (auto& w : enemy_dynamicList) {
+        w->Draw();
+    }
+
+
+    for (auto& w : enemy_attackList) {
+        w->Draw();
+    }
+
+    for (auto& w : enemy_floatingList) {
         w->Draw();
     }
   

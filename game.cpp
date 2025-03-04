@@ -67,6 +67,12 @@ void Game::Initialize()
     case STAGE_1_1:
         app_atomex_start(STAGE1_BGM);
         break;
+    case STAGE_ISEKI:
+        app_atomex_start(ADVENTURE_BGM);
+        break;
+    case STAGE_BOSS:
+        app_atomex_start(BOSS2_BGM);
+        break;
     default:
         break;
     }
