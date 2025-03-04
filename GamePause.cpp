@@ -293,13 +293,17 @@ void GamePause::Update()
 
 #ifdef _DEBUG
     //↓キーで下選択
-    if (Keyboard_IsKeyDown(KK_DOWN) && key_flag.CountTime > 15.0f)
+    if (Keyboard_IsKeyDown(KK_DOWN) && key_flag.CountTime > 30.0f)
     {
         switch (m_button_selected)
         {
         case Button_UnPause:
             m_button_selected = Button_Respawn_SavePoint;
-            break;
+            if (!Respawn_SavePoint)
+            {
+                m_button_selected = Button_Respawn_InitalPoint;
+            }
+        break;
         case Button_Respawn_SavePoint:
             m_button_selected = Button_Respawn_InitalPoint;
             break;
@@ -310,6 +314,9 @@ void GamePause::Update()
             m_button_selected = Button_TitleScene;
             break;
         case Button_TitleScene:
+            m_button_selected = Button_UnPause;
+            break;
+        case Button_NULL:
             m_button_selected = Button_UnPause;
             break;
         }
@@ -317,7 +324,7 @@ void GamePause::Update()
         g_selection_hand_position.y = g_button_position[m_button_selected].y + 20.0f;
     }
     //↑キーで上選択
-    else if (Keyboard_IsKeyDown(KK_UP) && key_flag.CountTime > 15.0f)
+    else if (Keyboard_IsKeyDown(KK_UP) && key_flag.CountTime > 30.0f)
     {
         switch (m_button_selected)
         {
@@ -329,12 +336,19 @@ void GamePause::Update()
             break;
         case Button_Respawn_InitalPoint:
             m_button_selected = Button_Respawn_SavePoint;
+            if (!Respawn_SavePoint)
+            {
+                m_button_selected = Button_UnPause;
+            }
             break;
         case Button_SelectScene:
             m_button_selected = Button_Respawn_InitalPoint;
             break;
         case Button_TitleScene:
             m_button_selected = Button_SelectScene;
+            break;
+        case Button_NULL:
+            m_button_selected = Button_TitleScene;
             break;
         }
         key_flag.CountTime = 0.0f;
@@ -345,7 +359,7 @@ void GamePause::Update()
     key_flag.CountTime++;
 
     //選択確定
-    if (Keyboard_IsKeyDown(KK_ENTER) && !key_flag.KeyboardButton_Enter)
+    if (Keyboard_IsKeyDown(KK_SPACE) && !key_flag.KeyboardButton_Space)
     {
         SceneManager& sceneManager = SceneManager::GetInstance();
         Game& game = Game::GetInstance();
@@ -377,10 +391,17 @@ void GamePause::Update()
         }
         break;
         case Button_Respawn_InitalPoint:
+        {
             game.SetNextGameState(GAME_STATE_PAUSE_RESPAWN_INITIAL);
-            sceneManager.SetStageName(STAGE_1_1);
+            STAGE_NAME stage = sceneManager.GetStageName();
+            if (stage == STAGE_TUTORIAL || stage == STAGE_TEST)
+            {
+                sceneManager.SetStageName(stage);
+            }
+            else { sceneManager.SetStageName(STAGE_1_1); }
             sceneManager.Set_Chenge_Scene_flag(true);
-            break;
+        }
+        break;
         case Button_SelectScene:
             game.SetNextGameState(GAME_STATE_PAUSE_SELECT_SCENE);
             sceneManager.SetStageName(STAGE_SELECT);
