@@ -667,6 +667,9 @@ void Boss_1_1::BossDamaged(void)
 	//次Update関数で追加するダメージ表記のリストに追加
 	add_item_damage_value.push_back(damage);
 	sheet_cnt = 0;
+
+	//ボスのストックをリセットする
+	boss_stock = 3;
 }
 
 
