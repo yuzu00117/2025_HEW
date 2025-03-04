@@ -252,11 +252,15 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
     // プレーヤーにユーザーデータを登録
-    ObjectData *playerdata_body = new ObjectData{collider_player_body};
-    ObjectData *playerdata_leg = new ObjectData{collider_player_leg};
 
-    body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_body);
-    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(playerdata_leg);
+    // ユニークポインターを使って ObjectData を作成
+    m_playerbodydata = std::make_unique<ObjectData>(collider_player_body);
+    body_rectangle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_playerbodydata.get());
+
+    m_playerlegdata = std::make_unique<ObjectData>(collider_player_leg);
+    bottom_circle_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_playerlegdata.get());
+
+
 
     //--------------------------------------------------------------------------------------------------
 
@@ -287,8 +291,9 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
     // プレーヤーにユーザーデータを登録
-    ObjectData *player_sensor_data = new ObjectData{collider_player_sensor};
-    player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(player_sensor_data);
+   
+    m_playersensordata = std::make_unique<ObjectData>(collider_player_sensor);
+    player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_playersensordata.get());
 
     //---------------------------------------------------------------------------------------------------------------------------
 
@@ -323,8 +328,8 @@ void Player::Initialize(b2Vec2 position, b2Vec2 body_size, b2Vec2 sensor_size)
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
     // プレーヤーにユーザーデータを登録
-    ObjectData *effect_player_sensor_data = new ObjectData{collider_effect_sensor};
-    effect_player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(effect_player_sensor_data);
+    m_effectsensordata = std::make_unique<ObjectData>(collider_effect_sensor);
+    effect_player_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_effectsensordata.get());
 
     //---------------------------------------------------------------------------------------------------
 
