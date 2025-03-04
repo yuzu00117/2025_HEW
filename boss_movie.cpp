@@ -47,9 +47,12 @@ void BossMovie::Update()
 	if (finished)
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
-
-		sceneManager.SetStageName(STAGE_BOSS);
-		sceneManager.ChangeScene(SCENE_GAME);
+		// if (!sceneManager.Get_Chenge_Scene_flag())
+		{
+			sceneManager.SetStageName(STAGE_BOSS);
+			sceneManager.ChangeScene(SCENE_GAME);
+			sceneManager.Set_Chenge_Scene_flag(true);
+		}
 		return;
 
 	}
