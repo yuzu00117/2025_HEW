@@ -23,6 +23,7 @@
 
 
 
+
 Texture_block::Texture_block(b2Vec2 Position, b2Vec2 block_size, float texture_angle, ID3D11ShaderResourceView* texture)
 {
 	//サイズをセット
@@ -74,7 +75,9 @@ Texture_block::Texture_block(b2Vec2 Position, b2Vec2 block_size, float texture_a
 	ObjectData* object_data = new ObjectData{ collider_UI_block };
 	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
-
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_UI_block);
+	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
 
 	int ID = object_data->GenerateID();
@@ -90,6 +93,7 @@ Texture_block::Texture_block(b2Vec2 Position, b2Vec2 block_size, float texture_a
 
 Texture_block::~Texture_block()
 {
+	Finalize();
 }
 
 
@@ -152,17 +156,27 @@ void Texture_block::Draw()
 
 void Texture_block::Finalize()
 {
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!m_body) return;
 
-	if (GetBody() != nullptr)
-	{
-		//ボディの削除
-		world->DestroyBody(m_body);
+	for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
+
+
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
 
-	//2重開放のため削除
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+	m_body = nullptr;
 
 
 

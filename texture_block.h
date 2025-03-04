@@ -14,7 +14,7 @@
 #include"include/box2d/box2d.h"
 #include"sprite.h"
 #include"texture.h"
-
+#include <memory>  // 追加
 
 
 
@@ -101,6 +101,8 @@ private:
 	bool m_flag = false;
 
 	ID3D11ShaderResourceView* m_texture;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 
 	float angle;
 
