@@ -14,7 +14,7 @@
 #include"Xinput.h"
 #include"Xinput_controller.h"
 
-static ID3D11ShaderResourceView* g_pause_Texture = NULL;//アンカーのテクスチャ
+static ID3D11ShaderResourceView* g_pause_Texture = NULL;//
 static ID3D11ShaderResourceView* g_skip_texture = NULL;//アンカーのテクスチャ
 static ID3D11ShaderResourceView* g_skip_button_texture = NULL;//アンカーのテクスチャ
 
@@ -48,7 +48,7 @@ void BossMovie::Update()
 	{
 		SceneManager& sceneManager = SceneManager::GetInstance();
 
-
+		sceneManager.SetStageName(STAGE_BOSS);
 		sceneManager.ChangeScene(SCENE_GAME);
 		return;
 
