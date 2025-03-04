@@ -22,6 +22,7 @@
 #include"Item_SavePoint.h"
 #include"Item_Healing.h"
 #include"Item_Barrier.h"
+#include"Item_DamageValue.h"
 
 //アイテムの種類
 enum ItemType
@@ -33,6 +34,7 @@ enum ItemType
 	ITEM_SAVEPOINT,	//セーブポイント
 	ITEM_HEALING, //回復アイテム
 	ITEM_BARRIER,	//バリア
+	ITEM_DAMAGE_VALUE,	//ダメージ表記
 };
 
 
@@ -55,6 +57,7 @@ public:
 	void	AddSavePoint(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning, bool shape_polygon = true, float Alpha = 1.0f);
 	void	AddHealing(b2Vec2 position, b2Vec2 body_size, float angle, bool respawning);
 	void	AddBarrier(b2Vec2 position, b2Vec2 body_size, float angle, const b2Body* owner_body, float Alpha = 1.0f);
+	void	AddDamageValue(b2Vec2 position, b2Vec2 body_size, float angle, DamageOwnerType owner_type, int damage_value, float Alpha = 1.0f);
 
 	// ID を使ってアイテムを検索
 	ItemSpirit* FindItem_Spirit_ByID(int ID);
@@ -64,6 +67,7 @@ public:
 	ItemHealing* FindItem_Healing(int id);
 	ItemBarrier* FindItem_Barrier_ByID(int id);
 	ItemBarrier* FindItem_Barrier_ByOwnerBody(const b2Body* owner);
+	ItemDamageValue* FindItem_DamageValue_ByID(int id);
 
 	// 全てのアイテムを初期化
 	void InitializeAll();
@@ -83,6 +87,11 @@ public:
 	void Finalize_WhenRespawn();
 	//　次のステージに進時の終了処理
 	void	Finalize_WhenNextStage();
+	//ポーズ画面でリスポン（中間地からやり直す）を選択した時用の終了処理
+	void	Finalize_WhenRespawn_SavePoint_GamePause();
+	//ポーズ画面でリスタート（最初からやり直す）を選択した時用の終了初期処理
+	void	Finalize_WhenRespawn_Initial_GamePause();
+
 
 
 	//全ての宝石を使う
@@ -92,7 +101,13 @@ public:
 	void	Initialize_WhenRespawn();
 	//　次のステージに進時の初期化処理
 	void	Initialize_WhenNextStage();
+	//ポーズ画面でリスポン（中間地からやり直す）を選択した時の初期処理
+	void	Initialize_WhenRespawn_SavePoint_GamePause();
 
+	//　中間地を登録した時、宝石に中間地に登録したかどうかを記録させる
+	void	SetJewelRegistered_ToSavePoint();
+	//　中間地を登録した時、コインに中間地に登録したかどうかを記録させる
+	void	SetCoinRegistered_ToSavePoint();
 
 
 private:
@@ -103,6 +118,7 @@ private:
 	std::vector<std::unique_ptr<ItemSavePoint>> m_SavePoint_List; // セーブポイントのリスト
 	std::vector<std::unique_ptr<ItemHealing>> m_Healing_List;	//回復アイテムのリスト
 	std::list<std::unique_ptr<ItemBarrier>> m_Barrier_List;	//バリアのリスト
+	std::list<std::unique_ptr<ItemDamageValue>> m_DamageValue_List;	//ダメージ表記のリスト
 	//ここにアイテムごとにリストを追加していく感じだねぇー
 
 	ItemManager() = default;

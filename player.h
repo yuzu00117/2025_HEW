@@ -201,9 +201,29 @@ public:
 
 
 	//プレイヤーが登録した中間地点を取得（nullptrの場合は登録してない）
-	const ItemSavePoint*	GetRegisteredSavePoint() { return m_registered_SavePoint; }
+	ItemSavePoint*	GetRegisteredSavePoint() { return m_registered_SavePoint; }
 	//プレイヤーが中間地点を登録（nullptrの場合は登録解除）
-	void	RegisterSavePoint(ItemSavePoint* SavePoint) { m_registered_SavePoint = SavePoint; }
+	void	RegisterSavePoint(ItemSavePoint* SavePoint) { 
+		//現在の登録を解除じゃなくて、新しく登録するなら、今の登録を先に避難させる
+		if (SavePoint != nullptr)
+		{
+			m_prev_registered_SavePoint = m_registered_SavePoint;
+		}
+		//初回登録の時だけ前の登録した中間地も今回の中間地にする
+		if (m_prev_registered_SavePoint == nullptr)
+		{
+			m_prev_registered_SavePoint = SavePoint;
+		}
+		m_registered_SavePoint = SavePoint;
+	}
+
+	//プレイヤーが前に登録した中間地点を取得（nullptrの場合は登録してない）（ポーズ画面の中間地リスポン用）
+	ItemSavePoint* GetPrevRegisteredSavePoint() { 
+		return m_prev_registered_SavePoint; }
+	//プレイヤーが前に登録した中間地点をセット（nullptrの場合は登録してない）
+	void	SetPrevRegisteredSavePoint(ItemSavePoint* SavePoint) {
+		m_prev_registered_SavePoint = SavePoint;
+	}
 
 
 
@@ -279,7 +299,9 @@ private:
 
 
 	//登録した中間地点
-	const ItemSavePoint* m_registered_SavePoint = nullptr;
+	ItemSavePoint* m_registered_SavePoint = nullptr;
+	//前の登録した中間地（ポーズ画面の中間地リスポン用）
+	ItemSavePoint* m_prev_registered_SavePoint = nullptr;
 
 
 	//アンカー投げる時の速度の倍率
@@ -376,7 +398,9 @@ private:
 
 	float soul_get_effect_sheet_cnt;
 
-	
+	//=======================================
+	//次Update関数で追加するダメージ表記のリスト
+	std::vector<int>add_item_damage_value;
 
 };
 

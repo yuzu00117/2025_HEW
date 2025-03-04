@@ -101,9 +101,9 @@ void ObjectManager::AddBossFieldBlock(b2Vec2 position, b2Vec2 body_size, int blo
 }
 
 //ボスの部屋の柱を追加
-void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level)
+void ObjectManager::AddBossPillar(b2Vec2 position, b2Vec2 size, int splitting_x, int splitting_y, Boss_Room_Level level,int anchor_need_level)
 {
-    boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level));
+    boss_pillarList.emplace_back(std::make_unique<boss_pillar>(position, size, splitting_x, splitting_y,level, anchor_need_level));
 }
 
 //ボス戦で出現するオブジェクトをもったエネミーのスポナーを追加
@@ -838,22 +838,6 @@ void ObjectManager::DrawAll() {
         w->Draw();
     }
 
-    for (auto& w : enemy_staticList) {
-        w->Draw();
-    }
-
-    for (auto& w : enemy_dynamicList) {
-        w->Draw();
-    }
-
-
-    for (auto& w : enemy_attackList) {
-        w->Draw();
-    }
-
-    for (auto& w : enemy_floatingList) {
-        w->Draw();
-    }
 
 
     for (auto& w : geyserList) {
@@ -919,6 +903,24 @@ void ObjectManager::DrawAll() {
 
     for (auto& w : spawner_block_damageList)
     {
+        w->Draw();
+    }
+
+
+    for (auto& w : enemy_staticList) {
+        w->Draw();
+    }
+
+    for (auto& w : enemy_dynamicList) {
+        w->Draw();
+    }
+
+
+    for (auto& w : enemy_attackList) {
+        w->Draw();
+    }
+
+    for (auto& w : enemy_floatingList) {
         w->Draw();
     }
   

@@ -25,7 +25,10 @@ void AnchorSpirit::Update()
 	//自動回復
 	if (m_auto_heal && m_spirit != MAX_ANCHOR_SPIRIT)
 	{
-		EditAnchorSpiritValue(1.0f);
+		if (m_damage <= 0)
+		{
+			EditAnchorSpiritValue(1.0f);
+		}
 	}
 	//ダメージ分ゲージの数値を一気に減らす
 	if (m_damage > 0)

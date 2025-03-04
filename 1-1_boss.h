@@ -11,7 +11,7 @@
 
 #include"easing.h"
 #include"include/box2d/box2d.h"
-
+#include <vector>
 
 #define BOSS_SIZE_SCALE (1.5)
 #define ENEMY_GOLEM_SPIRIT_TYPE (Spirit_L)
@@ -240,13 +240,13 @@ public:
 		return now_boss_state;
 	}
 
-	void SetNowBossState(boss_state state)
+	void SetNowBossState(boss_state state,int boss_damege=0)
 	{
 		now_boss_state = state;
 
 		if (state == damage_state)
 		{
-			boss_stock--;
+			boss_stock=boss_stock-boss_damege;
 		}
 	}
 
@@ -267,7 +267,7 @@ public:
 	// ボス戦の経過時間を設定
   void SetBossElapsedTime(float time) 
   {
-    elapsed_time = time;
+    elapsed_time += time;
   }
   
   // ボス戦の経過時間を取得
@@ -503,6 +503,11 @@ private:
 
 	static constexpr float boss_alpha = 3.0f;//ボスのアルファ値
 	static constexpr float effect_alpha = 3.0f;//ボスのアルファ値
+
+	//--------------------------------------------------------------------
+	//次Update関数で追加するダメージ表記のリスト
+	std::vector<int>add_item_damage_value;
+
 };
 
 

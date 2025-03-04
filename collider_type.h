@@ -79,7 +79,9 @@ enum ColliderTypeList
 
     collider_spawner_enemy,
 
-    collider_no_entry_block
+    collider_no_entry_block,
+
+    collider_texture_block,
 };
 
 

@@ -1552,7 +1552,7 @@ public:
                 {
                     if (boss.GetNowBossState() != panic_state)
                     {
-                        boss.SetNowBossState(damage_state);
+                        boss.SetNowBossState(damage_state,objectA->need_anchor_level);
                     }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectA->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
@@ -1562,7 +1562,7 @@ public:
                 {
                     if (boss.GetNowBossState() != panic_state)
                     {
-                        boss.SetNowBossState(damage_state);
+                        boss.SetNowBossState(damage_state, objectB->need_anchor_level);
                     }
                     boss_pillar* pillar_instance = object_manager.FindBossPillar(objectB->id);//woodで同じIDのを探してインスタンスをもらう
                     pillar_instance->SetSplitting_Destroy_Flag(true);
@@ -1626,7 +1626,7 @@ public:
                         if (boss.GetNowBossState() != panic_state)
                         {
                             boss.SetBossSheetCnt(0);
-                            boss.SetNowBossState(damage_state);
+                            boss.SetNowBossState(damage_state,objectA->need_anchor_level);
                         }
                     }
                 }
@@ -1642,13 +1642,13 @@ public:
                     if (objectA->object_name == Boss_Carry_Object_Enemy) { return; }
 
                     boss_carry_object_enemy* enemy_instance = object_manager.FindBossCarryObjectEnemy(objectB->id);
-                    enemy_instance->SetSplittingDestroyFlag(true);
+                    if(enemy_instance != nullptr){ enemy_instance->SetSplittingDestroyFlag(true); }
                     if (objectA->collider_type == collider_boss)
                     {
                         if (boss.GetNowBossState() != panic_state)
                         {
                             boss.SetBossSheetCnt(0);
-                            boss.SetNowBossState(damage_state);
+                            boss.SetNowBossState(damage_state, objectB->need_anchor_level);
                         }
                     }
                 }
@@ -1688,9 +1688,12 @@ public:
 
 
         //進入禁止エリアとミニゴーレム
-        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_no_entry_block) ||
-            (objectA->collider_type == collider_no_entry_block && objectB->collider_type == collider_mini_golem))
+        if ((objectA->collider_type == collider_mini_golem && objectB->collider_type == collider_ground) ||
+            (objectA->collider_type == collider_ground && objectB->collider_type == collider_mini_golem))
         {
+            if (objectA->object_name == Boss_field_block)return;
+            if (objectB->object_name == Boss_field_block)return;
+
             if (objectA->collider_type == collider_mini_golem)
             {
                 boss.SetDestroyMiniGolemBody(true, fixtureA->GetBody());

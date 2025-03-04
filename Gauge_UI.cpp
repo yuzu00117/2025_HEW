@@ -21,7 +21,6 @@ static ID3D11ShaderResourceView* g_soul_gage_blue_Texture = NULL;          //ƒ\ƒ
 static ID3D11ShaderResourceView* g_soul_gage_yellow_Texture = NULL;        //ƒ\ƒEƒ‹ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒi‰©Fj
 static ID3D11ShaderResourceView* g_soul_gage_red_Texture = NULL;           //ƒ\ƒEƒ‹ƒQ[ƒW‚ÌƒeƒNƒXƒ`ƒƒiÔj
 static ID3D11ShaderResourceView* g_soul_gage_border_Texture = NULL;	//ƒ\ƒEƒ‹ƒQ[ƒW‚ÌŠO˜g
-static ID3D11ShaderResourceView* g_anchor_level_division_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌdØ‚è
 static ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌŠO‘¤‚Ì‘•ü
 
 
@@ -31,14 +30,18 @@ static ID3D11ShaderResourceView* g_anchor_level_outline_Texture = NULL;  //ƒAƒ“ƒ
 DirectX::XMFLOAT2 Gauge_UI::player_ui_position = DirectX::XMFLOAT2(155.f, 440.f);
 DirectX::XMFLOAT2 Gauge_UI::player_ui_size = DirectX::XMFLOAT2(310.f, 630.f);
 
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(105.f, 405.f);	//˜g‚ğœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚İ‚ÌˆÊ’u
-DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(68.f, 420.f);		//˜g‚ğœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚İ‚ÌƒTƒCƒY
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_position = DirectX::XMFLOAT2(106.f, 405.f);	//˜g‚ğœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚İ‚ÌˆÊ’u
+DirectX::XMFLOAT2 Gauge_UI::gauge_only_size = DirectX::XMFLOAT2(64.f, 420.f);		//˜g‚ğœ‚¢‚½ƒQ[ƒWF‚Ì•”•ª‚Ì‚İ‚ÌƒTƒCƒY
 
 float Gauge_UI::player_ui_alpha = 1.0f;
 
 bool	Gauge_UI::m_blue_jewel_collected = false;
 bool	Gauge_UI::m_red_jewel_collected = false;
 bool	Gauge_UI::m_yellow_jewel_collected = false;
+bool	Gauge_UI::m_blue_jewel_collected_WhenRegisteringSavePoint = false;
+bool	Gauge_UI::m_red_jewel_collected_WhenRegisteringSavePoint = false;
+bool	Gauge_UI::m_yellow_jewel_collected_WhenRegisteringSavePoint = false;
+
 float	Gauge_UI::m_blue_jewel_collected_effect_cnt = 0;
 float	Gauge_UI::m_red_jewel_collected_effect_cnt = 0;
 float	Gauge_UI::m_yellow_jewel_collected_effect_cnt = 0;
@@ -58,6 +61,10 @@ void Gauge_UI::Initialize()
 	m_blue_jewel_collected = false;
 	m_red_jewel_collected = false;
 	m_yellow_jewel_collected = false;
+	m_blue_jewel_collected_WhenRegisteringSavePoint = false;
+	m_red_jewel_collected_WhenRegisteringSavePoint = false;
+	m_yellow_jewel_collected_WhenRegisteringSavePoint = false;
+
 	m_blue_jewel_collected_effect_cnt = 0;
 	m_red_jewel_collected_effect_cnt = 0;
 	m_yellow_jewel_collected_effect_cnt = 0;
@@ -84,7 +91,6 @@ void Gauge_UI::Initialize()
 	g_soul_gage_border_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_border.png");
 
 	//ƒAƒ“ƒJ[ƒŒƒxƒ‹‚ÌƒeƒNƒXƒ`ƒƒ‚½‚¿
-	g_anchor_level_division_Texture= InitTexture(L"asset\\texture\\UI_soul_gage\\gage_division.png");
 	g_anchor_level_outline_Texture = InitTexture(L"asset\\texture\\UI_soul_gage\\gage_out_line.png");
 
 	
@@ -251,18 +257,6 @@ void Gauge_UI::Draw()
 
 
 
-	//˜g‚ğ•\¦
-	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
-	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_division_Texture);
-
-	DrawSpriteOld(
-		{ player_ui_position },
-		0,
-		{ player_ui_size },
-		player_ui_alpha
-	);
-	
-
 	//ŠO‘¤‚Ì‘•ü‚ğ•\¦
 	// ƒVƒF[ƒ_ƒŠƒ\[ƒX‚ğİ’è
 	GetDeviceContext()->PSSetShaderResources(0, 1, &g_anchor_level_outline_Texture);
@@ -410,7 +404,6 @@ void Gauge_UI::Finalize()
 	if (g_soul_gage_red_Texture) UnInitTexture(g_soul_gage_red_Texture);
 	if (g_soul_gage_border_Texture) UnInitTexture(g_soul_gage_border_Texture);
 
-	if (g_anchor_level_division_Texture) UnInitTexture(g_anchor_level_division_Texture);
 	if (g_anchor_level_outline_Texture) UnInitTexture(g_anchor_level_outline_Texture);
 
 }
@@ -433,10 +426,12 @@ void Gauge_UI::DrawGaugeDamaged()
 	//ƒeƒNƒXƒ`ƒƒUV‚ğ˜M‚Á‚Ä•\¦‚µ‚Ä‚¢‚é‚Ì‚Åi^‚ñ’†‚ğ’†S‚ÉƒTƒCƒY•Ï‚í‚Á‚¿‚á‚©‚çA‚»‚ê‚ğ¶’†S‚É‚µ‚½‚¢j‰º‚Ìˆ—‚ğ‚·‚é
 	//Maxó‘Ô‚Ì‚Ì’·‚³‚É”ä—á‚µ‚ÄA¡‚Ìƒ\ƒEƒ‹’l‚Ì’·‚³‚ğ’²®
 	temp_spirit_scale_y = (prev_virtual_spirit / GaugeUI_Cols_MAX) * gauge_only_size.y;
+	if (temp_spirit_scale_y > gauge_only_size.y) { temp_spirit_scale_y = gauge_only_size.y; }
 	scale = XMFLOAT2(gauge_only_size.x, temp_spirit_scale_y);
 	//Maxó‘Ô‚Ì‚ÌˆÊ’u‚É”ä—á‚µ‚ÄA¡‚Ìƒ\ƒEƒ‹’l‚Ìê‡‚ÌˆÊ’u‚ÉˆÚ“®
 //ƒuƒ‰ƒ“ƒ`‘O‚Ìƒo[ƒWƒ‡ƒ“	//temp_spirit_position_y = temp_stamina_position_y - (temp_stamina_scale_y / 2) - (temp_spirit_scale_y / 2) - 1.0;
 	temp_spirit_position_y = (gauge_only_size.y / 2) - (temp_spirit_scale_y / 2) + gauge_only_position.y;
+
 
 
 	float virtual_spirit = AnchorSpirit::GetAnchorSpiritValue() + AnchorSpirit::GetAnchorSpiritDamage();

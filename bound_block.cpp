@@ -19,6 +19,7 @@
 #include"player.h"
 #include"keyboard.h"
 #include"Xinput_controller.h"
+#include"scene.h"
 
 static ID3D11ShaderResourceView* g_bound_block_texture1_open = NULL;//バウンドブロックのテクスチャ茶色
 static ID3D11ShaderResourceView* g_bound_block_texture1_close = NULL;//バウンドブロックのテクスチャ茶色
@@ -60,9 +61,17 @@ boss_bound_block::boss_bound_block(b2Vec2 position, b2Vec2 size, b2Vec2 vec, Bos
 	//	fixtureを作る
 	b2FixtureDef fixture;
 
+	SceneManager& sceneManager = SceneManager::GetInstance();
 	fixture.shape = &shape;
 	fixture.density = 1.0f;
-	fixture.friction = 0.01f;
+	if (sceneManager.GetStageName() == STAGE_BOSS)
+	{
+		fixture.friction = 0.01f;
+	}
+	else
+	{
+		fixture.friction = 0.3f;
+	}
 	fixture.restitution = 0.3f;
 	fixture.isSensor = false;
 	fixture.filter = createFilterExclude("ground_filter", {});

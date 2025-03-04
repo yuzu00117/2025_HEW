@@ -52,6 +52,20 @@ public:
         }
     }
 
+    // 中間地を登録してる時の宝石取得状態をセット
+    static void    RecordJewel_WhenRegisteringSavePoint()
+    {
+        m_blue_jewel_collected_WhenRegisteringSavePoint = m_blue_jewel_collected;
+        m_yellow_jewel_collected_WhenRegisteringSavePoint = m_yellow_jewel_collected;
+        m_red_jewel_collected_WhenRegisteringSavePoint = m_red_jewel_collected;
+    }
+    //　今の宝石の取得状態を、中間地で記録した状態にセット
+    static void    SetJewelRecorded_WithRegisteredValue()
+    {
+        m_blue_jewel_collected = m_blue_jewel_collected_WhenRegisteringSavePoint;
+        m_yellow_jewel_collected = m_yellow_jewel_collected_WhenRegisteringSavePoint;
+        m_red_jewel_collected = m_red_jewel_collected_WhenRegisteringSavePoint;
+    }
 
 private:
     //半透明ダメージのあれを描画
@@ -68,6 +82,10 @@ private:
     static bool    m_blue_jewel_collected;
     static bool    m_red_jewel_collected;
     static bool    m_yellow_jewel_collected;
+
+    static bool    m_blue_jewel_collected_WhenRegisteringSavePoint;
+    static bool    m_red_jewel_collected_WhenRegisteringSavePoint;
+    static bool    m_yellow_jewel_collected_WhenRegisteringSavePoint;
 
     static float    m_blue_jewel_collected_effect_cnt;
     static float    m_red_jewel_collected_effect_cnt;
