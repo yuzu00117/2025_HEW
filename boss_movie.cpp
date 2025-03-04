@@ -30,7 +30,7 @@ BossMovie::~BossMovie()
 
 void BossMovie::Initialize()
 {
-	video.Initialize("asset/movie/op.mp4", false);
+	video.Initialize("asset/movie/boss_movie.mp4", false);
 	g_pause_Texture = InitTexture(L"asset\\texture\\sample_texture\\video_pause.png");
 	g_skip_texture = InitTexture(L"asset\\texture\\sample_texture\\skip.png");
 	g_skip_button_texture = InitTexture(L"asset\\texture\\sample_texture\\skip_a.png");

@@ -925,7 +925,7 @@ void Field::Initialize()
 			
 					//ボスの登場ムービーシーンに移行
 					if (field_map[y][x] == 70) {
-						objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_STAGE, b2Vec2_zero);
+						objectManager.AddContactBlock(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(2.0f, 10.0f), GO_BOSS_MOVIE, b2Vec2_zero);
 					}
 
 
