@@ -510,7 +510,7 @@ void boss_carry_object_enemy::Finalize()
 			UnInitTexture(g_Object_Texture);
 		}
 
-		if (!object_body)
+		if (object_body)
 		{
 
 			for (b2Fixture* fixture = object_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
@@ -536,7 +536,7 @@ void boss_carry_object_enemy::Finalize()
 			object_body = nullptr;
 		}
 
-		if (!enemy_body)
+		if (enemy_body)
 		{
 
 			for (b2Fixture* fixture = enemy_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {

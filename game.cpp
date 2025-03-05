@@ -521,9 +521,12 @@ void Game::Update(void)
 
             if (Keyboard_IsKeyDown(KK_B))//ボスにいくものとする
             {
-                m_next_state = GAME_STATE_NEXT_STAGE;
-                sceneManager.SetStageName(STAGE_BOSS);
-                sceneManager.ChangeScene(SCENE_GAME);
+                if (sceneManager.GetStageName() != STAGE_BOSS)
+                {
+                    m_next_state = GAME_STATE_NEXT_STAGE;
+                    sceneManager.SetStageName(STAGE_BOSS);
+                    sceneManager.ChangeScene(SCENE_GAME);
+                }
             }
 
             if (Keyboard_IsKeyDown(KK_I))//遺跡ステージにいく
