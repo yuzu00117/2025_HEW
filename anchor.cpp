@@ -217,11 +217,12 @@ void Anchor::CreateAnchorBody(b2Vec2 anchor_size)
 
 	b2Fixture* anchor_fixture = m_body->CreateFixture(&fixture);
 
+
+
 	// カスタムデータを作成して設定
-	// プレイヤーに値を登録
-	// プレーヤーにユーザーデータを登録
-	ObjectData* anchordata = new ObjectData{ collider_anchor };
-	anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(anchordata);
+	// ユニークポインターを使って ObjectData を作成
+	m_anchor_objectData = std::make_unique<ObjectData>(collider_anchor);
+	anchor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_anchor_objectData.get());
 
 	SetChainEffect();
 }
@@ -230,11 +231,31 @@ void Anchor::DestroyAnchorBody()
 {
 	if (m_body != nullptr) {
 		
+
+
+		for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 			world->DestroyBody(m_body);
 			m_body = nullptr;
 			m_isAnchorCreated = false;
+
 		
 	}
 }
