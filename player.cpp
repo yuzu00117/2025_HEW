@@ -84,6 +84,10 @@ int Player::invincible_time = 0;
 
 static bool CollectSpirit_pressed = false;
 
+static bool mode_cheet_pressed = false;
+
+static bool mode_cheet_flag = false;
+
 static b2Body *player_body=nullptr;
 
 static  int g_anchor_frame_management_number = 0;
@@ -560,6 +564,41 @@ void Player::Update()
         
     }
     m_jump_pressed = (Keyboard_IsKeyDown(KK_UP) || (state.buttonA));
+
+    if (!mode_cheet_pressed&&Keyboard_IsKeyDownTrigger(KK_LEFTSHIFT))
+    {
+        if (!mode_cheet_flag)
+        {
+            mode_cheet_flag = true;
+        }
+        else
+        {
+            mode_cheet_flag = false;
+        }
+    }
+    CollectSpirit_pressed = (Keyboard_IsKeyDownTrigger(KK_LEFTSHIFT));
+
+
+
+
+    if (Keyboard_IsKeyDownTrigger(KK_LEFTSHIFT) && Keyboard_IsKeyDownTrigger(KK_W))
+    {
+        m_body->SetTransform(b2Vec2(m_body->GetPosition().x, m_body->GetPosition().y-0.3f), 0.0f);
+    }
+    if (Keyboard_IsKeyDownTrigger(KK_LEFTSHIFT) && Keyboard_IsKeyDownTrigger(KK_S))
+    {
+        m_body->SetTransform(b2Vec2(m_body->GetPosition().x, m_body->GetPosition().y + 0.3f), 0.0f);
+    }
+    if (Keyboard_IsKeyDownTrigger(KK_LEFTSHIFT) && Keyboard_IsKeyDownTrigger(KK_A))
+    {
+        m_body->SetTransform(b2Vec2(m_body->GetPosition().x-0.3f, m_body->GetPosition().y), 0.0f);
+    }
+    if (Keyboard_IsKeyDownTrigger(KK_LEFTSHIFT) && Keyboard_IsKeyDownTrigger(KK_D))
+    {
+        m_body->SetTransform(b2Vec2(m_body->GetPosition().x + 0.3f, m_body->GetPosition().y ), 0.0f);
+    }
+
+
 
 #ifdef _DEBUG
     // ジャンプのバフ
