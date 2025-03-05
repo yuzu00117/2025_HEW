@@ -22,6 +22,7 @@
 #include"world_box2d.h"
 #include<vector>
 #include"Item_SavePoint.h"
+#include <memory>  // 追加
 
 
 enum player_draw_state
@@ -401,6 +402,12 @@ private:
 	//=======================================
 	//次Update関数で追加するダメージ表記のリスト
 	std::vector<int>add_item_damage_value;
+
+
+	std::unique_ptr<class ObjectData> m_playerlegdata;  // ユニークポインターに変更
+	std::unique_ptr<class ObjectData> m_playerbodydata;  // ユニークポインターに変更
+	std::unique_ptr<class ObjectData> m_playersensordata;  // ユニークポインターに変更
+	std::unique_ptr<class ObjectData> m_effectsensordata;  // ユニークポインターに変更
 
 };
 

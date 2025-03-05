@@ -81,7 +81,7 @@ void	UpdateDebug()
 	if (g_open)
 	{
 		PlayerPosition	player;
-		Player player_collider = Player::GetInstance();
+		Player &player_collider = Player::GetInstance();
 
 
 		std::wstring words;

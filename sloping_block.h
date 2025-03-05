@@ -13,6 +13,7 @@
 
 
 #include"include/box2d/box2d.h"
+#include<memory>
 
 
 enum SlopingBlockAspect //斜面の向きを管理する
@@ -104,6 +105,8 @@ private:
 	//プレイヤーと衝突しているのか
 	bool	m_player_collided = false;
 	
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 };
 
 

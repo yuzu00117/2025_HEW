@@ -75,15 +75,16 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 	enemyFixtureDef.isSensor = true;
 	b2Fixture* enemy_fixture = enemyBody->CreateFixture(&enemyFixtureDef);
 
-	// カスタムデータを作成して設定
-	ObjectData* enemy_data = new ObjectData{ collider_object_carry_enemy };
-	enemy_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemy_data);
+	
+	// ユニークポインターを使って ObjectData を作成
+	m_enemyData = std::make_unique<ObjectData>(collider_object_carry_enemy);
+	enemy_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_enemyData.get());
 
-	int ID = enemy_data->GenerateID();
+	int ID = m_enemyData->GenerateID();
 	SetID(ID);
 
-	enemy_data->id = GetID();
-	enemy_data->need_anchor_level = needlevel;
+	m_enemyData->id = GetID();
+	m_enemyData->need_anchor_level = needlevel;
 
 
 	// === ObjectBody の作成 ===
@@ -105,12 +106,14 @@ boss_carry_object_enemy::boss_carry_object_enemy(b2Vec2 position,b2Vec2 Enemy_si
 
 	b2Fixture* object_fixture = objectBody->CreateFixture(&objectFixtureDef);
 	// カスタムデータを作成して設定
-	ObjectData* object_data = new ObjectData{ collider_anchor_point };
-	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
+	
 
-	object_data->need_anchor_level = needlevel;
-	object_data->id = GetID();
-	object_data->object_name = Boss_Carry_Object_Enemy;
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_anchor_point);
+	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
+	m_objectData->need_anchor_level = needlevel;
+	m_objectData->id = GetID();
+	m_objectData->object_name = Boss_Carry_Object_Enemy;
 
 
 
@@ -212,9 +215,7 @@ void boss_carry_object_enemy::Destroy_Splitting()
 
 					b2Fixture* fixture = fragment->CreateFixture(&fragmentFixture);
 
-					// カスタムデータを作成して設定
-					ObjectData* object_anchorpoint_data = new ObjectData{ collider_texture_block};
-					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+					
 
 
 					// 初速度はゼロに設定（必要に応じて速度を追加可能）
@@ -240,7 +241,7 @@ void boss_carry_object_enemy::Destroy_Splitting()
 
 boss_carry_object_enemy::~boss_carry_object_enemy()
 {
-
+	Finalize();
 }
 
 void boss_carry_object_enemy::Initialize()
@@ -343,11 +344,13 @@ void boss_carry_object_enemy::AnchorHit()
 		b2Fixture* newEnemyFixture = enemyBody->CreateFixture(&newEnemyFixtureDef);
 
 		// --- カスタムデータの更新 ---
-		ObjectData* enemyData = new ObjectData{ collider_object };
-		newEnemyFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(enemyData);
-		enemyData->id = GetID();
-		enemyData->object_name = Boss_Carry_Object_Enemy;
-		enemyData->need_anchor_level = needlevel;
+
+		// ユニークポインターを使って ObjectData を作成
+		m_enemyData = std::make_unique<ObjectData>(collider_object);
+		newEnemyFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_enemyData.get());
+		m_enemyData->id = GetID();
+		m_enemyData->object_name = Boss_Carry_Object_Enemy;
+		m_enemyData->need_anchor_level = needlevel;
 
 		// --- ObjectBodyの再設定 ---
 		b2PolygonShape newObjectShape;
@@ -362,12 +365,16 @@ void boss_carry_object_enemy::AnchorHit()
 		b2Fixture* newObjectFixture = objectBody->CreateFixture(&newObjectFixtureDef);
 
 		// --- カスタムデータの更新 ---
-		ObjectData* objectData = new ObjectData{ collider_object };
-		objectData-= GetID();
-		objectData->object_name = Boss_Carry_Object_Enemy;
-		objectData->need_anchor_level = needlevel;
-		newObjectFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(objectData);
-		objectData->id = GetID();
+
+
+		// ユニークポインターを使って ObjectData を作成
+		m_objectData = std::make_unique<ObjectData>(collider_object);
+		newObjectFixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
+
+		
+		m_objectData->object_name = Boss_Carry_Object_Enemy;
+		m_objectData->need_anchor_level = needlevel;
+		m_objectData->id = GetID();
 
 		// === グラヴィティスケールの変更 ===
 		enemyBody->SetGravityScale(0.0f);  // 変更後の値（デフォルト1.0）
@@ -494,8 +501,7 @@ void boss_carry_object_enemy::DestroySplittedBodies(std::vector<b2Body*>& bodyLi
 
 void boss_carry_object_enemy::Finalize()
 {
-	if (g_Enemy_Texture != NULL)
-	{
+	
 		if (g_Enemy_Texture) {
 			UnInitTexture(g_Enemy_Texture);
 		}
@@ -504,8 +510,60 @@ void boss_carry_object_enemy::Finalize()
 			UnInitTexture(g_Object_Texture);
 		}
 
+		if (!object_body)
+		{
+
+			for (b2Fixture* fixture = object_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+				if (!fixture) continue;
+
+				// UserData 取得
+
+
+				// 無効なポインタならスキップ
+				if (!fixture->GetUserData().pointer) {
+					continue;
+				}
+
+
+
+
+				// ObjectData を削除す
+				fixture->GetUserData().pointer = 0;  // ポインタのクリア
+			}
+
+			// `b2Body` を削除
+			Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(object_body);
+			object_body = nullptr;
+		}
+
+		if (!enemy_body)
+		{
+
+			for (b2Fixture* fixture = enemy_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+				if (!fixture) continue;
+
+				// UserData 取得
+
+
+				// 無効なポインタならスキップ
+				if (!fixture->GetUserData().pointer) {
+					continue;
+				}
+
+
+
+
+				// ObjectData を削除す
+				fixture->GetUserData().pointer = 0;  // ポインタのクリア
+			}
+
+			// `b2Body` を削除
+			Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(enemy_body);
+			enemy_body = nullptr;
+		}
+
 		
-	}
+	
 }
 
 void boss_carry_object_enemy::Destroy_Body()

@@ -11,6 +11,7 @@
 #define CONTACT_BLOCK_H
 
 #include"include/box2d/box2d.h"
+#include <memory>  // 追加
 
 
 //触れたら何をするのかの処理を
@@ -100,6 +101,8 @@ private:
 
 	Contact_Block_Type m_contact_type;
 
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 };
 
 

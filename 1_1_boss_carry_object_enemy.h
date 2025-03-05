@@ -13,6 +13,7 @@
 #include "include/box2d/box2d.h"
 #include"1-1_boss_field_block.h"
 #include<vector>
+#include<memory>
 
 class boss_carry_object_enemy
 {
@@ -142,6 +143,9 @@ private:
     bool Splitting_end;//分割が終わった
     int Splitting_x;
     int Splitting_y;
+
+    std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
+    std::unique_ptr<class ObjectData> m_enemyData;  // ユニークポインターに変更
 
 };
 
