@@ -50,7 +50,7 @@ int g_wait = 45;
 void ResultScene::Initialize()
 {
     //リザルト画面の背景テクスチャの読み込み
-    g_GameScreen_Texture=InitTexture(L"asset\\texture\\result_texture\\test.png");
+    g_GameScreen_Texture=InitTexture(L"asset\\texture\\result_texture\\remains_background02.png");
     g_result_Texture = InitTexture(L"asset\\texture\\result_texture\\result_back_test2.png");
     //数字用テクスチャの読み込み
     g_number_Texture = InitTexture(L"asset\\texture\\result_texture\\sample_number.png");
