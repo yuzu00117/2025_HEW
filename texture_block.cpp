@@ -71,17 +71,14 @@ Texture_block::Texture_block(b2Vec2 Position, b2Vec2 block_size, float texture_a
 
 	b2Fixture* object_fixture = m_body->CreateFixture(&block_fixture);
 
-	// カスタムデータを作成して設定
-	ObjectData* object_data = new ObjectData{ collider_UI_block };
-	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
 
 	// ユニークポインターを使って ObjectData を作成
 	m_objectData = std::make_unique<ObjectData>(collider_UI_block);
 	object_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
 
-	int ID = object_data->GenerateID();
-	object_data->id = ID;
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
 
 	SetID(ID);
 

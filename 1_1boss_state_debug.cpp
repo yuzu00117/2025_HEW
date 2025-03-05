@@ -77,7 +77,7 @@ void	UpdateBossDebug()
 	if (g_boss_open)
 	{
 		PlayerPosition	player;
-		Player player_collider = Player::GetInstance();
+		Player &player_collider = Player::GetInstance();
 
 
 		std::wstring words;
