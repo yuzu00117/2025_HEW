@@ -125,33 +125,33 @@ void boss_carry_object_spawner::Draw()
  
 
 
-    if (m_body != nullptr)
-    {
-        // スケールをかけないとオブジェクトのサイズの表示が小さいから使う
-        float scale = SCREEN_SCALE;
+    //if (m_body != nullptr)
+    //{
+    //    // スケールをかけないとオブジェクトのサイズの表示が小さいから使う
+    //    float scale = SCREEN_SCALE;
 
-        // スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
-        b2Vec2 screen_center;
-        screen_center.x = SCREEN_CENTER_X;
-        screen_center.y = SCREEN_CENTER_Y;
+    //    // スクリーン中央位置 (プロトタイプでは乗算だったけど　今回から加算にして）
+    //    b2Vec2 screen_center;
+    //    screen_center.x = SCREEN_CENTER_X;
+    //    screen_center.y = SCREEN_CENTER_Y;
 
-        b2Vec2 Pos = GetBody()->GetPosition();
-
-
-        float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-        float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-        GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+    //    b2Vec2 Pos = GetBody()->GetPosition();
 
 
-        //draw
-        DrawSprite(
-            { draw_x,
-              draw_y },
-            GetBody()->GetAngle(),
-            { GetSize().x * scale ,GetSize().y * scale }
-        );
-    }
+    //    float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
+    //    float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
+
+    //    GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+
+
+    //    //draw
+    //    DrawSprite(
+    //        { draw_x,
+    //          draw_y },
+    //        GetBody()->GetAngle(),
+    //        { GetSize().x * scale ,GetSize().y * scale }
+    //    );
+    //}
 }
 
 
