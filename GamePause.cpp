@@ -159,8 +159,12 @@ void GamePause::Update()
 
     // コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
+    float left_stick_x = state.leftStickX / 40000.0f;
+    float left_stick_y = state.leftStickY / 40000.0f;
+    b2Vec2 stick = b2Vec2{left_stick_x, left_stick_y};
+    stick.Normalize();
     //↓キーで下選択
-    if(state.leftStickY < -100 && key_flag.CountTime > 30.0f)
+    if(0.5f < ReturnAbsoluteValue(left_stick_y) && stick.y < 0 && key_flag.CountTime > 30.0f)
     {
         switch (m_button_selected)
         {
@@ -191,7 +195,7 @@ void GamePause::Update()
         g_selection_hand_position.y = g_button_position[m_button_selected].y + 20.0f;
     }
     //↑キーで上選択
-    else if (state.leftStickY > 100 && key_flag.CountTime > 30.0f)
+    else if (0.5f < ReturnAbsoluteValue(left_stick_y) && stick.y > 0 && key_flag.CountTime > 30.0f)
     {
         switch (m_button_selected)
         {
