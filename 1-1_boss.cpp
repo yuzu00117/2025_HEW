@@ -1217,7 +1217,7 @@ void Boss_1_1::Draw()
 	if (m_body != nullptr)
 	{
 		// デバッグ用の描画
-		DrawBossDebug();
+	/*	DrawBossDebug();*/
 		/*debugDraw();*/
 
 		float scale = SCREEN_SCALE;

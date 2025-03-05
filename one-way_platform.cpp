@@ -68,16 +68,19 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 	b2Fixture* object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_fixture);
 	SetChangeFixture(object_one_way_platform_fixture);
 
-	// カスタムデータの作成
-	ObjectData* object_one_way_platform_data = new ObjectData{ collider_ground };
-	object_one_way_platform_data->object_name = Object_one_way_platform;
 
-	int ID = object_one_way_platform_data->GenerateID();
-	object_one_way_platform_data->id = ID;
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_ground);
+	object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
+	// カスタムデータの作成
+
+	m_objectData->object_name = Object_one_way_platform;
+
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
 	SetID(ID);
 
-	// ユーザーデータを設定
-	object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+
 
 	if (object_contact == true)
 	{
@@ -93,7 +96,7 @@ one_way_platform::one_way_platform(b2Vec2 Postion,b2Vec2 local_Postion, b2Vec2 s
 		b2Fixture* contact_object_one_way_platform_fixture = m_one_way_platform_body->CreateFixture(&one_way_platform_object_fixture);
 
 		// ここで新しい `ObjectData` を作らず、既存のデータを使う
-		contact_object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_one_way_platform_data);
+		contact_object_one_way_platform_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 	}
 
 };
@@ -161,16 +164,30 @@ void one_way_platform::Draw()
 
 void one_way_platform::Finalize()
 {
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!GetObject_one_way_platform_Body()) return;
+
+	for (b2Fixture* fixture = GetObject_one_way_platform_Body()->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
 
 
-	if (GetObject_one_way_platform_Body() != nullptr)
-	{
-		//bodyを削除する
-		world->DestroyBody(one_way_platform_body);
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(GetObject_one_way_platform_Body());
+	SetObject_one_way_platform_Body(nullptr);
+
 
 
 	if (g_one_way_platform_Texture) UnInitTexture(g_one_way_platform_Texture);
