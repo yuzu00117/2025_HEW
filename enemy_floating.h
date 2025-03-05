@@ -41,6 +41,8 @@ private:
 	//エネミーの状態(動作)
 	ENEMY_FLOATING_STATE m_state;
 
+	std::unique_ptr<class ObjectData> m_object_data;
+	std::unique_ptr<class ObjectData> m_sensor_data;
 public:
 	EnemyFloating() = default;
 	EnemyFloating(b2Vec2 position, b2Vec2 body_size, float angle);
