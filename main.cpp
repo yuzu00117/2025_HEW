@@ -152,8 +152,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	sceneManager.ChangeScene(SCENE_TITLE);
 
 	#else
-	sceneManager.ChangeScene(SCENE_BOSS_MOVIE);
-  sceneManager.SetStageName(STAGE_SELECT);
+	sceneManager.SetStageName(STAGE_SELECT);
+	sceneManager.ChangeScene(SCENE_TITLE);
 	#endif
 	
 
