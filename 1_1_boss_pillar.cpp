@@ -24,6 +24,9 @@
 #include"break_effect.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
+static ID3D11ShaderResourceView* g_border1 = NULL;
+static ID3D11ShaderResourceView* g_border2 = NULL;
+static ID3D11ShaderResourceView* g_border3 = NULL;
 
 boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int splitting_y,Boss_Room_Level level,int anchor_need_level)
 {
@@ -174,6 +177,9 @@ void boss_pillar::Initialize()
 {
 	if (g_Texture == NULL) {
 		g_Texture = InitTexture(L"asset\\texture\\stage_1_1_object\\pillar.png");//柱のテクスチャ
+		g_border1 = InitTexture(L"asset\\texture\\stage_1_1_object\\pillar_border_lv1.png");
+		g_border2 = InitTexture(L"asset\\texture\\stage_1_1_object\\pillar_border_lv2.png");
+		g_border3 = InitTexture(L"asset\\texture\\stage_1_1_object\\pillar_border_lv3.png");
 	}
 }
 
@@ -362,8 +368,40 @@ void boss_pillar::Draw()
 			float draw_x = ((Pos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
 			float draw_y = ((Pos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
 
-			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
+			if(m_is_border)
+			{
+				switch (m_anchorData->need_anchor_level)
+				{
+				case 1:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_border1);
+					break;
+				case 2:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_border2);
+					break;
+				case 3:
+					GetDeviceContext()->PSSetShaderResources(0, 1, &g_border3);
+					break;
+				default:
+					break;
+				}
+				DrawSprite(
+					{ draw_x,
+					  draw_y },
+					GetBody()->GetAngle(),
+					{ GetSize().x * scale * 2 * 1.1f ,GetSize().y * scale * 1.025f }
+					,m_border_alpha
+				);
 
+				//透過率設定
+				m_border_alpha -= 0.01;
+				if (m_border_alpha <= m_border_alpha_min)
+				{
+					m_border_alpha = m_border_alpha_max;
+				}
+			}
+
+
+			GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
 
 			//draw
 			DrawSprite(
@@ -384,6 +422,9 @@ void boss_pillar::Finalize()
 
 	if (g_Texture) {
 		UnInitTexture(g_Texture);
+		UnInitTexture(g_border1);
+		UnInitTexture(g_border2);
+		UnInitTexture(g_border3);
 	}
 
 	if (m_body)
