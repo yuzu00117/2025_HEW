@@ -11,6 +11,7 @@
 #define BOSS_BOUND_BLOCK_H
 #include"include/box2d/box2d.h"
 #include"1-1_boss_field_block.h"
+#include<memory>
 
 
 
@@ -98,6 +99,8 @@ private:
 	int Change_Texture_Size_Frame;
 
 	int Texture_type;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 
 
 };

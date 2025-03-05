@@ -71,13 +71,14 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 
 	//カスタムデータを作成
-	ObjectData* object_data = new ObjectData{ collider_object };
-	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
+	m_objectData = std::make_unique<ObjectData>(collider_object);
+	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
-	int ID = object_data->GenerateID();
-	object_data->id = ID;
-	object_data->object_name = Boss_pillar;
-	object_data->need_anchor_level = anchor_need_level;
+
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
+	m_objectData->object_name = Boss_pillar;
+	m_objectData->need_anchor_level = anchor_need_level;
 	SetID(ID);
 
 
@@ -116,16 +117,17 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	b2Fixture* object_anchorpoint_fixture = m_AnchorPoint_body->CreateFixture(&anchorpoint_fixture);
 
 
-	// カスタムデータを作成して設定
-	ObjectData* object_anchorpoint_data = new ObjectData{ collider_anchor_point };
-	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+	//カスタムデータを作成
+	m_anchorData = std::make_unique<ObjectData>(collider_anchor_point);
+	object_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_anchorData.get());
 
 
-	object_anchorpoint_data->id = ID;
+
+	m_anchorData->id = ID;
 
 
-	object_anchorpoint_data->object_name = Boss_pillar;
-	object_anchorpoint_data->need_anchor_level = anchor_need_level;
+	m_anchorData->object_name = Boss_pillar;
+	m_anchorData->need_anchor_level = anchor_need_level;
 
 	b2Vec2 need_power;
 
@@ -133,7 +135,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 	need_power.y = 10.0f;//縦に必要な力はない
 
 
-	object_anchorpoint_data->add_force = need_power;
+	m_anchorData->add_force = need_power;
 	m_pulling_power = need_power;
 
 	b2WeldJointDef jointDef;
@@ -163,6 +165,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 boss_pillar::~boss_pillar()
 {
+	Finalize();
 }
 
 
@@ -477,7 +480,59 @@ void boss_pillar::Draw()
 
 void boss_pillar::Finalize()
 {
+
 	if (g_Texture) {
 		UnInitTexture(g_Texture);
 	}
+
+	if (m_body) 
+	{
+		for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
+		Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+		m_body = nullptr;
+	}
+
+
+
+	if (AnchorPoint_body)
+	{
+		for (b2Fixture* fixture = AnchorPoint_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
+		Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(AnchorPoint_body);
+		AnchorPoint_body = nullptr;
+	}
+
+	// `b2Body` を削除
+
 }
