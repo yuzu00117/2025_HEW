@@ -91,15 +91,15 @@ EnemyStatic::EnemyStatic(b2Vec2 position, b2Vec2 body_size, float angle)
 	// カスタムデータを作成して設定
 	// 動的エネミーに値を登録
 	// 動的エネミーにユーザーデータを登録
-	ObjectData* data = new ObjectData{ collider_enemy_static };
-	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	ObjectData* sensor_data = new ObjectData{ collider_enemy_static_sensor };
-	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data);
+	m_object_data = std::make_unique<ObjectData>(collider_enemy_static);
+	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_object_data.get());
+	m_sensor_data = std::make_unique<ObjectData>(collider_enemy_static_sensor);
+	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_sensor_data.get());
 
-	data->object_name = Object_Enemy_Static;
-	int ID = data->GenerateID();
-	data->id = ID;
-	sensor_data->id = ID;
+	m_object_data->object_name = Object_Enemy_Static;
+	int ID = m_object_data->GenerateID();
+	m_object_data->id = ID;
+	m_sensor_data->id = ID;
 	SetID(ID);
 }
 
