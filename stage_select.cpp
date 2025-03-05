@@ -148,8 +148,8 @@ void StageSelectScene::Initialize()
 	// ステージポイントの生成
 	m_stagePointFactory.CreateStagePoint(m_world, 322.0f, 335.0f, 110.0f,1);
 	m_stagePointFactory.CreateStagePoint(m_world, 530.0f, 210.0f, 110.0f,2);
-	m_stagePointFactory.CreateStagePoint(m_world, 700.0f, 360.0f,100.0f,3);
-	m_stagePointFactory.CreateStagePoint(m_world, 980.0f, 440.0f, 100.0f, 4);
+	m_stagePointFactory.CreateStagePoint(m_world, 700.0f, 360.0f,100.0f,0);
+	m_stagePointFactory.CreateStagePoint(m_world, 980.0f, 440.0f, 100.0f, 0);
 
 	StageSelectContactListener& listener = StageSelectContactListener::GetInstance();
 	m_world->SetContactListener(&listener);
