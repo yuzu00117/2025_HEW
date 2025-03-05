@@ -24,6 +24,7 @@
 #include "hit_stop.h"
 #include "Item_Spirit.h"
 #include"Xinput_controller.h"
+#include"game.h"
 
 // 使用するテクスチャファイルの定義
 static ID3D11ShaderResourceView *g_mini_boss_Texture = NULL;				 // ミニゴーレムのテクスチャ
@@ -687,7 +688,11 @@ void Boss_1_1::BossDead(void)
 		if (360 < dead_cnt)
 		{
 			SceneManager& sceneManager = SceneManager::GetInstance();
-			sceneManager.ChangeScene(SCENE_RESULT);
+			Game& game = Game::GetInstance();
+			game.SetNextGameState(GAME_STATE_RESULT);
+			sceneManager.Set_Chenge_Scene_flag(true);
+
+
 		}
 	}
 }

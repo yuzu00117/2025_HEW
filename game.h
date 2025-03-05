@@ -29,7 +29,7 @@ enum GAME_STATE
 	GAME_STATE_RESPAWN_INITIAL,		//ステージの初期位置にリスポン
 	GAME_STATE_RESPAWN_SAVE_POINT,	//ステージの中間地にリスポン
 	GAME_STATE_NEXT_STAGE,			//次のステージに移行
-	GAME_STATE_GAMEOVER,			//リザルト画面に移行
+	GAME_STATE_RESULT,			//リザルト画面に移行
 
 	GAME_STATE_PAUSE,						//ゲームポーズ
 	GAME_STATE_PAUSE_RESPAWN_SAVE_POINT,	//ポーズから中間地リスポン移行

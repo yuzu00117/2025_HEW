@@ -293,7 +293,7 @@ void Game::Finalize(void)
         //プレイヤーが登録した中間地点を解除
         player.RegisterSavePoint(nullptr);
         break;
-    case GAME_STATE_GAMEOVER:
+    case GAME_STATE_RESULT:
         //アイテムの終了処理
         itemManager.FinalizeAll();
         //残機終了処理
@@ -367,7 +367,7 @@ void Game::Finalize(void)
         break;
     }
     m_state = m_next_state;
-    if (m_state == GAME_STATE_GAMEOVER || m_state == GAME_STATE_PAUSE_TITLE) { m_state = GAME_STATE_START; }
+    if (m_state == GAME_STATE_RESULT || m_state == GAME_STATE_PAUSE_TITLE) { m_state = GAME_STATE_START; }
     m_next_state = GAME_STATE_RESPAWN_INITIAL;
 
 	//プレイヤーの終了処理
@@ -515,7 +515,7 @@ void Game::Update(void)
             //シーン遷移の確認よう　　アンカーのstateが待ち状態の時
             if (Keyboard_IsKeyDown(KK_R) && Anchor::GetAnchorState() == Nonexistent_state)
             {
-                m_next_state = GAME_STATE_GAMEOVER;
+                m_next_state = GAME_STATE_RESULT;
                 sceneManager.ChangeScene(SCENE_RESULT);
             }
 
@@ -572,7 +572,7 @@ void Game::Update(void)
         }
         else
         {
-            m_next_state = GAME_STATE_GAMEOVER;
+            m_next_state = GAME_STATE_RESULT;
             dead_production::SetDeadFlag(false);
             SceneManager& sceneManager = SceneManager::GetInstance();
             sceneManager.SetStageName(STAGE_TUTORIAL);
@@ -594,13 +594,19 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_TITLE);
                 return;
             }
+            if (m_next_state == GAME_STATE_RESULT)
+            {
+                sceneManager.SetStageName(STAGE_SELECT);
+                sceneManager.ChangeScene(SCENE_RESULT);
+                return;
+            }
             switch (sceneManager.GetStageName())
             {
             case STAGE_SELECT:
                 //セレクト画面遷移がポーズ画面によるものじゃない時だけ、普通のゲームオーバーの終了処理をやる
                 if (m_next_state != GAME_STATE_PAUSE_SELECT_SCENE)
                 {
-                    m_next_state = GAME_STATE_GAMEOVER;
+                    m_next_state = GAME_STATE_RESULT;
                 }
                 sceneManager.SetStageName(STAGE_SELECT);
                 sceneManager.ChangeScene(SCENE_STAGE_SELECT);
