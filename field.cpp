@@ -99,6 +99,7 @@ Field::Field()
 
 Field::~Field()
 {
+	Finalize();
 }
 
 
