@@ -73,14 +73,12 @@ contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_T
 	b2Fixture* object_teleport_fixture = m_body->CreateFixture(&teleport_block_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_teleport_data = new ObjectData{ collider_contact_block };//一旦壁判定
-	object_teleport_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_teleport_data);
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_contact_block);
+	object_teleport_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
-
-
-
-	int ID = object_teleport_data->GenerateID();
-	object_teleport_data->id = ID;
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
 
 	SetID(ID);
 
@@ -92,6 +90,7 @@ contact_block::contact_block(b2Vec2 Position, b2Vec2 block_size, Contact_Block_T
 
 contact_block::~contact_block()
 {
+	Finalize();
 }
 
 
@@ -193,15 +192,27 @@ void contact_block::Draw()
 
 void contact_block::Finalize()
 {
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!m_body) return;
 
-	if (GetBody() != nullptr)
-	{
-		//ボディの削除
-		world->DestroyBody(m_body);
+	for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
+
+
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+	m_body = nullptr;
 
 	//画像の解放
 
