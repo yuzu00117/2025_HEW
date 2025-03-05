@@ -539,9 +539,8 @@ void UI_block::Draw()
 
 void UI_block::Finalize()
 {
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!m_body) return;
+
 	for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
 		if (!fixture) continue;
 
@@ -559,11 +558,10 @@ void UI_block::Finalize()
 		// ObjectData を削除す
 		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
-	if (GetBody() != nullptr)
-	{
-		//ボディの削除
-		world->DestroyBody(m_body);
-	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+	m_body = nullptr;
 
 	//画像の解放
 
