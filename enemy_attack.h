@@ -12,7 +12,6 @@
 #define ENEMY_ATTACK_H
 
 #include "enemy.h"
-#include "player_stamina.h"
 
 //==========É}ÉNÉçíËã`==========//
 #define ENEMY_ATTACK_DAMAGE (100)
