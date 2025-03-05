@@ -87,22 +87,20 @@ EnemyDynamic::EnemyDynamic(b2Vec2 position, b2Vec2 body_size, float angle)
 	//====================================================================================================
 
 	//Bodyにフィクスチャを登録する
-	b2Fixture* enemy_static_fixture = GetBody()->CreateFixture(&fixture2);
+	b2Fixture* enemy_fixture = GetBody()->CreateFixture(&fixture2);
 	b2Fixture* enemy_sensor_fixture = GetBody()->CreateFixture(&fixture_sensor);
 
 	// カスタムデータを作成して設定
-	// 動的エネミーに値を登録
-	// 動的エネミーにユーザーデータを登録
-	ObjectData* data = new ObjectData{ collider_enemy_dynamic };
-	enemy_static_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	ObjectData* sensor_data = new ObjectData{ collider_enemy_sensor };
-	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(sensor_data);
+	m_object_data = std::make_unique<ObjectData>(collider_enemy_dynamic);
+	enemy_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_object_data.get());
+	m_sensor_data = std::make_unique<ObjectData>(collider_enemy_sensor);
+	enemy_sensor_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_sensor_data.get());
 
 	//ID登録(センサーのデータにもエネミーと同じIDを入れる)
-	data->object_name = Object_Enemy_Dynamic;
-	int ID = data->GenerateID();
-	data->id = ID;
-	sensor_data->id = ID;
+	m_object_data->object_name = Object_Enemy_Dynamic;
+	int ID = m_object_data->GenerateID();
+	m_object_data->id = ID;
+	m_sensor_data->id = ID;
 	SetID(ID);
 
 	m_state = ENEMY_STATE_NULL;
