@@ -1107,8 +1107,13 @@ void Player::Player_sensor_size_change(int anchor_level)
     {
         if (sensor_flag == false)
         {
+            b2Vec2 old_vec = GetPlayerBody()->GetLinearVelocity();
             b2Vec2 pos = GetPlayerBody()->GetPosition();
+
+
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev1_2());
+
+            GetPlayerBody()->SetLinearVelocity(old_vec);
 
             SetSensorSize(GetSensorSizeLev1_2());
             sensor_flag = true;
@@ -1119,8 +1124,11 @@ void Player::Player_sensor_size_change(int anchor_level)
     {
         if (sensor_flag == false)
         {
+
+            b2Vec2 old_vec = GetPlayerBody()->GetLinearVelocity();
             b2Vec2 pos = GetPlayerBody()->GetPosition();
             Initialize(pos, b2Vec2(1, 2), GetSensorSizeLev3());
+            GetPlayerBody()->SetLinearVelocity(old_vec);
             SetSensorSize(GetSensorSizeLev3());
             sensor_flag = true;
             Anchor_level3_Frame_Sheet_cnt = 0;

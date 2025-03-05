@@ -99,6 +99,7 @@ Field::Field()
 
 Field::~Field()
 {
+	Finalize();
 }
 
 
@@ -1024,8 +1025,7 @@ void Field::Initialize()
 					objectManager.AddGround(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, g_Ground_Texture, false);
 				}
 				if (field_map[y][x] == 11) {//動かない物
-					//Sizeを BOX2D_SCALE_MANAGEMENTで割ってる影響で　座標の登録位置も割る
-					objectManager.AddGround(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, true, true, g_Ground_Texture, false);
+					itemManager.AddHealing(b2Vec2(x / BOX2D_SCALE_MANAGEMENT, y / BOX2D_SCALE_MANAGEMENT), b2Vec2(1.0f, 1.0f), 0.0f, respawning);
 				}
 
 
