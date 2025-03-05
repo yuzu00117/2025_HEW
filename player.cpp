@@ -638,6 +638,23 @@ void Player::Update()
     // }
 
     // プレーの向いている方向　swtich文的の仕様的に外でやる
+
+
+    //対象のアンカーポイントがぶっ壊れた時の関数
+    if (AnchorPoint::GetTargetAnchorPointBody() != nullptr)
+    {
+        if (AnchorPoint::GetTargetAnchorPointBody()->GetType() != b2_dynamicBody &&
+            AnchorPoint::GetTargetAnchorPointBody()->GetType() != b2_staticBody)
+        {
+            Anchor::SetAnchorState(Deleting_state); // いかれちまったら削除するのだ
+        }
+
+        // ワールド内の有効なボディか確認
+        if (!AnchorPoint::GetTargetAnchorPointBody()->GetWorld()) {
+            Anchor::SetAnchorState(Deleting_state); // いかれちまったら削除するのだ
+        }
+    }
+
     bool right = GetDirection();
 
     switch (Anchor::GetAnchorState())
