@@ -684,7 +684,7 @@ void Boss_1_1::BossDead(void)
 		dead_cnt++;
 		now_boss_state = die_state;
 
-		if (720 < dead_cnt)
+		if (360 < dead_cnt)
 		{
 			SceneManager& sceneManager = SceneManager::GetInstance();
 			sceneManager.ChangeScene(SCENE_RESULT);
@@ -829,6 +829,9 @@ void Boss_1_1::DestroyBossCore(void)
 
 		// nullに設定
 		SetAnchorPointBody(nullptr);
+
+		//ストックのリセットを追加した
+		boss_stock = 3;
 	}
 }
 

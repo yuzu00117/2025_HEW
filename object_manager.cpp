@@ -1007,9 +1007,9 @@ void ObjectManager::FinalizeAll() {
         w->Finalize();
     }
 
-    for (auto& w : boss_pillarList) {
-        w->Finalize();
-    }
+    
+ 
+    
 
     for (auto& w : boss_carry_object_enemyList) {
         w->Finalize();
@@ -1116,7 +1116,7 @@ void ObjectManager::FinalizeAll() {
     spawner_block_damageList.clear();
 
 
-    GroundList.clear();
+ 
 }
 
 void ObjectManager::SetPullingPower_With_Multiple(b2Vec2 multiple)

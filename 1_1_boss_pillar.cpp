@@ -333,9 +333,7 @@ void boss_pillar::Destroy_Splitting()
 
 					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
 
-					// カスタムデータを作成して設定
-					ObjectData* object_anchorpoint_data = new ObjectData{ collider_texture_block };
-					fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_anchorpoint_data);
+				
 
 
 					// 初速度はゼロに設定（必要に応じて速度を追加可能）
@@ -353,21 +351,23 @@ void boss_pillar::Destroy_Splitting()
 	}
 
 }
-
-
 void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
-	//ワールドのインスタンスを持ってくる
 	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 	b2World* world = box2d_world.GetBox2dWorldPointer();
-	for (b2Body*& body : bodyList) {
-		if (body != nullptr) {
-			world->DestroyBody(body);
-			body = nullptr; // ポインタを無効化
+
+	for (size_t i = 0; i < bodyList.size(); i++) {
+		if (bodyList[i]) {
+		
+
+			// ボディを削除
+			world->DestroyBody(bodyList[i]);
+			bodyList[i] = nullptr; // 直接リストの要素をnullptrにする
 		}
 	}
-	bodyList.clear();  // vectorを空にする
-	
+
+	bodyList.clear(); // 最後にvectorをクリア
 }
+
 
 void boss_pillar::Pulling_pillar()
 {
@@ -477,7 +477,6 @@ void boss_pillar::Draw()
 	}
 
 }
-
 void boss_pillar::Finalize()
 {
 
@@ -485,7 +484,7 @@ void boss_pillar::Finalize()
 		UnInitTexture(g_Texture);
 	}
 
-	if (m_body) 
+	if (m_body)
 	{
 		for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
 			if (!fixture) continue;
@@ -532,7 +531,5 @@ void boss_pillar::Finalize()
 		Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(AnchorPoint_body);
 		AnchorPoint_body = nullptr;
 	}
-
-	// `b2Body` を削除
-
+	
 }
