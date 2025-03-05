@@ -13,7 +13,7 @@
 
 #include"include/box2d/box2d.h"
 #include"Video.h"
-
+#include"memory"
 
 //触れたら何を表示するもの
 enum Ui_Block_Type
@@ -153,6 +153,8 @@ private:
 	float sheet_cnt;
 
 	bool change_flag = false;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 
 };
 
