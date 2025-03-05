@@ -50,7 +50,7 @@ int g_wait = 45;
 void ResultScene::Initialize()
 {
     //リザルト画面の背景テクスチャの読み込み
-    g_GameScreen_Texture=InitTexture(L"asset\\texture\\result_texture\\test.png");
+    g_GameScreen_Texture=InitTexture(L"asset\\texture\\result_texture\\remains_background02.png");
     g_result_Texture = InitTexture(L"asset\\texture\\result_texture\\result_back_test2.png");
     //数字用テクスチャの読み込み
     g_number_Texture = InitTexture(L"asset\\texture\\result_texture\\sample_number.png");
@@ -176,12 +176,6 @@ void ResultScene::Update()
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
 
-    if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
-    {
-        SceneManager& sceneManager = SceneManager::GetInstance();
-        sceneManager.ChangeScene(SCENE_STAGE_SELECT);
-    }
-
     switch (m_state)
     {
     case STATE_RESULT_START:
@@ -264,6 +258,14 @@ void ResultScene::Update()
         else if (m_total_score_alpha <= 1)
         {
             m_total_score_alpha += 0.01 * m_score_alpha_move_speed;
+        }
+        else
+        {
+            if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+            {
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+            }
         }
         break;
     default: 
