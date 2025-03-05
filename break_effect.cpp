@@ -110,8 +110,10 @@ void PillarFragmentsManager::Destroy_Splitting(b2Body* targetBody, ID3D11ShaderR
 
 //ここにボディをとテクスチャとサイズをいれると
 //ボディを削除したのち、複数のボディを作成してヴェロシティを加えてぼーん　豪快だね～
-void PillarFragmentsManager::Destroy_Splitting_only(const b2Vec2 position, ID3D11ShaderResourceView* texture, b2Vec2 size) {
+void PillarFragmentsManager::Destroy_Splitting_only(const b2Vec2 position, ID3D11ShaderResourceView* texture, b2Vec2 size,int x,int y) {
  
+    splittingX = x;
+    splittingY = y;
 
     fragmentSize = size;
 
