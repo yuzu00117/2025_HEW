@@ -176,12 +176,6 @@ void ResultScene::Update()
     //コントローラーの入力の受け取り
     ControllerState state = GetControllerInput();
 
-    if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
-    {
-        SceneManager& sceneManager = SceneManager::GetInstance();
-        sceneManager.ChangeScene(SCENE_STAGE_SELECT);
-    }
-
     switch (m_state)
     {
     case STATE_RESULT_START:
@@ -264,6 +258,14 @@ void ResultScene::Update()
         else if (m_total_score_alpha <= 1)
         {
             m_total_score_alpha += 0.01 * m_score_alpha_move_speed;
+        }
+        else
+        {
+            if (Keyboard_IsKeyDown(KK_SPACE) || (state.buttonA))
+            {
+                SceneManager& sceneManager = SceneManager::GetInstance();
+                sceneManager.ChangeScene(SCENE_STAGE_SELECT);
+            }
         }
         break;
     default: 
