@@ -21,6 +21,7 @@
 #include"camera_shake.h"
 #include"anchor_point.h"
 #include"anchor.h"
+#include"break_effect.h"
 
 static ID3D11ShaderResourceView* g_Texture = NULL;//フィールドのテクスチャ
 
@@ -184,9 +185,9 @@ void boss_pillar::Update()
 		Boss_1_1& boss = Boss_1_1::GetInstance();
 		if (boss_room_level < boss.GetBossFieldLevel() && (Splitting_end == false))
 		{
-			if (AnchorPoint::GetTargetAnchorPointBody() != m_body)
+			if (AnchorPoint::GetTargetAnchorPointBody() == m_body)
 			{
-				if (Anchor::GetAnchorState() != Nonexistent_state)return;
+				return;
 			}
 
 			Splitting_Destroy_Flag = true;
@@ -227,7 +228,7 @@ void boss_pillar::Update()
 
 		if (180 < Destroy_Cnt)//分解したあと破壊されるフラグ
 		{
-			DestroySplittedBodies(boss_pillar_body_Splitting);
+			
 			isUse = false;
 		}
 	}
@@ -247,126 +248,58 @@ void boss_pillar::Destroy_Splitting()
 			Box2dWorld& box2d_world = Box2dWorld::GetInstance();
 			b2World* world = box2d_world.GetBox2dWorldPointer();
 
-
-			//破壊されたpositionを取得
-
-
-			//普通のボディも消す
-			b2Vec2 Destroy_position = m_body->GetPosition();
-			float angle = m_body->GetAngle(); // 元のボディの角度を取得
-			b2Vec2 vec = m_body->GetLinearVelocity();
-			float angle_vec = m_body->GetAngularVelocity();
-
-			world->DestroyBody(m_body);
-			m_body = nullptr;
-
-			SetBody(nullptr);
-
-			//サウンドを再生
-			app_atomex_start(Object_Pillar_Break_Sound);
-
-			//アンカーポイントのボディも消す
-
-			b2Body* m_body = GetObjectAnchorPointBody();
-			// ObjectData の削除
-			if ((m_body)) {
-				for (b2Fixture* f = m_body->GetFixtureList(); f; f = f->GetNext()) {
-					ObjectData* data = reinterpret_cast<ObjectData*>(f->GetUserData().pointer);
-					if (data) {
-						delete data;
-						f->GetUserData().pointer = 0;
-					}
-				}
-			}
-
-			AnchorPoint::OutsideSensor(GetObjectAnchorPointBody());
-			world->DestroyBody(GetObjectAnchorPointBody());
-			SetObjectAnchorPointBody(nullptr);
-
-			b2Vec2 size;
-			size.x = m_size.x / BOX2D_SCALE_MANAGEMENT;
-			size.y = m_size.y / BOX2D_SCALE_MANAGEMENT;
-
-
-
-			// 分割後のボディを配置
-			for (int y = 0; y < Splitting_y; y++)
+			if (m_body)
 			{
-				for (int x = 0; x < Splitting_x; x++)
-				{
-					// 分割後のボディのローカル座標を計算
-					float localX = ((x - (Splitting_x - 1) / 2.0f) * size.x / Splitting_x);
-					float localY = ((y - (Splitting_y - 1) / 2.0f) * size.y / Splitting_y);
+				PillarFragmentsManager::GetInstance().Destroy_Splitting_only(m_body->GetPosition(), g_Texture, GetSize(),GetSize().x,GetSize().y);
+				for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+					if (!fixture) continue;
 
-					// 元の角度を考慮してワールド座標に変換
-					float rotatedX = localX * cos(angle) - localY * sin(angle);
-					float rotatedY = localX * sin(angle) + localY * cos(angle);
-
-					b2Vec2 fragmentPosition(
-						Destroy_position.x + rotatedX,
-						Destroy_position.y + rotatedY
-					);
-
-					// 分割後のボディを作成
-					b2BodyDef fragmentDef;
-					fragmentDef.type = b2_dynamicBody;
-					fragmentDef.position = fragmentPosition;
-					fragmentDef.angle = angle; // 元のボディの角度を引き継ぐ
-
-					b2Body* fragment = world->CreateBody(&fragmentDef);
-					boss_pillar_body_Splitting.push_back(fragment);
-
-					fragment->SetLinearVelocity(b2Vec2(vec.x*2,vec.y*2));
-					fragment->SetAngularVelocity(angle_vec);
-
-					// 分割後の形状とフィクスチャを設定
-					b2PolygonShape fragmentShape;
-					fragmentShape.SetAsBox(size.x / (2.0f * Splitting_x), size.y / (2.0f * Splitting_y));
-
-					b2FixtureDef fragmentFixture;
-					fragmentFixture.shape = &fragmentShape;
-					fragmentFixture.density = 1.0f; // ボディの密度を設定。密度が大きいほどボディの質量が重くなる。
-					fragmentFixture.friction = 0.5f; // 摩擦係数を設定。接触面の滑りやすさを制御し、小さい値ほど滑りやすい。
-					fragmentFixture.restitution = 0.0f; // 反発係数を設定。0は反発しない（衝突時にエネルギーを失う）、1は完全に弾む。
-					fragmentFixture.isSensor = true;
-					/*fragmentFixture.filter = createFilterExclude("ground_filter", {"Boss_filter","MiniGolem_filter","Shockwave_filter","Player_filter", "object_filter","Shockwave_filter" });*/
-
-					b2Fixture*fixture=fragment->CreateFixture(&fragmentFixture);
-
-				
+					// UserData 取得
 
 
-					// 初速度はゼロに設定（必要に応じて速度を追加可能）
-					fragment->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+					// 無効なポインタならスキップ
+					if (!fixture->GetUserData().pointer) {
+						continue;
+					}
 
-					
-					// ランダムな方向に飛び散るように速度を設定
-					fragment->SetLinearVelocity(GetRandomVelocity(5.0f)); // 5.0f は基準速度（調整可）
 
+					// ObjectData を削除す
+					fixture->GetUserData().pointer = 0;  // ポインタのクリア
 				}
+				Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+				m_body = nullptr;
 			}
+
+			if (AnchorPoint_body)
+			{
+				AnchorPoint::OutsideSensor(AnchorPoint_body);
+				for (b2Fixture* fixture = AnchorPoint_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+					if (!fixture) continue;
+
+					// UserData 取得
+
+
+					// 無効なポインタならスキップ
+					if (!fixture->GetUserData().pointer) {
+						continue;
+					}
+
+
+					// ObjectData を削除す
+					fixture->GetUserData().pointer = 0;  // ポインタのクリア
+				}
+				Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(AnchorPoint_body);
+				AnchorPoint_body = nullptr;
+			}
+
+
 			Splitting_Destroy_Flag = false;
 			Splitting_end = true;
 		}
 	}
 
 }
-void boss_pillar::DestroySplittedBodies(std::vector<b2Body*>& bodyList) {
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
 
-	for (size_t i = 0; i < bodyList.size(); i++) {
-		if (bodyList[i]) {
-		
-
-			// ボディを削除
-			world->DestroyBody(bodyList[i]);
-			bodyList[i] = nullptr; // 直接リストの要素をnullptrにする
-		}
-	}
-
-	bodyList.clear(); // 最後にvectorをクリア
-}
 
 
 void boss_pillar::Pulling_pillar()
@@ -443,37 +376,7 @@ void boss_pillar::Draw()
 		}
 
 
-		//分割後の描画
-		if (Splitting_end == true)
-		{
-
-			for (int i = 0; i < Splitting_x * Splitting_y; i++)
-			{
-
-
-				b2Vec2 bodyPos = boss_pillar_body_Splitting[i]->GetPosition();
-
-
-				float body_draw_x = ((bodyPos.x - PlayerPosition::GetPlayerPosition().x) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.x;
-				float body_draw_y = ((bodyPos.y - PlayerPosition::GetPlayerPosition().y) * BOX2D_SCALE_MANAGEMENT) * scale + screen_center.y;
-
-				GetDeviceContext()->PSSetShaderResources(0, 1, &g_Texture);
-
-
-				//draw
-				DrawSplittingSprite(
-					{ body_draw_x,
-					body_draw_y },
-					boss_pillar_body_Splitting[i]->GetAngle(),
-					{ GetSize().x / Splitting_x * scale*2,GetSize().y / Splitting_y * scale },
-					Splitting_x,
-					Splitting_y,
-					i,
-					1.0f
-				);
-
-			}
-		}
+		
 	}
 
 }

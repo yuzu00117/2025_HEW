@@ -50,7 +50,7 @@ public:
     static PillarFragmentsManager& GetInstance();
     void Init(b2World* w, int sx, int sy);
     void Destroy_Splitting(b2Body* targetBody, ID3D11ShaderResourceView* texture, b2Vec2 size);
-    void Destroy_Splitting_only(const b2Vec2 position, ID3D11ShaderResourceView* texture, b2Vec2 size);
+    void Destroy_Splitting_only(const b2Vec2 position, ID3D11ShaderResourceView* texture, b2Vec2 size,int x,int y);
     void UpdateFragments();
     void DrawFragments();
     void Finalize();

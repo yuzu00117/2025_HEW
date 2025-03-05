@@ -30,7 +30,7 @@ public:
 
 	void Destroy_Splitting(void);
 
-	void DestroySplittedBodies(std::vector<b2Body*>& bodyList);
+	
 
 	void Pulling_pillar();
 

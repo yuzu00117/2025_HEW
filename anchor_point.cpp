@@ -250,6 +250,20 @@ void AnchorPoint::Draw()
 				return;
 			}
 
+		
+
+			// ワールド内の有効なボディか確認
+			if (!g_anchor_point_body[i]->GetWorld()) {
+				return;
+			}
+
+			// `m_type` の異常チェック
+			if (g_anchor_point_body[i]->GetType() != b2_dynamicBody &&
+				g_anchor_point_body[i]->GetType() != b2_staticBody) {
+				return;
+			}
+
+
 			// フィクスチャがあるか確認
 			b2Fixture* fixtureA = g_anchor_point_body[i]->GetFixtureList();
 			if (!fixtureA) {
