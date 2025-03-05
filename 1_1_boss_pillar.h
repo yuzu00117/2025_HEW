@@ -147,8 +147,6 @@ private:
 	b2Vec2 old_vec;
 
 	Boss_Room_Level boss_room_level;
-	//柱がバラバラになったときに使う
-	std::vector<b2Body*> boss_pillar_body_Splitting;
 
 
 	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更

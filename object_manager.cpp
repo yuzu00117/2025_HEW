@@ -1008,7 +1008,9 @@ void ObjectManager::FinalizeAll() {
     }
 
     
- 
+    for (auto& w : boss_pillarList) {
+        w->Finalize();
+    }
     
 
     for (auto& w : boss_carry_object_enemyList) {

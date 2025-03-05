@@ -155,8 +155,7 @@ boss_pillar::boss_pillar(b2Vec2 position, b2Vec2 size, int splitting_x,int split
 
 	boss_room_level = level;
 
-	//ボディの領域を事前に確保しておく
-	boss_pillar_body_Splitting.reserve(Splitting_x * Splitting_y);
+
 
 
 
