@@ -54,6 +54,9 @@ private:
 
 	int m_anim_id = 0;
 
+	std::unique_ptr<class ObjectData> m_object_data;
+	std::unique_ptr<class ObjectData> m_sensor_data;
+
 	//テスト用
 	b2Vec2 m_size_sensor = b2Vec2(0.0, 0.0);
 public:
