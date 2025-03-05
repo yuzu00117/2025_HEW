@@ -13,6 +13,7 @@
 #define ONE_WAY_PLATFORM
 
 #include"include/box2d/box2d.h"
+#include<memory>
 
 
 
@@ -96,6 +97,8 @@ private:
 	b2Vec2 localpos;
 
 	b2Fixture *change_fixture_list;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 
 };
 #endif // !WOOD_H
