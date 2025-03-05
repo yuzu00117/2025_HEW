@@ -14,6 +14,7 @@
 
 #include"include/box2d/box2d.h"
 #include"sound.h"
+#include<memory>
 
 
 
@@ -125,6 +126,9 @@ private:
 	float m_border_alpha = 0;
 	const float m_border_alpha_max = 0.75f;
 	const float m_border_alpha_min = 0.0f;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
+	std::unique_ptr<class ObjectData> m_anchor_point_objectData;  // ユニークポインターに変更
 
 };
 #endif // !WOOD_H
