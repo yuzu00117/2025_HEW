@@ -67,12 +67,13 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 
 	//カスタムデータを作成
-	ObjectData* object_data = new ObjectData{collider_ground};
-	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_data);
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_ground);
+	m_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
-	int ID = object_data->GenerateID();
-	object_data->id = ID;
-	object_data->object_name = Boss_field_block;
+	int ID = m_objectData->GenerateID();
+	m_objectData->id = ID;
+	m_objectData->object_name = Boss_field_block;
 	SetID(ID);
 
 
@@ -88,6 +89,7 @@ boss_field_block::boss_field_block(b2Vec2 position, b2Vec2 size, int block_hp, B
 
 boss_field_block::~boss_field_block()
 {
+	Finalize();
 }
 
 
@@ -214,11 +216,32 @@ void boss_field_block::Draw()
 
 void boss_field_block::Finalize()
 {
-	if (g_Texture != NULL)
-	{
-		UnInitTexture(g_Texture);
-		g_Texture = NULL;
-		UnInitTexture(g_Top_Texture);
-		g_Top_Texture = NULL;
+	if (g_Texture) UnInitTexture(g_Texture);
+	if (g_Top_Texture) UnInitTexture(g_Top_Texture);
+
+
+
+	if (!m_body) return;
+
+	for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
+
+
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(m_body);
+	m_body = nullptr;
 }
