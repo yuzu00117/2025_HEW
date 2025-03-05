@@ -80,36 +80,38 @@ void StagePoint::Draw() {
  //---------------------------------------------------------------------------------------------
  // フィールドポイントのエフェクト
 
-
-
     float SCALE = 1;
-
-    StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
-    if (0 != m_player.GetTouchStageSelectNum())
+    if (id != 0)
     {
-        if (id == m_player.GetTouchStageSelectNum())
+        
+
+        StageSelectPlayer& m_player = StageSelectPlayer::GetInstance();
+        if (0 != m_player.GetTouchStageSelectNum())
         {
-            SCALE = 1.5;
+            if (id == m_player.GetTouchStageSelectNum())
+            {
+                SCALE = 1.5;
+            }
         }
-    }
 
-    int select_flag = 1;
-    if (SCALE != 1)
-    {
-        select_flag = 2;
-    }
+        int select_flag = 1;
+        if (SCALE != 1)
+        {
+            select_flag = 2;
+        }
 
-    //テクスチャを描画
-    GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_stage_point_effect_Texture);
+        //テクスチャを描画
+        GetDeviceContext()->PSSetShaderResources(0, 1, &g_stage_select_stage_point_effect_Texture);
 
-   
-    DrawDividedSprite(XMFLOAT2(x, y+30), 0.0f, XMFLOAT2(210*SCALE, 140*SCALE), 5, 3, effect_cnt / 4*select_flag);
 
-    effect_cnt++;
+        DrawDividedSprite(XMFLOAT2(x, y + 30), 0.0f, XMFLOAT2(210 * SCALE, 140 * SCALE), 5, 3, effect_cnt / 4 * select_flag);
 
-    if (60 < effect_cnt)
-    {
-        effect_cnt = 0;
+        effect_cnt++;
+
+        if (60 < effect_cnt)
+        {
+            effect_cnt = 0;
+        }
     }
 
 
