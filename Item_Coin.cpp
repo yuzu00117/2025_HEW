@@ -86,14 +86,15 @@ ItemCoin::ItemCoin(b2Vec2 position, b2Vec2 body_size, float angle, bool shape_po
 
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
-    // プレーヤーにユーザーデータを登録
-    ObjectData* data = new ObjectData{ collider_item };
-    p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+    // ユニークポインターを使って ObjectData を作成
+    m_objectData = std::make_unique<ObjectData>(collider_item);
+    p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
 
-    data->Item_name = ITEM_COIN;
-    int ID = data->GenerateID();
-    data->id = ID;
+
+    m_objectData->Item_name = ITEM_COIN;
+    int ID = m_objectData->GenerateID();
+    m_objectData->id = ID;
     SetID(ID);
 
 
@@ -103,7 +104,23 @@ void	ItemCoin::Update()
 {
     if (m_destory && m_body != nullptr)
     {
+        if (!m_body) return;
 
+        for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+            if (!fixture) continue;
+
+            // UserData 取得
+
+
+            // 無効なポインタならスキップ
+            if (!fixture->GetUserData().pointer) {
+                continue;
+            }
+
+
+            // ObjectData を削除す
+            fixture->GetUserData().pointer = 0;  // ポインタのクリア
+        }
         coin_effect_sheet_cnt = 1;
         coin_effect_pos = m_body->GetPosition();
 
@@ -253,6 +270,26 @@ void ItemCoin::Finalize()
 
     if (GetBody() != nullptr)
     {
+
+        if (!m_body) return;
+
+        for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+            if (!fixture) continue;
+
+            // UserData 取得
+
+
+            // 無効なポインタならスキップ
+            if (!fixture->GetUserData().pointer) {
+                continue;
+            }
+
+
+
+
+            // ObjectData を削除す
+            fixture->GetUserData().pointer = 0;  // ポインタのクリア
+        }
         //ワールドのインスタンスを持ってくる
         Box2dWorld& box2d_world = Box2dWorld::GetInstance();
         b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -267,6 +304,7 @@ void ItemCoin::Finalize()
 
 ItemCoin::~ItemCoin()
 {
+    Finalize();
 }
 
 void ItemCoin::CreateBody()

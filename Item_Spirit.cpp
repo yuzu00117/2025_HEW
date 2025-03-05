@@ -87,14 +87,13 @@ ItemSpirit::ItemSpirit(b2Vec2 position, b2Vec2 body_size, float angle, SpiritTyp
 
     // カスタムデータを作成して設定
     // プレイヤーに値を登録
-    // プレーヤーにユーザーデータを登録
-    ObjectData* data = new ObjectData{ collider_item };
-    p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
+    // ユニークポインターを使って ObjectData を作成
+    m_objectData = std::make_unique<ObjectData>(collider_item);
+    p_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
 
-
-    data->Item_name = ITEM_SPIRIT;
-    int ID = data->GenerateID();
-    data->id = ID;
+    m_objectData->Item_name = ITEM_SPIRIT;
+    int ID = m_objectData->GenerateID();
+    m_objectData->id = ID;
     SetID(ID);
 
 }
@@ -123,6 +122,22 @@ void	ItemSpirit::Update()
         //消される予定ならボディーを消す
         if (m_state == Spirit_Destory)
         {
+
+            for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+                if (!fixture) continue;
+
+                // UserData 取得
+
+
+                // 無効なポインタならスキップ
+                if (!fixture->GetUserData().pointer) {
+                    continue;
+                }
+
+
+                // ObjectData を削除す
+                fixture->GetUserData().pointer = 0;  // ポインタのクリア
+            }
             //ボディの情報を消す
             b2World* world = Box2dWorld::GetInstance().GetBox2dWorldPointer();
             world->DestroyBody(m_body);
@@ -268,6 +283,24 @@ void ItemSpirit::Finalize()
 
     if (GetBody() != nullptr)
     {
+
+        for (b2Fixture* fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+            if (!fixture) continue;
+
+            // UserData 取得
+
+
+            // 無効なポインタならスキップ
+            if (!fixture->GetUserData().pointer) {
+                continue;
+            }
+
+
+
+
+            // ObjectData を削除す
+            fixture->GetUserData().pointer = 0;  // ポインタのクリア
+        }
         //ワールドのインスタンスを持ってくる
         Box2dWorld& box2d_world = Box2dWorld::GetInstance();
         b2World* world = box2d_world.GetBox2dWorldPointer();
@@ -285,4 +318,6 @@ void ItemSpirit::Finalize()
 
 ItemSpirit::~ItemSpirit()
 {
+
+    Finalize();
 }

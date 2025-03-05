@@ -91,9 +91,10 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 	b2Fixture* object_rock_fixture = m_Rock_body->CreateFixture(&rock_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_rock_data = new ObjectData{ collider_object };//一旦壁判定
-	object_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_rock_data);
-	object_rock_data->object_name = Object_Rock;
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_object);
+	object_rock_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
+	m_objectData->object_name = Object_Rock;
 
 
 	//2つめのフィクスチャを　岩の中にアンカーポイントをつくる
@@ -113,18 +114,20 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 	b2Fixture* object_rock_anchorpoint_fixture = m_Rock_body->CreateFixture(&rock_anchorpoint_fixture);
 
 	// カスタムデータを作成して設定
-	ObjectData* object_rock_anchorpoint_data = new ObjectData{ collider_anchor_point };
-	object_rock_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_rock_anchorpoint_data);
-
-	object_rock_anchorpoint_data->object_name = Object_Rock;
 
 
-	int ID = object_rock_anchorpoint_data->GenerateID();
-	object_rock_data->id = ID;
-	object_rock_anchorpoint_data->id = ID;
+	m_anchor_point_objectData = std::make_unique<ObjectData>(collider_anchor_point);
+	object_rock_anchorpoint_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_anchor_point_objectData.get());
+
+	m_anchor_point_objectData->object_name = Object_Rock;
+
+
+	int ID = m_anchor_point_objectData->GenerateID();
+	m_objectData->id = ID;
+	m_anchor_point_objectData->id = ID;
 	SetID(ID);
-	object_rock_data->need_anchor_level = set_need_anchor_level;
-	object_rock_anchorpoint_data->need_anchor_level = set_need_anchor_level;
+	m_objectData->need_anchor_level = set_need_anchor_level;
+	m_anchor_point_objectData->need_anchor_level = set_need_anchor_level;
 
 	//アンカーレベルをメンバ変数で保持
 	m_need_level = set_need_anchor_level;
@@ -136,7 +139,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 	need_power.x = ((radius * radius) + (GetAnchorPointSize().x * GetAnchorPointSize().y)) * 10;//１は必要に応じて変更して
 	need_power.y = 10.0f;//縦に必要な力はない
 
-	object_rock_anchorpoint_data->add_force = need_power;
+	m_anchor_point_objectData->add_force = need_power;
 	m_pulling_power = need_power;
 
 
@@ -147,6 +150,7 @@ rock::rock(b2Vec2 Position, float radius, int set_need_anchor_level,bool left)
 
 rock::~rock()
 {
+	Finalize();
 }
 
 
@@ -271,13 +275,51 @@ void rock::Finalize()
 
 	if (GetObjectRockBody() != nullptr)
 	{
+
+		for (b2Fixture* fixture = Rock_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
 		//ボディの削除
 		world->DestroyBody(Rock_body);
+		Rock_body = nullptr;
 	}
 
 	if (GetObjectAnchorPointBody() != nullptr)
 	{
+		for (b2Fixture* fixture = AnchorPoint_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+			if (!fixture) continue;
+
+			// UserData 取得
+
+
+			// 無効なポインタならスキップ
+			if (!fixture->GetUserData().pointer) {
+				continue;
+			}
+
+
+
+
+			// ObjectData を削除す
+			fixture->GetUserData().pointer = 0;  // ポインタのクリア
+		}
+		//ボディの削除
 		world->DestroyBody(AnchorPoint_body);
+		AnchorPoint_body = nullptr;
 	}
 
 	if (g_Rock_Texture) UnInitTexture(g_Rock_Texture);

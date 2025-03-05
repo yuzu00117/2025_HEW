@@ -106,19 +106,24 @@ sloping_block::sloping_block(b2Vec2 position, b2Vec2 size, SlopingBlockAspect as
 	g_fixture = object_sloping_block_fixture;
 
 	// カスタムデータを作成して設定
-	ObjectData* object_sloping_block_data = new ObjectData{ collider_ground };//一旦地面判定
-	object_sloping_block_data->object_name = Object_sloping_block;
-	object_sloping_block_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(object_sloping_block_data);
+
+	// ユニークポインターを使って ObjectData を作成
+	m_objectData = std::make_unique<ObjectData>(collider_ground);
+	object_sloping_block_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(m_objectData.get());
+
+	m_objectData->object_name = Object_sloping_block;
 
 
-	int ID = object_sloping_block_data->GenerateID();//IDを取得
-	object_sloping_block_data->id = ID;//フィクスチャに登録
+
+	int ID = m_objectData->GenerateID();//IDを取得
+	m_objectData->id = ID;//フィクスチャに登録
 	SetID(ID);//クラスに登録
 
 };
 
 sloping_block::~sloping_block()
 {
+	Finalize();
 }
 
 
@@ -322,16 +327,29 @@ void sloping_block::Draw()
 void sloping_block::Finalize()
 {
 
-	//ワールドのインスタンスを持ってくる
-	Box2dWorld& box2d_world = Box2dWorld::GetInstance();
-	b2World* world = box2d_world.GetBox2dWorldPointer();
+	if (!GetObjectSlopingBlockBody()) return;
+
+	for (b2Fixture* fixture = GetObjectSlopingBlockBody()->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
+		if (!fixture) continue;
+
+		// UserData 取得
 
 
-	if (GetObjectSlopingBlockBody() != nullptr)
-	{
-		//ボディの削除
-		world->DestroyBody(SlopingBlock_body);
+		// 無効なポインタならスキップ
+		if (!fixture->GetUserData().pointer) {
+			continue;
+		}
+
+
+
+
+		// ObjectData を削除す
+		fixture->GetUserData().pointer = 0;  // ポインタのクリア
 	}
+
+	// `b2Body` を削除
+	Box2dWorld::GetInstance().GetBox2dWorldPointer()->DestroyBody(GetObjectSlopingBlockBody());
+	SlopingBlock_body = nullptr;
 
 	
 	if (g_sloping_block_right_down_Texture) UnInitTexture(g_sloping_block_right_down_Texture);
