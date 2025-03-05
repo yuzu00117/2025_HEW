@@ -24,6 +24,8 @@
 
 static ID3D11ShaderResourceView* g_EnemyAttack_Texture = NULL;	//動的エネミーのテクスチャ
 
+std::unique_ptr<class ObjectData> g_object_data;
+
 EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 {
 	b2BodyDef body;
@@ -62,10 +64,10 @@ EnemyAttack::EnemyAttack(b2Vec2 position, b2Vec2 body_size, float angle, int id)
 	// カスタムデータを作成して設定
 	// 動的エネミーに値を登録
 	// 動的エネミーにユーザーデータを登録
-	ObjectData* data = new ObjectData{ collider_enemy_attack };
-	enemy_attack_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(data);
-	data->object_name = Object_Enemy_Attack;
-	data->id = id;
+	g_object_data = std::make_unique<ObjectData>(collider_enemy_attack);
+	enemy_attack_fixture->GetUserData().pointer = reinterpret_cast<uintptr_t>(g_object_data.get());
+	g_object_data->object_name = Object_Enemy_Attack;
+	g_object_data->id = id;
 	SetID(id);
 
 	//Initialize();
