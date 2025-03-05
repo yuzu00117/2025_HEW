@@ -10,6 +10,9 @@
 #ifndef ANCHOR_H
 #define ANCHOR_H
 
+
+#include <memory>  // 追加
+
 //アンカーの鎖の部分のボディの入れ物
 #define MAX_CHAIN_NUM (40)//チェーンの最大個数
 
@@ -215,6 +218,9 @@ private:
 	int Max_Anchor_effect_sheet;
 
 	float chain_effect_scale;
+
+
+	std::unique_ptr<class ObjectData> m_anchor_objectData;  // ユニークポインターに変更
 };
 
 
