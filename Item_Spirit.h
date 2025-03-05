@@ -15,6 +15,8 @@
 #include"include/box2d/box2d.h"
 #include<string>
 #include<list>
+#include<memory>
+
 
 enum SpiritType
 {
@@ -91,6 +93,8 @@ private:
 
 	//今の状態
 	SpiritState m_state = Spirit_Collecting;
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 
 };
 

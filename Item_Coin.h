@@ -11,6 +11,7 @@
 #define ITEM_COIN_H
 
 #include"include/box2d/box2d.h"
+#include<memory>
 
 class ItemCoin
 {
@@ -99,6 +100,8 @@ private:
 	//中間地に登録されたかどうか
 	bool	m_registered_to_save_point = false;
 
+
+	std::unique_ptr<class ObjectData> m_objectData;  // ユニークポインターに変更
 };
 
 
