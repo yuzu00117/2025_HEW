@@ -111,6 +111,47 @@ void TitleScene::Update()
 
 	
 
+	SceneManager& sceneManager = SceneManager::GetInstance();
+
+	if (Keyboard_IsKeyDown(KK_B) && Keyboard_IsKeyDown(KK_LEFTSHIFT))//ボスにいくものとする
+	{
+		if (sceneManager.GetStageName() != STAGE_BOSS)
+		{
+
+			sceneManager.SetStageName(STAGE_BOSS);
+			sceneManager.ChangeScene(SCENE_GAME);
+		}
+	}
+
+	if (Keyboard_IsKeyDown(KK_I) && Keyboard_IsKeyDown(KK_LEFTSHIFT))//遺跡ステージにいく
+	{
+		if (sceneManager.GetStageName() != STAGE_ISEKI)
+		{
+			sceneManager.SetStageName(STAGE_ISEKI);
+			sceneManager.ChangeScene(SCENE_GAME);
+		}
+	}
+
+
+	if (Keyboard_IsKeyDown(KK_T) && Keyboard_IsKeyDown(KK_LEFTSHIFT))//ボスにいくものとする
+	{
+		if (sceneManager.GetStageName() != STAGE_TUTORIAL)
+		{
+
+			sceneManager.SetStageName(STAGE_TUTORIAL);
+			sceneManager.ChangeScene(SCENE_GAME);
+		}
+	}
+	if (Keyboard_IsKeyDown(KK_N) && Keyboard_IsKeyDown(KK_LEFTSHIFT))//ボスにいくものとする
+	{
+		if (sceneManager.GetStageName() != STAGE_1_1)
+		{
+
+			sceneManager.SetStageName(STAGE_1_1);
+			sceneManager.ChangeScene(SCENE_GAME);
+		}
+	}
+
 
 
 
