@@ -684,6 +684,13 @@ void Boss_1_1::BossDead(void)
 	{
 		dead_cnt++;
 		now_boss_state = die_state;
+		
+		if (PlayerStamina::GetPlayerStaminaValue() < 300)
+		{
+			Player& player = Player::GetInstance();
+			player.Palyer_Healed(100); // HPに加算減算する　今回は加算
+		}
+		
 
 		if (360 < dead_cnt)
 		{
