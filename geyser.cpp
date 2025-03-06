@@ -556,7 +556,7 @@ void geyser::Draw()
 						{ draw_x,
 						  draw_y + geyser_Draw_y },
 						GetGeyserBody()->GetAngle(),
-						{ GetGeyserSize().x * scale * 1.5f,GetGeyserSize().y * scale * 1.5f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
+						{ GetGeyserSize().x * scale * 1.5f,GetGeyserSize().y * scale * 1.1f },///サイズを取得するすべがない　フィクスチャのポインターに追加しようかな？ってレベル
 						15, 1, draw_cnt, m_border_alpha
 					);
 
