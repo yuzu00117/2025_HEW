@@ -620,12 +620,18 @@ void Game::Update(void)
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_ISEKI:
-                m_next_state = GAME_STATE_NEXT_STAGE;
+                if (m_next_state != GAME_STATE_PAUSE_RESPAWN_SAVE_POINT)
+                {
+                    m_next_state = GAME_STATE_NEXT_STAGE;
+                }
                 sceneManager.SetStageName(STAGE_ISEKI);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
             case STAGE_BOSS:
-                m_next_state = GAME_STATE_NEXT_STAGE;
+                if (m_next_state != GAME_STATE_PAUSE_RESPAWN_SAVE_POINT)
+                {
+                    m_next_state = GAME_STATE_NEXT_STAGE;
+                } 
                 sceneManager.SetStageName(STAGE_BOSS);
                 sceneManager.ChangeScene(SCENE_GAME);
                 break;
